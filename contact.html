@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — Nicolas Leveugle Photographie</title>
+<meta name="description" content="Contactez Nicolas Leveugle, photographe indépendant à Ath, pour réserver une séance photo." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html" aria-current="page">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">Contact</span>
+    <h1>Parlons de votre projet</h1>
+    <p class="lead">Quelques mots sur ce que vous cherchez, et je vous réponds sous 48h.</p>
+  </div>
+</section>
+
+<section style="padding-top:24px">
+  <div class="container contact-grid">
+
+    <div>
+      <h3>Coordonnées</h3>
+      <ul class="contact-info-list">
+        <li>
+          Email<br>
+          <a href="mailto:nicolasleveugle@hotmail.com">nicolasleveugle@hotmail.com</a>
+        </li>
+        <li>
+          Instagram<br>
+          <a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">@nicolasleveugle.p</a>
+        </li>
+        <li>
+          Zone d'intervention<br>
+          Ath et environs, Belgique
+        </li>
+        <li>
+          Délai de réponse<br>
+          Sous 48h en général
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>Formulaire de contact</h3>
+      <!--
+        Formulaire simple sans backend : s'ouvre dans le client mail par défaut.
+        Pour un envoi direct sans ouvrir de client mail, ce formulaire pourra être
+        branché plus tard sur un service comme Netlify Forms ou Formspree.
+      -->
+      <form action="mailto:nicolasleveugle@hotmail.com" method="post" enctype="text/plain">
+        <div>
+          <label for="name">Nom</label>
+          <input type="text" id="name" name="Nom" required />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="Email" required />
+        </div>
+        <div>
+          <label for="type">Type de séance</label>
+          <select id="type" name="Type de séance">
+            <option>Formule découverte</option>
+            <option>Formule courte</option>
+            <option>Formule complète</option>
+            <option>Entreprise / commerce</option>
+            <option>Événement</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div>
+          <label for="message">Message</label>
+          <textarea id="message" name="Message" required placeholder="Dites-m'en un peu plus sur votre projet, la date envisagée, le lieu..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+        <p class="form-note">En envoyant ce formulaire, votre client mail s'ouvre avec le message pré-rempli.</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links">
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

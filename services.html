@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Services &amp; tarifs — Nicolas Leveugle Photographie</title>
+<meta name="description" content="Formules photo à Ath : découverte pour nouveaux clients, formule courte 50€, formule complète 100€." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html" aria-current="page">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">Services &amp; tarifs</span>
+    <h1>Des formules simples et claires</h1>
+    <p class="lead">Trois formules pour s'adapter à votre besoin. Un projet plus spécifique (entreprise, événement sur plusieurs heures) ? Un devis sur mesure est toujours possible.</p>
+  </div>
+</section>
+
+<section style="padding-top:24px">
+  <div class="container">
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <span class="badge">Nouveau client</span>
+        <h3>Formule découverte</h3>
+        <div class="price-tag">35€</div>
+        <ul>
+          <li>30 minutes de séance</li>
+          <li>1 lieu, en extérieur ou intérieur</li>
+          <li>10 photos retouchées</li>
+          <li>Livraison sous 1 semaine</li>
+        </ul>
+        <a href="contact.html" class="btn btn-outline">Choisir cette formule</a>
+      </div>
+
+      <div class="price-card highlight">
+        <span class="badge">Le plus demandé</span>
+        <h3>Formule courte</h3>
+        <div class="price-tag">50€</div>
+        <ul>
+          <li>45 minutes de séance</li>
+          <li>1 à 2 lieux</li>
+          <li>20 photos retouchées</li>
+          <li>Livraison sous 1 semaine</li>
+        </ul>
+        <a href="contact.html" class="btn btn-primary">Choisir cette formule</a>
+      </div>
+
+      <div class="price-card">
+        <span class="badge">Séance complète</span>
+        <h3>Formule complète</h3>
+        <div class="price-tag">100€</div>
+        <ul>
+          <li>1h30 de séance</li>
+          <li>Plusieurs lieux possibles</li>
+          <li>40 photos retouchées</li>
+          <li>Galerie en ligne privée</li>
+        </ul>
+        <a href="contact.html" class="btn btn-outline">Choisir cette formule</a>
+      </div>
+
+    </div>
+
+    <div class="note-box">
+      <p style="margin:0">Événement, entreprise ou boutique, séance de plusieurs heures ? <a href="contact.html" style="color:var(--color-accent-dark); font-weight:600; text-decoration:underline;">Contactez-moi</a> pour un devis personnalisé.</p>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>Prêt·e à réserver ?</h2>
+  <p>Dites-m'en un peu plus sur votre projet.</p>
+  <a href="contact.html" class="btn btn-primary">Me contacter</a>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links">
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

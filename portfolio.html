@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio — Nicolas Leveugle Photographie</title>
+<meta name="description" content="Portfolio photo : portraits, couples, entreprises et commerces locaux, événements. Style naturel et chaleureux." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="portfolio.html" aria-current="page">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">Portfolio</span>
+    <h1>Un aperçu de mon travail</h1>
+    <p class="lead">Une sélection de séances, classées par catégorie. Photos naturelles, lumière franche, peu de retouche.</p>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="portraits">Portraits</button>
+      <button class="filter-btn" data-filter="couples">Couples</button>
+      <button class="filter-btn" data-filter="entreprises">Entreprises &amp; commerces</button>
+      <button class="filter-btn" data-filter="evenements">Événements</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="container">
+    <div class="gallery">
+      <div class="gallery-item" data-category="portraits"><img src="images/portfolio/portraits/img1.svg" alt="Portrait 1"></div>
+      <div class="gallery-item" data-category="couples"><img src="images/portfolio/couples/img1.svg" alt="Couple 1"></div>
+      <div class="gallery-item" data-category="entreprises"><img src="images/portfolio/entreprises/img1.svg" alt="Entreprise 1"></div>
+      <div class="gallery-item" data-category="evenements"><img src="images/portfolio/evenements/img1.svg" alt="Événement 1"></div>
+      <div class="gallery-item" data-category="portraits"><img src="images/portfolio/portraits/img2.svg" alt="Portrait 2"></div>
+      <div class="gallery-item" data-category="couples"><img src="images/portfolio/couples/img2.svg" alt="Couple 2"></div>
+      <div class="gallery-item" data-category="entreprises"><img src="images/portfolio/entreprises/img2.svg" alt="Entreprise 2"></div>
+      <div class="gallery-item" data-category="evenements"><img src="images/portfolio/evenements/img2.svg" alt="Événement 2"></div>
+      <div class="gallery-item" data-category="portraits"><img src="images/portfolio/portraits/img3.svg" alt="Portrait 3"></div>
+      <div class="gallery-item" data-category="couples"><img src="images/portfolio/couples/img3.svg" alt="Couple 3"></div>
+      <div class="gallery-item" data-category="entreprises"><img src="images/portfolio/entreprises/img3.svg" alt="Entreprise 3"></div>
+      <div class="gallery-item" data-category="evenements"><img src="images/portfolio/evenements/img3.svg" alt="Événement 3"></div>
+      <div class="gallery-item" data-category="portraits"><img src="images/portfolio/portraits/img4.svg" alt="Portrait 4"></div>
+      <div class="gallery-item" data-category="couples"><img src="images/portfolio/couples/img4.svg" alt="Couple 4"></div>
+      <div class="gallery-item" data-category="entreprises"><img src="images/portfolio/entreprises/img4.svg" alt="Entreprise 4"></div>
+      <div class="gallery-item" data-category="evenements"><img src="images/portfolio/evenements/img4.svg" alt="Événement 4"></div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>Votre projet, en photos ?</h2>
+  <p>Réservons un créneau qui vous ressemble.</p>
+  <a href="contact.html" class="btn btn-primary">Me contacter</a>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links">
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
