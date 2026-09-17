@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1100" viewBox="0 0 900 1100">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E3D9CB"/>
+      <stop offset="100%" stop-color="#F5EFE4"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1100" fill="url(#g)"/>
+  <g opacity="0.5" stroke="#8A6A4B" stroke-width="1.5" fill="none">
+    <circle cx="450.0" cy="462.0" r="144.0"/>
+  </g>
+  <text x="50%" y="638.0" font-family="Georgia, serif" font-size="40.5" fill="#8A6A4B" text-anchor="middle" font-style="italic">Couple</text>
+  <text x="50%" y="704.0" font-family="Arial, sans-serif" font-size="25.2" fill="#9a8f7f" text-anchor="middle" letter-spacing="1">Apercu</text>
+</svg>

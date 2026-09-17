@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8a7862"/>
+      <stop offset="55%" stop-color="#6f5f4c"/>
+      <stop offset="100%" stop-color="#463c30"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#hg)"/>
+  <text x="24" y="976" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.55)">Photo de couverture a remplacer</text>
+</svg>

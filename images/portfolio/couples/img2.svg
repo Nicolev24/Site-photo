@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFD2BE"/>
+      <stop offset="100%" stop-color="#F5EFE4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="800" fill="url(#g)"/>
+  <g opacity="0.5" stroke="#946B45" stroke-width="1.5" fill="none">
+    <circle cx="500.0" cy="336.0" r="128.0"/>
+  </g>
+  <text x="50%" y="463.99999999999994" font-family="Georgia, serif" font-size="36.0" fill="#946B45" text-anchor="middle" font-style="italic">Couple</text>
+  <text x="50%" y="512.0" font-family="Arial, sans-serif" font-size="22.400000000000002" fill="#9a8f7f" text-anchor="middle" letter-spacing="1">Photo a remplacer 2/4</text>
+</svg>

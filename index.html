@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nicolas Leveugle Photographie — Photographe indépendant à Ath</title>
+<meta name="description" content="Photographe indépendant basé à Ath, Belgique. Portraits, couples, entreprises et événements. Photos naturelles, chaleureuses, peu retouchées." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html" aria-current="page">Accueil</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero">
+  <img src="images/hero.svg" alt="Photo de couverture, à remplacer par une photo du photographe" />
+  <div class="container hero-content">
+    <span class="eyebrow" style="color:#f1ebe1">Photographe indépendant · Ath &amp; environs</span>
+    <h1>Des photos naturelles,<br>qui vous ressemblent.</h1>
+    <p>Portraits, couples, commerces locaux et événements — un style épuré, chaleureux, sans surenchère de retouche.</p>
+    <div class="hero-actions">
+      <a href="portfolio.html" class="btn btn-primary">Voir le portfolio</a>
+      <a href="contact.html" class="btn btn-outline">Réserver une séance</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container two-col">
+    <div>
+      <span class="eyebrow">Mon approche</span>
+      <h2>Capturer le naturel, pas la performance.</h2>
+      <p class="lead">J'aime les photos qui respirent : une lumière franche, de vrais sourires, peu de retouche. Que ce soit pour un portrait, un couple, une boutique ou un événement, mon objectif est simple — que la photo vous ressemble.</p>
+      <a href="services.html" class="btn btn-outline">Découvrir les formules</a>
+    </div>
+    <img src="images/photographe.svg" alt="Portrait du photographe, à remplacer" />
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container">
+    <span class="eyebrow">Portfolio</span>
+    <h2>Un aperçu par catégorie</h2>
+    <p class="lead">Particuliers, couples, entreprises locales ou événements : chaque séance est pensée pour son contexte.</p>
+
+    <div class="grid-4">
+      <a class="teaser-card" href="portfolio.html#portraits">
+        <img src="images/teaser-portraits.svg" alt="Aperçu portraits" />
+        <span class="teaser-label">Portraits</span>
+      </a>
+      <a class="teaser-card" href="portfolio.html#couples">
+        <img src="images/teaser-couples.svg" alt="Aperçu couples" />
+        <span class="teaser-label">Couples</span>
+      </a>
+      <a class="teaser-card" href="portfolio.html#entreprises">
+        <img src="images/teaser-entreprises.svg" alt="Aperçu entreprises et commerces" />
+        <span class="teaser-label">Entreprises &amp; commerces</span>
+      </a>
+      <a class="teaser-card" href="portfolio.html#evenements">
+        <img src="images/teaser-evenements.svg" alt="Aperçu événements" />
+        <span class="teaser-label">Événements</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>Une envie de séance ?</h2>
+  <p>Parlons de votre projet — réponse sous 48h.</p>
+  <a href="contact.html" class="btn btn-primary">Me contacter</a>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links">
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services &amp; tarifs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.photo" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
