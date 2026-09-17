@@ -22,11 +22,7 @@ images/                Toutes les photos (actuellement des placeholders SVG)
    - `images/teaser-*.svg` — une photo représentative par catégorie (accueil)
    - `images/portfolio/<categorie>/img1-4.svg` — 4 photos par catégorie dans le portfolio (vous pouvez en ajouter plus en dupliquant les blocs `.gallery-item` dans `portfolio.html`)
 
-2. **Mettre à jour l'email et l'Instagram** (actuellement des adresses fictives) :
-   - `contact@nicolasleveugle-photo.be` → à remplacer dans `contact.html` (3 endroits : lien mailto, `action` du formulaire) et dans le pied de page de chaque page si besoin.
-   - `@nicolasleveugle.photo` / lien Instagram → à remplacer dans le pied de page de chaque page et sur `contact.html`.
-
-3. **Vérifier les tarifs** dans `services.html` si vos formules évoluent.
+2. **Vérifier les tarifs** dans `services.html` si vos formules évoluent.
 
 Le formulaire de contact fonctionne sans backend : il ouvre le client mail du visiteur avec le message pré-rempli. Si vous hébergez le site sur Netlify, vous pouvez le remplacer par [Netlify Forms](https://docs.netlify.com/forms/setup/) pour un envoi direct sans ouvrir de client mail.
 
