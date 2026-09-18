@@ -37,46 +37,10 @@
 
 <section style="padding-top:24px">
   <div class="container">
-    <div class="pricing-grid">
-
-      <div class="price-card">
-        <h3>Formule découverte</h3>
-        <div class="price-tag">100€</div>
-        <ul>
-          <li>Environ 1h de séance</li>
-          <li>1 lieu</li>
-          <li>Galerie privée en ligne</li>
-        </ul>
-        <a href="contact.html" class="btn btn-outline">Choisir cette formule</a>
-      </div>
-
-      <div class="price-card highlight">
-        <span class="badge">Le plus demandé</span>
-        <h3>Formule complète</h3>
-        <div class="price-tag">200€</div>
-        <ul>
-          <li>2h à 3h de séance</li>
-          <li>Plusieurs lieux possibles</li>
-          <li>Galerie privée en ligne</li>
-        </ul>
-        <a href="contact.html" class="btn btn-primary">Choisir cette formule</a>
-      </div>
-
-      <div class="price-card">
-        <h3>Sur devis</h3>
-        <div class="price-tag">Devis<span> personnalisé</span></div>
-        <ul>
-          <li>Événements, journées complètes, entreprises...</li>
-          <li>Durée et lieux adaptés à votre besoin</li>
-          <li>Galerie privée en ligne</li>
-        </ul>
-        <a href="contact.html" class="btn btn-outline">Demander un devis</a>
-      </div>
-
-    </div>
+    <div class="pricing-grid"></div>
 
     <div class="note-box">
-      <p style="margin:0">Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées.</p>
+      <p id="services-note-text" style="margin:0"></p>
     </div>
   </div>
 </section>
@@ -94,7 +58,7 @@
       <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="services.html">Services &amp; tarifs</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener" class="js-instagram-link">Instagram</a></li>
     </ul>
   </div>
   <div class="container">
@@ -103,6 +67,7 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/render.js"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>

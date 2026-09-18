@@ -40,24 +40,7 @@
 
     <div>
       <h3>Coordonnées</h3>
-      <ul class="contact-info-list">
-        <li>
-          Email<br>
-          <a href="mailto:nicolasleveugle@hotmail.com">nicolasleveugle@hotmail.com</a>
-        </li>
-        <li>
-          Instagram<br>
-          <a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">@nicolasleveugle.p</a>
-        </li>
-        <li>
-          Zone d'intervention<br>
-          Ath et environs, Belgique
-        </li>
-        <li>
-          Délai de réponse<br>
-          Sous 48h en général
-        </li>
-      </ul>
+      <ul class="contact-info-list"></ul>
     </div>
 
     <div>
@@ -67,7 +50,7 @@
         Pour un envoi direct sans ouvrir de client mail, ce formulaire pourra être
         branché plus tard sur un service comme Netlify Forms ou Formspree.
       -->
-      <form action="mailto:nicolasleveugle@hotmail.com" method="post" enctype="text/plain">
+      <form id="contact-form" action="mailto:nicolasleveugle@hotmail.com" method="post" enctype="text/plain">
         <div>
           <label for="name">Nom</label>
           <input type="text" id="name" name="Nom" required />
@@ -80,10 +63,8 @@
           <label for="type">Type de séance</label>
           <select id="type" name="Type de séance">
             <option>Formule découverte</option>
-            <option>Formule courte</option>
             <option>Formule complète</option>
-            <option>Entreprise / commerce</option>
-            <option>Événement</option>
+            <option>Sur devis</option>
             <option>Autre</option>
           </select>
         </div>
@@ -106,7 +87,7 @@
       <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="services.html">Services &amp; tarifs</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener" class="js-instagram-link">Instagram</a></li>
     </ul>
   </div>
   <div class="container">
@@ -115,6 +96,7 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/render.js"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>

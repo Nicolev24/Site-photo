@@ -1,0 +1,113 @@
+backend:
+  name: github
+  repo: Nicolev24/Site-photo
+  branch: main
+  # URL du proxy OAuth (Cloudflare Worker) — à remplacer une fois déployé.
+  base_url: https://REMPLACER-PAR-URL-DU-WORKER.workers.dev
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: "fr"
+
+collections:
+  - name: "portfolio"
+    label: "Portfolio"
+    files:
+      - name: "photos"
+        label: "Photos du portfolio"
+        file: "content/portfolio.json"
+        fields:
+          - label: "Photos"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.category}} — {{fields.alt}}"
+            fields:
+              - { label: "Catégorie", name: "category", widget: "select", options: [
+                  { label: "Portraits", value: "portraits" },
+                  { label: "Couples", value: "couples" },
+                  { label: "Entreprises & commerces", value: "entreprises" },
+                  { label: "Événements", value: "evenements" },
+                ] }
+              - { label: "Photo", name: "image", widget: "image" }
+              - { label: "Description (texte alternatif)", name: "alt", widget: "string" }
+
+  - name: "settings"
+    label: "Accueil"
+    files:
+      - name: "settings"
+        label: "Contenu de la page d'accueil"
+        file: "content/settings.json"
+        fields:
+          - label: "Photo de couverture (hero)"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Photo", name: "image", widget: "image" }
+              - { label: "Description (texte alternatif)", name: "alt", widget: "string" }
+              - { label: "Petite ligne au-dessus du titre", name: "eyebrow", widget: "string" }
+              - { label: "Titre — 1ère ligne", name: "title_line1", widget: "string" }
+              - { label: "Titre — 2ème ligne", name: "title_line2", widget: "string" }
+              - { label: "Sous-titre", name: "subtitle", widget: "text" }
+          - label: "Section « Mon approche »"
+            name: "approach"
+            widget: "object"
+            fields:
+              - { label: "Photo (toi)", name: "image", widget: "image" }
+              - { label: "Description (texte alternatif)", name: "alt", widget: "string" }
+              - { label: "Petite ligne au-dessus du titre", name: "eyebrow", widget: "string" }
+              - { label: "Titre", name: "title", widget: "string" }
+              - { label: "Texte", name: "text", widget: "text" }
+          - label: "Vignettes des 4 catégories"
+            name: "teasers"
+            widget: "list"
+            summary: "{{fields.label}}"
+            fields:
+              - { label: "Catégorie", name: "category", widget: "select", options: [
+                  { label: "Portraits", value: "portraits" },
+                  { label: "Couples", value: "couples" },
+                  { label: "Entreprises & commerces", value: "entreprises" },
+                  { label: "Événements", value: "evenements" },
+                ] }
+              - { label: "Titre affiché", name: "label", widget: "string" }
+              - { label: "Photo", name: "image", widget: "image" }
+              - { label: "Description (texte alternatif)", name: "alt", widget: "string" }
+
+  - name: "services"
+    label: "Tarifs"
+    files:
+      - name: "services"
+        label: "Formules et tarifs"
+        file: "content/services.json"
+        fields:
+          - label: "Formules"
+            name: "plans"
+            widget: "list"
+            summary: "{{fields.title}} — {{fields.price}}"
+            fields:
+              - { label: "Nom de la formule", name: "title", widget: "string" }
+              - { label: "Prix (ex: 100€ ou Devis)", name: "price", widget: "string" }
+              - { label: "Complément après le prix (optionnel, ex: personnalisé)", name: "price_suffix", widget: "string", required: false }
+              - { label: "Mettre en avant (bordure colorée)", name: "highlight", widget: "boolean", default: false }
+              - { label: "Badge (optionnel, ex: Le plus demandé)", name: "badge", widget: "string", required: false }
+              - label: "Caractéristiques"
+                name: "features"
+                widget: "list"
+                field: { label: "Ligne", name: "feature", widget: "string" }
+              - { label: "Texte du bouton", name: "cta_label", widget: "string" }
+          - label: "Note commune (sous les formules)"
+            name: "note"
+            widget: "text"
+
+  - name: "contact"
+    label: "Contact"
+    files:
+      - name: "contact"
+        label: "Coordonnées"
+        file: "content/contact.json"
+        fields:
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Pseudo Instagram (avec @)", name: "instagram_handle", widget: "string" }
+          - { label: "Lien Instagram complet", name: "instagram_url", widget: "string" }
+          - { label: "Zone d'intervention", name: "zone", widget: "string" }
+          - { label: "Délai de réponse", name: "response_delay", widget: "string" }

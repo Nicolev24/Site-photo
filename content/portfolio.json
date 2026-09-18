@@ -1,0 +1,20 @@
+{
+  "items": [
+  { "category": "portraits", "image": "images/portfolio/portraits/img1.jpg", "alt": "Portrait devant une voiture, en extérieur" },
+  { "category": "couples", "image": "images/portfolio/couples/img1.jpg", "alt": "Mariés avec leur chien sur l'herbe" },
+  { "category": "entreprises", "image": "images/portfolio/entreprises/img1.jpg", "alt": "Séance chez un barbier" },
+  { "category": "evenements", "image": "images/portfolio/evenements/img1.jpg", "alt": "Mariage, mariés entourés de leurs témoins" },
+  { "category": "portraits", "image": "images/portfolio/portraits/img2.jpg", "alt": "Portrait noir et blanc devant un mur en pierre" },
+  { "category": "couples", "image": "images/portfolio/couples/img2.jpg", "alt": "Mariée s'avançant vers le marié" },
+  { "category": "entreprises", "image": "images/portfolio/entreprises/img2.jpg", "alt": "Réunion sur un chantier" },
+  { "category": "evenements", "image": "images/portfolio/evenements/img2.jpg", "alt": "Cortège de mariage dans une cour" },
+  { "category": "portraits", "image": "images/portfolio/portraits/img3.jpg", "alt": "Portrait de deux amies assises sur des marches" },
+  { "category": "couples", "image": "images/portfolio/couples/img3.jpg", "alt": "Mariés devant un château" },
+  { "category": "entreprises", "image": "images/portfolio/entreprises/img3.jpg", "alt": "Manutention en entrepôt" },
+  { "category": "evenements", "image": "images/portfolio/evenements/img3.jpg", "alt": "Première danse des mariés devant les invités" },
+  { "category": "portraits", "image": "images/portfolio/portraits/img4.jpg", "alt": "Portrait en manteau devant un mur sombre" },
+  { "category": "couples", "image": "images/portfolio/couples/img4.jpg", "alt": "Mariés enlacés, front contre front" },
+  { "category": "entreprises", "image": "images/portfolio/entreprises/img4.jpg", "alt": "Équipe sur un chantier" },
+  { "category": "evenements", "image": "images/portfolio/evenements/img4.jpg", "alt": "Mariés marchant vers le château" }
+  ]
+}

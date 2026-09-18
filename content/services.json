@@ -1,0 +1,32 @@
+{
+  "plans": [
+    {
+      "title": "Formule découverte",
+      "price": "100€",
+      "price_suffix": "",
+      "highlight": false,
+      "badge": "",
+      "features": ["Environ 1h de séance", "1 lieu", "Galerie privée en ligne"],
+      "cta_label": "Choisir cette formule"
+    },
+    {
+      "title": "Formule complète",
+      "price": "200€",
+      "price_suffix": "",
+      "highlight": true,
+      "badge": "Le plus demandé",
+      "features": ["2h à 3h de séance", "Plusieurs lieux possibles", "Galerie privée en ligne"],
+      "cta_label": "Choisir cette formule"
+    },
+    {
+      "title": "Sur devis",
+      "price": "Devis",
+      "price_suffix": "personnalisé",
+      "highlight": false,
+      "badge": "",
+      "features": ["Événements, journées complètes, entreprises...", "Durée et lieux adaptés à votre besoin", "Galerie privée en ligne"],
+      "cta_label": "Demander un devis"
+    }
+  ],
+  "note": "Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées."
+}

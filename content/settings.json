@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "image": "images/hero.jpg",
+    "alt": "Mariés s'embrassant sur un pont, devant un château",
+    "eyebrow": "Photographe indépendant · Ath & environs",
+    "title_line1": "Des photos naturelles,",
+    "title_line2": "qui vous ressemblent.",
+    "subtitle": "Portraits, couples, commerces locaux et événements — un style épuré, chaleureux, sans surenchère de retouche."
+  },
+  "approach": {
+    "image": "images/photographe.jpg",
+    "alt": "Nicolas Leveugle, photographe",
+    "eyebrow": "Mon approche",
+    "title": "Capturer le naturel, pas la performance.",
+    "text": "J'aime les photos qui respirent : une lumière franche, de vrais sourires, peu de retouche. Que ce soit pour un portrait, un couple, une boutique ou un événement, mon objectif est simple — que la photo vous ressemble."
+  },
+  "teasers": [
+    { "category": "portraits", "label": "Portraits", "image": "images/teaser-portraits.jpg", "alt": "Aperçu portraits" },
+    { "category": "couples", "label": "Couples", "image": "images/teaser-couples.jpg", "alt": "Aperçu couples" },
+    { "category": "entreprises", "label": "Entreprises & commerces", "image": "images/teaser-entreprises.jpg", "alt": "Aperçu entreprises et commerces" },
+    { "category": "evenements", "label": "Événements", "image": "images/teaser-evenements.jpg", "alt": "Aperçu événements" }
+  ]
+}
