@@ -13,17 +13,22 @@ js/main.js               Menu mobile + logique de filtre du portfolio
 js/render.js              Charge le contenu depuis content/*.json et construit le DOM
 content/*.json             Contenu éditable (voir ci-dessous)
 images/                     Toutes les photos
-admin/                        Interface d'administration (Decap CMS)
-cms-oauth-worker/               Proxy de connexion pour l'admin (voir son README)
+admin/                        Interface d'administration maison
 ```
 
 ## Modifier le contenu
 
-**Le plus simple : via l'admin.** Va sur `https://nicolasleveugle.be/admin/`,
-connecte-toi avec ton compte GitHub, et modifie textes/photos/tarifs
-directement depuis un formulaire. Chaque sauvegarde republie le site
-automatiquement (voir `cms-oauth-worker/README.md` pour la mise en place
-initiale de la connexion, à faire une seule fois).
+**Le plus simple : via l'admin.** Va sur `https://nicolasleveugle.be/admin/`
+et connecte-toi avec un token d'accès personnel GitHub (la page explique
+comment en créer un — aucun compte tiers requis). Tu peux ensuite modifier
+textes/photos/tarifs directement depuis un formulaire ; chaque sauvegarde
+republie le site automatiquement (~1 min).
+
+C'est une page 100% codée pour ce site (`admin/app.js`), sans dépendance à
+un CMS ou service externe : elle appelle directement l'API GitHub depuis
+le navigateur pour lire/écrire les fichiers `content/*.json` et uploader
+les photos. Le token reste uniquement dans le navigateur de la personne
+connectée.
 
 **Sinon, à la main**, tout le contenu éditable vit dans `content/` :
 - `content/portfolio.json` — photos du portfolio (catégorie, image, description)

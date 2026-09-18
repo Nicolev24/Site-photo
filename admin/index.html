@@ -1,12 +1,113 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Administration — Nicolas Leveugle Photographie</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Administration — Nicolas Leveugle Photographie</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="admin.css" />
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">Nicolas Leveugle</a>
+    <span class="admin-badge">Administration</span>
+  </div>
+</header>
+
+<!-- Écran de connexion -->
+<section id="login-screen" class="container admin-section">
+  <h1>Connexion</h1>
+  <p class="lead">Colle ton token d'accès personnel GitHub pour modifier le contenu du site.</p>
+  <div class="admin-field">
+    <label for="token-input">Token GitHub</label>
+    <input type="password" id="token-input" placeholder="github_pat_..." autocomplete="off" />
+  </div>
+  <button id="login-btn" class="btn btn-primary">Se connecter</button>
+  <p id="login-error" class="admin-error" hidden></p>
+  <details class="admin-help">
+    <summary>Comment obtenir ce token ?</summary>
+    <ol>
+      <li>Va sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+      <li><strong>Repository access</strong> → "Only select repositories" → choisis <code>Nicolev24/Site-photo</code></li>
+      <li><strong>Permissions</strong> → "Repository permissions" → <strong>Contents</strong> → "Read and write"</li>
+      <li>Clique <strong>Generate token</strong>, copie-le (il ne sera affiché qu'une fois) et colle-le ci-dessus</li>
+    </ol>
+    <p>Le token reste uniquement dans ton navigateur, il n'est jamais envoyé ailleurs qu'à GitHub. Tu peux le révoquer à tout moment depuis cette même page GitHub.</p>
+  </details>
+</section>
+
+<!-- Application -->
+<section id="app-screen" class="container admin-section" hidden>
+  <div class="admin-topbar">
+    <nav class="admin-tabs">
+      <button class="admin-tab active" data-tab="portfolio">Portfolio</button>
+      <button class="admin-tab" data-tab="accueil">Accueil</button>
+      <button class="admin-tab" data-tab="tarifs">Tarifs</button>
+      <button class="admin-tab" data-tab="contact">Contact</button>
+    </nav>
+    <div class="admin-topbar-actions">
+      <a href="../index.html" target="_blank" class="btn btn-outline btn-small">Voir le site</a>
+      <button id="logout-btn" class="btn btn-outline btn-small">Déconnexion</button>
+    </div>
+  </div>
+
+  <div id="admin-status" class="admin-status" hidden></div>
+
+  <div id="panel-portfolio" class="admin-panel">
+    <h2>Photos du portfolio</h2>
+    <p class="lead">Ajoute, modifie, réordonne ou supprime les photos de chaque catégorie.</p>
+    <div id="portfolio-list" class="admin-list"></div>
+    <button id="portfolio-add" class="btn btn-outline">+ Ajouter une photo</button>
+    <div class="admin-save-row">
+      <button id="portfolio-save" class="btn btn-primary">Enregistrer le portfolio</button>
+    </div>
+  </div>
+
+  <div id="panel-accueil" class="admin-panel" hidden>
+    <h2>Page d'accueil</h2>
+
+    <h3>Photo de couverture</h3>
+    <div class="admin-card" id="hero-card"></div>
+
+    <h3>Section « Mon approche »</h3>
+    <div class="admin-card" id="approach-card"></div>
+
+    <h3>Vignettes des 4 catégories</h3>
+    <div id="teasers-list" class="admin-list"></div>
+
+    <div class="admin-save-row">
+      <button id="accueil-save" class="btn btn-primary">Enregistrer l'accueil</button>
+    </div>
+  </div>
+
+  <div id="panel-tarifs" class="admin-panel" hidden>
+    <h2>Formules et tarifs</h2>
+    <div id="plans-list" class="admin-list"></div>
+    <button id="plans-add" class="btn btn-outline">+ Ajouter une formule</button>
+
+    <h3>Note commune (sous les formules)</h3>
+    <div class="admin-field">
+      <textarea id="services-note" rows="2"></textarea>
+    </div>
+
+    <div class="admin-save-row">
+      <button id="tarifs-save" class="btn btn-primary">Enregistrer les tarifs</button>
+    </div>
+  </div>
+
+  <div id="panel-contact" class="admin-panel" hidden>
+    <h2>Coordonnées</h2>
+    <div class="admin-card" id="contact-card"></div>
+    <div class="admin-save-row">
+      <button id="contact-save" class="btn btn-primary">Enregistrer les coordonnées</button>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
 </body>
 </html>

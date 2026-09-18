@@ -1,0 +1,252 @@
+.admin-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+  background: var(--color-bg-alt);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.admin-section {
+  padding: 48px 24px 96px;
+  max-width: 780px;
+}
+
+.admin-field {
+  margin: 16px 0;
+}
+
+.admin-field label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.admin-field input[type="text"],
+.admin-field input[type="password"],
+.admin-field select,
+.admin-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.admin-field textarea {
+  resize: vertical;
+}
+
+.admin-error {
+  color: #b3261e;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+.admin-help {
+  margin-top: 32px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+
+.admin-help summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-help ol {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.admin-help li {
+  margin-bottom: 6px;
+}
+
+.admin-help code {
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* App shell */
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-tab {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.admin-tab.active {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: #fff;
+}
+
+.admin-topbar-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-small {
+  padding: 9px 16px;
+  font-size: 0.85rem;
+}
+
+.admin-status {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+}
+
+.admin-status.success {
+  background: #e6f4ea;
+  color: #1e7b34;
+}
+
+.admin-status.error {
+  background: #fbe9e7;
+  color: #b3261e;
+}
+
+.admin-status.loading {
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+}
+
+.admin-panel h2 {
+  margin-bottom: 4px;
+}
+
+.admin-panel h3 {
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.admin-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #fff;
+}
+
+.admin-card-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.admin-card-preview {
+  flex-shrink: 0;
+  width: 110px;
+  height: 110px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.admin-card-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-card-fields {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-card-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-card-toolbar-left {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-icon-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.admin-icon-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.admin-icon-btn.danger:hover {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
+.admin-save-row {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-checkbox-row input {
+  width: auto;
+}
+
+@media (max-width: 600px) {
+  .admin-card-row {
+    flex-direction: column;
+  }
+  .admin-card-preview {
+    width: 100%;
+    height: 160px;
+  }
+}
