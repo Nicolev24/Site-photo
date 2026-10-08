@@ -60,6 +60,8 @@ async function renderHomeHero() {
       const img = document.createElement("img");
       img.src = teaser.image;
       img.alt = teaser.alt;
+      img.loading = "lazy";
+      img.decoding = "async";
 
       const label = document.createElement("span");
       label.className = "teaser-label";
@@ -87,6 +89,8 @@ async function renderPortfolioGallery() {
     const img = document.createElement("img");
     img.src = item.image;
     img.alt = item.alt;
+    img.loading = "lazy";
+    img.decoding = "async";
 
     div.appendChild(img);
     gallery.appendChild(div);
@@ -121,7 +125,7 @@ async function renderServices() {
       html += `<li>${escapeHtml(feature)}</li>`;
     });
     html += "</ul>";
-    const btnClass = plan.highlight ? "btn btn-primary" : "btn btn-outline";
+    const btnClass = plan.highlight ? "btn btn-primary" : "btn-secondary";
     html += `<a href="contact.html" class="${btnClass}">${escapeHtml(plan.cta_label)}</a>`;
 
     card.innerHTML = html;
