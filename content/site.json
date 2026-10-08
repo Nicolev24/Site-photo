@@ -1,0 +1,8 @@
+{
+  "pages": [
+    { "slug": "index", "title": "Accueil" },
+    { "slug": "portfolio", "title": "Portfolio" },
+    { "slug": "services", "title": "Services & tarifs" },
+    { "slug": "contact", "title": "Contact" }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "seo": {
+    "title": "Portfolio — Nicolas Leveugle Photographie",
+    "description": "Portfolio photo : portraits, couples, entreprises et commerces locaux, événements. Style naturel et chaleureux.",
+    "og_image": "images/teaser-portraits.jpg"
+  },
+  "sections": [
+    {
+      "id": "header-1",
+      "type": "texte",
+      "data": {
+        "eyebrow": "Portfolio",
+        "title": "Un aperçu de mon travail",
+        "text": "Une sélection de séances, classées par catégorie. Photos naturelles, lumière franche, peu de retouche."
+      }
+    },
+    {
+      "id": "galerie-1",
+      "type": "portfolio_galerie",
+      "data": {}
+    },
+    {
+      "id": "cta-1",
+      "type": "cta",
+      "data": {
+        "title": "Votre projet, en photos ?",
+        "text": "Réservons un créneau qui vous ressemble.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
+      }
+    }
+  ]
+}

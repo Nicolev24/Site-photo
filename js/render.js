@@ -1,177 +1,122 @@
-// Charge le contenu depuis les fichiers content/*.json (édités via /admin) et
-// construit le DOM correspondant. Un seul fichier partagé par les 4 pages :
-// chaque fonction ne fait rien si ses éléments cibles ne sont pas présents.
+// Orchestrateur : détecte la page courante, charge navigation/apparence/
+// contenu depuis content/*.json, construit le header/footer, puis délègue
+// le rendu des sections au moteur partagé js/sections-renderer.js.
 
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str == null ? "" : String(str);
-  return div.innerHTML;
+function currentSlug() {
+  const file = window.location.pathname.split("/").pop();
+  if (!file || file === "") return "index";
+  return file.replace(/\.html$/, "");
 }
 
-async function fetchJson(path) {
-  const res = await fetch(path, { cache: "no-cache" });
-  if (!res.ok) throw new Error(`Impossible de charger ${path} (${res.status})`);
+function isSameHref(href, slug) {
+  return href.replace(/\.html$/, "") === slug;
+}
+
+function applyAppearance(appearance) {
+  const root = document.documentElement;
+  if (appearance.accent_color) root.style.setProperty("--couleur-accent", appearance.accent_color);
+  if (appearance.accent_color_dark) root.style.setProperty("--couleur-accent-fonce", appearance.accent_color_dark);
+
+  document.querySelectorAll(".js-logo").forEach((el) => {
+    if (appearance.logo_image) {
+      el.innerHTML = `<img src="${appearance.logo_image}" alt="${appearance.logo_text || ""}" style="height:28px;display:block" />`;
+    } else {
+      el.textContent = appearance.logo_text || "";
+    }
+  });
+
+  if (appearance.favicon_image) {
+    let link = document.querySelector('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = appearance.favicon_image;
+  }
+}
+
+function buildNav(navigation, slug) {
+  const navList = document.getElementById("nav-links");
+  if (navList) {
+    navList.innerHTML = navigation.nav_links
+      .map((link) => {
+        const current = isSameHref(link.href, slug) ? ' aria-current="page"' : "";
+        return `<li><a href="${link.href}"${current}>${link.label}</a></li>`;
+      })
+      .join("");
+  }
+
+  const cta = document.getElementById("header-cta");
+  if (cta && navigation.cta_button) {
+    cta.href = navigation.cta_button.href;
+    cta.textContent = navigation.cta_button.label;
+    if (isSameHref(navigation.cta_button.href, slug)) cta.setAttribute("aria-current", "page");
+  }
+}
+
+async function buildFooter(navigation) {
+  const footerLinks = document.getElementById("footer-links");
+  if (!footerLinks) return;
+
+  let html = navigation.footer_links.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
+
+  try {
+    const contact = await fetchContactForFooter();
+    if (contact) {
+      html += `<li><a href="${contact.instagram_url}" target="_blank" rel="noopener">${contact.instagram_handle || "Instagram"}</a></li>`;
+    }
+  } catch (e) {
+    // silencieux : le footer reste utilisable sans ce lien
+  }
+
+  (navigation.footer_legal_links || []).forEach((l) => {
+    html += `<li><a href="${l.href}">${l.label}</a></li>`;
+  });
+
+  footerLinks.innerHTML = html;
+
+  const copy = document.getElementById("footer-copy");
+  if (copy) {
+    copy.innerHTML = `© <span id="year"></span> ${navigation.copyright_text}`;
+    const year = document.getElementById("year");
+    if (year) year.textContent = new Date().getFullYear();
+  }
+}
+
+async function fetchContactForFooter() {
+  const res = await fetch("content/contact.json", { cache: "no-cache" });
+  if (!res.ok) return null;
   return res.json();
 }
 
-function setInstagramLinks(instagramUrl, instagramHandle) {
-  document.querySelectorAll(".js-instagram-link").forEach((el) => {
-    el.href = instagramUrl;
-    if (el.dataset.showHandle === "true") el.textContent = instagramHandle;
-  });
-}
-
-function setMailtoLinks(email) {
-  document.querySelectorAll(".js-mailto-link").forEach((el) => {
-    el.href = `mailto:${email}`;
-    if (el.dataset.showEmail === "true") el.textContent = email;
-  });
-}
-
-async function renderHomeHero() {
-  const heroImg = document.getElementById("hero-img");
-  if (!heroImg) return;
-
-  const settings = await fetchJson("content/settings.json");
-  const hero = settings.hero;
-
-  heroImg.src = hero.image;
-  heroImg.alt = hero.alt;
-  document.getElementById("hero-eyebrow").textContent = hero.eyebrow;
-  document.getElementById("hero-title").innerHTML =
-    `${escapeHtml(hero.title_line1)}<br>${escapeHtml(hero.title_line2)}`;
-  document.getElementById("hero-subtitle").textContent = hero.subtitle;
-
-  const approach = settings.approach;
-  document.getElementById("approach-img").src = approach.image;
-  document.getElementById("approach-img").alt = approach.alt;
-  document.getElementById("approach-eyebrow").textContent = approach.eyebrow;
-  document.getElementById("approach-title").textContent = approach.title;
-  document.getElementById("approach-text").textContent = approach.text;
-
-  const teaserGrid = document.getElementById("teaser-grid");
-  if (teaserGrid) {
-    teaserGrid.innerHTML = "";
-    settings.teasers.forEach((teaser) => {
-      const a = document.createElement("a");
-      a.className = "teaser-card";
-      a.href = `portfolio.html#${teaser.category}`;
-
-      const img = document.createElement("img");
-      img.src = teaser.image;
-      img.alt = teaser.alt;
-      img.loading = "lazy";
-      img.decoding = "async";
-
-      const label = document.createElement("span");
-      label.className = "teaser-label";
-      label.textContent = teaser.label;
-
-      a.appendChild(img);
-      a.appendChild(label);
-      teaserGrid.appendChild(a);
-    });
+function applySeo(seo) {
+  if (!seo) return;
+  if (seo.title) document.title = seo.title;
+  if (seo.description) {
+    let meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", seo.description);
   }
 }
 
-async function renderPortfolioGallery() {
-  const gallery = document.querySelector(".gallery");
-  if (!gallery) return;
+async function init() {
+  const slug = currentSlug();
 
-  const data = await fetchJson("content/portfolio.json");
-  gallery.innerHTML = "";
+  const [navigation, appearance, page] = await Promise.all([
+    fetch("content/navigation.json", { cache: "no-cache" }).then((r) => r.json()),
+    fetch("content/appearance.json", { cache: "no-cache" }).then((r) => r.json()),
+    fetch(`content/pages/${slug}.json`, { cache: "no-cache" }).then((r) => r.json()),
+  ]);
 
-  data.items.forEach((item) => {
-    const div = document.createElement("div");
-    div.className = "gallery-item";
-    div.dataset.category = item.category;
+  applyAppearance(appearance);
+  buildNav(navigation, slug);
+  buildFooter(navigation);
+  applySeo(page.seo);
 
-    const img = document.createElement("img");
-    img.src = item.image;
-    img.alt = item.alt;
-    img.loading = "lazy";
-    img.decoding = "async";
-
-    div.appendChild(img);
-    gallery.appendChild(div);
-  });
-
-  if (typeof window.initPortfolioFilters === "function") {
-    window.initPortfolioFilters();
-  }
-}
-
-async function renderServices() {
-  const grid = document.querySelector(".pricing-grid");
-  if (!grid) return;
-
-  const data = await fetchJson("content/services.json");
-  grid.innerHTML = "";
-
-  data.plans.forEach((plan) => {
-    const card = document.createElement("div");
-    card.className = plan.highlight ? "price-card highlight" : "price-card";
-
-    let html = "";
-    if (plan.badge) {
-      html += `<span class="badge">${escapeHtml(plan.badge)}</span>`;
-    }
-    html += `<h3>${escapeHtml(plan.title)}</h3>`;
-    html += `<div class="price-tag">${escapeHtml(plan.price)}`;
-    if (plan.price_suffix) html += `<span> ${escapeHtml(plan.price_suffix)}</span>`;
-    html += `</div>`;
-    html += "<ul>";
-    plan.features.forEach((feature) => {
-      html += `<li>${escapeHtml(feature)}</li>`;
-    });
-    html += "</ul>";
-    const btnClass = plan.highlight ? "btn btn-primary" : "btn-secondary";
-    html += `<a href="contact.html" class="${btnClass}">${escapeHtml(plan.cta_label)}</a>`;
-
-    card.innerHTML = html;
-    grid.appendChild(card);
-  });
-
-  const noteEl = document.getElementById("services-note-text");
-  if (noteEl) noteEl.textContent = data.note;
-}
-
-async function renderContact() {
-  const list = document.querySelector(".contact-info-list");
-  const contact = await fetchJson("content/contact.json");
-
-  setMailtoLinks(contact.email);
-  setInstagramLinks(contact.instagram_url, contact.instagram_handle);
-
-  if (list) {
-    list.innerHTML = `
-      <li>Email<br><a href="mailto:${escapeHtml(contact.email)}" class="js-mailto-link" data-show-email="true">${escapeHtml(contact.email)}</a></li>
-      <li>Instagram<br><a href="${escapeHtml(contact.instagram_url)}" target="_blank" rel="noopener" class="js-instagram-link" data-show-handle="true">${escapeHtml(contact.instagram_handle)}</a></li>
-      <li>Zone d'intervention<br>${escapeHtml(contact.zone)}</li>
-      <li>Délai de réponse<br>${escapeHtml(contact.response_delay)}</li>
-    `;
-  }
-
-  const form = document.getElementById("contact-form");
-  if (form) form.action = `mailto:${contact.email}`;
-}
-
-async function renderFooterLinks() {
-  // Sur les pages sans bloc contact dédié (accueil, portfolio, services),
-  // seul le lien Instagram du footer doit être mis à jour.
-  if (document.querySelector(".contact-info-list")) return; // déjà géré par renderContact
-  try {
-    const contact = await fetchJson("content/contact.json");
-    setInstagramLinks(contact.instagram_url, contact.instagram_handle);
-  } catch (e) {
-    // silencieux : le lien garde sa valeur par défaut dans le HTML si le fetch échoue
-  }
+  const root = document.getElementById("sections-root");
+  if (root) await renderSections(root, page.sections, "");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderHomeHero().catch(console.error);
-  renderPortfolioGallery().catch(console.error);
-  renderServices().catch(console.error);
-  renderContact().catch(console.error);
-  renderFooterLinks().catch(console.error);
+  init().catch((err) => console.error("Erreur de chargement de la page", err));
 });

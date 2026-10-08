@@ -1,0 +1,64 @@
+{
+  "seo": {
+    "title": "Services & tarifs — Nicolas Leveugle Photographie",
+    "description": "Formules photo à Ath : découverte 100€, formule complète 200€, ou devis personnalisé pour événements et entreprises.",
+    "og_image": "images/hero.jpg"
+  },
+  "sections": [
+    {
+      "id": "header-1",
+      "type": "texte",
+      "data": {
+        "eyebrow": "Services & tarifs",
+        "title": "Des formules simples et claires",
+        "text": "Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète."
+      }
+    },
+    {
+      "id": "tarifs-1",
+      "type": "tarifs",
+      "data": {
+        "plans": [
+          {
+            "title": "Formule découverte",
+            "price": "100€",
+            "price_suffix": "",
+            "highlight": false,
+            "badge": "",
+            "features": ["Environ 1h de séance", "1 lieu", "Galerie privée en ligne"],
+            "cta_label": "Choisir cette formule"
+          },
+          {
+            "title": "Formule complète",
+            "price": "200€",
+            "price_suffix": "",
+            "highlight": true,
+            "badge": "Le plus demandé",
+            "features": ["2h à 3h de séance", "Plusieurs lieux possibles", "Galerie privée en ligne"],
+            "cta_label": "Choisir cette formule"
+          },
+          {
+            "title": "Sur devis",
+            "price": "Devis",
+            "price_suffix": "personnalisé",
+            "highlight": false,
+            "badge": "",
+            "features": ["Événements, journées complètes, entreprises...", "Durée et lieux adaptés à votre besoin", "Galerie privée en ligne"],
+            "cta_label": "Demander un devis"
+          }
+        ],
+        "note": "Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées."
+      }
+    },
+    {
+      "id": "cta-1",
+      "type": "cta",
+      "data": {
+        "title": "Prêt·e à réserver ?",
+        "text": "Dites-m'en un peu plus sur votre projet.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
+      }
+    }
+  ]
+}

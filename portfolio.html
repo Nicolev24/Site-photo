@@ -5,72 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Portfolio — Nicolas Leveugle Photographie</title>
 <meta name="description" content="Portfolio photo : portraits, couples, entreprises et commerces locaux, événements. Style naturel et chaleureux." />
+<meta property="og:title" content="Portfolio — Nicolas Leveugle Photographie" />
+<meta property="og:description" content="Portfolio photo : portraits, couples, entreprises et commerces locaux, événements. Style naturel et chaleureux." />
+<meta property="og:image" content="images/teaser-portraits.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <header class="site-header">
   <div class="container">
-    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
     <div class="header-nav">
       <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav-links">
-        <li><a href="index.html">Accueil</a></li>
-        <li><a href="portfolio.html" aria-current="page">Portfolio</a></li>
-        <li><a href="services.html">Services &amp; tarifs</a></li>
-      </ul>
-      <a href="contact.html" class="btn btn-primary btn-small">Réserver</a>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
     </div>
   </div>
 </header>
 
-<section class="page-header">
-  <div class="container">
-    <span class="eyebrow">Portfolio</span>
-    <h1>Un aperçu de mon travail</h1>
-    <p class="lead">Une sélection de séances, classées par catégorie. Photos naturelles, lumière franche, peu de retouche.</p>
-
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">Tous</button>
-      <button class="filter-btn" data-filter="portraits">Portraits</button>
-      <button class="filter-btn" data-filter="couples">Couples</button>
-      <button class="filter-btn" data-filter="entreprises">Entreprises &amp; commerces</button>
-      <button class="filter-btn" data-filter="evenements">Événements</button>
-    </div>
-  </div>
-</section>
-
-<section style="padding-top:0">
-  <div class="container">
-    <div class="gallery"></div>
-  </div>
-</section>
-
-<div class="cta-band">
-  <h2>Votre projet, en photos ?</h2>
-  <p>Réservons un créneau qui vous ressemble.</p>
-  <a href="contact.html" class="btn btn-primary">Me contacter</a>
-</div>
+<main id="sections-root"></main>
 
 <footer class="site-footer">
   <div class="container footer-row">
-    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
-    <ul class="footer-links">
-      <li><a href="portfolio.html">Portfolio</a></li>
-      <li><a href="services.html">Services &amp; tarifs</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener" class="js-instagram-link">Instagram</a></li>
-    </ul>
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
   </div>
   <div class="container">
-    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
   </div>
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/sections-renderer.js"></script>
 <script src="js/render.js"></script>
-<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>

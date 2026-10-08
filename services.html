@@ -5,68 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Services &amp; tarifs — Nicolas Leveugle Photographie</title>
 <meta name="description" content="Formules photo à Ath : découverte 100€, formule complète 200€, ou devis personnalisé pour événements et entreprises." />
+<meta property="og:title" content="Services &amp; tarifs — Nicolas Leveugle Photographie" />
+<meta property="og:description" content="Formules photo à Ath : découverte 100€, formule complète 200€, ou devis personnalisé pour événements et entreprises." />
+<meta property="og:image" content="images/hero.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <header class="site-header">
   <div class="container">
-    <a href="index.html" class="logo">Nicolas Leveugle</a>
+    <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
     <div class="header-nav">
       <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav-links">
-        <li><a href="index.html">Accueil</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="services.html" aria-current="page">Services &amp; tarifs</a></li>
-      </ul>
-      <a href="contact.html" class="btn btn-primary btn-small">Réserver</a>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
     </div>
   </div>
 </header>
 
-<section class="page-header">
-  <div class="container">
-    <span class="eyebrow">Services &amp; tarifs</span>
-    <h1>Des formules simples et claires</h1>
-    <p class="lead">Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète.</p>
-  </div>
-</section>
-
-<section style="padding-top:24px">
-  <div class="container">
-    <div class="pricing-grid"></div>
-
-    <div class="note-box">
-      <p id="services-note-text" style="margin:0"></p>
-    </div>
-  </div>
-</section>
-
-<div class="cta-band">
-  <h2>Prêt·e à réserver ?</h2>
-  <p>Dites-m'en un peu plus sur votre projet.</p>
-  <a href="contact.html" class="btn btn-primary">Me contacter</a>
-</div>
+<main id="sections-root"></main>
 
 <footer class="site-footer">
   <div class="container footer-row">
-    <span class="logo" style="font-size:1.1rem">Nicolas Leveugle</span>
-    <ul class="footer-links">
-      <li><a href="portfolio.html">Portfolio</a></li>
-      <li><a href="services.html">Services &amp; tarifs</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="https://instagram.com/nicolasleveugle.p" target="_blank" rel="noopener" class="js-instagram-link">Instagram</a></li>
-    </ul>
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
   </div>
   <div class="container">
-    <p class="footer-copy" style="margin-top:16px">© <span id="year"></span> Nicolas Leveugle Photographie — Ath, Belgique</p>
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
   </div>
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/sections-renderer.js"></script>
 <script src="js/render.js"></script>
-<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>

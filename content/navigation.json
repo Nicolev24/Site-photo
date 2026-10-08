@@ -1,0 +1,15 @@
+{
+  "nav_links": [
+    { "label": "Accueil", "href": "index.html" },
+    { "label": "Portfolio", "href": "portfolio.html" },
+    { "label": "Services & tarifs", "href": "services.html" }
+  ],
+  "cta_button": { "label": "Réserver", "href": "contact.html" },
+  "footer_links": [
+    { "label": "Portfolio", "href": "portfolio.html" },
+    { "label": "Services & tarifs", "href": "services.html" },
+    { "label": "Contact", "href": "contact.html" }
+  ],
+  "footer_legal_links": [],
+  "copyright_text": "Nicolas Leveugle Photographie — Ath, Belgique"
+}

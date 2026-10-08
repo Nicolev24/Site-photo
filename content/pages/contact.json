@@ -1,0 +1,26 @@
+{
+  "seo": {
+    "title": "Contact — Nicolas Leveugle Photographie",
+    "description": "Contactez Nicolas Leveugle, photographe indépendant à Ath, pour réserver une séance photo.",
+    "og_image": "images/hero.jpg"
+  },
+  "sections": [
+    {
+      "id": "header-1",
+      "type": "texte",
+      "data": {
+        "eyebrow": "Contact",
+        "title": "Parlons de votre projet",
+        "text": "Quelques mots sur ce que vous cherchez, et je vous réponds sous 48h."
+      }
+    },
+    {
+      "id": "contact-1",
+      "type": "contact",
+      "data": {
+        "coordonnees_title": "Coordonnées",
+        "formulaire_title": "Formulaire de contact"
+      }
+    }
+  ]
+}

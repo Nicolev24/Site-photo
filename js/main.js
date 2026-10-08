@@ -8,11 +8,13 @@ if (navToggle && navLinks) {
     navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
   });
 
-  navLinks.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
+  // Délégation : les liens sont injectés après coup par render.js, donc on
+  // écoute les clics sur le conteneur plutôt que sur chaque <a> individuel.
+  navLinks.addEventListener("click", (e) => {
+    if (e.target.tagName === "A") {
       navLinks.classList.remove("open");
       navToggle.setAttribute("aria-expanded", "false");
-    });
+    }
   });
 }
 

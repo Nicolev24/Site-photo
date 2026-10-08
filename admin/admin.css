@@ -269,3 +269,149 @@
     height: 160px;
   }
 }
+
+/* Panneau large pour l'éditeur de pages (sections, SEO) */
+.admin-section-wide {
+  max-width: 960px;
+}
+
+.admin-hint {
+  font-size: 0.82rem;
+  color: var(--couleur-texte-attenue);
+  margin-top: 6px;
+}
+
+.admin-field-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-field-row .admin-field {
+  flex: 1;
+  min-width: 220px;
+}
+
+.admin-color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-color-row input[type="color"] {
+  width: 48px;
+  height: 40px;
+  padding: 2px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  background: #fff;
+  cursor: pointer;
+}
+
+.admin-color-row input[type="text"] {
+  flex: 1;
+}
+
+.admin-appearance-preview {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--couleur-bordure);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: var(--couleur-texte-attenue);
+}
+
+/* Liste des pages (onglet Pages) */
+.admin-page-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-page-card-info strong {
+  display: block;
+}
+
+.admin-page-card-info span {
+  font-size: 0.85rem;
+  color: var(--couleur-texte-attenue);
+}
+
+/* Cartes de section réordonnables par glisser-déposer */
+.admin-section-card {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  background: #fff;
+  overflow: hidden;
+}
+
+.admin-section-card.dragging {
+  opacity: 0.4;
+}
+
+.admin-section-card.drag-over {
+  border-color: var(--couleur-accent);
+  box-shadow: 0 -3px 0 var(--couleur-accent);
+}
+
+.admin-section-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--couleur-fond-alt);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.admin-drag-handle {
+  cursor: grab;
+  color: var(--couleur-texte-attenue);
+  font-size: 1.1rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.admin-section-type-badge {
+  font-weight: 600;
+  font-size: 0.85rem;
+  flex-grow: 1;
+}
+
+.admin-section-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-subcard {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.admin-add-section-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 16px 0 28px;
+  flex-wrap: wrap;
+}
+
+.admin-add-section-row select {
+  padding: 12px 14px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  font-family: var(--police-texte);
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.admin-save-row-split {
+  display: flex;
+  gap: 12px;
+}

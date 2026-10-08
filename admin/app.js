@@ -15,6 +15,62 @@ const CATEGORIES = [
   { value: "evenements", label: "Événements" },
 ];
 
+const SECTION_TYPES = [
+  {
+    value: "hero",
+    label: "Bannière d'accueil (hero)",
+    defaultData: () => ({
+      image: "", alt: "", eyebrow: "", title_line1: "", title_line2: "",
+      subtitle: "", button_label: "", button_href: "",
+    }),
+  },
+  {
+    value: "texte_image",
+    label: "Texte + image",
+    defaultData: () => ({
+      eyebrow: "", title: "", text: "", image: "", alt: "",
+      image_side: "droite", button_label: "", button_href: "",
+    }),
+  },
+  {
+    value: "texte",
+    label: "Texte (en-tête de page)",
+    defaultData: () => ({ eyebrow: "", title: "", text: "" }),
+  },
+  {
+    value: "galerie_categories",
+    label: "Galerie par catégories (4 vignettes)",
+    defaultData: () => ({
+      eyebrow: "", title: "", text: "",
+      teasers: CATEGORIES.map((c) => ({ category: c.value, label: c.label, image: "", alt: "" })),
+    }),
+  },
+  {
+    value: "portfolio_galerie",
+    label: "Galerie portfolio (filtrable)",
+    defaultData: () => ({}),
+  },
+  {
+    value: "tarifs",
+    label: "Tarifs / formules",
+    defaultData: () => ({ plans: [], note: "" }),
+  },
+  {
+    value: "cta",
+    label: "Bandeau d'appel à l'action",
+    defaultData: () => ({ title: "", text: "", button_label: "", button_href: "" }),
+  },
+  {
+    value: "contact",
+    label: "Coordonnées + formulaire de contact",
+    defaultData: () => ({ coordonnees_title: "Coordonnées", formulaire_title: "Formulaire de contact" }),
+  },
+];
+
+function sectionTypeLabel(type) {
+  return SECTION_TYPES.find((t) => t.value === type)?.label || type;
+}
+
 // ---------- Aides GitHub API ----------
 
 function utf8ToBase64(str) {
@@ -65,6 +121,26 @@ async function putJsonFile(path, obj, message, sha) {
   });
 }
 
+async function getRawFile(path) {
+  const data = await githubRequest(
+    `/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`
+  );
+  const text = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ""))));
+  return { sha: data.sha, text };
+}
+
+async function putRawFile(path, text, message, sha) {
+  return githubRequest(`/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      message,
+      content: utf8ToBase64(text),
+      branch: BRANCH,
+      sha,
+    }),
+  });
+}
+
 function sanitizeFilename(name) {
   return name.toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/-+/g, "-");
 }
@@ -94,6 +170,187 @@ async function uploadImage(file, folder = "images/uploads") {
 
 function sitePath(p) {
   return p ? `../${p}` : "";
+}
+
+// ---------- Aides génériques ----------
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str == null ? "" : String(str);
+  return div.innerHTML;
+}
+
+function escapeHtmlAttr(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function slugify(str) {
+  return str
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function categoryOptionsHtml(selected) {
+  return CATEGORIES.map(
+    (c) => `<option value="${c.value}" ${c.value === selected ? "selected" : ""}>${c.label}</option>`
+  ).join("");
+}
+
+function swapAdjacent(array, i, j) {
+  [array[i], array[j]] = [array[j], array[i]];
+}
+
+// Réordonnancement pour le glisser-déposer : `to` est la position (dans le
+// tableau avant retrait) devant laquelle insérer l'élément déplacé.
+function reorderArray(array, from, to) {
+  const insertAt = to > from ? to - 1 : to;
+  const [moved] = array.splice(from, 1);
+  array.splice(insertAt, 0, moved);
+}
+
+function enableDragReorder(listEl, array, rerender) {
+  let dragIndex = null;
+  Array.from(listEl.children).forEach((card, i) => {
+    card.draggable = true;
+    card.addEventListener("dragstart", () => {
+      dragIndex = i;
+      card.classList.add("dragging");
+    });
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+    card.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      card.classList.add("drag-over");
+    });
+    card.addEventListener("dragleave", () => card.classList.remove("drag-over"));
+    card.addEventListener("drop", (e) => {
+      e.preventDefault();
+      card.classList.remove("drag-over");
+      if (dragIndex === null || dragIndex === i) return;
+      reorderArray(array, dragIndex, i);
+      dragIndex = null;
+      rerender();
+    });
+  });
+}
+
+// Supprime récursivement les clés privées (_file, _previewUrl...) avant
+// d'enregistrer, sans modifier l'état en mémoire (utile pour continuer à
+// éditer après un enregistrement).
+function stripPrivateDeep(node) {
+  if (Array.isArray(node)) return node.map(stripPrivateDeep);
+  if (node && typeof node === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(node)) {
+      if (k.startsWith("_")) continue;
+      out[k] = stripPrivateDeep(v);
+    }
+    return out;
+  }
+  return node;
+}
+
+// Parcourt récursivement une structure (sections d'une page) à la
+// recherche d'objets avec un fichier en attente (`_file`, posé par un
+// champ image), les téléverse et remplace `image` par le chemin obtenu.
+async function uploadPendingImagesDeep(node, folder = "images/uploads") {
+  if (Array.isArray(node)) {
+    for (const item of node) await uploadPendingImagesDeep(item, folder);
+    return;
+  }
+  if (node && typeof node === "object") {
+    if (node._file instanceof File) {
+      node.image = await uploadImage(node._file, folder);
+      delete node._file;
+      delete node._previewUrl;
+    }
+    for (const key of Object.keys(node)) {
+      if (key.startsWith("_")) continue;
+      await uploadPendingImagesDeep(node[key], folder);
+    }
+  }
+}
+
+function patchSeoHead(html, seo) {
+  const title = escapeHtmlAttr(seo.title || "");
+  const desc = escapeHtmlAttr(seo.description || "");
+  const ogImage = escapeHtmlAttr(seo.og_image || "");
+
+  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
+  html = html.replace(
+    /<meta name="description" content="[^"]*" \/>/,
+    `<meta name="description" content="${desc}" />`
+  );
+  html = html.replace(
+    /<meta property="og:title" content="[^"]*" \/>/,
+    `<meta property="og:title" content="${title}" />`
+  );
+  html = html.replace(
+    /<meta property="og:description" content="[^"]*" \/>/,
+    `<meta property="og:description" content="${desc}" />`
+  );
+  html = html.replace(
+    /<meta property="og:image" content="[^"]*" \/>/,
+    `<meta property="og:image" content="${ogImage}" />`
+  );
+  return html;
+}
+
+function pageHtmlTemplate(seo) {
+  const title = escapeHtmlAttr(seo.title || "");
+  const desc = escapeHtmlAttr(seo.description || "");
+  const ogImage = escapeHtmlAttr(seo.og_image || "");
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${title}</title>
+<meta name="description" content="${desc}" />
+<meta property="og:title" content="${title}" />
+<meta property="og:description" content="${desc}" />
+<meta property="og:image" content="${ogImage}" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
+    <div class="header-nav">
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
+    </div>
+  </div>
+</header>
+
+<main id="sections-root"></main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/sections-renderer.js"></script>
+<script src="js/render.js"></script>
+</body>
+</html>
+`;
 }
 
 // ---------- Statut / messages ----------
@@ -158,19 +415,448 @@ document.querySelectorAll(".admin-tab").forEach((tab) => {
 // ---------- État ----------
 
 const state = {
-  portfolio: null, // { sha, items: [{category, image, alt, _file, _previewUrl}] }
-  settings: null,
-  services: null,
+  site: null, // { sha, data: { pages: [{slug, title}] } }
+  navigation: null,
+  appearance: null,
   contact: null,
+  portfolio: null, // { sha, items: [{category, image, alt, _file, _previewUrl}] }
+  pages: {}, // slug -> { sha, isNew, title, data: {seo, sections} }
 };
 
-function categoryOptionsHtml(selected) {
-  return CATEGORIES.map(
-    (c) => `<option value="${c.value}" ${c.value === selected ? "selected" : ""}>${c.label}</option>`
-  ).join("");
+let currentEditingSlug = null;
+
+// ========================================================================
+// Onglet Pages
+// ========================================================================
+
+function populateSectionTypePicker() {
+  const picker = document.getElementById("section-type-picker");
+  picker.innerHTML = SECTION_TYPES.map((t) => `<option value="${t.value}">${escapeHtml(t.label)}</option>`).join("");
 }
 
-// ---------- Portfolio ----------
+function renderPagesList() {
+  const list = document.getElementById("pages-list");
+  list.innerHTML = "";
+  state.site.data.pages.forEach((p) => {
+    const card = document.createElement("div");
+    card.className = "admin-card admin-page-card";
+    card.innerHTML = `
+      <div class="admin-page-card-info">
+        <strong>${escapeHtml(p.title)}</strong>
+        <span>${escapeHtml(p.slug)}.html</span>
+      </div>
+      <button type="button" class="btn-outline btn-small f-edit">Modifier</button>
+    `;
+    card.querySelector(".f-edit").addEventListener("click", () => openPageEditor(p.slug, p.title));
+    list.appendChild(card);
+  });
+}
+
+function openPageList() {
+  document.getElementById("pages-list-view").hidden = false;
+  document.getElementById("pages-editor-view").hidden = true;
+  currentEditingSlug = null;
+}
+
+async function openPageEditor(slug, title) {
+  if (!state.pages[slug]) {
+    try {
+      showStatus("Chargement de la page…", "loading");
+      const { sha, data } = await getJsonFile(`content/pages/${slug}.json`);
+      state.pages[slug] = { sha, isNew: false, title, data };
+      statusEl.hidden = true;
+    } catch (err) {
+      showStatus(`Erreur : ${err.message}`, "error");
+      return;
+    }
+  }
+
+  document.getElementById("pages-list-view").hidden = true;
+  document.getElementById("pages-editor-view").hidden = false;
+  currentEditingSlug = slug;
+  document.getElementById("pages-editor-title").textContent = title;
+  renderPageEditor();
+}
+
+function renderPageEditor() {
+  const page = state.pages[currentEditingSlug];
+  document.getElementById("seo-title").value = page.data.seo.title || "";
+  document.getElementById("seo-description").value = page.data.seo.description || "";
+  document.getElementById("seo-og-image").value = page.data.seo.og_image || "";
+  renderSectionsList();
+}
+
+document.getElementById("seo-title").addEventListener("input", (e) => {
+  if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.title = e.target.value;
+});
+document.getElementById("seo-description").addEventListener("input", (e) => {
+  if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.description = e.target.value;
+});
+document.getElementById("seo-og-image").addEventListener("input", (e) => {
+  if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.og_image = e.target.value;
+});
+
+document.getElementById("pages-back").addEventListener("click", openPageList);
+
+document.getElementById("pages-add").addEventListener("click", () => {
+  const title = prompt("Titre de la nouvelle page (ex : À propos) :");
+  if (!title || !title.trim()) return;
+  const slug = slugify(title.trim());
+  if (!slug || slug === "admin") {
+    alert("Ce titre ne donne pas un nom de page valide. Essaie un autre titre.");
+    return;
+  }
+  if (state.site.data.pages.some((p) => p.slug === slug)) {
+    alert(`Une page nommée « ${slug} » existe déjà.`);
+    return;
+  }
+  state.pages[slug] = {
+    sha: null,
+    isNew: true,
+    title: title.trim(),
+    data: {
+      seo: { title: title.trim(), description: "", og_image: "" },
+      sections: [
+        { id: `s${Date.now()}`, type: "texte", data: { eyebrow: "", title: title.trim(), text: "" } },
+      ],
+    },
+  };
+  openPageEditor(slug, title.trim());
+});
+
+// ---------- Sections d'une page ----------
+
+function renderSectionsList() {
+  const page = state.pages[currentEditingSlug];
+  const listEl = document.getElementById("sections-list");
+  listEl.innerHTML = "";
+  page.data.sections.forEach((section, index) => {
+    listEl.appendChild(buildSectionCard(section, index, page.data.sections));
+  });
+  enableDragReorder(listEl, page.data.sections, renderSectionsList);
+}
+
+function buildSectionCard(section, index, sections) {
+  const card = document.createElement("div");
+  card.className = "admin-section-card";
+  card.innerHTML = `
+    <div class="admin-section-card-header">
+      <span class="admin-drag-handle" title="Glisser pour réordonner">⠿⠿</span>
+      <span class="admin-section-type-badge">${escapeHtml(sectionTypeLabel(section.type))}</span>
+      <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" class="admin-icon-btn f-down" ${index === sections.length - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
+    </div>
+    <div class="admin-section-card-body"></div>
+  `;
+
+  renderSectionFields(card.querySelector(".admin-section-card-body"), section);
+
+  card.querySelector(".f-up").addEventListener("click", () => {
+    if (index === 0) return;
+    swapAdjacent(sections, index, index - 1);
+    renderSectionsList();
+  });
+  card.querySelector(".f-down").addEventListener("click", () => {
+    if (index === sections.length - 1) return;
+    swapAdjacent(sections, index, index + 1);
+    renderSectionsList();
+  });
+  card.querySelector(".f-delete").addEventListener("click", () => {
+    if (!confirm("Supprimer cette section ?")) return;
+    sections.splice(index, 1);
+    renderSectionsList();
+  });
+
+  return card;
+}
+
+// ---------- Champs de formulaire génériques ----------
+
+function textField(container, label, obj, key, opts = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "admin-field";
+  if (opts.textarea) {
+    wrap.innerHTML = `<label>${escapeHtml(label)}</label><textarea rows="${opts.rows || 3}">${escapeHtml(obj[key] || "")}</textarea>`;
+    wrap.querySelector("textarea").addEventListener("input", (e) => (obj[key] = e.target.value));
+  } else {
+    wrap.innerHTML = `<label>${escapeHtml(label)}</label><input type="text" value="${escapeHtml(obj[key] || "")}" />`;
+    wrap.querySelector("input").addEventListener("input", (e) => (obj[key] = e.target.value));
+  }
+  container.appendChild(wrap);
+  return wrap;
+}
+
+function selectField(container, label, obj, key, options) {
+  const wrap = document.createElement("div");
+  wrap.className = "admin-field";
+  wrap.innerHTML = `
+    <label>${escapeHtml(label)}</label>
+    <select>${options.map((o) => `<option value="${o.value}" ${o.value === obj[key] ? "selected" : ""}>${escapeHtml(o.label)}</option>`).join("")}</select>
+  `;
+  wrap.querySelector("select").addEventListener("change", (e) => (obj[key] = e.target.value));
+  container.appendChild(wrap);
+  return wrap;
+}
+
+function imageField(container, label, obj, rerender) {
+  const wrap = document.createElement("div");
+  wrap.className = "admin-field";
+  const previewSrc = obj._previewUrl || sitePath(obj.image);
+  wrap.innerHTML = `
+    <label>${escapeHtml(label)}</label>
+    <div class="admin-card-row" style="align-items:center">
+      <div class="admin-card-preview" style="width:72px;height:72px">${previewSrc ? `<img src="${previewSrc}" alt="" />` : ""}</div>
+      <input type="file" accept="image/*" style="flex:1" />
+    </div>
+  `;
+  wrap.querySelector("input[type=file]").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    obj._file = file;
+    obj._previewUrl = URL.createObjectURL(file);
+    rerender();
+  });
+  container.appendChild(wrap);
+  return wrap;
+}
+
+function renderSectionFields(container, section) {
+  container.innerHTML = "";
+  const data = section.data;
+  const rerender = () => renderSectionFields(container, section);
+
+  switch (section.type) {
+    case "hero":
+      imageField(container, "Photo", data, rerender);
+      textField(container, "Description (texte alternatif)", data, "alt");
+      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
+      textField(container, "Titre — 1ère ligne", data, "title_line1");
+      textField(container, "Titre — 2ème ligne", data, "title_line2");
+      textField(container, "Sous-titre", data, "subtitle", { textarea: true, rows: 2 });
+      textField(container, "Texte du bouton", data, "button_label");
+      textField(container, "Lien du bouton", data, "button_href");
+      break;
+
+    case "texte_image":
+      imageField(container, "Photo", data, rerender);
+      textField(container, "Description (texte alternatif)", data, "alt");
+      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
+      textField(container, "Titre", data, "title");
+      textField(container, "Texte", data, "text", { textarea: true, rows: 4 });
+      selectField(container, "Position de l'image", data, "image_side", [
+        { value: "droite", label: "À droite du texte" },
+        { value: "gauche", label: "À gauche du texte" },
+      ]);
+      textField(container, "Texte du bouton (optionnel)", data, "button_label");
+      textField(container, "Lien du bouton (optionnel)", data, "button_href");
+      break;
+
+    case "texte":
+      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
+      textField(container, "Titre", data, "title");
+      textField(container, "Texte", data, "text", { textarea: true, rows: 3 });
+      break;
+
+    case "galerie_categories":
+      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
+      textField(container, "Titre", data, "title");
+      textField(container, "Texte", data, "text", { textarea: true, rows: 2 });
+      (data.teasers || []).forEach((teaser) => {
+        const sub = document.createElement("div");
+        sub.className = "admin-subcard";
+        const catLabel = CATEGORIES.find((c) => c.value === teaser.category)?.label || teaser.category;
+        sub.innerHTML = `<p><strong>${escapeHtml(catLabel)}</strong></p>`;
+        container.appendChild(sub);
+        imageField(sub, "Photo", teaser, rerender);
+        textField(sub, "Titre affiché", teaser, "label");
+        textField(sub, "Description (texte alternatif)", teaser, "alt");
+      });
+      break;
+
+    case "portfolio_galerie":
+      container.innerHTML = `<p class="admin-hint">Cette section affiche automatiquement toutes les photos du portfolio (gérées dans l'onglet « Portfolio »), avec les filtres par catégorie. Rien à configurer ici.</p>`;
+      break;
+
+    case "tarifs": {
+      data.plans = data.plans || [];
+      const plansWrap = document.createElement("div");
+      plansWrap.className = "admin-list";
+      container.appendChild(plansWrap);
+
+      const renderPlans = () => {
+        plansWrap.innerHTML = "";
+        data.plans.forEach((plan, idx) => {
+          const sub = document.createElement("div");
+          sub.className = "admin-subcard";
+          textField(sub, "Nom de la formule", plan, "title");
+          textField(sub, "Prix (ex : 100€ ou Devis)", plan, "price");
+          textField(sub, "Complément après le prix (optionnel)", plan, "price_suffix");
+
+          const highlightWrap = document.createElement("div");
+          highlightWrap.className = "admin-field admin-checkbox-row";
+          highlightWrap.innerHTML = `<input type="checkbox" ${plan.highlight ? "checked" : ""} id="hl-${idx}" /><label for="hl-${idx}">Mettre en avant (bordure colorée)</label>`;
+          highlightWrap.querySelector("input").addEventListener("change", (e) => (plan.highlight = e.target.checked));
+          sub.appendChild(highlightWrap);
+
+          textField(sub, "Badge (optionnel)", plan, "badge");
+
+          const featWrap = document.createElement("div");
+          featWrap.className = "admin-field";
+          featWrap.innerHTML = `<label>Caractéristiques (une par ligne)</label><textarea rows="4">${escapeHtml((plan.features || []).join("\n"))}</textarea>`;
+          featWrap.querySelector("textarea").addEventListener("input", (e) => {
+            plan.features = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
+          });
+          sub.appendChild(featWrap);
+
+          textField(sub, "Texte du bouton", plan, "cta_label");
+
+          const toolbar = document.createElement("div");
+          toolbar.className = "admin-card-toolbar";
+          toolbar.innerHTML = `
+            <div class="admin-card-toolbar-left">
+              <button type="button" class="admin-icon-btn f-up" ${idx === 0 ? "disabled" : ""}>↑ Monter</button>
+              <button type="button" class="admin-icon-btn f-down" ${idx === data.plans.length - 1 ? "disabled" : ""}>↓ Descendre</button>
+            </div>
+            <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
+          `;
+          toolbar.querySelector(".f-up").addEventListener("click", () => {
+            if (idx === 0) return;
+            swapAdjacent(data.plans, idx, idx - 1);
+            renderPlans();
+          });
+          toolbar.querySelector(".f-down").addEventListener("click", () => {
+            if (idx === data.plans.length - 1) return;
+            swapAdjacent(data.plans, idx, idx + 1);
+            renderPlans();
+          });
+          toolbar.querySelector(".f-delete").addEventListener("click", () => {
+            if (!confirm("Supprimer cette formule ?")) return;
+            data.plans.splice(idx, 1);
+            renderPlans();
+          });
+          sub.appendChild(toolbar);
+          plansWrap.appendChild(sub);
+        });
+      };
+      renderPlans();
+
+      const addPlanBtn = document.createElement("button");
+      addPlanBtn.type = "button";
+      addPlanBtn.className = "btn-outline btn-small";
+      addPlanBtn.textContent = "+ Ajouter une formule";
+      addPlanBtn.addEventListener("click", () => {
+        data.plans.push({ title: "Nouvelle formule", price: "", price_suffix: "", highlight: false, badge: "", features: [], cta_label: "Choisir cette formule" });
+        renderPlans();
+      });
+      container.appendChild(addPlanBtn);
+
+      textField(container, "Note commune (sous les formules)", data, "note", { textarea: true, rows: 2 });
+      break;
+    }
+
+    case "cta":
+      textField(container, "Titre", data, "title");
+      textField(container, "Texte", data, "text", { textarea: true, rows: 2 });
+      textField(container, "Texte du bouton", data, "button_label");
+      textField(container, "Lien du bouton", data, "button_href");
+      break;
+
+    case "contact":
+      textField(container, "Titre de la colonne coordonnées", data, "coordonnees_title");
+      textField(container, "Titre de la colonne formulaire", data, "formulaire_title");
+      if (state.contact) {
+        const sub = document.createElement("div");
+        sub.className = "admin-subcard";
+        sub.innerHTML = `<p><strong>Coordonnées</strong> — utilisées ici et dans le pied de page de toutes les pages</p>`;
+        container.appendChild(sub);
+        const c = state.contact.data;
+        textField(sub, "Email", c, "email");
+        textField(sub, "Pseudo Instagram (avec @)", c, "instagram_handle");
+        textField(sub, "Lien Instagram complet", c, "instagram_url");
+        textField(sub, "Zone d'intervention", c, "zone");
+        textField(sub, "Délai de réponse", c, "response_delay");
+      }
+      break;
+
+    default:
+      container.innerHTML = `<p class="admin-hint">Type de section inconnu : ${escapeHtml(section.type)}</p>`;
+  }
+}
+
+document.getElementById("section-add").addEventListener("click", () => {
+  const type = document.getElementById("section-type-picker").value;
+  const typeInfo = SECTION_TYPES.find((t) => t.value === type);
+  const page = state.pages[currentEditingSlug];
+  page.data.sections.push({ id: `s${Date.now()}`, type, data: typeInfo.defaultData() });
+  renderSectionsList();
+});
+
+// ---------- Prévisualisation ----------
+
+document.getElementById("page-preview").addEventListener("click", () => {
+  const page = state.pages[currentEditingSlug];
+  const draft = {
+    navigation: stripPrivateDeep(state.navigation.data),
+    appearance: stripPrivateDeep(state.appearance.data),
+    page: stripPrivateDeep(page.data),
+  };
+  localStorage.setItem("site-photo-admin-preview", JSON.stringify(draft));
+  window.open("preview.html", "_blank");
+});
+
+// ---------- Enregistrement d'une page ----------
+
+document.getElementById("page-save").addEventListener("click", async () => {
+  const slug = currentEditingSlug;
+  const page = state.pages[slug];
+  try {
+    showStatus("Enregistrement…", "loading");
+
+    await uploadPendingImagesDeep(page.data.sections);
+    const cleanData = stripPrivateDeep({ seo: page.data.seo, sections: page.data.sections });
+    const jsonPath = `content/pages/${slug}.json`;
+
+    if (page.isNew) {
+      await putJsonFile(jsonPath, cleanData, `Création de la page « ${slug} » (admin)`, undefined);
+      await githubRequest(`/repos/${OWNER}/${REPO}/contents/${slug}.html`, {
+        method: "PUT",
+        body: JSON.stringify({
+          message: `Création de la page « ${slug} » (admin)`,
+          content: utf8ToBase64(pageHtmlTemplate(cleanData.seo)),
+          branch: BRANCH,
+        }),
+      });
+      const freshSite = await getJsonFile("content/site.json");
+      freshSite.data.pages.push({ slug, title: page.title });
+      await putJsonFile("content/site.json", freshSite.data, `Ajout de la page « ${slug} » au registre (admin)`, freshSite.sha);
+      state.site = freshSite;
+      page.isNew = false;
+    } else {
+      const fresh = await getJsonFile(jsonPath);
+      await putJsonFile(jsonPath, cleanData, `Mise à jour de la page « ${slug} » (admin)`, fresh.sha);
+      const rawHead = await getRawFile(`${slug}.html`);
+      const patched = patchSeoHead(rawHead.text, cleanData.seo);
+      await putRawFile(`${slug}.html`, patched, `Mise à jour SEO de la page « ${slug} » (admin)`, rawHead.sha);
+    }
+
+    const hasContactSection = cleanData.sections.some((s) => s.type === "contact");
+    if (hasContactSection && state.contact) {
+      const freshContact = await getJsonFile("content/contact.json");
+      await putJsonFile("content/contact.json", state.contact.data, "Mise à jour des coordonnées (admin)", freshContact.sha);
+    }
+
+    page.data = cleanData;
+    renderPagesList();
+    showStatus("Page enregistrée ✓ Le site se met à jour automatiquement (~1 min).", "success");
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+  }
+});
+
+// ========================================================================
+// Onglet Portfolio
+// ========================================================================
 
 const portfolioList = document.getElementById("portfolio-list");
 
@@ -178,45 +864,39 @@ function renderPortfolioList() {
   portfolioList.innerHTML = "";
   state.portfolio.items.forEach((item, index) => {
     const card = document.createElement("div");
-    card.className = "admin-card";
-
+    card.className = "admin-section-card";
     const previewSrc = item._previewUrl || sitePath(item.image);
-
     card.innerHTML = `
-      <div class="admin-card-row">
-        <div class="admin-card-preview">
-          ${previewSrc ? `<img src="${previewSrc}" alt="" />` : ""}
-        </div>
-        <div class="admin-card-fields">
-          <div class="admin-field">
-            <label>Catégorie</label>
-            <select class="f-category">${categoryOptionsHtml(item.category)}</select>
-          </div>
-          <div class="admin-field">
-            <label>Photo</label>
-            <input type="file" class="f-file" accept="image/*" />
-          </div>
-          <div class="admin-field">
-            <label>Description (texte alternatif)</label>
-            <input type="text" class="f-alt" value="${item.alt || ""}" />
-          </div>
-        </div>
-      </div>
-      <div class="admin-card-toolbar">
-        <div class="admin-card-toolbar-left">
-          <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑ Monter</button>
-          <button type="button" class="admin-icon-btn f-down" ${index === state.portfolio.items.length - 1 ? "disabled" : ""}>↓ Descendre</button>
-        </div>
+      <div class="admin-section-card-header">
+        <span class="admin-drag-handle" title="Glisser pour réordonner">⠿⠿</span>
+        <span class="admin-section-type-badge">Photo ${index + 1}</span>
+        <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" class="admin-icon-btn f-down" ${index === state.portfolio.items.length - 1 ? "disabled" : ""}>↓</button>
         <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
+      </div>
+      <div class="admin-section-card-body">
+        <div class="admin-card-row">
+          <div class="admin-card-preview">${previewSrc ? `<img src="${previewSrc}" alt="" />` : ""}</div>
+          <div class="admin-card-fields">
+            <div class="admin-field">
+              <label>Catégorie</label>
+              <select class="f-category">${categoryOptionsHtml(item.category)}</select>
+            </div>
+            <div class="admin-field">
+              <label>Photo</label>
+              <input type="file" class="f-file" accept="image/*" />
+            </div>
+            <div class="admin-field">
+              <label>Description (texte alternatif)</label>
+              <input type="text" class="f-alt" value="${escapeHtml(item.alt || "")}" />
+            </div>
+          </div>
+        </div>
       </div>
     `;
 
-    card.querySelector(".f-category").addEventListener("change", (e) => {
-      item.category = e.target.value;
-    });
-    card.querySelector(".f-alt").addEventListener("input", (e) => {
-      item.alt = e.target.value;
-    });
+    card.querySelector(".f-category").addEventListener("change", (e) => (item.category = e.target.value));
+    card.querySelector(".f-alt").addEventListener("input", (e) => (item.alt = e.target.value));
     card.querySelector(".f-file").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -226,18 +906,12 @@ function renderPortfolioList() {
     });
     card.querySelector(".f-up").addEventListener("click", () => {
       if (index === 0) return;
-      [state.portfolio.items[index - 1], state.portfolio.items[index]] = [
-        state.portfolio.items[index],
-        state.portfolio.items[index - 1],
-      ];
+      swapAdjacent(state.portfolio.items, index, index - 1);
       renderPortfolioList();
     });
     card.querySelector(".f-down").addEventListener("click", () => {
       if (index === state.portfolio.items.length - 1) return;
-      [state.portfolio.items[index + 1], state.portfolio.items[index]] = [
-        state.portfolio.items[index],
-        state.portfolio.items[index + 1],
-      ];
+      swapAdjacent(state.portfolio.items, index, index + 1);
       renderPortfolioList();
     });
     card.querySelector(".f-delete").addEventListener("click", () => {
@@ -248,6 +922,8 @@ function renderPortfolioList() {
 
     portfolioList.appendChild(card);
   });
+
+  enableDragReorder(portfolioList, state.portfolio.items, renderPortfolioList);
 }
 
 async function loadPortfolio() {
@@ -275,18 +951,9 @@ document.getElementById("portfolio-save").addEventListener("click", async () => 
       }
       if (!item.image) throw new Error("Une photo n'a pas d'image sélectionnée.");
     }
-    const cleanItems = state.portfolio.items.map(({ category, image, alt }) => ({
-      category,
-      image,
-      alt,
-    }));
+    const cleanItems = state.portfolio.items.map(({ category, image, alt }) => ({ category, image, alt }));
     const fresh = await getJsonFile("content/portfolio.json");
-    await putJsonFile(
-      "content/portfolio.json",
-      { items: cleanItems },
-      "Mise à jour du portfolio (admin)",
-      fresh.sha
-    );
+    await putJsonFile("content/portfolio.json", { items: cleanItems }, "Mise à jour du portfolio (admin)", fresh.sha);
     state.portfolio = null;
     await loadPortfolio();
     showStatus("Portfolio enregistré ✓ Le site se met à jour automatiquement (~1 min).", "success");
@@ -295,290 +962,211 @@ document.getElementById("portfolio-save").addEventListener("click", async () => 
   }
 });
 
-// ---------- Accueil ----------
+// ========================================================================
+// Onglet Navigation
+// ========================================================================
 
-function renderHeroCard() {
-  const hero = state.settings.data.hero;
-  const card = document.getElementById("hero-card");
-  card.innerHTML = `
-    <div class="admin-card-row">
-      <div class="admin-card-preview"><img src="${state.settings._heroPreview || sitePath(hero.image)}" alt="" /></div>
-      <div class="admin-card-fields">
-        <div class="admin-field"><label>Photo</label><input type="file" id="hero-file" accept="image/*" /></div>
-        <div class="admin-field"><label>Description (texte alternatif)</label><input type="text" id="hero-alt" value="${hero.alt || ""}" /></div>
-        <div class="admin-field"><label>Petite ligne au-dessus du titre</label><input type="text" id="hero-eyebrow" value="${hero.eyebrow || ""}" /></div>
-        <div class="admin-field"><label>Titre — 1ère ligne</label><input type="text" id="hero-title1" value="${hero.title_line1 || ""}" /></div>
-        <div class="admin-field"><label>Titre — 2ème ligne</label><input type="text" id="hero-title2" value="${hero.title_line2 || ""}" /></div>
-        <div class="admin-field"><label>Sous-titre</label><textarea id="hero-subtitle" rows="2">${hero.subtitle || ""}</textarea></div>
-      </div>
-    </div>
-  `;
-  card.querySelector("#hero-file").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    state.settings._heroFile = file;
-    state.settings._heroPreview = URL.createObjectURL(file);
-    renderHeroCard();
-  });
-  card.querySelector("#hero-alt").addEventListener("input", (e) => (hero.alt = e.target.value));
-  card.querySelector("#hero-eyebrow").addEventListener("input", (e) => (hero.eyebrow = e.target.value));
-  card.querySelector("#hero-title1").addEventListener("input", (e) => (hero.title_line1 = e.target.value));
-  card.querySelector("#hero-title2").addEventListener("input", (e) => (hero.title_line2 = e.target.value));
-  card.querySelector("#hero-subtitle").addEventListener("input", (e) => (hero.subtitle = e.target.value));
-}
-
-function renderApproachCard() {
-  const approach = state.settings.data.approach;
-  const card = document.getElementById("approach-card");
-  card.innerHTML = `
-    <div class="admin-card-row">
-      <div class="admin-card-preview"><img src="${state.settings._approachPreview || sitePath(approach.image)}" alt="" /></div>
-      <div class="admin-card-fields">
-        <div class="admin-field"><label>Photo (toi)</label><input type="file" id="approach-file" accept="image/*" /></div>
-        <div class="admin-field"><label>Description (texte alternatif)</label><input type="text" id="approach-alt" value="${approach.alt || ""}" /></div>
-        <div class="admin-field"><label>Petite ligne au-dessus du titre</label><input type="text" id="approach-eyebrow" value="${approach.eyebrow || ""}" /></div>
-        <div class="admin-field"><label>Titre</label><input type="text" id="approach-title" value="${approach.title || ""}" /></div>
-        <div class="admin-field"><label>Texte</label><textarea id="approach-text" rows="4">${approach.text || ""}</textarea></div>
-      </div>
-    </div>
-  `;
-  card.querySelector("#approach-file").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    state.settings._approachFile = file;
-    state.settings._approachPreview = URL.createObjectURL(file);
-    renderApproachCard();
-  });
-  card.querySelector("#approach-alt").addEventListener("input", (e) => (approach.alt = e.target.value));
-  card.querySelector("#approach-eyebrow").addEventListener("input", (e) => (approach.eyebrow = e.target.value));
-  card.querySelector("#approach-title").addEventListener("input", (e) => (approach.title = e.target.value));
-  card.querySelector("#approach-text").addEventListener("input", (e) => (approach.text = e.target.value));
-}
-
-function renderTeasersList() {
-  const list = document.getElementById("teasers-list");
+function renderLinksList(containerId, links, rerender) {
+  const list = document.getElementById(containerId);
   list.innerHTML = "";
-  state.settings.data.teasers.forEach((teaser) => {
+  links.forEach((link, idx) => {
     const card = document.createElement("div");
     card.className = "admin-card";
-    const previewSrc = teaser._previewUrl || sitePath(teaser.image);
     card.innerHTML = `
-      <div class="admin-card-row">
-        <div class="admin-card-preview">${previewSrc ? `<img src="${previewSrc}" alt="" />` : ""}</div>
-        <div class="admin-card-fields">
-          <div class="admin-field"><label>Catégorie</label><input type="text" value="${CATEGORIES.find((c) => c.value === teaser.category)?.label || teaser.category}" disabled /></div>
-          <div class="admin-field"><label>Titre affiché</label><input type="text" class="t-label" value="${teaser.label || ""}" /></div>
-          <div class="admin-field"><label>Photo</label><input type="file" class="t-file" accept="image/*" /></div>
-          <div class="admin-field"><label>Description (texte alternatif)</label><input type="text" class="t-alt" value="${teaser.alt || ""}" /></div>
+      <div class="admin-field-row">
+        <div class="admin-field"><label>Texte affiché</label><input type="text" class="f-label" value="${escapeHtml(link.label || "")}" /></div>
+        <div class="admin-field"><label>Lien (ex : portfolio.html)</label><input type="text" class="f-href" value="${escapeHtml(link.href || "")}" /></div>
+      </div>
+      <div class="admin-card-toolbar">
+        <div class="admin-card-toolbar-left">
+          <button type="button" class="admin-icon-btn f-up" ${idx === 0 ? "disabled" : ""}>↑ Monter</button>
+          <button type="button" class="admin-icon-btn f-down" ${idx === links.length - 1 ? "disabled" : ""}>↓ Descendre</button>
         </div>
+        <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
       </div>
     `;
-    card.querySelector(".t-label").addEventListener("input", (e) => (teaser.label = e.target.value));
-    card.querySelector(".t-alt").addEventListener("input", (e) => (teaser.alt = e.target.value));
-    card.querySelector(".t-file").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      teaser._file = file;
-      teaser._previewUrl = URL.createObjectURL(file);
-      renderTeasersList();
+    card.querySelector(".f-label").addEventListener("input", (e) => (link.label = e.target.value));
+    card.querySelector(".f-href").addEventListener("input", (e) => (link.href = e.target.value));
+    card.querySelector(".f-up").addEventListener("click", () => {
+      if (idx === 0) return;
+      swapAdjacent(links, idx, idx - 1);
+      rerender();
+    });
+    card.querySelector(".f-down").addEventListener("click", () => {
+      if (idx === links.length - 1) return;
+      swapAdjacent(links, idx, idx + 1);
+      rerender();
+    });
+    card.querySelector(".f-delete").addEventListener("click", () => {
+      if (!confirm("Supprimer ce lien ?")) return;
+      links.splice(idx, 1);
+      rerender();
     });
     list.appendChild(card);
   });
 }
 
-async function loadSettings() {
-  if (state.settings) return;
-  showStatus("Chargement de l'accueil…", "loading");
-  const { sha, data } = await getJsonFile("content/settings.json");
-  state.settings = { sha, data };
-  renderHeroCard();
-  renderApproachCard();
-  renderTeasersList();
-  statusEl.hidden = true;
+function renderNavigationTab() {
+  const nav = state.navigation.data;
+  renderLinksList("nav-links-list", nav.nav_links, renderNavigationTab);
+  renderLinksList("footer-links-list", nav.footer_links, renderNavigationTab);
+  document.getElementById("cta-label").value = nav.cta_button.label || "";
+  document.getElementById("cta-href").value = nav.cta_button.href || "";
+  document.getElementById("copyright-text").value = nav.copyright_text || "";
 }
 
-document.getElementById("accueil-save").addEventListener("click", async () => {
+document.getElementById("cta-label").addEventListener("input", (e) => (state.navigation.data.cta_button.label = e.target.value));
+document.getElementById("cta-href").addEventListener("input", (e) => (state.navigation.data.cta_button.href = e.target.value));
+document.getElementById("copyright-text").addEventListener("input", (e) => (state.navigation.data.copyright_text = e.target.value));
+
+document.getElementById("nav-link-add").addEventListener("click", () => {
+  state.navigation.data.nav_links.push({ label: "Nouveau lien", href: "" });
+  renderNavigationTab();
+});
+document.getElementById("footer-link-add").addEventListener("click", () => {
+  state.navigation.data.footer_links.push({ label: "Nouveau lien", href: "" });
+  renderNavigationTab();
+});
+
+document.getElementById("navigation-save").addEventListener("click", async () => {
   try {
     showStatus("Enregistrement…", "loading");
-    const s = state.settings;
-
-    if (s._heroFile) {
-      s.data.hero.image = await uploadImage(s._heroFile, "images/uploads");
-      s._heroFile = null;
-    }
-    if (s._approachFile) {
-      s.data.approach.image = await uploadImage(s._approachFile, "images/uploads");
-      s._approachFile = null;
-    }
-    for (const teaser of s.data.teasers) {
-      if (teaser._file) {
-        teaser.image = await uploadImage(teaser._file, "images/uploads");
-        teaser._file = null;
-        delete teaser._previewUrl;
-      }
-    }
-
-    const cleanData = {
-      hero: s.data.hero,
-      approach: s.data.approach,
-      teasers: s.data.teasers.map(({ category, label, image, alt }) => ({ category, label, image, alt })),
-    };
-
-    const fresh = await getJsonFile("content/settings.json");
-    await putJsonFile("content/settings.json", cleanData, "Mise à jour de l'accueil (admin)", fresh.sha);
-    state.settings = null;
-    await loadSettings();
-    showStatus("Accueil enregistré ✓ Le site se met à jour automatiquement (~1 min).", "success");
+    const fresh = await getJsonFile("content/navigation.json");
+    await putJsonFile("content/navigation.json", state.navigation.data, "Mise à jour du menu et du pied de page (admin)", fresh.sha);
+    showStatus("Menu et pied de page enregistrés ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
   }
 });
 
-// ---------- Tarifs ----------
+// ========================================================================
+// Onglet Apparence
+// ========================================================================
 
-const plansList = document.getElementById("plans-list");
+function renderApparenceTab() {
+  const a = state.appearance.data;
+  document.getElementById("accent-color").value = a.accent_color || "#000000";
+  document.getElementById("accent-color-text").value = a.accent_color || "";
+  document.getElementById("accent-color-dark").value = a.accent_color_dark || "#000000";
+  document.getElementById("accent-color-dark-text").value = a.accent_color_dark || "";
+  document.getElementById("logo-text").value = a.logo_text || "";
 
-function renderPlansList() {
-  plansList.innerHTML = "";
-  state.services.data.plans.forEach((plan, index) => {
-    const card = document.createElement("div");
-    card.className = "admin-card";
-    card.innerHTML = `
-      <div class="admin-card-fields">
-        <div class="admin-field"><label>Nom de la formule</label><input type="text" class="p-title" value="${plan.title || ""}" /></div>
-        <div class="admin-field"><label>Prix (ex: 100€ ou Devis)</label><input type="text" class="p-price" value="${plan.price || ""}" /></div>
-        <div class="admin-field"><label>Complément après le prix (optionnel)</label><input type="text" class="p-suffix" value="${plan.price_suffix || ""}" /></div>
-        <div class="admin-field admin-checkbox-row"><input type="checkbox" class="p-highlight" id="highlight-${index}" ${plan.highlight ? "checked" : ""} /><label for="highlight-${index}">Mettre en avant (bordure colorée)</label></div>
-        <div class="admin-field"><label>Badge (optionnel)</label><input type="text" class="p-badge" value="${plan.badge || ""}" /></div>
-        <div class="admin-field"><label>Caractéristiques (une par ligne)</label><textarea class="p-features" rows="4">${(plan.features || []).join("\n")}</textarea></div>
-        <div class="admin-field"><label>Texte du bouton</label><input type="text" class="p-cta" value="${plan.cta_label || ""}" /></div>
-      </div>
-      <div class="admin-card-toolbar">
-        <div class="admin-card-toolbar-left">
-          <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑ Monter</button>
-          <button type="button" class="admin-icon-btn f-down" ${index === state.services.data.plans.length - 1 ? "disabled" : ""}>↓ Descendre</button>
-        </div>
-        <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
-      </div>
-    `;
-    card.querySelector(".p-title").addEventListener("input", (e) => (plan.title = e.target.value));
-    card.querySelector(".p-price").addEventListener("input", (e) => (plan.price = e.target.value));
-    card.querySelector(".p-suffix").addEventListener("input", (e) => (plan.price_suffix = e.target.value));
-    card.querySelector(".p-highlight").addEventListener("change", (e) => (plan.highlight = e.target.checked));
-    card.querySelector(".p-badge").addEventListener("input", (e) => (plan.badge = e.target.value));
-    card.querySelector(".p-features").addEventListener("input", (e) => {
-      plan.features = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
-    });
-    card.querySelector(".p-cta").addEventListener("input", (e) => (plan.cta_label = e.target.value));
-    card.querySelector(".f-up").addEventListener("click", () => {
-      if (index === 0) return;
-      const p = state.services.data.plans;
-      [p[index - 1], p[index]] = [p[index], p[index - 1]];
-      renderPlansList();
-    });
-    card.querySelector(".f-down").addEventListener("click", () => {
-      const p = state.services.data.plans;
-      if (index === p.length - 1) return;
-      [p[index + 1], p[index]] = [p[index], p[index + 1]];
-      renderPlansList();
-    });
-    card.querySelector(".f-delete").addEventListener("click", () => {
-      if (!confirm("Supprimer cette formule ?")) return;
-      state.services.data.plans.splice(index, 1);
-      renderPlansList();
-    });
-    plansList.appendChild(card);
+  const logoPreview = document.getElementById("logo-preview");
+  const logoSrc = a._logoPreviewUrl || sitePath(a.logo_image);
+  logoPreview.innerHTML = logoSrc ? `<img src="${logoSrc}" alt="" />` : "";
+
+  const faviconPreview = document.getElementById("favicon-preview");
+  const faviconSrc = a._faviconPreviewUrl || sitePath(a.favicon_image);
+  faviconPreview.innerHTML = faviconSrc ? `<img src="${faviconSrc}" alt="" />` : "";
+
+  applyAppearancePreview();
+}
+
+function applyAppearancePreview() {
+  const a = state.appearance.data;
+  document.documentElement.style.setProperty("--couleur-accent", a.accent_color || "#b5652e");
+  document.documentElement.style.setProperty("--couleur-accent-fonce", a.accent_color_dark || "#8f4f22");
+}
+
+function wireColorPair(colorId, textId, key) {
+  const colorInput = document.getElementById(colorId);
+  const textInput = document.getElementById(textId);
+  colorInput.addEventListener("input", (e) => {
+    state.appearance.data[key] = e.target.value;
+    textInput.value = e.target.value;
+    applyAppearancePreview();
+  });
+  textInput.addEventListener("input", (e) => {
+    state.appearance.data[key] = e.target.value;
+    if (/^#[0-9a-fA-F]{6}$/.test(e.target.value)) colorInput.value = e.target.value;
+    applyAppearancePreview();
   });
 }
+wireColorPair("accent-color", "accent-color-text", "accent_color");
+wireColorPair("accent-color-dark", "accent-color-dark-text", "accent_color_dark");
 
-async function loadServices() {
-  if (state.services) return;
-  showStatus("Chargement des tarifs…", "loading");
-  const { sha, data } = await getJsonFile("content/services.json");
-  state.services = { sha, data };
-  renderPlansList();
-  document.getElementById("services-note").value = data.note || "";
-  statusEl.hidden = true;
-}
+document.getElementById("logo-text").addEventListener("input", (e) => (state.appearance.data.logo_text = e.target.value));
 
-document.getElementById("services-note").addEventListener("input", (e) => {
-  if (state.services) state.services.data.note = e.target.value;
+document.getElementById("logo-file").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  state.appearance.data._logoFile = file;
+  state.appearance.data._logoPreviewUrl = URL.createObjectURL(file);
+  renderApparenceTab();
+});
+document.getElementById("logo-remove").addEventListener("click", () => {
+  state.appearance.data.logo_image = "";
+  delete state.appearance.data._logoFile;
+  delete state.appearance.data._logoPreviewUrl;
+  renderApparenceTab();
+});
+document.getElementById("favicon-file").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  state.appearance.data._faviconFile = file;
+  state.appearance.data._faviconPreviewUrl = URL.createObjectURL(file);
+  renderApparenceTab();
+});
+document.getElementById("favicon-remove").addEventListener("click", () => {
+  state.appearance.data.favicon_image = "";
+  delete state.appearance.data._faviconFile;
+  delete state.appearance.data._faviconPreviewUrl;
+  renderApparenceTab();
 });
 
-document.getElementById("plans-add").addEventListener("click", () => {
-  state.services.data.plans.push({
-    title: "Nouvelle formule",
-    price: "",
-    price_suffix: "",
-    highlight: false,
-    badge: "",
-    features: [],
-    cta_label: "Choisir cette formule",
-  });
-  renderPlansList();
-});
-
-document.getElementById("tarifs-save").addEventListener("click", async () => {
+document.getElementById("apparence-save").addEventListener("click", async () => {
   try {
     showStatus("Enregistrement…", "loading");
-    const fresh = await getJsonFile("content/services.json");
-    await putJsonFile("content/services.json", state.services.data, "Mise à jour des tarifs (admin)", fresh.sha);
-    state.services = null;
-    await loadServices();
-    showStatus("Tarifs enregistrés ✓ Le site se met à jour automatiquement (~1 min).", "success");
+    const a = state.appearance.data;
+    if (a._logoFile) {
+      a.logo_image = await uploadImage(a._logoFile, "images/uploads");
+      delete a._logoFile;
+      delete a._logoPreviewUrl;
+    }
+    if (a._faviconFile) {
+      a.favicon_image = await uploadImage(a._faviconFile, "images/uploads");
+      delete a._faviconFile;
+      delete a._faviconPreviewUrl;
+    }
+    const clean = stripPrivateDeep(a);
+    const fresh = await getJsonFile("content/appearance.json");
+    await putJsonFile("content/appearance.json", clean, "Mise à jour de l'apparence (admin)", fresh.sha);
+    state.appearance.data = clean;
+    renderApparenceTab();
+    showStatus("Apparence enregistrée ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
   }
 });
 
-// ---------- Contact ----------
+// ========================================================================
+// Démarrage
+// ========================================================================
 
-function renderContactCard() {
-  const c = state.contact.data;
-  const card = document.getElementById("contact-card");
-  card.innerHTML = `
-    <div class="admin-field"><label>Email</label><input type="text" id="c-email" value="${c.email || ""}" /></div>
-    <div class="admin-field"><label>Pseudo Instagram (avec @)</label><input type="text" id="c-handle" value="${c.instagram_handle || ""}" /></div>
-    <div class="admin-field"><label>Lien Instagram complet</label><input type="text" id="c-url" value="${c.instagram_url || ""}" /></div>
-    <div class="admin-field"><label>Zone d'intervention</label><input type="text" id="c-zone" value="${c.zone || ""}" /></div>
-    <div class="admin-field"><label>Délai de réponse</label><input type="text" id="c-delay" value="${c.response_delay || ""}" /></div>
-  `;
-  card.querySelector("#c-email").addEventListener("input", (e) => (c.email = e.target.value));
-  card.querySelector("#c-handle").addEventListener("input", (e) => (c.instagram_handle = e.target.value));
-  card.querySelector("#c-url").addEventListener("input", (e) => (c.instagram_url = e.target.value));
-  card.querySelector("#c-zone").addEventListener("input", (e) => (c.zone = e.target.value));
-  card.querySelector("#c-delay").addEventListener("input", (e) => (c.response_delay = e.target.value));
-}
-
-async function loadContact() {
-  if (state.contact) return;
-  showStatus("Chargement des coordonnées…", "loading");
-  const { sha, data } = await getJsonFile("content/contact.json");
-  state.contact = { sha, data };
-  renderContactCard();
-  statusEl.hidden = true;
-}
-
-document.getElementById("contact-save").addEventListener("click", async () => {
+async function initApp() {
+  populateSectionTypePicker();
   try {
-    showStatus("Enregistrement…", "loading");
-    const fresh = await getJsonFile("content/contact.json");
-    await putJsonFile("content/contact.json", state.contact.data, "Mise à jour des coordonnées (admin)", fresh.sha);
-    state.contact = null;
-    await loadContact();
-    showStatus("Coordonnées enregistrées ✓ Le site se met à jour automatiquement (~1 min).", "success");
+    showStatus("Chargement…", "loading");
+    const [site, navigation, appearance, contact] = await Promise.all([
+      getJsonFile("content/site.json"),
+      getJsonFile("content/navigation.json"),
+      getJsonFile("content/appearance.json"),
+      getJsonFile("content/contact.json"),
+    ]);
+    state.site = site;
+    state.navigation = navigation;
+    state.appearance = appearance;
+    state.contact = contact;
+    statusEl.hidden = true;
   } catch (err) {
-    showStatus(`Erreur : ${err.message}`, "error");
+    showStatus(`Erreur de chargement : ${err.message}`, "error");
+    return;
   }
-});
 
-// ---------- Démarrage ----------
-
-function initApp() {
+  renderPagesList();
+  renderNavigationTab();
+  renderApparenceTab();
   loadPortfolio().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
-  loadSettings().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
-  loadServices().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
-  loadContact().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
 }
 
 if (getToken()) {
