@@ -366,34 +366,222 @@ function showStatus(message, type) {
   }
 }
 
-// ---------- Connexion ----------
+// ---------- Connexion : chiffrement du token par mot de passe ----------
+//
+// Le token GitHub réel reste le seul moyen d'authentification auprès de
+// GitHub — mais au lieu de le transporter partout, on le chiffre une fois
+// avec un mot de passe choisi (AES-GCM + PBKDF2, API Web Crypto native du
+// navigateur) et on enregistre le résultat chiffré dans admin/auth.json,
+// un fichier public du dépôt (comme tout le reste du site). À chaque
+// connexion, on retélécharge ce fichier et on le déchiffre avec le mot de
+// passe tapé : en cas d'erreur de mot de passe, le déchiffrement échoue
+// simplement (aucune info exploitable n'est renvoyée).
+//
+// Important : le dépôt étant public, ce fichier chiffré est visible de
+// tous. La sécurité dépend donc entièrement de la force du mot de passe
+// (pas de limite de tentatives possible sur un site statique).
 
-const loginScreen = document.getElementById("login-screen");
+const AUTH_FILE_PATH = "admin/auth.json";
+const PBKDF2_ITERATIONS = 600000;
+
+function bytesToBase64(bytes) {
+  let binary = "";
+  bytes.forEach((b) => (binary += String.fromCharCode(b)));
+  return btoa(binary);
+}
+
+function base64ToBytes(b64) {
+  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+}
+
+async function deriveAesKey(password, saltBytes, iterations) {
+  const baseKey = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: saltBytes, iterations, hash: "SHA-256" },
+    baseKey,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function encryptTokenWithPassword(password, token) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveAesKey(password, salt, PBKDF2_ITERATIONS);
+  const ciphertextBuf = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(token));
+  return {
+    salt: bytesToBase64(salt),
+    iv: bytesToBase64(iv),
+    ciphertext: bytesToBase64(new Uint8Array(ciphertextBuf)),
+    iterations: PBKDF2_ITERATIONS,
+  };
+}
+
+// Lève une exception si le mot de passe est incorrect (échec de l'AES-GCM).
+async function decryptTokenWithPassword(password, blob) {
+  const key = await deriveAesKey(password, base64ToBytes(blob.salt), blob.iterations || PBKDF2_ITERATIONS);
+  const plainBuf = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: base64ToBytes(blob.iv) },
+    key,
+    base64ToBytes(blob.ciphertext)
+  );
+  return new TextDecoder().decode(plainBuf);
+}
+
+async function fetchAuthBlob() {
+  // admin/index.html et admin/auth.json sont dans le même dossier.
+  const res = await fetch("auth.json", { cache: "no-cache" });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function saveAuthBlob(blob, message) {
+  let sha;
+  try {
+    const existing = await githubRequest(`/repos/${OWNER}/${REPO}/contents/${AUTH_FILE_PATH}?ref=${BRANCH}`);
+    sha = existing.sha;
+  } catch (err) {
+    sha = undefined; // le fichier n'existe pas encore
+  }
+  await putJsonFile(AUTH_FILE_PATH, blob, message, sha);
+}
+
+// ---------- Écrans de connexion ----------
+
 const appScreen = document.getElementById("app-screen");
-const tokenInput = document.getElementById("token-input");
-const loginBtn = document.getElementById("login-btn");
-const loginError = document.getElementById("login-error");
+const screens = {
+  checking: document.getElementById("login-checking"),
+  password: document.getElementById("login-password"),
+  setup: document.getElementById("login-setup"),
+  token: document.getElementById("login-token"),
+};
 
-async function tryLogin(token) {
+function showLoginScreen(name) {
+  Object.values(screens).forEach((el) => (el.hidden = true));
+  screens[name].hidden = false;
+}
+
+function enterApp() {
+  document.getElementById("login-screen").hidden = true;
+  appScreen.hidden = false;
+  initApp();
+}
+
+async function tryLoginWithToken(token, errorEl) {
   localStorage.setItem(TOKEN_KEY, token);
   try {
     await githubRequest(`/repos/${OWNER}/${REPO}`);
-    loginScreen.hidden = true;
-    appScreen.hidden = false;
-    initApp();
+    return true;
   } catch (err) {
     localStorage.removeItem(TOKEN_KEY);
-    loginError.textContent =
-      "Connexion impossible : token invalide, expiré, ou sans accès en écriture à ce repo.";
-    loginError.hidden = false;
+    errorEl.textContent = "Connexion impossible : token invalide, expiré, ou sans accès en écriture à ce repo.";
+    errorEl.hidden = false;
+    return false;
   }
 }
 
-loginBtn.addEventListener("click", () => {
+// Connexion par mot de passe (cas normal)
+const passwordInput = document.getElementById("password-input");
+const passwordLoginError = document.getElementById("password-login-error");
+
+document.getElementById("password-login-btn").addEventListener("click", async () => {
+  const password = passwordInput.value;
+  if (!password) return;
+  passwordLoginError.hidden = true;
+  try {
+    const blob = await fetchAuthBlob();
+    const token = await decryptTokenWithPassword(password, blob);
+    localStorage.setItem(TOKEN_KEY, token);
+    enterApp();
+  } catch (err) {
+    passwordLoginError.textContent = "Mot de passe incorrect.";
+    passwordLoginError.hidden = false;
+  }
+});
+
+// Première configuration : token + choix du mot de passe
+const setupError = document.getElementById("setup-error");
+
+document.getElementById("setup-btn").addEventListener("click", async () => {
+  const token = document.getElementById("setup-token-input").value.trim();
+  const password = document.getElementById("setup-password-input").value;
+  const confirm = document.getElementById("setup-password-confirm").value;
+  setupError.hidden = true;
+
+  if (!token || !password) return;
+  if (password.length < 8) {
+    setupError.textContent = "Choisis un mot de passe d'au moins 8 caractères.";
+    setupError.hidden = false;
+    return;
+  }
+  if (password !== confirm) {
+    setupError.textContent = "Les deux mots de passe ne correspondent pas.";
+    setupError.hidden = false;
+    return;
+  }
+
+  const ok = await tryLoginWithToken(token, setupError);
+  if (!ok) return;
+
+  try {
+    const blob = await encryptTokenWithPassword(password, token);
+    await saveAuthBlob(blob, "Configuration du mot de passe d'administration");
+    enterApp();
+  } catch (err) {
+    setupError.textContent = `Erreur lors de l'enregistrement du mot de passe : ${err.message}`;
+    setupError.hidden = false;
+  }
+});
+
+// Secours : connexion directe par token
+const tokenInput = document.getElementById("token-input");
+const loginError = document.getElementById("login-error");
+
+document.getElementById("login-btn").addEventListener("click", async () => {
   const token = tokenInput.value.trim();
   if (!token) return;
   loginError.hidden = true;
-  tryLogin(token);
+  const ok = await tryLoginWithToken(token, loginError);
+  if (ok) enterApp();
+});
+
+document.getElementById("show-token-login").addEventListener("click", (e) => {
+  e.preventDefault();
+  showLoginScreen("token");
+});
+document.getElementById("show-password-login").addEventListener("click", (e) => {
+  e.preventDefault();
+  showLoginScreen("password");
+});
+
+// Changer le mot de passe (une fois connecté)
+document.getElementById("change-password-btn").addEventListener("click", async () => {
+  const newPassword = prompt("Nouveau mot de passe (8 caractères minimum) :");
+  if (!newPassword) return;
+  if (newPassword.length < 8) {
+    alert("Le mot de passe doit faire au moins 8 caractères.");
+    return;
+  }
+  const confirmPassword = prompt("Confirme le nouveau mot de passe :");
+  if (newPassword !== confirmPassword) {
+    alert("Les deux mots de passe ne correspondent pas. Rien n'a été changé.");
+    return;
+  }
+  try {
+    showStatus("Enregistrement du nouveau mot de passe…", "loading");
+    const blob = await encryptTokenWithPassword(newPassword, getToken());
+    await saveAuthBlob(blob, "Changement du mot de passe d'administration");
+    showStatus("Mot de passe changé ✓", "success");
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+  }
 });
 
 document.getElementById("logout-btn").addEventListener("click", () => {
@@ -1169,8 +1357,14 @@ async function initApp() {
   loadPortfolio().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
 }
 
-if (getToken()) {
-  loginScreen.hidden = true;
-  appScreen.hidden = false;
-  initApp();
+async function startLoginFlow() {
+  if (getToken()) {
+    enterApp();
+    return;
+  }
+  showLoginScreen("checking");
+  const blob = await fetchAuthBlob().catch(() => null);
+  showLoginScreen(blob ? "password" : "setup");
 }
+
+startLoginFlow();

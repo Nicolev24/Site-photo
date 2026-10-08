@@ -19,24 +19,73 @@
 
 <!-- Écran de connexion -->
 <section id="login-screen" class="container admin-section">
-  <h1>Connexion</h1>
-  <p class="lead">Colle ton token d'accès personnel GitHub pour modifier le contenu du site.</p>
-  <div class="admin-field">
-    <label for="token-input">Token GitHub</label>
-    <input type="password" id="token-input" placeholder="github_pat_..." autocomplete="off" />
+
+  <div id="login-checking">
+    <h1>Connexion</h1>
+    <p class="lead">Vérification…</p>
   </div>
-  <button id="login-btn" class="btn btn-primary">Se connecter</button>
-  <p id="login-error" class="admin-error" hidden></p>
-  <details class="admin-help">
-    <summary>Comment obtenir ce token ?</summary>
-    <ol>
-      <li>Va sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
-      <li><strong>Repository access</strong> → "Only select repositories" → choisis <code>Nicolev24/Site-photo</code></li>
-      <li><strong>Permissions</strong> → "Repository permissions" → <strong>Contents</strong> → "Read and write"</li>
-      <li>Clique <strong>Generate token</strong>, copie-le (il ne sera affiché qu'une fois) et colle-le ci-dessus</li>
-    </ol>
-    <p>Le token reste uniquement dans ton navigateur, il n'est jamais envoyé ailleurs qu'à GitHub. Tu peux le révoquer à tout moment depuis cette même page GitHub.</p>
-  </details>
+
+  <!-- Connexion normale, une fois le mot de passe configuré -->
+  <div id="login-password" hidden>
+    <h1>Connexion</h1>
+    <p class="lead">Tape ton mot de passe pour modifier le contenu du site.</p>
+    <div class="admin-field">
+      <label for="password-input">Mot de passe</label>
+      <input type="password" id="password-input" autocomplete="current-password" />
+    </div>
+    <button id="password-login-btn" class="btn btn-primary">Se connecter</button>
+    <p id="password-login-error" class="admin-error" hidden></p>
+    <p class="admin-hint" style="margin-top:20px">
+      Mot de passe oublié ?
+      <a href="#" id="show-token-login">Se connecter avec le token GitHub à la place</a>
+    </p>
+  </div>
+
+  <!-- Première configuration : définir le mot de passe -->
+  <div id="login-setup" hidden>
+    <h1>Configuration</h1>
+    <p class="lead">Aucun mot de passe n'est encore configuré. Colle ton token GitHub une dernière fois pour en choisir un — ensuite, ce token ne te sera plus nécessaire au quotidien.</p>
+    <div class="admin-field">
+      <label for="setup-token-input">Token GitHub</label>
+      <input type="password" id="setup-token-input" placeholder="github_pat_..." autocomplete="off" />
+    </div>
+    <div class="admin-field">
+      <label for="setup-password-input">Choisis un mot de passe</label>
+      <input type="password" id="setup-password-input" autocomplete="new-password" />
+    </div>
+    <div class="admin-field">
+      <label for="setup-password-confirm">Confirme le mot de passe</label>
+      <input type="password" id="setup-password-confirm" autocomplete="new-password" />
+    </div>
+    <button id="setup-btn" class="btn btn-primary">Configurer et se connecter</button>
+    <p id="setup-error" class="admin-error" hidden></p>
+    <details class="admin-help">
+      <summary>Comment obtenir ce token ?</summary>
+      <ol>
+        <li>Va sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+        <li><strong>Repository access</strong> → "Only select repositories" → choisis <code>Nicolev24/Site-photo</code></li>
+        <li><strong>Permissions</strong> → "Repository permissions" → <strong>Contents</strong> → "Read and write"</li>
+        <li>Clique <strong>Generate token</strong>, copie-le (il ne sera affiché qu'une fois) et colle-le ci-dessus</li>
+      </ol>
+      <p>Ce mot de passe protège l'accès à l'administration du site : choisis-en un que toi seul connais, pas trop court (par exemple 4-5 mots, ou 12 caractères variés), et jamais utilisé ailleurs.</p>
+    </details>
+  </div>
+
+  <!-- Secours : connexion directe par token (mot de passe oublié) -->
+  <div id="login-token" hidden>
+    <h1>Connexion par token</h1>
+    <p class="lead">Colle ton token d'accès personnel GitHub. Tu pourras ensuite redéfinir un mot de passe.</p>
+    <div class="admin-field">
+      <label for="token-input">Token GitHub</label>
+      <input type="password" id="token-input" placeholder="github_pat_..." autocomplete="off" />
+    </div>
+    <button id="login-btn" class="btn btn-primary">Se connecter</button>
+    <p id="login-error" class="admin-error" hidden></p>
+    <p class="admin-hint" style="margin-top:20px">
+      <a href="#" id="show-password-login">← Revenir à la connexion par mot de passe</a>
+    </p>
+  </div>
+
 </section>
 
 <!-- Application -->
@@ -50,6 +99,7 @@
     </nav>
     <div class="admin-topbar-actions">
       <a href="../index.html" target="_blank" class="btn btn-outline btn-small">Voir le site</a>
+      <button id="change-password-btn" class="btn btn-outline btn-small">Changer le mot de passe</button>
       <button id="logout-btn" class="btn btn-outline btn-small">Déconnexion</button>
     </div>
   </div>
