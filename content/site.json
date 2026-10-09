@@ -5,9 +5,6 @@
     { "slug": "services", "title": "Services & tarifs" },
     { "slug": "contact", "title": "Contact" },
     { "slug": "mentions-legales", "title": "Mentions légales" },
-    { "slug": "confidentialite", "title": "Confidentialité" },
-    { "slug": "cookies", "title": "Cookies" },
-    { "slug": "cgv", "title": "Conditions générales de vente" },
-    { "slug": "retractation", "title": "Droit de rétractation" }
+    { "slug": "confidentialite", "title": "Confidentialité" }
   ]
 }
