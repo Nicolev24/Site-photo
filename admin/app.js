@@ -65,6 +65,11 @@ const SECTION_TYPES = [
     label: "Coordonnées + formulaire de contact",
     defaultData: () => ({ coordonnees_title: "Coordonnées", formulaire_title: "Formulaire de contact" }),
   },
+  {
+    value: "texte_juridique",
+    label: "Texte juridique (mentions légales, CGV...)",
+    defaultData: () => ({ blocks: [{ type: "paragraph", text: "" }] }),
+  },
 ];
 
 function sectionTypeLabel(type) {

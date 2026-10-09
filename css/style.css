@@ -670,3 +670,67 @@ textarea {
     text-align: center;
   }
 }
+
+/* ============ Pages légales (texte long) ============ */
+.legal-content {
+  max-width: 760px;
+}
+
+.legal-content h2 {
+  font-size: 1.3rem;
+  margin-top: 2.4em;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content p {
+  margin: 1em 0;
+}
+
+.legal-content ul {
+  margin: 1em 0;
+  padding-left: 22px;
+}
+
+.legal-content li {
+  margin-bottom: 6px;
+}
+
+/* Signale visiblement une information à compléter par le propriétaire du
+   site (jamais inventée) — posé par js/sections-renderer.js sur toute
+   occurrence littérale de "[À COMPLÉTER]". */
+mark.placeholder-a-completer {
+  background: #fdecc8;
+  color: #8a5a00;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* ============ Formulaire de contact : case de consentement ============ */
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.consent-row input[type="checkbox"] {
+  margin-top: 4px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.consent-row label {
+  font-size: 0.88rem;
+  color: var(--couleur-texte-attenue);
+  font-weight: 400;
+}
+
+.consent-row a {
+  color: var(--couleur-accent-fonce);
+  text-decoration: underline;
+}

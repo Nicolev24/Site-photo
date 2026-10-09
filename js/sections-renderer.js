@@ -273,6 +273,10 @@ async function buildContact(data, basePath) {
       <label for="message">Message</label>
       <textarea id="message" name="Message" required placeholder="Dites-m'en un peu plus sur votre projet, la date envisagée, le lieu..."></textarea>
     </div>
+    <div class="consent-row">
+      <input type="checkbox" id="consent" name="Consentement" required />
+      <label for="consent">J'accepte que mes données soient utilisées pour me répondre, conformément à la <a href="${resolveHref("confidentialite.html", basePath)}">politique de confidentialité</a>.</label>
+    </div>
     <button type="submit" class="btn btn-primary">Envoyer</button>
     <p class="form-note">En envoyant ce formulaire, votre client mail s'ouvre avec le message pré-rempli.</p>
   `;
@@ -297,6 +301,24 @@ async function buildContact(data, basePath) {
   return section;
 }
 
+function buildTexteJuridique(data) {
+  const section = el("section", { style: "padding-top:0" });
+  const container = el("div", { class: "container legal-content" });
+  (data.blocks || []).forEach((block) => {
+    if (block.type === "heading") {
+      container.appendChild(el("h2", {}, escapeHtml(block.text)));
+    } else if (block.type === "liste") {
+      const ul = el("ul", {});
+      (block.items || []).forEach((item) => ul.appendChild(el("li", {}, escapeHtml(item))));
+      container.appendChild(ul);
+    } else {
+      container.appendChild(el("p", {}, escapeHtml(block.text)));
+    }
+  });
+  section.appendChild(container);
+  return section;
+}
+
 const SECTION_BUILDERS = {
   hero: buildHero,
   texte_image: buildTexteImage,
@@ -306,7 +328,39 @@ const SECTION_BUILDERS = {
   tarifs: buildTarifs,
   cta: buildCta,
   contact: buildContact,
+  texte_juridique: buildTexteJuridique,
 };
+
+// Met en évidence toute note du type "[À COMPLÉTER]" ou
+// "[À VALIDER : ...]" dans le texte déjà rendu (jamais dans du HTML
+// interprété : on ne fait que déplacer des nœuds texte existants vers un
+// <mark>, donc aucun risque d'injection même si le contenu vient de
+// content/pages/*.json).
+function highlightPlaceholders(root) {
+  const PATTERN = /\[À [^\]]*\]/g;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  let node;
+  while ((node = walker.nextNode())) textNodes.push(node);
+  textNodes.forEach((textNode) => {
+    const text = textNode.nodeValue;
+    const matches = text.match(PATTERN);
+    if (!matches) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(PATTERN, (match, offset) => {
+      if (offset > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement("mark");
+      mark.className = "placeholder-a-completer";
+      mark.textContent = match;
+      frag.appendChild(mark);
+      lastIndex = offset + match.length;
+      return match;
+    });
+    if (lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    textNode.parentNode.replaceChild(frag, textNode);
+  });
+}
 
 async function renderSections(container, sections, basePath = "") {
   container.innerHTML = "";
@@ -320,6 +374,7 @@ async function renderSections(container, sections, basePath = "") {
       console.error(`Erreur de rendu pour la section "${section.type}"`, err);
     }
   }
+  highlightPlaceholders(container);
 }
 
 window.renderSections = renderSections;

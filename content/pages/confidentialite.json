@@ -1,0 +1,45 @@
+{
+  "seo": {
+    "title": "Politique de confidentialité — Nicolas Leveugle Photographie",
+    "description": "Comment vos données personnelles sont traitées sur le site de Nicolas Leveugle, photographe indépendant à Ath, Belgique.",
+    "og_image": "images/hero.jpg"
+  },
+  "sections": [
+    {
+      "id": "header-1",
+      "type": "texte",
+      "data": {
+        "eyebrow": "Vie privée",
+        "title": "Politique de confidentialité",
+        "text": "Comment vos données personnelles sont traitées lorsque vous utilisez ce site."
+      }
+    },
+    {
+      "id": "corps-1",
+      "type": "texte_juridique",
+      "data": {
+        "blocks": [
+          { "type": "heading", "text": "Responsable du traitement" },
+          { "type": "paragraph", "text": "Nicolas Leveugle, dont les coordonnées figurent dans les mentions légales, est responsable du traitement des données personnelles collectées via ce site." },
+          { "type": "heading", "text": "Données collectées" },
+          { "type": "paragraph", "text": "Les seules données personnelles collectées sur ce site sont celles que vous transmettez volontairement via le formulaire de contact : nom, adresse email, type de séance souhaité et message." },
+          { "type": "paragraph", "text": "Ce site n'utilise aucun cookie, aucun outil d'analyse d'audience ni aucun traceur (voir la politique de cookies)." },
+          { "type": "heading", "text": "Finalité du traitement" },
+          { "type": "paragraph", "text": "Ces données sont utilisées exclusivement pour répondre à votre demande de contact ou de réservation d'une séance photo." },
+          { "type": "heading", "text": "Base légale" },
+          { "type": "paragraph", "text": "Le traitement repose sur votre consentement explicite, donné en cochant la case prévue à cet effet avant l'envoi du formulaire, ainsi que, le cas échéant, sur l'exécution de mesures précontractuelles ou contractuelles liées à votre demande." },
+          { "type": "heading", "text": "Mode de transmission" },
+          { "type": "paragraph", "text": "Le formulaire de contact ouvre directement votre messagerie habituelle (via un lien « mailto ») : les données que vous saisissez sont envoyées par email, et ne transitent par aucun serveur intermédiaire ni base de données de ce site." },
+          { "type": "heading", "text": "Durée de conservation" },
+          { "type": "paragraph", "text": "Les emails reçus sont conservés dans la messagerie de Nicolas Leveugle le temps nécessaire au traitement de votre demande et, le cas échéant, à la relation commerciale qui en découle, puis supprimés ou archivés conformément aux obligations légales applicables." },
+          { "type": "heading", "text": "Destinataires des données" },
+          { "type": "paragraph", "text": "Vos données ne sont transmises à aucun tiers. Seul Nicolas Leveugle y a accès, via sa messagerie électronique personnelle." },
+          { "type": "heading", "text": "Vos droits" },
+          { "type": "paragraph", "text": "Conformément au Règlement général sur la protection des données (RGPD), vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation du traitement et d'opposition concernant vos données personnelles. Vous pouvez exercer ces droits en écrivant à nicolasleveugle@hotmail.com." },
+          { "type": "heading", "text": "Réclamation" },
+          { "type": "paragraph", "text": "Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de l'Autorité de protection des données (APD) : Rue de la Presse 35, 1000 Bruxelles — www.autoriteprotectiondonnees.be." }
+        ]
+      }
+    }
+  ]
+}

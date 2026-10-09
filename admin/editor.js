@@ -445,12 +445,124 @@ function buildEditableContact(data) {
     <div><label>Email</label><input type="email" disabled /></div>
     <div><label>Type de séance</label><select disabled><option>Formule découverte</option></select></div>
     <div><label>Message</label><textarea disabled rows="3" placeholder="Dites-m'en un peu plus sur votre projet..."></textarea></div>
+    <div class="consent-row"><input type="checkbox" disabled /><label>J'accepte que mes données soient utilisées pour me répondre, conformément à la politique de confidentialité.</label></div>
     <button type="button" class="btn btn-primary" disabled>Envoyer</button>
   `;
   right.appendChild(formPreview);
 
   container.appendChild(left);
   container.appendChild(right);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
+function buildEditableTexteJuridique(data, rerender) {
+  data.blocks = data.blocks || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.style.paddingTop = "0";
+  const container = document.createElement("div");
+  container.className = "container legal-content";
+
+  data.blocks.forEach((block, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "admin-legal-block";
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "admin-legal-block-toolbar";
+    const typeLabel = block.type === "heading" ? "Titre" : block.type === "liste" ? "Liste" : "Paragraphe";
+    toolbar.innerHTML = `
+      <span class="admin-section-type-badge">${typeLabel}</span>
+      <button type="button" class="admin-icon-btn f-up" title="Monter" ${idx === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" class="admin-icon-btn f-down" title="Descendre" ${idx === data.blocks.length - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" class="admin-icon-btn danger f-delete" title="Supprimer">🗑</button>
+    `;
+    toolbar.querySelector(".f-up").addEventListener("click", () => {
+      if (idx === 0) return;
+      swapAdjacent(data.blocks, idx, idx - 1);
+      rerender();
+    });
+    toolbar.querySelector(".f-down").addEventListener("click", () => {
+      if (idx === data.blocks.length - 1) return;
+      swapAdjacent(data.blocks, idx, idx + 1);
+      rerender();
+    });
+    toolbar.querySelector(".f-delete").addEventListener("click", () => {
+      if (!confirm("Supprimer ce bloc ?")) return;
+      data.blocks.splice(idx, 1);
+      rerender();
+    });
+    wrap.appendChild(toolbar);
+
+    if (block.type === "heading") {
+      wrap.appendChild(editableSpan(block, "text", { tag: "h2", placeholder: "Titre de section" }));
+    } else if (block.type === "liste") {
+      const ul = document.createElement("ul");
+      block.items = block.items || [];
+      block.items.forEach((item, iIdx) => {
+        const li = document.createElement("li");
+        const span = document.createElement("span");
+        span.className = "admin-editable";
+        span.contentEditable = "true";
+        span.textContent = item;
+        span.addEventListener("input", () => (block.items[iIdx] = span.textContent));
+        span.addEventListener("blur", () => {
+          block.items[iIdx] = span.textContent.trim();
+          span.textContent = block.items[iIdx];
+        });
+        span.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") e.preventDefault();
+        });
+        li.appendChild(span);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "admin-feature-remove";
+        removeBtn.title = "Supprimer cet élément";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          block.items.splice(iIdx, 1);
+          rerender();
+        });
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
+      });
+
+      const addLi = document.createElement("li");
+      addLi.className = "admin-add-feature";
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.textContent = "+ Ajouter un élément";
+      addBtn.addEventListener("click", () => {
+        block.items.push("Nouvel élément");
+        rerender();
+      });
+      addLi.appendChild(addBtn);
+      ul.appendChild(addLi);
+      wrap.appendChild(ul);
+    } else {
+      wrap.appendChild(editableSpan(block, "text", { tag: "p", placeholder: "Paragraphe" }));
+    }
+
+    container.appendChild(wrap);
+  });
+
+  const addRow = document.createElement("div");
+  addRow.className = "admin-add-block-row";
+  addRow.innerHTML = `
+    <button type="button" class="btn-outline btn-small" data-type="heading">+ Titre</button>
+    <button type="button" class="btn-outline btn-small" data-type="paragraph">+ Paragraphe</button>
+    <button type="button" class="btn-outline btn-small" data-type="liste">+ Liste</button>
+  `;
+  addRow.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.type;
+      const newBlock = type === "liste" ? { type, items: ["Nouvel élément"] } : { type, text: "" };
+      data.blocks.push(newBlock);
+      rerender();
+    });
+  });
+  container.appendChild(addRow);
+
   sectionEl.appendChild(container);
   return sectionEl;
 }
@@ -464,6 +576,7 @@ const EDITABLE_BUILDERS = {
   tarifs: buildEditableTarifs,
   cta: buildEditableCta,
   contact: buildEditableContact,
+  texte_juridique: buildEditableTexteJuridique,
 };
 
 // ---------- Barre d'insertion entre deux sections ----------

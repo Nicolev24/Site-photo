@@ -10,6 +10,12 @@
     { "label": "Services & tarifs", "href": "services.html" },
     { "label": "Contact", "href": "contact.html" }
   ],
-  "footer_legal_links": [],
+  "footer_legal_links": [
+    { "label": "Mentions légales", "href": "mentions-legales.html" },
+    { "label": "Confidentialité", "href": "confidentialite.html" },
+    { "label": "Cookies", "href": "cookies.html" },
+    { "label": "CGV", "href": "cgv.html" },
+    { "label": "Droit de rétractation", "href": "retractation.html" }
+  ],
   "copyright_text": "Nicolas Leveugle Photographie — Ath, Belgique"
 }

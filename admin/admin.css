@@ -943,6 +943,61 @@
   padding: 4px 0;
 }
 
+/* Blocs de texte juridique (mentions légales, CGV...) */
+.admin-legal-block {
+  position: relative;
+  padding-top: 8px;
+  margin-bottom: 4px;
+}
+
+.admin-legal-block-toolbar {
+  position: absolute;
+  top: -8px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--couleur-fond-alt);
+  border-radius: 999px;
+  padding: 3px 6px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 5;
+}
+
+.admin-legal-block:hover .admin-legal-block-toolbar,
+.admin-legal-block:focus-within .admin-legal-block-toolbar {
+  opacity: 1;
+}
+
+.admin-legal-block-toolbar .admin-section-type-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--couleur-texte-attenue);
+  padding: 0 6px;
+}
+
+.admin-legal-block-toolbar .admin-icon-btn {
+  background: transparent;
+  border: none;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--couleur-texte-attenue);
+  border-radius: 999px;
+}
+
+.admin-legal-block-toolbar .admin-icon-btn:hover {
+  background: #fff;
+}
+
+.admin-add-block-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+
 /* Aperçu non interactif du formulaire de contact (section « contact ») */
 .admin-form-preview {
   margin-top: 16px;
