@@ -80,9 +80,20 @@
    ============================================================ */
 
 .admin-shell {
-  display: flex;
   align-items: stretch;
   min-height: 100vh;
+}
+
+/* L'attribut HTML "hidden" ne suffit pas à lui seul ici : sans cette
+   règle explicite, le display:flex ci-dessous (même spécificité, posé
+   après la feuille de style du navigateur) l'emporterait et l'écran
+   applicatif resterait visible derrière l'écran de connexion. */
+.admin-shell[hidden] {
+  display: none;
+}
+
+.admin-shell:not([hidden]) {
+  display: flex;
 }
 
 .admin-sidebar {
