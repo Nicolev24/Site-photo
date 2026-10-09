@@ -7,6 +7,7 @@
 // les fichiers ou scripts existants du CMS.
 
 const API_BASE = "https://galerie-api.nicoleveugle.workers.dev";
+const LAST_GALLERY_KEY = "galerie-last-token";
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -83,10 +84,17 @@ async function loadGallery(token) {
     const gallery = await res.json();
     currentToken = token;
     currentPhotos = gallery.photos || [];
+    localStorage.setItem(LAST_GALLERY_KEY, token);
     document.getElementById("gallery-heading").textContent = gallery.name;
     document.getElementById("gallery-subheading").textContent = gallery.title || "";
+    document.getElementById("forget-gallery-btn").hidden = false;
     renderGrid();
   } catch {
+    // Jeton mémorisé périmé (galerie supprimée depuis) : on l'oublie pour
+    // ne pas re-rediriger dessus indéfiniment.
+    if (localStorage.getItem(LAST_GALLERY_KEY) === token) {
+      localStorage.removeItem(LAST_GALLERY_KEY);
+    }
     showEmptyState();
   }
 }
@@ -94,6 +102,11 @@ async function loadGallery(token) {
 function showEmptyState() {
   document.getElementById("gallery-empty-state").hidden = false;
 }
+
+document.getElementById("forget-gallery-btn").addEventListener("click", () => {
+  localStorage.removeItem(LAST_GALLERY_KEY);
+  window.location.href = window.location.pathname;
+});
 
 function renderGrid() {
   const grid = document.getElementById("gallery-grid");
@@ -189,7 +202,18 @@ async function init() {
   buildNav(navigation);
   await buildFooter(navigation);
 
-  const token = new URLSearchParams(window.location.search).get("g");
+  let token = new URLSearchParams(window.location.search).get("g");
+
+  // Pas de jeton dans l'URL (ex : clic sur "Espace client" dans le menu) :
+  // si ce navigateur a déjà ouvert une galerie, on y retourne directement.
+  if (!token) {
+    const remembered = localStorage.getItem(LAST_GALLERY_KEY);
+    if (remembered) {
+      window.location.replace(`${window.location.pathname}?g=${encodeURIComponent(remembered)}`);
+      return; // la page se recharge avec le jeton dans l'URL
+    }
+  }
+
   if (token) {
     await loadGallery(token);
   } else {
