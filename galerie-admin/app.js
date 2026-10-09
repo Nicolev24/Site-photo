@@ -172,9 +172,9 @@ function renderGalleriesList(galleries) {
         </div>
       </div>
     `;
-    card.querySelector(".f-open").addEventListener("click", () => openGallery(g.token, g.name, g.title));
+    card.querySelector(".f-open").addEventListener("click", () => openGallery(g.id, g.token, g.name, g.title));
     card.querySelector(".f-copy").addEventListener("click", () => copyClientLink(g.token));
-    card.querySelector(".f-delete").addEventListener("click", () => deleteGallery(g.token, g.name));
+    card.querySelector(".f-delete").addEventListener("click", () => deleteGallery(g.id, g.name));
     list.appendChild(card);
   });
 }
@@ -214,11 +214,11 @@ document.getElementById("create-gallery-btn").addEventListener("click", async ()
   }
 });
 
-async function deleteGallery(token, name) {
+async function deleteGallery(id, name) {
   if (!confirm(`Supprimer définitivement la galerie « ${name} » et toutes ses photos ?`)) return;
   try {
     showStatus("Suppression…", "loading");
-    await apiFetch(`/api/admin/galleries/${token}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/galleries/${id}`, { method: "DELETE" });
     showStatus("Galerie supprimée ✓", "success");
     loadGalleries();
   } catch (e) {
@@ -228,13 +228,18 @@ async function deleteGallery(token, name) {
 
 // ---------- Détail d'une galerie ----------
 
+let currentGalleryId = null;
 let currentGalleryToken = null;
+let currentGalleryName = null;
 
-async function openGallery(token, name, title) {
+async function openGallery(id, token, name, title) {
+  currentGalleryId = id;
   currentGalleryToken = token;
+  currentGalleryName = name;
   document.getElementById("detail-name").textContent = name;
   document.getElementById("detail-title").textContent = title || "";
   document.getElementById("upload-progress-list").innerHTML = "";
+  document.getElementById("client-email-input").value = "";
   showDetailView();
   await loadGalleryPhotos();
 }
@@ -243,10 +248,38 @@ document.getElementById("copy-link-btn").addEventListener("click", () => {
   if (currentGalleryToken) copyClientLink(currentGalleryToken);
 });
 
+document.getElementById("regenerate-link-btn").addEventListener("click", async () => {
+  if (!currentGalleryId) return;
+  if (!confirm("Régénérer le lien ? L'ancien lien cessera immédiatement de fonctionner.")) return;
+  try {
+    showStatus("Régénération du lien…", "loading");
+    const { token } = await apiFetch(`/api/admin/galleries/${currentGalleryId}/regenerate-link`, { method: "POST" });
+    currentGalleryToken = token;
+    showStatus("Nouveau lien généré ✓", "success");
+  } catch (e) {
+    showStatus(`Erreur : ${e.message}`, "error");
+  }
+});
+
+document.getElementById("send-email-btn").addEventListener("click", () => {
+  const emailInput = document.getElementById("client-email-input");
+  const email = emailInput.value.trim();
+  if (!email) {
+    showStatus("L'email du client est requis.", "error");
+    return;
+  }
+  if (!currentGalleryToken) return;
+  const link = clientLinkFor(currentGalleryToken);
+  const subject = `Vos photos${currentGalleryName ? ` — ${currentGalleryName}` : ""}`;
+  const body = `Bonjour,\n\nVos photos sont en ligne. Vous pouvez les consulter et les télécharger ici :\n${link}\n\nBien à vous,\nNicolas Leveugle`;
+  const mailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+});
+
 async function loadGalleryPhotos() {
   const grid = document.getElementById("photos-grid");
   try {
-    const gallery = await apiFetch(`/api/admin/galleries/${currentGalleryToken}`);
+    const gallery = await apiFetch(`/api/admin/galleries/${currentGalleryId}`);
     renderPhotosGrid(gallery.photos);
   } catch (e) {
     grid.innerHTML = "";
@@ -276,7 +309,7 @@ function renderPhotosGrid(photos) {
 async function deletePhoto(filename) {
   if (!confirm("Supprimer cette photo ?")) return;
   try {
-    await apiFetch(`/api/admin/galleries/${currentGalleryToken}/photos/${encodeURIComponent(filename)}`, {
+    await apiFetch(`/api/admin/galleries/${currentGalleryId}/photos/${encodeURIComponent(filename)}`, {
       method: "DELETE",
     });
     loadGalleryPhotos();
@@ -339,7 +372,7 @@ function markProgressRowError(row, message) {
   row.title = message;
 }
 
-function uploadPhotoRequest(token, file, thumbBlob, onProgress) {
+function uploadPhotoRequest(id, file, thumbBlob, onProgress) {
   return new Promise((resolve, reject) => {
     const form = new FormData();
     form.append("filename", file.name);
@@ -347,7 +380,7 @@ function uploadPhotoRequest(token, file, thumbBlob, onProgress) {
     form.append("thumb", thumbBlob, file.name);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${API_BASE}/api/admin/galleries/${token}/photos`);
+    xhr.open("POST", `${API_BASE}/api/admin/galleries/${id}/photos`);
     xhr.setRequestHeader("Authorization", `Bearer ${getSession()}`);
     xhr.upload.addEventListener("progress", (e) => {
       if (e.lengthComputable) onProgress(e.loaded / e.total);
@@ -382,7 +415,7 @@ async function uploadFiles(files) {
       const row = createProgressRow(file.name);
       try {
         const thumb = await generateThumbnail(file);
-        await uploadPhotoRequest(currentGalleryToken, file, thumb, (p) => updateProgressRow(row, p));
+        await uploadPhotoRequest(currentGalleryId, file, thumb, (p) => updateProgressRow(row, p));
         markProgressRowDone(row);
       } catch (err) {
         markProgressRowError(row, err.message);

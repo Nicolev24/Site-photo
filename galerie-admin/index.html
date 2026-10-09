@@ -62,7 +62,19 @@
         <h1 id="detail-name" style="margin-bottom:4px"></h1>
         <p class="lead" id="detail-title" style="margin:0"></p>
       </div>
-      <button id="copy-link-btn" class="btn-outline btn-small" type="button">Copier le lien client</button>
+      <div class="galerie-admin-card-actions">
+        <button id="copy-link-btn" class="btn-outline btn-small" type="button">Copier le lien client</button>
+        <button id="regenerate-link-btn" class="btn-outline btn-small" type="button">Régénérer le lien</button>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0">Envoyer le lien par email</h3>
+      <div class="admin-field-row">
+        <div class="admin-field"><label>Email du client</label><input type="email" id="client-email-input" placeholder="client@exemple.be" /></div>
+      </div>
+      <button id="send-email-btn" class="btn btn-primary btn-small" type="button">Envoyer par email</button>
+      <p class="admin-hint" style="margin-top:8px">Ouvre ton client email habituel, message pré-rempli — il ne reste qu'à cliquer sur Envoyer.</p>
     </div>
 
     <div id="drop-zone" class="galerie-dropzone" tabindex="0" role="button">

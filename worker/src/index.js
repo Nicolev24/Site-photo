@@ -129,20 +129,20 @@ async function checkRateLimit(kv, key, max, windowSeconds) {
 
 // ---------- Clés R2 ----------
 
-function galleryPrefix(token) {
-  return `galleries/${token}/`;
+function galleryPrefix(id) {
+  return `galleries/${id}/`;
 }
-function originalsPrefix(token) {
-  return `galleries/${token}/originals/`;
+function originalsPrefix(id) {
+  return `galleries/${id}/originals/`;
 }
-function thumbsPrefix(token) {
-  return `galleries/${token}/thumbs/`;
+function thumbsPrefix(id) {
+  return `galleries/${id}/thumbs/`;
 }
-function originalKey(token, filename) {
-  return `${originalsPrefix(token)}${filename}`;
+function originalKey(id, filename) {
+  return `${originalsPrefix(id)}${filename}`;
 }
-function thumbKey(token, filename) {
-  return `${thumbsPrefix(token)}${filename}`;
+function thumbKey(id, filename) {
+  return `${thumbsPrefix(id)}${filename}`;
 }
 
 function sanitizeFilename(name) {
@@ -185,25 +185,25 @@ async function writeIndexWithRetry(bucket, mutateFn, attempts = 6) {
   throw new Error("Conflit d'écriture sur l'index des galeries, réessaie.");
 }
 
-async function countPhotos(bucket, token) {
+async function countPhotos(bucket, id) {
   let count = 0;
   let cursor;
   do {
-    const listed = await bucket.list({ prefix: originalsPrefix(token), cursor, limit: 1000 });
+    const listed = await bucket.list({ prefix: originalsPrefix(id), cursor, limit: 1000 });
     count += listed.objects.length;
     cursor = listed.truncated ? listed.cursor : undefined;
   } while (cursor);
   return count;
 }
 
-async function listPhotos(bucket, token) {
+async function listPhotos(bucket, id) {
   const photos = [];
   let cursor;
   do {
-    const listed = await bucket.list({ prefix: originalsPrefix(token), cursor, limit: 1000 });
+    const listed = await bucket.list({ prefix: originalsPrefix(id), cursor, limit: 1000 });
     for (const obj of listed.objects) {
       photos.push({
-        filename: obj.key.slice(originalsPrefix(token).length),
+        filename: obj.key.slice(originalsPrefix(id).length),
         size: obj.size,
         uploadedAt: obj.uploaded,
       });
@@ -245,18 +245,18 @@ async function handleListGalleries(env, origin) {
   const galleries = await Promise.all(
     data.galleries.map(async (g) => ({
       ...g,
-      photoCount: await countPhotos(env.PHOTOS_BUCKET, g.token),
+      photoCount: await countPhotos(env.PHOTOS_BUCKET, g.id),
     }))
   );
   galleries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return json({ galleries }, 200, origin);
 }
 
-async function handleGetGalleryAdmin(env, token, origin) {
+async function handleGetGalleryAdmin(env, id, origin) {
   const { data } = await readIndex(env.PHOTOS_BUCKET);
-  const gallery = data.galleries.find((g) => g.token === token);
+  const gallery = data.galleries.find((g) => g.id === id);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
-  const photos = await listPhotos(env.PHOTOS_BUCKET, token);
+  const photos = await listPhotos(env.PHOTOS_BUCKET, id);
   return json({ ...gallery, photos }, 200, origin);
 }
 
@@ -271,9 +271,10 @@ async function handleCreateGallery(request, env, origin) {
   const title = typeof body?.title === "string" ? body.title.trim() : "";
   if (!name) return errorResponse("Le nom du client est requis.", 400, origin);
 
+  const id = randomToken(TOKEN_BYTES);
   const token = randomToken(TOKEN_BYTES);
   const createdAt = new Date().toISOString();
-  const gallery = { token, name, title, createdAt };
+  const gallery = { id, token, name, title, createdAt };
 
   await writeIndexWithRetry(env.PHOTOS_BUCKET, (data) => {
     data.galleries.push(gallery);
@@ -283,8 +284,8 @@ async function handleCreateGallery(request, env, origin) {
   return json(gallery, 201, origin);
 }
 
-async function handleDeleteGallery(env, token, origin) {
-  const prefix = galleryPrefix(token);
+async function handleDeleteGallery(env, id, origin) {
+  const prefix = galleryPrefix(id);
   let cursor;
   do {
     const listed = await env.PHOTOS_BUCKET.list({ prefix, cursor, limit: 1000 });
@@ -295,16 +296,32 @@ async function handleDeleteGallery(env, token, origin) {
   } while (cursor);
 
   await writeIndexWithRetry(env.PHOTOS_BUCKET, (data) => {
-    data.galleries = data.galleries.filter((g) => g.token !== token);
+    data.galleries = data.galleries.filter((g) => g.id !== id);
     return data;
   });
 
   return json({ ok: true }, 200, origin);
 }
 
-async function handleUploadPhoto(request, env, token, origin) {
+async function handleRegenerateLink(env, id, origin) {
   const { data } = await readIndex(env.PHOTOS_BUCKET);
-  if (!data.galleries.some((g) => g.token === token)) {
+  if (!data.galleries.some((g) => g.id === id)) {
+    return errorResponse("Galerie introuvable.", 404, origin);
+  }
+
+  const newToken = randomToken(TOKEN_BYTES);
+  await writeIndexWithRetry(env.PHOTOS_BUCKET, (data2) => {
+    const gallery = data2.galleries.find((g) => g.id === id);
+    if (gallery) gallery.token = newToken;
+    return data2;
+  });
+
+  return json({ token: newToken }, 200, origin);
+}
+
+async function handleUploadPhoto(request, env, id, origin) {
+  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  if (!data.galleries.some((g) => g.id === id)) {
     return errorResponse("Galerie introuvable.", 404, origin);
   }
 
@@ -322,18 +339,18 @@ async function handleUploadPhoto(request, env, token, origin) {
   const rawFilename = (form.get("filename") || originalFile.name || "photo.jpg").toString();
   const filename = `${Date.now()}-${sanitizeFilename(rawFilename)}`;
 
-  await env.PHOTOS_BUCKET.put(originalKey(token, filename), originalFile, {
+  await env.PHOTOS_BUCKET.put(originalKey(id, filename), originalFile, {
     httpMetadata: { contentType: originalFile.type || "image/jpeg" },
   });
-  await env.PHOTOS_BUCKET.put(thumbKey(token, filename), thumbFile, {
+  await env.PHOTOS_BUCKET.put(thumbKey(id, filename), thumbFile, {
     httpMetadata: { contentType: thumbFile.type || "image/jpeg" },
   });
 
   return json({ filename }, 201, origin);
 }
 
-async function handleDeletePhoto(env, token, filename, origin) {
-  await env.PHOTOS_BUCKET.delete([originalKey(token, filename), thumbKey(token, filename)]);
+async function handleDeletePhoto(env, id, filename, origin) {
+  await env.PHOTOS_BUCKET.delete([originalKey(id, filename), thumbKey(id, filename)]);
   return json({ ok: true }, 200, origin);
 }
 
@@ -345,14 +362,17 @@ async function handleGetClientGallery(env, token, origin) {
   const { data } = await readIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
-  const photos = await listPhotos(env.PHOTOS_BUCKET, token);
+  const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
   return json({ name: gallery.name, title: gallery.title, photos }, 200, origin);
 }
 
 async function handleGetPhoto(env, token, filename, searchParams, origin) {
   if (!isValidToken(token)) return errorResponse("Photo introuvable.", 404, origin);
+  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.token === token);
+  if (!gallery) return errorResponse("Photo introuvable.", 404, origin);
   const variant = searchParams.get("variant") === "thumb" ? "thumb" : "original";
-  const key = variant === "thumb" ? thumbKey(token, filename) : originalKey(token, filename);
+  const key = variant === "thumb" ? thumbKey(gallery.id, filename) : originalKey(gallery.id, filename);
   const obj = await env.PHOTOS_BUCKET.get(key);
   if (!obj) return errorResponse("Photo introuvable.", 404, origin);
 
@@ -399,6 +419,11 @@ export default {
       }
       if (m && request.method === "DELETE") {
         return requireAuth(request, env, origin, () => handleDeleteGallery(env, m[1], origin));
+      }
+
+      m = pathname.match(/^\/api\/admin\/galleries\/([^/]+)\/regenerate-link$/);
+      if (m && request.method === "POST") {
+        return requireAuth(request, env, origin, () => handleRegenerateLink(env, m[1], origin));
       }
 
       m = pathname.match(/^\/api\/admin\/galleries\/([^/]+)\/photos$/);
