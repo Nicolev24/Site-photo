@@ -1,0 +1,19 @@
+name = "galerie-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Ces bindings sont déjà configurés sur le dashboard Cloudflare pour le
+# vrai Worker déployé (galerie-api.nicoleveugle.workers.dev). Ce fichier
+# sert surtout aux tests locaux (`wrangler dev`, émulation locale de R2/KV)
+# et, si tu préfères un jour déployer en ligne de commande plutôt que par
+# copier-coller dans l'éditeur du dashboard, il faudra alors remplacer
+# l'id du namespace KV ci-dessous par le vrai (visible sur le dashboard,
+# Workers & Pages → KV → galerie-rate-limit).
+
+[[r2_buckets]]
+binding = "PHOTOS_BUCKET"
+bucket_name = "galerie-photos"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "local-dev-placeholder"
