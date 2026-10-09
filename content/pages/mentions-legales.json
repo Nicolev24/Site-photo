@@ -19,27 +19,46 @@
       "type": "texte_juridique",
       "data": {
         "blocks": [
-          { "type": "heading", "text": "Éditeur du site" },
-          { "type": "paragraph", "text": "Ce site est édité par Nicolas Leveugle, exerçant sous le nom commercial « Nicolas Leveugle Photographie », en tant qu'indépendant à titre complémentaire en Belgique." },
-          { "type": "liste", "items": [
-            "Nom et prénom : Nicolas Leveugle",
-            "Forme juridique : Indépendant à titre complémentaire",
-            "Adresse : [À COMPLÉTER]",
-            "Email : nicolasleveugle@hotmail.com",
-            "Téléphone : [À COMPLÉTER]",
-            "Numéro d'entreprise (BCE) : [À COMPLÉTER]",
-            "Numéro de TVA : [À COMPLÉTER]"
-          ]},
-          { "type": "heading", "text": "Hébergement" },
-          { "type": "paragraph", "text": "Ce site est hébergé par GitHub, Inc. (GitHub Pages), 88 Colin P Kelly Jr Street, San Francisco, CA 94107, États-Unis." },
-          { "type": "heading", "text": "Responsable de la publication" },
-          { "type": "paragraph", "text": "Nicolas Leveugle est responsable de la publication du contenu de ce site." },
-          { "type": "heading", "text": "Assurance professionnelle" },
-          { "type": "paragraph", "text": "[À COMPLÉTER : nom de l'assureur et numéro de police d'assurance en responsabilité civile professionnelle, le cas échéant]." },
-          { "type": "heading", "text": "Propriété intellectuelle" },
-          { "type": "paragraph", "text": "Sauf mention contraire, l'ensemble des photographies, textes et éléments graphiques présents sur ce site sont la propriété de Nicolas Leveugle et sont protégés par le droit d'auteur. Toute reproduction, représentation ou utilisation, totale ou partielle, sans autorisation préalable est interdite." },
-          { "type": "heading", "text": "Droit applicable" },
-          { "type": "paragraph", "text": "Le présent site et ses mentions légales sont soumis au droit belge. En cas de litige, les tribunaux de l'arrondissement judiciaire du domicile ou du siège de [À COMPLÉTER] sont seuls compétents, sauf disposition légale impérative contraire protégeant le consommateur." }
+          {
+            "type": "heading",
+            "text": "Éditeur du site"
+          },
+          {
+            "type": "paragraph",
+            "text": "Ce site est édité par Nicolas Leveugle, exerçant sous le nom commercial « Nicolas Leveugle Photographie », en tant qu'indépendant à titre complémentaire en Belgique."
+          },
+          {
+            "type": "liste",
+            "items": [
+              "Nom et prénom : Nicolas Leveugle",
+              "Adresse : Ath",
+              "Email : nicolasleveugle@hotmail.com"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Hébergement"
+          },
+          {
+            "type": "paragraph",
+            "text": "Ce site est hébergé par GitHub, Inc. (GitHub Pages), 88 Colin P Kelly Jr Street, San Francisco, CA 94107, États-Unis."
+          },
+          {
+            "type": "heading",
+            "text": "Responsable de la publication"
+          },
+          {
+            "type": "paragraph",
+            "text": "Nicolas Leveugle est responsable de la publication du contenu de ce site."
+          },
+          {
+            "type": "heading",
+            "text": "Propriété intellectuelle"
+          },
+          {
+            "type": "paragraph",
+            "text": "Sauf mention contraire, l'ensemble des photographies, textes et éléments graphiques présents sur ce site sont la propriété de Nicolas Leveugle et sont protégés par le droit d'auteur. Toute reproduction, représentation ou utilisation, totale ou partielle, sans autorisation préalable est interdite."
+          }
         ]
       }
     }
