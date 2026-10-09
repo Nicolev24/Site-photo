@@ -117,28 +117,27 @@
     </div>
 
     <div id="pages-editor-view" hidden>
-      <button id="pages-back" class="btn-outline btn-small" type="button">← Retour aux pages</button>
-      <h2 id="pages-editor-title" style="margin-top:16px"></h2>
-
-      <h3>Référencement (SEO)</h3>
-      <div class="admin-card">
-        <div class="admin-field"><label>Titre de la page (onglet du navigateur, Google)</label><input type="text" id="seo-title" /></div>
-        <div class="admin-field"><label>Description (Google, partages)</label><textarea id="seo-description" rows="2"></textarea></div>
-        <div class="admin-field"><label>Image de partage (chemin, ex : images/hero.jpg)</label><input type="text" id="seo-og-image" /></div>
+      <div class="admin-editor-topbar">
+        <button id="pages-back" class="btn-outline btn-small" type="button">← Retour aux pages</button>
+        <h2 id="pages-editor-title"></h2>
+        <div class="admin-editor-topbar-actions">
+          <details class="admin-seo-popover">
+            <summary class="btn-outline btn-small">Réglages SEO</summary>
+            <div class="admin-popover-panel">
+              <div class="admin-field"><label>Titre de la page (onglet du navigateur, Google)</label><input type="text" id="seo-title" /></div>
+              <div class="admin-field"><label>Description (Google, partages)</label><textarea id="seo-description" rows="2"></textarea></div>
+              <div class="admin-field"><label>Image de partage (chemin, ex : images/hero.jpg)</label><input type="text" id="seo-og-image" /></div>
+            </div>
+          </details>
+          <button id="page-preview" class="btn-outline btn-small" type="button">Aperçu plein écran</button>
+          <button id="page-save" class="btn btn-primary btn-small" type="button">Enregistrer</button>
+        </div>
       </div>
+      <p class="admin-hint admin-construction-hint">
+        🚧 Mode construction — clique directement sur un texte pour le modifier, sur une photo pour la remplacer. Survole une section pour la réordonner, la supprimer, ou en ajouter une nouvelle.
+      </p>
 
-      <h3>Sections de la page</h3>
-      <p class="lead" style="margin-top:-8px">Glisse-dépose une section (ou utilise les flèches) pour la réordonner.</p>
-      <div id="sections-list" class="admin-list"></div>
-      <div class="admin-add-section-row">
-        <select id="section-type-picker"></select>
-        <button id="section-add" class="btn btn-outline" type="button">+ Ajouter cette section</button>
-      </div>
-
-      <div class="admin-save-row admin-save-row-split">
-        <button id="page-preview" class="btn-outline" type="button">Prévisualiser</button>
-        <button id="page-save" class="btn btn-primary" type="button">Enregistrer la page</button>
-      </div>
+      <div id="live-editor-root" class="admin-live-editor"></div>
     </div>
 
   </div>
@@ -244,5 +243,6 @@
 </section>
 
 <script src="app.js"></script>
+<script src="editor.js"></script>
 </body>
 </html>

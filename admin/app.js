@@ -617,11 +617,6 @@ let currentEditingSlug = null;
 // Onglet Pages
 // ========================================================================
 
-function populateSectionTypePicker() {
-  const picker = document.getElementById("section-type-picker");
-  picker.innerHTML = SECTION_TYPES.map((t) => `<option value="${t.value}">${escapeHtml(t.label)}</option>`).join("");
-}
-
 function renderPagesList() {
   const list = document.getElementById("pages-list");
   list.innerHTML = "";
@@ -671,7 +666,7 @@ function renderPageEditor() {
   document.getElementById("seo-title").value = page.data.seo.title || "";
   document.getElementById("seo-description").value = page.data.seo.description || "";
   document.getElementById("seo-og-image").value = page.data.seo.og_image || "";
-  renderSectionsList();
+  renderEditableSections(document.getElementById("live-editor-root"), page.data.sections);
 }
 
 document.getElementById("seo-title").addEventListener("input", (e) => {
@@ -712,54 +707,9 @@ document.getElementById("pages-add").addEventListener("click", () => {
   openPageEditor(slug, title.trim());
 });
 
-// ---------- Sections d'une page ----------
-
-function renderSectionsList() {
-  const page = state.pages[currentEditingSlug];
-  const listEl = document.getElementById("sections-list");
-  listEl.innerHTML = "";
-  page.data.sections.forEach((section, index) => {
-    listEl.appendChild(buildSectionCard(section, index, page.data.sections));
-  });
-  enableDragReorder(listEl, page.data.sections, renderSectionsList);
-}
-
-function buildSectionCard(section, index, sections) {
-  const card = document.createElement("div");
-  card.className = "admin-section-card";
-  card.innerHTML = `
-    <div class="admin-section-card-header">
-      <span class="admin-drag-handle" title="Glisser pour réordonner">⠿⠿</span>
-      <span class="admin-section-type-badge">${escapeHtml(sectionTypeLabel(section.type))}</span>
-      <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑</button>
-      <button type="button" class="admin-icon-btn f-down" ${index === sections.length - 1 ? "disabled" : ""}>↓</button>
-      <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
-    </div>
-    <div class="admin-section-card-body"></div>
-  `;
-
-  renderSectionFields(card.querySelector(".admin-section-card-body"), section);
-
-  card.querySelector(".f-up").addEventListener("click", () => {
-    if (index === 0) return;
-    swapAdjacent(sections, index, index - 1);
-    renderSectionsList();
-  });
-  card.querySelector(".f-down").addEventListener("click", () => {
-    if (index === sections.length - 1) return;
-    swapAdjacent(sections, index, index + 1);
-    renderSectionsList();
-  });
-  card.querySelector(".f-delete").addEventListener("click", () => {
-    if (!confirm("Supprimer cette section ?")) return;
-    sections.splice(index, 1);
-    renderSectionsList();
-  });
-
-  return card;
-}
-
-// ---------- Champs de formulaire génériques ----------
+// ---------- Champs de formulaire génériques (réutilisés par les popovers
+// de réglages de l'éditeur visuel, pour les quelques champs sans
+// équivalent visuel direct : liens, position d'image...) ----------
 
 function textField(container, label, obj, key, opts = {}) {
   const wrap = document.createElement("div");
@@ -808,177 +758,6 @@ function imageField(container, label, obj, rerender) {
   container.appendChild(wrap);
   return wrap;
 }
-
-function renderSectionFields(container, section) {
-  container.innerHTML = "";
-  const data = section.data;
-  const rerender = () => renderSectionFields(container, section);
-
-  switch (section.type) {
-    case "hero":
-      imageField(container, "Photo", data, rerender);
-      textField(container, "Description (texte alternatif)", data, "alt");
-      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
-      textField(container, "Titre — 1ère ligne", data, "title_line1");
-      textField(container, "Titre — 2ème ligne", data, "title_line2");
-      textField(container, "Sous-titre", data, "subtitle", { textarea: true, rows: 2 });
-      textField(container, "Texte du bouton", data, "button_label");
-      textField(container, "Lien du bouton", data, "button_href");
-      break;
-
-    case "texte_image":
-      imageField(container, "Photo", data, rerender);
-      textField(container, "Description (texte alternatif)", data, "alt");
-      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
-      textField(container, "Titre", data, "title");
-      textField(container, "Texte", data, "text", { textarea: true, rows: 4 });
-      selectField(container, "Position de l'image", data, "image_side", [
-        { value: "droite", label: "À droite du texte" },
-        { value: "gauche", label: "À gauche du texte" },
-      ]);
-      textField(container, "Texte du bouton (optionnel)", data, "button_label");
-      textField(container, "Lien du bouton (optionnel)", data, "button_href");
-      break;
-
-    case "texte":
-      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
-      textField(container, "Titre", data, "title");
-      textField(container, "Texte", data, "text", { textarea: true, rows: 3 });
-      break;
-
-    case "galerie_categories":
-      textField(container, "Petite ligne au-dessus du titre", data, "eyebrow");
-      textField(container, "Titre", data, "title");
-      textField(container, "Texte", data, "text", { textarea: true, rows: 2 });
-      (data.teasers || []).forEach((teaser) => {
-        const sub = document.createElement("div");
-        sub.className = "admin-subcard";
-        const catLabel = CATEGORIES.find((c) => c.value === teaser.category)?.label || teaser.category;
-        sub.innerHTML = `<p><strong>${escapeHtml(catLabel)}</strong></p>`;
-        container.appendChild(sub);
-        imageField(sub, "Photo", teaser, rerender);
-        textField(sub, "Titre affiché", teaser, "label");
-        textField(sub, "Description (texte alternatif)", teaser, "alt");
-      });
-      break;
-
-    case "portfolio_galerie":
-      container.innerHTML = `<p class="admin-hint">Cette section affiche automatiquement toutes les photos du portfolio (gérées dans l'onglet « Portfolio »), avec les filtres par catégorie. Rien à configurer ici.</p>`;
-      break;
-
-    case "tarifs": {
-      data.plans = data.plans || [];
-      const plansWrap = document.createElement("div");
-      plansWrap.className = "admin-list";
-      container.appendChild(plansWrap);
-
-      const renderPlans = () => {
-        plansWrap.innerHTML = "";
-        data.plans.forEach((plan, idx) => {
-          const sub = document.createElement("div");
-          sub.className = "admin-subcard";
-          textField(sub, "Nom de la formule", plan, "title");
-          textField(sub, "Prix (ex : 100€ ou Devis)", plan, "price");
-          textField(sub, "Complément après le prix (optionnel)", plan, "price_suffix");
-
-          const highlightWrap = document.createElement("div");
-          highlightWrap.className = "admin-field admin-checkbox-row";
-          highlightWrap.innerHTML = `<input type="checkbox" ${plan.highlight ? "checked" : ""} id="hl-${idx}" /><label for="hl-${idx}">Mettre en avant (bordure colorée)</label>`;
-          highlightWrap.querySelector("input").addEventListener("change", (e) => (plan.highlight = e.target.checked));
-          sub.appendChild(highlightWrap);
-
-          textField(sub, "Badge (optionnel)", plan, "badge");
-
-          const featWrap = document.createElement("div");
-          featWrap.className = "admin-field";
-          featWrap.innerHTML = `<label>Caractéristiques (une par ligne)</label><textarea rows="4">${escapeHtml((plan.features || []).join("\n"))}</textarea>`;
-          featWrap.querySelector("textarea").addEventListener("input", (e) => {
-            plan.features = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
-          });
-          sub.appendChild(featWrap);
-
-          textField(sub, "Texte du bouton", plan, "cta_label");
-
-          const toolbar = document.createElement("div");
-          toolbar.className = "admin-card-toolbar";
-          toolbar.innerHTML = `
-            <div class="admin-card-toolbar-left">
-              <button type="button" class="admin-icon-btn f-up" ${idx === 0 ? "disabled" : ""}>↑ Monter</button>
-              <button type="button" class="admin-icon-btn f-down" ${idx === data.plans.length - 1 ? "disabled" : ""}>↓ Descendre</button>
-            </div>
-            <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
-          `;
-          toolbar.querySelector(".f-up").addEventListener("click", () => {
-            if (idx === 0) return;
-            swapAdjacent(data.plans, idx, idx - 1);
-            renderPlans();
-          });
-          toolbar.querySelector(".f-down").addEventListener("click", () => {
-            if (idx === data.plans.length - 1) return;
-            swapAdjacent(data.plans, idx, idx + 1);
-            renderPlans();
-          });
-          toolbar.querySelector(".f-delete").addEventListener("click", () => {
-            if (!confirm("Supprimer cette formule ?")) return;
-            data.plans.splice(idx, 1);
-            renderPlans();
-          });
-          sub.appendChild(toolbar);
-          plansWrap.appendChild(sub);
-        });
-      };
-      renderPlans();
-
-      const addPlanBtn = document.createElement("button");
-      addPlanBtn.type = "button";
-      addPlanBtn.className = "btn-outline btn-small";
-      addPlanBtn.textContent = "+ Ajouter une formule";
-      addPlanBtn.addEventListener("click", () => {
-        data.plans.push({ title: "Nouvelle formule", price: "", price_suffix: "", highlight: false, badge: "", features: [], cta_label: "Choisir cette formule" });
-        renderPlans();
-      });
-      container.appendChild(addPlanBtn);
-
-      textField(container, "Note commune (sous les formules)", data, "note", { textarea: true, rows: 2 });
-      break;
-    }
-
-    case "cta":
-      textField(container, "Titre", data, "title");
-      textField(container, "Texte", data, "text", { textarea: true, rows: 2 });
-      textField(container, "Texte du bouton", data, "button_label");
-      textField(container, "Lien du bouton", data, "button_href");
-      break;
-
-    case "contact":
-      textField(container, "Titre de la colonne coordonnées", data, "coordonnees_title");
-      textField(container, "Titre de la colonne formulaire", data, "formulaire_title");
-      if (state.contact) {
-        const sub = document.createElement("div");
-        sub.className = "admin-subcard";
-        sub.innerHTML = `<p><strong>Coordonnées</strong> — utilisées ici et dans le pied de page de toutes les pages</p>`;
-        container.appendChild(sub);
-        const c = state.contact.data;
-        textField(sub, "Email", c, "email");
-        textField(sub, "Pseudo Instagram (avec @)", c, "instagram_handle");
-        textField(sub, "Lien Instagram complet", c, "instagram_url");
-        textField(sub, "Zone d'intervention", c, "zone");
-        textField(sub, "Délai de réponse", c, "response_delay");
-      }
-      break;
-
-    default:
-      container.innerHTML = `<p class="admin-hint">Type de section inconnu : ${escapeHtml(section.type)}</p>`;
-  }
-}
-
-document.getElementById("section-add").addEventListener("click", () => {
-  const type = document.getElementById("section-type-picker").value;
-  const typeInfo = SECTION_TYPES.find((t) => t.value === type);
-  const page = state.pages[currentEditingSlug];
-  page.data.sections.push({ id: `s${Date.now()}`, type, data: typeInfo.defaultData() });
-  renderSectionsList();
-});
 
 // ---------- Prévisualisation ----------
 
@@ -1332,7 +1111,6 @@ document.getElementById("apparence-save").addEventListener("click", async () => 
 // ========================================================================
 
 async function initApp() {
-  populateSectionTypePicker();
   try {
     showStatus("Chargement…", "loading");
     const [site, navigation, appearance, contact] = await Promise.all([

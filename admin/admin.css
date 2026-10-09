@@ -415,3 +415,467 @@
   display: flex;
   gap: 12px;
 }
+
+/* ============================================================
+   Éditeur visuel « mode construction » (onglet Pages)
+   ============================================================ */
+
+.admin-editor-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.admin-editor-topbar h2 {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.admin-editor-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.admin-seo-popover {
+  position: relative;
+}
+
+.admin-seo-popover summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.admin-seo-popover summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-seo-popover .admin-popover-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  padding: 16px;
+  box-shadow: 0 8px 28px rgba(20, 17, 14, 0.14);
+  z-index: 50;
+}
+
+.admin-construction-hint {
+  max-width: 960px;
+  margin: 12px auto 0;
+  padding: 10px 24px;
+  background: var(--couleur-fond-alt);
+  border-radius: var(--rayon-bordure);
+}
+
+/* Le rendu « plein site » casse volontairement la largeur du panneau admin
+   pour ressembler exactement au site public. */
+.admin-live-editor {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 24px;
+}
+
+.admin-live-editor a {
+  cursor: text;
+}
+
+/* Carte de section : survol = outil de réorganisation/suppression */
+.admin-section-wrap {
+  position: relative;
+}
+
+.admin-section-wrap.drag-over {
+  box-shadow: inset 0 3px 0 var(--couleur-accent);
+}
+
+.admin-section-wrap.dragging {
+  opacity: 0.4;
+}
+
+.admin-section-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(29, 26, 23, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  padding: 5px 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.admin-section-wrap:hover .admin-section-toolbar,
+.admin-section-wrap:focus-within .admin-section-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.admin-section-toolbar .admin-drag-handle {
+  cursor: grab;
+  color: #fff;
+  padding: 0 4px;
+}
+
+.admin-section-toolbar .admin-section-type-badge {
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.admin-section-toolbar .admin-icon-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 4px 7px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.admin-section-toolbar .admin-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.admin-section-toolbar .admin-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.admin-section-toolbar .admin-icon-btn:disabled:hover {
+  background: transparent;
+}
+
+.admin-section-toolbar .admin-icon-btn.danger:hover {
+  background: #b3261e;
+}
+
+/* Barre d'insertion entre deux sections */
+.admin-insert-bar {
+  position: relative;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-insert-bar::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 50%;
+  border-top: 1px dashed transparent;
+}
+
+.admin-insert-bar:hover::before {
+  border-top-color: var(--couleur-accent);
+}
+
+.admin-insert-btn {
+  opacity: 0;
+  background: var(--couleur-texte);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.15s;
+}
+
+.admin-insert-bar:hover .admin-insert-btn {
+  opacity: 1;
+}
+
+.admin-insert-picker {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  box-shadow: 0 8px 28px rgba(20, 17, 14, 0.14);
+  padding: 6px;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 40;
+  width: 260px;
+}
+
+.admin-insert-picker[hidden] {
+  display: none;
+}
+
+.admin-insert-picker:not([hidden]) {
+  display: flex;
+}
+
+.admin-insert-picker button {
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--police-texte);
+  color: var(--couleur-texte);
+}
+
+.admin-insert-picker button:hover {
+  background: var(--couleur-fond-alt);
+}
+
+/* Champs de texte directement éditables sur le rendu réel */
+.admin-editable {
+  outline: none;
+  border-radius: 4px;
+  cursor: text;
+  white-space: pre-wrap;
+  transition: background 0.12s;
+}
+
+.admin-editable:hover {
+  background: rgba(181, 101, 46, 0.1);
+}
+
+.admin-editable:focus {
+  background: rgba(181, 101, 46, 0.14);
+  box-shadow: 0 0 0 2px var(--couleur-accent);
+}
+
+.admin-editable:empty {
+  display: inline-block;
+  min-width: 60px;
+}
+
+.admin-editable:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(0, 0, 0, 0.35);
+  font-style: italic;
+}
+
+.hero-content .admin-editable:empty::before {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Photos : survol = superposition pour changer la photo */
+.admin-image-hotspot {
+  position: relative;
+}
+
+.admin-editable-image-wrap {
+  position: relative;
+  display: block;
+}
+
+.admin-image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(20, 17, 14, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  padding: 16px;
+}
+
+/* Ne se déclenche qu'au survol de la photo elle-même (pas de toute la
+   section) : sur le hero, le texte est visuellement par-dessus la photo et
+   ne doit jamais être caché par cette superposition quand on clique dessus
+   pour l'éditer — l'image ne reçoit le survol que dans les zones où le
+   texte ne la recouvre pas. */
+.admin-image-hotspot:has(> img:hover) .admin-image-overlay,
+.admin-editable-image-wrap:has(> img:hover) .admin-image-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.admin-image-upload-btn {
+  background: #fff;
+  color: var(--couleur-texte);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-image-alt-input {
+  width: 100%;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: var(--rayon-bordure);
+  border: none;
+  font-size: 0.8rem;
+  font-family: var(--police-texte);
+}
+
+/* Réglages additionnels (liens, position d'image...) via petite icône */
+.admin-inline-settings {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.admin-gear-btn {
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.admin-gear-btn:hover {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.admin-inline-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 260px;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  padding: 14px;
+  box-shadow: 0 8px 28px rgba(20, 17, 14, 0.14);
+  z-index: 40;
+  white-space: normal;
+}
+
+.admin-inline-popover .admin-field {
+  margin: 0 0 12px;
+}
+
+.admin-inline-popover .admin-field:last-child {
+  margin-bottom: 0;
+}
+
+/* Formules de tarifs : mini barre d'outils par carte */
+.price-card {
+  position: relative;
+}
+
+.admin-plan-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+
+.price-card:hover .admin-plan-toolbar,
+.price-card:focus-within .admin-plan-toolbar {
+  opacity: 1;
+}
+
+.admin-plan-toolbar .admin-icon-btn {
+  background: var(--couleur-fond-alt);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.admin-plan-toolbar .admin-icon-btn.active {
+  background: var(--couleur-accent);
+  color: #fff;
+  border-color: var(--couleur-accent);
+}
+
+.admin-feature-remove {
+  background: transparent;
+  border: none;
+  color: var(--couleur-texte-attenue);
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.admin-feature-remove:hover {
+  color: #b3261e;
+}
+
+.admin-add-feature {
+  list-style: none;
+}
+
+.admin-add-feature button {
+  background: transparent;
+  border: none;
+  color: var(--couleur-accent-fonce);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+/* Aperçu non interactif du formulaire de contact (section « contact ») */
+.admin-form-preview {
+  margin-top: 16px;
+  opacity: 0.6;
+}
+
+.admin-form-preview > div {
+  margin-bottom: 14px;
+}
+
+.admin-form-preview label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.admin-form-preview input,
+.admin-form-preview select,
+.admin-form-preview textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bordure);
+  font-family: var(--police-texte);
+  background: #fff;
+}
