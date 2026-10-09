@@ -101,9 +101,64 @@ async function githubRequest(path, options = {}) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.message || `Erreur GitHub API (${res.status})`);
+    const err = new Error(body.message || `Erreur GitHub API (${res.status})`);
+    err.status = res.status;
+    throw err;
   }
   return res.status === 204 ? null : res.json();
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// L'API GitHub peut renvoyer une lecture légèrement en retard (réplication)
+// juste après une écriture : même en relisant le "sha" juste avant
+// d'écrire, le PUT peut échouer une fois avec "<fichier> does not match
+// <sha>". On relit et on réessaie plutôt que de remonter l'erreur tout de
+// suite — ce conflit se résout presque toujours en une tentative.
+function isStaleShaConflict(err) {
+  return err?.status === 409 || /does not match/i.test(err?.message || "");
+}
+
+async function putJsonFileWithRetry(path, obj, message, attempts = 3) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    let sha;
+    try {
+      sha = (await getJsonFile(path)).sha;
+    } catch {
+      sha = undefined; // le fichier n'existe pas encore
+    }
+    try {
+      return await putJsonFile(path, obj, message, sha);
+    } catch (err) {
+      lastErr = err;
+      if (!isStaleShaConflict(err) || i === attempts - 1) throw err;
+      await sleep(500 * (i + 1));
+    }
+  }
+  throw lastErr;
+}
+
+async function putRawFileWithRetry(path, text, message, attempts = 3) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    let sha;
+    try {
+      sha = (await getRawFile(path)).sha;
+    } catch {
+      sha = undefined;
+    }
+    try {
+      return await putRawFile(path, text, message, sha);
+    } catch (err) {
+      lastErr = err;
+      if (!isStaleShaConflict(err) || i === attempts - 1) throw err;
+      await sleep(500 * (i + 1));
+    }
+  }
+  throw lastErr;
 }
 
 async function getJsonFile(path) {
@@ -776,7 +831,10 @@ document.getElementById("page-preview").addEventListener("click", () => {
 
 // ---------- Enregistrement d'une page ----------
 
-document.getElementById("page-save").addEventListener("click", async () => {
+document.getElementById("page-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  if (btn.disabled) return;
+  btn.disabled = true;
   const slug = currentEditingSlug;
   const page = state.pages[slug];
   try {
@@ -798,21 +856,19 @@ document.getElementById("page-save").addEventListener("click", async () => {
       });
       const freshSite = await getJsonFile("content/site.json");
       freshSite.data.pages.push({ slug, title: page.title });
-      await putJsonFile("content/site.json", freshSite.data, `Ajout de la page « ${slug} » au registre (admin)`, freshSite.sha);
+      await putJsonFileWithRetry("content/site.json", freshSite.data, `Ajout de la page « ${slug} » au registre (admin)`);
       state.site = freshSite;
       page.isNew = false;
     } else {
-      const fresh = await getJsonFile(jsonPath);
-      await putJsonFile(jsonPath, cleanData, `Mise à jour de la page « ${slug} » (admin)`, fresh.sha);
+      await putJsonFileWithRetry(jsonPath, cleanData, `Mise à jour de la page « ${slug} » (admin)`);
       const rawHead = await getRawFile(`${slug}.html`);
       const patched = patchSeoHead(rawHead.text, cleanData.seo);
-      await putRawFile(`${slug}.html`, patched, `Mise à jour SEO de la page « ${slug} » (admin)`, rawHead.sha);
+      await putRawFileWithRetry(`${slug}.html`, patched, `Mise à jour SEO de la page « ${slug} » (admin)`);
     }
 
     const hasContactSection = cleanData.sections.some((s) => s.type === "contact");
     if (hasContactSection && state.contact) {
-      const freshContact = await getJsonFile("content/contact.json");
-      await putJsonFile("content/contact.json", state.contact.data, "Mise à jour des coordonnées (admin)", freshContact.sha);
+      await putJsonFileWithRetry("content/contact.json", state.contact.data, "Mise à jour des coordonnées (admin)");
     }
 
     page.data = cleanData;
@@ -821,6 +877,8 @@ document.getElementById("page-save").addEventListener("click", async () => {
     showStatus("Page enregistrée ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
   }
 });
 
@@ -910,7 +968,10 @@ document.getElementById("portfolio-add").addEventListener("click", () => {
   renderPortfolioList();
 });
 
-document.getElementById("portfolio-save").addEventListener("click", async () => {
+document.getElementById("portfolio-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  if (btn.disabled) return;
+  btn.disabled = true;
   try {
     showStatus("Enregistrement…", "loading");
     for (const item of state.portfolio.items) {
@@ -922,13 +983,14 @@ document.getElementById("portfolio-save").addEventListener("click", async () => 
       if (!item.image) throw new Error("Une photo n'a pas d'image sélectionnée.");
     }
     const cleanItems = state.portfolio.items.map(({ category, image, alt }) => ({ category, image, alt }));
-    const fresh = await getJsonFile("content/portfolio.json");
-    await putJsonFile("content/portfolio.json", { items: cleanItems }, "Mise à jour du portfolio (admin)", fresh.sha);
+    await putJsonFileWithRetry("content/portfolio.json", { items: cleanItems }, "Mise à jour du portfolio (admin)");
     state.portfolio = null;
     await loadPortfolio();
     showStatus("Portfolio enregistré ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
   }
 });
 
@@ -998,14 +1060,18 @@ document.getElementById("footer-link-add").addEventListener("click", () => {
   renderNavigationTab();
 });
 
-document.getElementById("navigation-save").addEventListener("click", async () => {
+document.getElementById("navigation-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  if (btn.disabled) return;
+  btn.disabled = true;
   try {
     showStatus("Enregistrement…", "loading");
-    const fresh = await getJsonFile("content/navigation.json");
-    await putJsonFile("content/navigation.json", state.navigation.data, "Mise à jour du menu et du pied de page (admin)", fresh.sha);
+    await putJsonFileWithRetry("content/navigation.json", state.navigation.data, "Mise à jour du menu et du pied de page (admin)");
     showStatus("Menu et pied de page enregistrés ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
   }
 });
 
@@ -1084,7 +1150,10 @@ document.getElementById("favicon-remove").addEventListener("click", () => {
   renderApparenceTab();
 });
 
-document.getElementById("apparence-save").addEventListener("click", async () => {
+document.getElementById("apparence-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  if (btn.disabled) return;
+  btn.disabled = true;
   try {
     showStatus("Enregistrement…", "loading");
     const a = state.appearance.data;
@@ -1099,13 +1168,14 @@ document.getElementById("apparence-save").addEventListener("click", async () => 
       delete a._faviconPreviewUrl;
     }
     const clean = stripPrivateDeep(a);
-    const fresh = await getJsonFile("content/appearance.json");
-    await putJsonFile("content/appearance.json", clean, "Mise à jour de l'apparence (admin)", fresh.sha);
+    await putJsonFileWithRetry("content/appearance.json", clean, "Mise à jour de l'apparence (admin)");
     state.appearance.data = clean;
     renderApparenceTab();
     showStatus("Apparence enregistrée ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
   }
 });
 
