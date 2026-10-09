@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Espace galeries — Nicolas Leveugle Photographie</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../admin/admin.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">Nicolas Leveugle</a>
+    <span class="admin-badge">Galeries clients</span>
+  </div>
+</header>
+
+<!-- Connexion -->
+<section id="login-screen" class="container admin-section">
+  <h1>Connexion</h1>
+  <p class="lead">Mot de passe de l'espace galeries.</p>
+  <div class="admin-field">
+    <label for="password-input">Mot de passe</label>
+    <input type="password" id="password-input" autocomplete="current-password" />
+  </div>
+  <button id="login-btn" class="btn btn-primary">Se connecter</button>
+  <p id="login-error" class="admin-error" hidden></p>
+</section>
+
+<!-- Application -->
+<section id="app-screen" class="container admin-section admin-section-wide" hidden>
+  <div id="admin-status" class="admin-status" hidden></div>
+
+  <!-- Liste des galeries -->
+  <div id="view-list">
+    <div class="galerie-admin-topbar">
+      <h1>Galeries clients</h1>
+      <button id="logout-btn" class="btn-outline btn-small" type="button">Déconnexion</button>
+    </div>
+    <p class="lead">Crée une galerie privée pour un client, envoie ses photos, partage-lui le lien.</p>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0">Nouvelle galerie</h3>
+      <div class="admin-field-row">
+        <div class="admin-field"><label>Nom du client</label><input type="text" id="new-gallery-name" placeholder="Sophie &amp; Marc" /></div>
+        <div class="admin-field"><label>Titre (optionnel)</label><input type="text" id="new-gallery-title" placeholder="Mariage — 12 juillet 2026" /></div>
+      </div>
+      <button id="create-gallery-btn" class="btn btn-primary btn-small" type="button">+ Créer la galerie</button>
+    </div>
+
+    <div id="galleries-list" class="admin-list" style="margin-top:32px"></div>
+  </div>
+
+  <!-- Détail d'une galerie -->
+  <div id="view-detail" hidden>
+    <button id="back-to-list-btn" class="btn-outline btn-small" type="button">← Retour aux galeries</button>
+    <div class="galerie-admin-topbar" style="margin-top:16px">
+      <div>
+        <h1 id="detail-name" style="margin-bottom:4px"></h1>
+        <p class="lead" id="detail-title" style="margin:0"></p>
+      </div>
+      <button id="copy-link-btn" class="btn-outline btn-small" type="button">Copier le lien client</button>
+    </div>
+
+    <div id="drop-zone" class="galerie-dropzone" tabindex="0" role="button">
+      <p><strong>Glisse des photos ici</strong><br />ou clique pour les choisir</p>
+      <input type="file" id="file-input" accept="image/*" multiple hidden />
+    </div>
+
+    <div id="upload-progress-list" class="galerie-upload-list"></div>
+
+    <div id="photos-grid" class="galerie-photos-grid"></div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
