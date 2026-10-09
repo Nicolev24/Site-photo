@@ -185,6 +185,21 @@ async function writeIndexWithRetry(bucket, mutateFn, attempts = 6) {
   throw new Error("Conflit d'écriture sur l'index des galeries, réessaie.");
 }
 
+// Galeries créées avant l'introduction de l'id stable (séparé du token) :
+// elles n'ont qu'un "token" en mémoire. On leur attribue, une seule fois,
+// un id égal à ce token (c'est déjà le préfixe R2 utilisé pour leurs
+// photos), pour qu'elles redeviennent gérables par id comme les autres.
+async function ensureMigratedIndex(bucket) {
+  const { data } = await readIndex(bucket);
+  if (!data.galleries.some((g) => !g.id)) return data;
+  return writeIndexWithRetry(bucket, (d) => {
+    d.galleries.forEach((g) => {
+      if (!g.id) g.id = g.token;
+    });
+    return d;
+  });
+}
+
 async function countPhotos(bucket, id) {
   let count = 0;
   let cursor;
@@ -241,7 +256,7 @@ async function handleLogin(request, env, origin) {
 }
 
 async function handleListGalleries(env, origin) {
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const galleries = await Promise.all(
     data.galleries.map(async (g) => ({
       ...g,
@@ -253,7 +268,7 @@ async function handleListGalleries(env, origin) {
 }
 
 async function handleGetGalleryAdmin(env, id, origin) {
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.id === id);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, id);
@@ -304,7 +319,7 @@ async function handleDeleteGallery(env, id, origin) {
 }
 
 async function handleRegenerateLink(env, id, origin) {
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   if (!data.galleries.some((g) => g.id === id)) {
     return errorResponse("Galerie introuvable.", 404, origin);
   }
@@ -320,7 +335,7 @@ async function handleRegenerateLink(env, id, origin) {
 }
 
 async function handleUploadPhoto(request, env, id, origin) {
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   if (!data.galleries.some((g) => g.id === id)) {
     return errorResponse("Galerie introuvable.", 404, origin);
   }
@@ -359,7 +374,7 @@ async function handleDeletePhoto(env, id, filename, origin) {
 
 async function handleGetClientGallery(env, token, origin) {
   if (!isValidToken(token)) return errorResponse("Galerie introuvable.", 404, origin);
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
@@ -368,7 +383,7 @@ async function handleGetClientGallery(env, token, origin) {
 
 async function handleGetPhoto(env, token, filename, searchParams, origin) {
   if (!isValidToken(token)) return errorResponse("Photo introuvable.", 404, origin);
-  const { data } = await readIndex(env.PHOTOS_BUCKET);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Photo introuvable.", 404, origin);
   const variant = searchParams.get("variant") === "thumb" ? "thumb" : "original";
