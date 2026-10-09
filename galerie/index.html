@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Espace client — Nicolas Leveugle Photographie</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo js-logo">Nicolas Leveugle</a>
+    <div class="header-nav">
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="../contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page-header">
+    <div class="container">
+      <span class="eyebrow">Espace client</span>
+      <h1 id="gallery-heading">Vos photos</h1>
+      <p class="lead" id="gallery-subheading"></p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div id="gallery-empty-state" hidden>
+      <p class="lead">Pour retrouver vos photos, utilisez le lien privé qui vous a été envoyé par email.</p>
+      <a href="../contact.html" class="btn-secondary">Me contacter</a>
+    </div>
+
+    <div id="gallery-grid" class="galerie-client-grid"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
+  </div>
+</footer>
+
+<!-- Visionneuse plein écran -->
+<div id="lightbox" class="galerie-lightbox" hidden>
+  <button type="button" class="lightbox-close" aria-label="Fermer">×</button>
+  <button type="button" class="lightbox-prev" aria-label="Photo précédente">‹</button>
+  <img id="lightbox-img" src="" alt="" />
+  <button type="button" class="lightbox-next" aria-label="Photo suivante">›</button>
+  <a id="lightbox-download" class="btn btn-primary lightbox-download" download>Télécharger</a>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

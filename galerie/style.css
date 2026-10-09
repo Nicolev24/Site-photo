@@ -1,0 +1,135 @@
+.galerie-client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0 80px;
+}
+
+.galerie-client-tile {
+  position: relative;
+  border-radius: var(--rayon-bordure);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: var(--couleur-fond-alt);
+}
+
+.galerie-client-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
+}
+
+.galerie-client-tile:hover img {
+  transform: scale(1.03);
+}
+
+.galerie-client-tile .tile-download {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+#gallery-empty-state {
+  padding: 24px 0 80px;
+}
+
+#gallery-empty-state p {
+  max-width: 50ch;
+}
+
+/* Visionneuse plein écran */
+.galerie-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 10, 10, 0.92);
+  align-items: center;
+  justify-content: center;
+}
+
+.galerie-lightbox[hidden] {
+  display: none;
+}
+
+.galerie-lightbox:not([hidden]) {
+  display: flex;
+}
+
+.galerie-lightbox img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.lightbox-close {
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  font-size: 2rem;
+}
+
+.lightbox-prev {
+  left: 16px;
+}
+
+.lightbox-next {
+  right: 16px;
+}
+
+.lightbox-download {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 600px) {
+  .galerie-client-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .lightbox-prev,
+  .lightbox-next {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  .lightbox-download {
+    bottom: 12px;
+  }
+}
