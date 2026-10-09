@@ -49,3 +49,30 @@ function initPortfolioFilters() {
 }
 
 window.initPortfolioFilters = initPortfolioFilters;
+
+// Apparition douce des sections au scroll (léger, sans librairie) — appelée
+// par js/sections-renderer.js une fois toutes les sections injectées
+// (même mécanisme que window.initPortfolioFilters ci-dessus).
+function initScrollReveal() {
+  const sections = Array.from(document.querySelectorAll("#sections-root > *")).slice(1); // le hero reste visible immédiatement
+  if (!sections.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  sections.forEach((section) => {
+    section.classList.add("reveal-on-scroll");
+    observer.observe(section);
+  });
+}
+
+window.initScrollReveal = initScrollReveal;

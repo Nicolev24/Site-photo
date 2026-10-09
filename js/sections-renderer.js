@@ -375,6 +375,8 @@ async function renderSections(container, sections, basePath = "") {
     }
   }
   highlightPlaceholders(container);
+
+  if (typeof window.initScrollReveal === "function") window.initScrollReveal();
 }
 
 window.renderSections = renderSections;
