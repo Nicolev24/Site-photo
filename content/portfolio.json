@@ -64,6 +64,11 @@
       "category": "evenements",
       "image": "images/portfolio/evenements/img4.jpg",
       "alt": "Mariés marchant vers le château"
+    },
+    {
+      "category": "entreprises",
+      "image": "images/portfolio/entreprises/1791566921262--dsc3906.jpg",
+      "alt": ""
     }
   ]
 }
