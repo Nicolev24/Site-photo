@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<header class="site-header">
+<header class="site-header" id="login-header">
   <div class="container">
     <a href="../index.html" class="logo">Nicolas Leveugle</a>
     <span class="admin-badge">Administration</span>
@@ -89,36 +89,131 @@
 </section>
 
 <!-- Application -->
-<section id="app-screen" class="container admin-section admin-section-wide" hidden>
-  <div class="admin-topbar">
-    <nav class="admin-tabs">
-      <button class="admin-tab active" data-tab="pages">Pages</button>
-      <button class="admin-tab" data-tab="portfolio">Portfolio</button>
-      <button class="admin-tab" data-tab="navigation">Navigation</button>
-      <button class="admin-tab" data-tab="apparence">Apparence</button>
+<div id="app-screen" class="admin-shell" hidden>
+
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <span class="logo">Nicolas Leveugle</span>
+      <span class="admin-badge">Administration</span>
+    </div>
+
+    <nav class="admin-sidebar-nav">
+      <div class="admin-sidebar-group">
+        <button class="admin-sidebar-item active" data-view="general" type="button">Général</button>
+      </div>
+
+      <div class="admin-sidebar-group">
+        <div class="admin-sidebar-label">Pages</div>
+        <div id="sidebar-pages-list"></div>
+        <button id="sidebar-add-page" class="admin-sidebar-item admin-sidebar-add" type="button">+ Nouvelle page</button>
+      </div>
+
+      <div class="admin-sidebar-group">
+        <div class="admin-sidebar-label">Médias</div>
+        <button class="admin-sidebar-item" data-view="portfolio" type="button">Photos du portfolio</button>
+      </div>
     </nav>
-    <div class="admin-topbar-actions">
-      <a href="../index.html" target="_blank" class="btn btn-outline btn-small">Voir le site</a>
-      <button id="change-password-btn" class="btn btn-outline btn-small">Changer le mot de passe</button>
-      <button id="logout-btn" class="btn btn-outline btn-small">Déconnexion</button>
+
+    <div class="admin-sidebar-footer">
+      <a href="../index.html" target="_blank" class="admin-sidebar-footer-link">Voir le site ↗</a>
+      <button id="change-password-btn" class="admin-sidebar-footer-link" type="button">Changer le mot de passe</button>
+      <button id="logout-btn" class="admin-sidebar-footer-link" type="button">Déconnexion</button>
     </div>
-  </div>
+  </aside>
 
-  <div id="admin-status" class="admin-status" hidden></div>
+  <main class="admin-main">
+    <div id="admin-status" class="admin-status" hidden></div>
 
-  <!-- Onglet Pages -->
-  <div id="panel-pages" class="admin-panel">
+    <!-- Vue Général : menu, pied de page, apparence -->
+    <div id="view-general" class="admin-view">
+      <div class="admin-main-inner">
+        <h2>Général</h2>
+        <p class="lead">Réglages communs à tout le site : menu, pied de page, couleurs, logo.</p>
 
-    <div id="pages-list-view">
-      <h2>Pages du site</h2>
-      <p class="lead">Modifie le contenu de chaque page, ou crée une nouvelle page à partir de blocs existants.</p>
-      <div id="pages-list" class="admin-list"></div>
-      <button id="pages-add" class="btn btn-outline">+ Nouvelle page</button>
+        <h3>Liens du menu principal</h3>
+        <div id="nav-links-list" class="admin-list"></div>
+        <button id="nav-link-add" class="btn btn-outline btn-small" type="button">+ Ajouter un lien</button>
+
+        <h3>Bouton principal du menu</h3>
+        <div class="admin-card">
+          <div class="admin-field"><label>Texte du bouton</label><input type="text" id="cta-label" /></div>
+          <div class="admin-field"><label>Lien (ex : contact.html)</label><input type="text" id="cta-href" /></div>
+        </div>
+
+        <h3>Liens du pied de page</h3>
+        <div id="footer-links-list" class="admin-list"></div>
+        <button id="footer-link-add" class="btn btn-outline btn-small" type="button">+ Ajouter un lien</button>
+
+        <h3>Texte de copyright</h3>
+        <div class="admin-field">
+          <input type="text" id="copyright-text" />
+          <p class="admin-hint">Le © et l'année s'ajoutent automatiquement devant ce texte.</p>
+        </div>
+
+        <div class="admin-save-row">
+          <button id="navigation-save" class="btn btn-primary">Enregistrer le menu et le pied de page</button>
+        </div>
+
+        <hr class="admin-divider" />
+
+        <h3>Couleurs</h3>
+        <p class="lead" style="margin-top:-8px">Seule la police Inter (déjà installée) est disponible pour le moment.</p>
+        <div class="admin-card">
+          <div class="admin-field-row">
+            <div class="admin-field">
+              <label>Couleur d'accent</label>
+              <div class="admin-color-row">
+                <input type="color" id="accent-color" />
+                <input type="text" id="accent-color-text" />
+              </div>
+            </div>
+            <div class="admin-field">
+              <label>Couleur d'accent (survol/foncée)</label>
+              <div class="admin-color-row">
+                <input type="color" id="accent-color-dark" />
+                <input type="text" id="accent-color-dark-text" />
+              </div>
+            </div>
+          </div>
+          <div class="admin-appearance-preview">
+            <span>Aperçu :</span>
+            <button type="button" class="btn btn-primary" id="appearance-preview-btn">Bouton principal</button>
+            <a href="#" class="btn-secondary" id="appearance-preview-link" onclick="return false">Lien secondaire</a>
+          </div>
+        </div>
+
+        <h3>Logo</h3>
+        <div class="admin-card">
+          <div class="admin-card-row">
+            <div class="admin-card-preview" id="logo-preview"></div>
+            <div class="admin-card-fields">
+              <div class="admin-field"><label>Texte du logo (si pas d'image)</label><input type="text" id="logo-text" /></div>
+              <div class="admin-field"><label>Image du logo (optionnel)</label><input type="file" id="logo-file" accept="image/*" /></div>
+              <button type="button" class="admin-icon-btn danger" id="logo-remove">Retirer l'image (revenir au texte)</button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Favicon (icône d'onglet)</h3>
+        <div class="admin-card">
+          <div class="admin-card-row">
+            <div class="admin-card-preview" id="favicon-preview"></div>
+            <div class="admin-card-fields">
+              <div class="admin-field"><label>Image du favicon (optionnel)</label><input type="file" id="favicon-file" accept="image/*" /></div>
+              <button type="button" class="admin-icon-btn danger" id="favicon-remove">Retirer le favicon</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-save-row">
+          <button id="apparence-save" class="btn btn-primary">Enregistrer l'apparence</button>
+        </div>
+      </div>
     </div>
 
-    <div id="pages-editor-view" hidden>
+    <!-- Vue éditeur de page (mode construction) -->
+    <div id="view-page-editor" class="admin-view" hidden>
       <div class="admin-editor-topbar">
-        <button id="pages-back" class="btn-outline btn-small" type="button">← Retour aux pages</button>
         <h2 id="pages-editor-title"></h2>
         <div class="admin-editor-topbar-actions">
           <details class="admin-seo-popover">
@@ -140,107 +235,21 @@
       <div id="live-editor-root" class="admin-live-editor"></div>
     </div>
 
-  </div>
-
-  <!-- Onglet Portfolio -->
-  <div id="panel-portfolio" class="admin-panel" hidden>
-    <h2>Photos du portfolio</h2>
-    <p class="lead">Ajoute, modifie, réordonne (glisser-déposer ou flèches) ou supprime les photos de chaque catégorie.</p>
-    <div id="portfolio-list" class="admin-list"></div>
-    <button id="portfolio-add" class="btn btn-outline">+ Ajouter une photo</button>
-    <div class="admin-save-row">
-      <button id="portfolio-save" class="btn btn-primary">Enregistrer le portfolio</button>
-    </div>
-  </div>
-
-  <!-- Onglet Navigation -->
-  <div id="panel-navigation" class="admin-panel" hidden>
-    <h2>Menu &amp; pied de page</h2>
-    <p class="lead">Les liens du menu et du pied de page, le bouton d'appel à l'action, et le texte de copyright.</p>
-
-    <h3>Liens du menu principal</h3>
-    <div id="nav-links-list" class="admin-list"></div>
-    <button id="nav-link-add" class="btn btn-outline btn-small" type="button">+ Ajouter un lien</button>
-
-    <h3>Bouton principal du menu</h3>
-    <div class="admin-card">
-      <div class="admin-field"><label>Texte du bouton</label><input type="text" id="cta-label" /></div>
-      <div class="admin-field"><label>Lien (ex : contact.html)</label><input type="text" id="cta-href" /></div>
-    </div>
-
-    <h3>Liens du pied de page</h3>
-    <div id="footer-links-list" class="admin-list"></div>
-    <button id="footer-link-add" class="btn btn-outline btn-small" type="button">+ Ajouter un lien</button>
-
-    <h3>Texte de copyright</h3>
-    <div class="admin-field">
-      <input type="text" id="copyright-text" />
-      <p class="admin-hint">Le © et l'année s'ajoutent automatiquement devant ce texte.</p>
-    </div>
-
-    <div class="admin-save-row">
-      <button id="navigation-save" class="btn btn-primary">Enregistrer le menu et le pied de page</button>
-    </div>
-  </div>
-
-  <!-- Onglet Apparence -->
-  <div id="panel-apparence" class="admin-panel" hidden>
-    <h2>Apparence du site</h2>
-    <p class="lead">Couleur d'accent, logo et favicon. Seule la police Inter (déjà installée) est disponible pour le moment.</p>
-
-    <div class="admin-card">
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label>Couleur d'accent</label>
-          <div class="admin-color-row">
-            <input type="color" id="accent-color" />
-            <input type="text" id="accent-color-text" />
-          </div>
-        </div>
-        <div class="admin-field">
-          <label>Couleur d'accent (survol/foncée)</label>
-          <div class="admin-color-row">
-            <input type="color" id="accent-color-dark" />
-            <input type="text" id="accent-color-dark-text" />
-          </div>
-        </div>
-      </div>
-      <div class="admin-appearance-preview">
-        <span>Aperçu :</span>
-        <button type="button" class="btn btn-primary" id="appearance-preview-btn">Bouton principal</button>
-        <a href="#" class="btn-secondary" id="appearance-preview-link" onclick="return false">Lien secondaire</a>
-      </div>
-    </div>
-
-    <h3>Logo</h3>
-    <div class="admin-card">
-      <div class="admin-card-row">
-        <div class="admin-card-preview" id="logo-preview"></div>
-        <div class="admin-card-fields">
-          <div class="admin-field"><label>Texte du logo (si pas d'image)</label><input type="text" id="logo-text" /></div>
-          <div class="admin-field"><label>Image du logo (optionnel)</label><input type="file" id="logo-file" accept="image/*" /></div>
-          <button type="button" class="admin-icon-btn danger" id="logo-remove">Retirer l'image (revenir au texte)</button>
+    <!-- Vue Portfolio -->
+    <div id="view-portfolio" class="admin-view" hidden>
+      <div class="admin-main-inner">
+        <h2>Photos du portfolio</h2>
+        <p class="lead">Ajoute, modifie, réordonne (glisser-déposer ou flèches) ou supprime les photos de chaque catégorie.</p>
+        <div id="portfolio-list" class="admin-list"></div>
+        <button id="portfolio-add" class="btn btn-outline">+ Ajouter une photo</button>
+        <div class="admin-save-row">
+          <button id="portfolio-save" class="btn btn-primary">Enregistrer le portfolio</button>
         </div>
       </div>
     </div>
+  </main>
 
-    <h3>Favicon (icône d'onglet)</h3>
-    <div class="admin-card">
-      <div class="admin-card-row">
-        <div class="admin-card-preview" id="favicon-preview"></div>
-        <div class="admin-card-fields">
-          <div class="admin-field"><label>Image du favicon (optionnel)</label><input type="file" id="favicon-file" accept="image/*" /></div>
-          <button type="button" class="admin-icon-btn danger" id="favicon-remove">Retirer le favicon</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-save-row">
-      <button id="apparence-save" class="btn btn-primary">Enregistrer l'apparence</button>
-    </div>
-  </div>
-
-</section>
+</div>
 
 <script src="app.js"></script>
 <script src="editor.js"></script>

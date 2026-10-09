@@ -75,42 +75,162 @@
   font-size: 0.9em;
 }
 
-/* App shell */
-.admin-topbar {
+/* ============================================================
+   App shell : barre latérale + contenu principal
+   ============================================================ */
+
+.admin-shell {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 32px;
+  align-items: stretch;
+  min-height: 100vh;
 }
 
-.admin-tabs {
+.admin-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid var(--couleur-bordure);
   display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-sidebar-header {
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
-  flex-wrap: wrap;
+  border-bottom: 1px solid var(--couleur-bordure);
 }
 
-.admin-tab {
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--couleur-bordure);
-  background: transparent;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
+.admin-sidebar-header .logo {
+  font-weight: 700;
+}
+
+.admin-sidebar-nav {
+  flex-grow: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+
+.admin-sidebar-group {
+  margin-bottom: 22px;
+}
+
+.admin-sidebar-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--couleur-texte-attenue);
+  padding: 0 10px;
+  margin-bottom: 6px;
 }
 
-.admin-tab.active {
+.admin-sidebar-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--rayon-bordure);
+  border: none;
+  background: transparent;
+  font-family: var(--police-texte);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--couleur-texte);
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+.admin-sidebar-item:hover {
+  background: var(--couleur-fond-alt);
+}
+
+.admin-sidebar-item.active {
   background: var(--couleur-texte);
-  border-color: var(--couleur-texte);
   color: #fff;
+  font-weight: 600;
 }
 
-.admin-topbar-actions {
+.admin-sidebar-add {
+  color: var(--couleur-accent-fonce);
+  font-weight: 600;
+}
+
+.admin-sidebar-footer {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--couleur-bordure);
   display: flex;
+  flex-direction: column;
   gap: 10px;
+}
+
+.admin-sidebar-footer-link {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font-family: var(--police-texte);
+  font-size: 0.85rem;
+  color: var(--couleur-texte-attenue);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-sidebar-footer-link:hover {
+  color: var(--couleur-accent-fonce);
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-main-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 32px 96px;
+}
+
+.admin-main #admin-status {
+  margin: 24px 32px 0;
+}
+
+.admin-divider {
+  border: none;
+  border-top: 1px solid var(--couleur-bordure);
+  margin: 40px 0;
+}
+
+@media (max-width: 860px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    flex: none;
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--couleur-bordure);
+  }
+  .admin-sidebar-nav {
+    max-height: 280px;
+  }
+  .admin-main-inner {
+    padding: 28px 20px 64px;
+  }
+  .admin-editor-topbar {
+    padding: 20px 20px 0;
+  }
+  .admin-construction-hint {
+    margin: 12px 20px 0;
+  }
 }
 
 .btn-small {
@@ -270,11 +390,6 @@
   }
 }
 
-/* Panneau large pour l'éditeur de pages (sections, SEO) */
-.admin-section-wide {
-  max-width: 960px;
-}
-
 .admin-hint {
   font-size: 0.82rem;
   color: var(--couleur-texte-attenue);
@@ -320,23 +435,6 @@
   align-items: center;
   gap: 16px;
   font-size: 0.9rem;
-  color: var(--couleur-texte-attenue);
-}
-
-/* Liste des pages (onglet Pages) */
-.admin-page-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-
-.admin-page-card-info strong {
-  display: block;
-}
-
-.admin-page-card-info span {
-  font-size: 0.85rem;
   color: var(--couleur-texte-attenue);
 }
 
@@ -425,9 +523,7 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 24px;
+  padding: 24px 32px 0;
 }
 
 .admin-editor-topbar h2 {
@@ -469,22 +565,17 @@
 }
 
 .admin-construction-hint {
-  max-width: 960px;
-  margin: 12px auto 0;
+  margin: 12px 32px 0;
   padding: 10px 24px;
   background: var(--couleur-fond-alt);
   border-radius: var(--rayon-bordure);
 }
 
-/* Le rendu « plein site » casse volontairement la largeur du panneau admin
-   pour ressembler exactement au site public. */
+/* La colonne principale (à droite de la barre latérale) n'a pas de
+   largeur maximale ici : le rendu occupe tout l'espace disponible,
+   comme sur le site public. */
 .admin-live-editor {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100%;
   margin-top: 24px;
 }
 

@@ -470,6 +470,7 @@ function showLoginScreen(name) {
 
 function enterApp() {
   document.getElementById("login-screen").hidden = true;
+  document.getElementById("login-header").hidden = true;
   appScreen.hidden = false;
   initApp();
 }
@@ -589,14 +590,22 @@ document.getElementById("logout-btn").addEventListener("click", () => {
   window.location.reload();
 });
 
-// ---------- Onglets ----------
+// ---------- Navigation (barre latérale) ----------
 
-document.querySelectorAll(".admin-tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".admin-tab").forEach((t) => t.classList.remove("active"));
-    document.querySelectorAll(".admin-panel").forEach((p) => (p.hidden = true));
-    tab.classList.add("active");
-    document.getElementById(`panel-${tab.dataset.tab}`).hidden = false;
+function showView(viewId) {
+  document.querySelectorAll(".admin-view").forEach((v) => (v.hidden = true));
+  document.getElementById(viewId).hidden = false;
+}
+
+function setActiveSidebarItem(el) {
+  document.querySelectorAll(".admin-sidebar-item").forEach((i) => i.classList.remove("active"));
+  if (el) el.classList.add("active");
+}
+
+document.querySelectorAll(".admin-sidebar-item[data-view]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    showView(`view-${btn.dataset.view}`);
+    setActiveSidebarItem(btn);
   });
 });
 
@@ -617,28 +626,18 @@ let currentEditingSlug = null;
 // Onglet Pages
 // ========================================================================
 
-function renderPagesList() {
-  const list = document.getElementById("pages-list");
+function renderSidebarPagesList() {
+  const list = document.getElementById("sidebar-pages-list");
   list.innerHTML = "";
   state.site.data.pages.forEach((p) => {
-    const card = document.createElement("div");
-    card.className = "admin-card admin-page-card";
-    card.innerHTML = `
-      <div class="admin-page-card-info">
-        <strong>${escapeHtml(p.title)}</strong>
-        <span>${escapeHtml(p.slug)}.html</span>
-      </div>
-      <button type="button" class="btn-outline btn-small f-edit">Modifier</button>
-    `;
-    card.querySelector(".f-edit").addEventListener("click", () => openPageEditor(p.slug, p.title));
-    list.appendChild(card);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "admin-sidebar-item";
+    btn.textContent = p.title;
+    btn.dataset.slug = p.slug;
+    btn.addEventListener("click", () => openPageEditor(p.slug, p.title));
+    list.appendChild(btn);
   });
-}
-
-function openPageList() {
-  document.getElementById("pages-list-view").hidden = false;
-  document.getElementById("pages-editor-view").hidden = true;
-  currentEditingSlug = null;
 }
 
 async function openPageEditor(slug, title) {
@@ -654,8 +653,8 @@ async function openPageEditor(slug, title) {
     }
   }
 
-  document.getElementById("pages-list-view").hidden = true;
-  document.getElementById("pages-editor-view").hidden = false;
+  showView("view-page-editor");
+  setActiveSidebarItem(document.querySelector(`#sidebar-pages-list .admin-sidebar-item[data-slug="${slug}"]`));
   currentEditingSlug = slug;
   document.getElementById("pages-editor-title").textContent = title;
   renderPageEditor();
@@ -679,9 +678,7 @@ document.getElementById("seo-og-image").addEventListener("input", (e) => {
   if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.og_image = e.target.value;
 });
 
-document.getElementById("pages-back").addEventListener("click", openPageList);
-
-document.getElementById("pages-add").addEventListener("click", () => {
+document.getElementById("sidebar-add-page").addEventListener("click", () => {
   const title = prompt("Titre de la nouvelle page (ex : À propos) :");
   if (!title || !title.trim()) return;
   const slug = slugify(title.trim());
@@ -814,7 +811,8 @@ document.getElementById("page-save").addEventListener("click", async () => {
     }
 
     page.data = cleanData;
-    renderPagesList();
+    renderSidebarPagesList();
+    setActiveSidebarItem(document.querySelector(`#sidebar-pages-list .admin-sidebar-item[data-slug="${slug}"]`));
     showStatus("Page enregistrée ✓ Le site se met à jour automatiquement (~1 min).", "success");
   } catch (err) {
     showStatus(`Erreur : ${err.message}`, "error");
@@ -1129,7 +1127,7 @@ async function initApp() {
     return;
   }
 
-  renderPagesList();
+  renderSidebarPagesList();
   renderNavigationTab();
   renderApparenceTab();
   loadPortfolio().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
