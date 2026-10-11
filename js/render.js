@@ -115,6 +115,19 @@ async function init() {
 
   const root = document.getElementById("sections-root");
   if (root) await renderSections(root, page.sections, "");
+
+  // Le contenu des sections est injecté après coup : si l'URL contient une
+  // ancre (ex. services.html#commerces), l'élément visé n'existe pas encore
+  // au moment où le navigateur tenterait d'y défiler tout seul.
+  if (window.location.hash) {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) {
+      const header = document.querySelector(".site-header");
+      const offset = (header ? header.offsetHeight : 0) + 16;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "auto" });
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
