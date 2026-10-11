@@ -86,6 +86,7 @@ function buildTexteImage(data, basePath) {
       <h2>${escapeHtml(data.title)}</h2>
       <p class="lead">${escapeHtml(data.text)}</p>
       ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
+      ${data.secondary_label ? `<a href="${resolveHref(data.secondary_href, basePath)}" style="margin-left:18px;font-size:0.9rem">${escapeHtml(data.secondary_label)}</a>` : ""}
     </div>
   `;
   const container = el("div", { class: "container two-col" }, textHtml);
@@ -202,6 +203,9 @@ function buildTarifs(data, basePath) {
     let html = "";
     if (plan.badge) html += `<span class="badge">${escapeHtml(plan.badge)}</span>`;
     html += `<h3>${escapeHtml(plan.title)}</h3>`;
+    if (plan.subtitle) {
+      html += `<p style="color:var(--couleur-texte-attenue);font-size:0.9rem;margin:-6px 0 2px">${escapeHtml(plan.subtitle)}</p>`;
+    }
     html += `<div class="price-tag">${escapeHtml(plan.price)}`;
     if (plan.price_suffix) html += `<span> ${escapeHtml(plan.price_suffix)}</span>`;
     html += `</div><ul>`;
@@ -369,7 +373,10 @@ async function renderSections(container, sections, basePath = "") {
     if (!builder) continue;
     try {
       const node = await builder(section.data || {}, basePath);
-      if (node) container.appendChild(node);
+      if (node) {
+        if (section.id) node.id = section.id;
+        container.appendChild(node);
+      }
     } catch (err) {
       console.error(`Erreur de rendu pour la section "${section.type}"`, err);
     }

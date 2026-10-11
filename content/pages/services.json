@@ -39,6 +39,7 @@
           },
           {
             "title": "Sur devis",
+            "subtitle": "Pour les événements et les grandes entreprises. Vous êtes un petit commerce ? Voir la section ci-dessous.",
             "price": "Devis",
             "price_suffix": "personnalisé",
             "highlight": false,
@@ -48,6 +49,70 @@
           }
         ],
         "note": "Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées."
+      }
+    },
+    {
+      "id": "commerces",
+      "type": "texte",
+      "data": {
+        "eyebrow": "Pour les commerces",
+        "title": "Pour les commerces",
+        "text": "Des photos pro et un site simple pour les petits commerces de la région."
+      }
+    },
+    {
+      "id": "tarifs-commerces",
+      "type": "tarifs",
+      "data": {
+        "plans": [
+          {
+            "title": "Séance photo commerce",
+            "price": "149€",
+            "price_suffix": "",
+            "highlight": false,
+            "badge": "",
+            "features": ["1h sur place", "~20 photos retouchées", "Prêtes pour Google, les réseaux et votre site"],
+            "cta_label": "Choisir cette formule"
+          },
+          {
+            "title": "Site vitrine 1 page",
+            "price": "490€",
+            "price_suffix": "",
+            "highlight": false,
+            "badge": "",
+            "features": ["Un site moderne et rapide", "Adapté au téléphone", "Vos photos intégrées"],
+            "cta_label": "Choisir cette formule"
+          },
+          {
+            "title": "Pack Photo + Site",
+            "price": "590€",
+            "price_suffix": "au lieu de 639€",
+            "highlight": true,
+            "badge": "Le plus choisi",
+            "features": ["Séance photo commerce incluse", "Site vitrine 1 page inclus", "49€ d'économie"],
+            "cta_label": "Choisir cette formule"
+          },
+          {
+            "title": "Suivi du site",
+            "price": "15€",
+            "price_suffix": "/mois",
+            "highlight": false,
+            "badge": "",
+            "features": ["Hébergement inclus", "Nom de domaine inclus", "Petites modifications incluses", "Sans engagement"],
+            "cta_label": "Choisir cette formule"
+          }
+        ],
+        "note": "Prix TVA comprise."
+      }
+    },
+    {
+      "id": "cta-commerces",
+      "type": "cta",
+      "data": {
+        "title": "Vous n'avez pas de site ?",
+        "text": "Je vous prépare une maquette gratuite, sans engagement.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
       }
     },
     {

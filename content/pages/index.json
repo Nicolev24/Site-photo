@@ -30,7 +30,9 @@
         "alt": "Nicolas Leveugle, photographe",
         "image_side": "droite",
         "button_label": "Découvrir les formules",
-        "button_href": "services.html"
+        "button_href": "services.html",
+        "secondary_label": "Vous êtes un commerce ?",
+        "secondary_href": "services.html#commerces"
       }
     },
     {
