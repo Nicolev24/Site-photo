@@ -67,11 +67,11 @@
         "plans": [
           {
             "title": "Séance photo commerce",
-            "price": "149€",
+            "price": "100€",
             "price_suffix": "",
             "highlight": false,
             "badge": "",
-            "features": ["1h sur place", "~20 photos retouchées", "Prêtes pour Google, les réseaux et votre site"],
+            "features": ["1h sur place", "Photos retouchées", "Prêtes pour Google, les réseaux et votre site"],
             "cta_label": "Choisir cette formule"
           },
           {
@@ -80,25 +80,16 @@
             "price_suffix": "",
             "highlight": false,
             "badge": "",
-            "features": ["Un site moderne et rapide", "Adapté au téléphone", "Vos photos intégrées"],
+            "features": ["Un site moderne et rapide", "Adapté à tous les écrans (ordinateur, téléphone, tablette)", "Vos photos intégrées"],
             "cta_label": "Choisir cette formule"
           },
           {
             "title": "Pack Photo + Site",
-            "price": "590€",
-            "price_suffix": "au lieu de 639€",
+            "price": "500€",
+            "price_suffix": "au lieu de 590€",
             "highlight": true,
             "badge": "Le plus choisi",
-            "features": ["Séance photo commerce incluse", "Site vitrine 1 page inclus", "49€ d'économie"],
-            "cta_label": "Choisir cette formule"
-          },
-          {
-            "title": "Suivi du site",
-            "price": "15€",
-            "price_suffix": "/mois",
-            "highlight": false,
-            "badge": "",
-            "features": ["Hébergement inclus", "Nom de domaine inclus", "Petites modifications incluses", "Sans engagement"],
+            "features": ["Séance photo commerce incluse", "Site vitrine 1 page inclus", "90€ d'économie"],
             "cta_label": "Choisir cette formule"
           }
         ],
