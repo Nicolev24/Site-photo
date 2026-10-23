@@ -164,3 +164,36 @@
     width: 70px;
   }
 }
+
+/* ——— Favoris du client ——— */
+.favoris-resume {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+}
+
+.galerie-photo-tile.favori::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid #ff4d6d;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.favori-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ff4d6d;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}

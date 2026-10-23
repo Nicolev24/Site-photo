@@ -163,7 +163,7 @@ function renderGalleriesList(galleries) {
         <div>
           <strong>${escapeHtml(g.name)}</strong>
           ${g.title ? `<div class="admin-hint">${escapeHtml(g.title)}</div>` : ""}
-          <div class="admin-hint">${g.photoCount} photo${g.photoCount > 1 ? "s" : ""} · créée le ${dateLabel}</div>
+          <div class="admin-hint">${g.photoCount} photo${g.photoCount > 1 ? "s" : ""} · créée le ${dateLabel}${g.favoriteCount ? ` · <strong>♥ ${g.favoriteCount} favori${g.favoriteCount > 1 ? "s" : ""}</strong>` : ""}</div>
         </div>
         <div class="galerie-admin-card-actions">
           <button type="button" class="btn-outline btn-small f-open">Ouvrir</button>
@@ -280,11 +280,51 @@ async function loadGalleryPhotos() {
   const grid = document.getElementById("photos-grid");
   try {
     const gallery = await apiFetch(`/api/admin/galleries/${currentGalleryId}`);
+    currentFavoris = new Set(gallery.favoris || []);
+    renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
   } catch (e) {
     grid.innerHTML = "";
     showStatus(`Erreur : ${e.message}`, "error");
   }
+}
+
+// ---------- Favoris choisis par le client ----------
+
+let currentFavoris = new Set();
+
+/** Nom d'origine de la photo (sans le préfixe ajouté à l'envoi) : « 1739…-dsc4139.jpg » → « DSC4139 ». */
+function nomOrigine(filename) {
+  return filename
+    .replace(/^\d+-/, "")
+    .replace(/^-+/, "")
+    .replace(/\.[^.]+$/, "")
+    .toUpperCase();
+}
+
+function renderFavorisResume(updatedAt) {
+  const el = document.getElementById("favoris-resume");
+  if (!el) return;
+  if (!currentFavoris.size) {
+    el.innerHTML = `<span class="admin-hint">Le client n'a pas encore choisi de favoris.</span>`;
+    return;
+  }
+  const date = updatedAt ? new Date(updatedAt).toLocaleString("fr-BE", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : "";
+  el.innerHTML = `
+    <strong>♥ ${currentFavoris.size} favori${currentFavoris.size > 1 ? "s" : ""}</strong>
+    <span class="admin-hint">${date ? `mis à jour le ${escapeHtml(date)}` : ""}</span>
+    <button type="button" class="btn-outline btn-small" id="copier-favoris-btn">Copier la liste</button>
+  `;
+  document.getElementById("copier-favoris-btn").addEventListener("click", async () => {
+    // Une liste de noms, à coller dans l'Assistant photo (ou à chercher dans Lightroom).
+    const texte = [...currentFavoris].map(nomOrigine).join(" ");
+    try {
+      await navigator.clipboard.writeText(texte);
+      showStatus("Liste des favoris copiée ✓ — collez-la dans l'Assistant photo (Favoris du client).", "success");
+    } catch {
+      prompt("Copiez la liste des favoris :", texte);
+    }
+  });
 }
 
 function photoUrl(token, filename, variant) {
@@ -297,8 +337,11 @@ function renderPhotosGrid(photos) {
   photos.forEach((photo) => {
     const tile = document.createElement("div");
     tile.className = "galerie-photo-tile";
+    const favori = currentFavoris.has(photo.filename);
+    if (favori) tile.classList.add("favori");
     tile.innerHTML = `
       <img src="${photoUrl(currentGalleryToken, photo.filename, "thumb")}" alt="" loading="lazy" />
+      ${favori ? `<span class="favori-badge" title="Favori du client">♥</span>` : ""}
       <button type="button" class="delete-btn" title="Supprimer cette photo">×</button>
     `;
     tile.querySelector(".delete-btn").addEventListener("click", () => deletePhoto(photo.filename));

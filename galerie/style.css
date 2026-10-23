@@ -133,3 +133,114 @@
     bottom: 12px;
   }
 }
+
+/* ——— Favoris ——— */
+.favoris-barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.favoris-barre[hidden] {
+  display: none;
+}
+
+.favoris-filtres {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--couleur-fond-alt);
+}
+
+.favoris-filtres button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.favoris-filtres button.actif {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+}
+
+.favoris-aide {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.tile-favori {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.tile-favori svg,
+.lightbox-favori svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.tile-favori.actif svg,
+.lightbox-favori.actif svg {
+  fill: #ff4d6d;
+  stroke: #ff4d6d;
+}
+
+.tile-favori:active {
+  transform: scale(0.88);
+}
+
+.lightbox-download {
+  position: static;
+  transform: none;
+}
+
+.lightbox-actions {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lightbox-favori {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .lightbox-actions {
+    bottom: 12px;
+  }
+}

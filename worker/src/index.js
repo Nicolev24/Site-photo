@@ -154,6 +154,25 @@ function sanitizeFilename(name) {
   return cleaned || "photo";
 }
 
+// ---------- Favoris du client (galleries/<id>/favoris.json) ----------
+
+const MAX_FAVORIS = 2000;
+
+function favorisKey(id) {
+  return `${galleryPrefix(id)}favoris.json`;
+}
+
+async function readFavoris(bucket, id) {
+  const obj = await bucket.get(favorisKey(id));
+  if (!obj) return { photos: [], updatedAt: null };
+  try {
+    const data = await obj.json();
+    return { photos: Array.isArray(data.photos) ? data.photos : [], updatedAt: data.updatedAt || null };
+  } catch {
+    return { photos: [], updatedAt: null };
+  }
+}
+
 function isValidToken(token) {
   return typeof token === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(token);
 }
@@ -263,6 +282,11 @@ async function handleListGalleries(env, origin) {
       photoCount: await countPhotos(env.PHOTOS_BUCKET, g.id),
     }))
   );
+  await Promise.all(
+    galleries.map(async (g) => {
+      g.favoriteCount = (await readFavoris(env.PHOTOS_BUCKET, g.id)).photos.length;
+    })
+  );
   galleries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return json({ galleries }, 200, origin);
 }
@@ -272,7 +296,9 @@ async function handleGetGalleryAdmin(env, id, origin) {
   const gallery = data.galleries.find((g) => g.id === id);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, id);
-  return json({ ...gallery, photos }, 200, origin);
+  const favoris = await readFavoris(env.PHOTOS_BUCKET, id);
+  const existantes = new Set(photos.map((p) => p.filename));
+  return json({ ...gallery, photos, favoris: favoris.photos.filter((f) => existantes.has(f)), favorisUpdatedAt: favoris.updatedAt }, 200, origin);
 }
 
 async function handleCreateGallery(request, env, origin) {
@@ -366,6 +392,15 @@ async function handleUploadPhoto(request, env, id, origin) {
 
 async function handleDeletePhoto(env, id, filename, origin) {
   await env.PHOTOS_BUCKET.delete([originalKey(id, filename), thumbKey(id, filename)]);
+  // La photo n'existe plus : elle sort aussi des favoris du client.
+  const favoris = await readFavoris(env.PHOTOS_BUCKET, id);
+  if (favoris.photos.includes(filename)) {
+    await env.PHOTOS_BUCKET.put(
+      favorisKey(id),
+      JSON.stringify({ photos: favoris.photos.filter((f) => f !== filename), updatedAt: favoris.updatedAt }),
+      { httpMetadata: { contentType: "application/json" } }
+    );
+  }
   return json({ ok: true }, 200, origin);
 }
 
@@ -378,7 +413,32 @@ async function handleGetClientGallery(env, token, origin) {
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
-  return json({ name: gallery.name, title: gallery.title, photos }, 200, origin);
+  const favoris = await readFavoris(env.PHOTOS_BUCKET, gallery.id);
+  const existantes = new Set(photos.map((p) => p.filename));
+  return json({ name: gallery.name, title: gallery.title, photos, favoris: favoris.photos.filter((f) => existantes.has(f)) }, 200, origin);
+}
+
+// Le client enregistre ses favoris (le jeton privé de la galerie fait office d'accès,
+// comme pour voir les photos). On ne garde que des noms de photos qui existent.
+async function handleSaveFavoris(request, env, token, origin) {
+  if (!isValidToken(token)) return errorResponse("Galerie introuvable.", 404, origin);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.token === token);
+  if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse("Requête invalide.", 400, origin);
+  }
+  if (!Array.isArray(body?.photos) || body.photos.length > MAX_FAVORIS) return errorResponse("Liste de favoris invalide.", 400, origin);
+  const existantes = new Set((await listPhotos(env.PHOTOS_BUCKET, gallery.id)).map((p) => p.filename));
+  const photos = [...new Set(body.photos.filter((f) => typeof f === "string" && existantes.has(f)))];
+  const updatedAt = new Date().toISOString();
+  await env.PHOTOS_BUCKET.put(favorisKey(gallery.id), JSON.stringify({ photos, updatedAt }), {
+    httpMetadata: { contentType: "application/json" },
+  });
+  return json({ photos, updatedAt }, 200, origin);
 }
 
 async function handleGetPhoto(env, token, filename, searchParams, origin) {
@@ -454,6 +514,11 @@ export default {
       m = pathname.match(/^\/api\/gallery\/([^/]+)$/);
       if (m && request.method === "GET") {
         return handleGetClientGallery(env, m[1], origin);
+      }
+
+      m = pathname.match(/^\/api\/gallery\/([^/]+)\/favoris$/);
+      if (m && request.method === "POST") {
+        return handleSaveFavoris(request, env, m[1], origin);
       }
 
       m = pathname.match(/^\/api\/gallery\/([^/]+)\/photo\/([^/]+)$/);

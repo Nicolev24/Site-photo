@@ -73,9 +73,71 @@ function photoUrl(token, filename, variant, download) {
   return url;
 }
 
+let allPhotos = [];
 let currentPhotos = [];
 let currentIndex = -1;
 let currentToken = null;
+
+// ---------- Favoris (le cœur sur chaque photo) ----------
+
+let favoris = new Set();
+let filtreFavoris = false;
+let minuterieFavoris = null;
+
+function estFavori(filename) {
+  return favoris.has(filename);
+}
+
+function basculerFavori(filename) {
+  if (favoris.has(filename)) favoris.delete(filename);
+  else favoris.add(filename);
+  document.querySelectorAll(`[data-favori="${CSS.escape(filename)}"]`).forEach((el) => {
+    el.classList.toggle("actif", favoris.has(filename));
+    el.setAttribute("aria-pressed", String(favoris.has(filename)));
+  });
+  majBarreFavoris();
+  if (filtreFavoris && !favoris.has(filename)) renderGrid();
+  // On enregistre un peu après le dernier clic.
+  clearTimeout(minuterieFavoris);
+  afficherEtatFavoris("Enregistrement…");
+  minuterieFavoris = setTimeout(enregistrerFavoris, 700);
+}
+
+async function enregistrerFavoris() {
+  try {
+    const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(currentToken)}/favoris`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photos: [...favoris] }),
+    });
+    if (!res.ok) throw new Error();
+    afficherEtatFavoris("Vos favoris sont enregistrés ✓");
+  } catch {
+    afficherEtatFavoris("Pas de connexion : vos favoris seront enregistrés au prochain clic.");
+  }
+}
+
+function afficherEtatFavoris(texte) {
+  const el = document.getElementById("favoris-etat");
+  if (el) el.textContent = texte;
+}
+
+function majBarreFavoris() {
+  const barre = document.getElementById("favoris-barre");
+  if (!barre) return;
+  barre.hidden = allPhotos.length === 0;
+  document.getElementById("filtre-tout").classList.toggle("actif", !filtreFavoris);
+  document.getElementById("filtre-favoris").classList.toggle("actif", filtreFavoris);
+  document.getElementById("favoris-compte").textContent = String(favoris.size);
+}
+
+function changerFiltre(seulementFavoris) {
+  filtreFavoris = seulementFavoris;
+  majBarreFavoris();
+  renderGrid();
+}
+
+const coeur = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg>`;
 
 async function loadGallery(token) {
   try {
@@ -83,7 +145,10 @@ async function loadGallery(token) {
     if (!res.ok) throw new Error("Galerie introuvable");
     const gallery = await res.json();
     currentToken = token;
-    currentPhotos = gallery.photos || [];
+    allPhotos = gallery.photos || [];
+    currentPhotos = allPhotos;
+    favoris = new Set(gallery.favoris || []);
+    majBarreFavoris();
     localStorage.setItem(LAST_GALLERY_KEY, token);
     document.getElementById("gallery-heading").textContent = gallery.name;
     document.getElementById("gallery-subheading").textContent = gallery.title || "";
@@ -112,19 +177,28 @@ function renderGrid() {
   const grid = document.getElementById("gallery-grid");
   grid.innerHTML = "";
 
-  if (!currentPhotos.length) {
+  currentPhotos = filtreFavoris ? allPhotos.filter((p) => favoris.has(p.filename)) : allPhotos;
+
+  if (!allPhotos.length) {
     grid.innerHTML = `<p class="lead">Vos photos arrivent bientôt — repassez un peu plus tard.</p>`;
+    return;
+  }
+  if (!currentPhotos.length) {
+    grid.innerHTML = `<p class="lead">Pas encore de favoris : touchez le cœur sur les photos que vous préférez.</p>`;
     return;
   }
 
   currentPhotos.forEach((photo, index) => {
     const tile = document.createElement("div");
     tile.className = "galerie-client-tile";
+    const actif = estFavori(photo.filename);
     tile.innerHTML = `
       <img src="${photoUrl(currentToken, photo.filename, "thumb")}" alt="" loading="lazy" decoding="async" />
+      <button type="button" class="tile-favori${actif ? " actif" : ""}" data-favori="${escapeHtml(photo.filename)}" aria-pressed="${actif}" title="Ajouter à mes favoris">${coeur}</button>
       <a class="tile-download" href="${photoUrl(currentToken, photo.filename, "original", true)}" download title="Télécharger">⬇</a>
     `;
     tile.querySelector("img").addEventListener("click", () => openLightbox(index));
+    tile.querySelector(".tile-favori").addEventListener("click", () => basculerFavori(photo.filename));
     grid.appendChild(tile);
   });
 }
@@ -147,11 +221,33 @@ function closeLightbox() {
   document.body.style.overflow = "";
 }
 
+const lightboxFavori = document.getElementById("lightbox-favori");
+
 function updateLightbox() {
   const photo = currentPhotos[currentIndex];
   lightboxImg.src = photoUrl(currentToken, photo.filename, "original");
   lightboxDownload.href = photoUrl(currentToken, photo.filename, "original", true);
+  lightboxFavori.dataset.favori = photo.filename;
+  lightboxFavori.classList.toggle("actif", estFavori(photo.filename));
+  lightboxFavori.setAttribute("aria-pressed", String(estFavori(photo.filename)));
 }
+
+lightboxFavori.innerHTML = `${coeur}<span>Favori</span>`;
+lightboxFavori.addEventListener("click", () => {
+  const photo = currentPhotos[currentIndex];
+  if (!photo) return;
+  basculerFavori(photo.filename);
+  // En mode « Mes favoris », la photo retirée disparaît de la liste.
+  if (filtreFavoris && !estFavori(photo.filename)) {
+    if (!currentPhotos.length) closeLightbox();
+    else {
+      currentIndex = Math.min(currentIndex, currentPhotos.length - 1);
+      updateLightbox();
+    }
+  }
+});
+document.getElementById("filtre-tout").addEventListener("click", () => changerFiltre(false));
+document.getElementById("filtre-favoris").addEventListener("click", () => changerFiltre(true));
 
 function showPrev() {
   currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
@@ -172,6 +268,7 @@ lightbox.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (lightbox.hidden) return;
   if (e.key === "Escape") closeLightbox();
+  if (e.key === "f" || e.key === "F") lightboxFavori.click();
   if (e.key === "ArrowLeft") showPrev();
   if (e.key === "ArrowRight") showNext();
 });

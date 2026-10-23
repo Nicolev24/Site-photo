@@ -39,6 +39,14 @@
       <a href="../contact.html" class="btn-secondary">Me contacter</a>
     </div>
 
+    <div id="favoris-barre" class="favoris-barre" hidden>
+      <div class="favoris-filtres" role="group" aria-label="Photos affichées">
+        <button type="button" id="filtre-tout" class="actif">Toutes les photos</button>
+        <button type="button" id="filtre-favoris">♥ Mes favoris (<span id="favoris-compte">0</span>)</button>
+      </div>
+      <p class="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
+    </div>
+
     <div id="gallery-grid" class="galerie-client-grid"></div>
   </div>
 </main>
@@ -59,7 +67,10 @@
   <button type="button" class="lightbox-prev" aria-label="Photo précédente">‹</button>
   <img id="lightbox-img" src="" alt="" />
   <button type="button" class="lightbox-next" aria-label="Photo suivante">›</button>
-  <a id="lightbox-download" class="btn btn-primary lightbox-download" download>Télécharger</a>
+  <div class="lightbox-actions">
+    <button type="button" id="lightbox-favori" class="lightbox-favori" aria-pressed="false" title="Ajouter à mes favoris (F)"></button>
+    <a id="lightbox-download" class="btn btn-primary lightbox-download" download>Télécharger</a>
+  </div>
 </div>
 
 <script src="../js/main.js"></script>
