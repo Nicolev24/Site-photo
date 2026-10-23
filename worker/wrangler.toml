@@ -1,6 +1,9 @@
 name = "galerie-api"
 main = "src/index.js"
 compatibility_date = "2024-11-01"
+# Garde les variables saisies sur le tableau de bord Cloudflare à chaque déploiement.
+keep_vars = true
+preview_urls = false
 
 # Ces bindings sont déjà configurés sur le dashboard Cloudflare pour le
 # vrai Worker déployé (galerie-api.nicoleveugle.workers.dev). Ce fichier
@@ -16,4 +19,4 @@ bucket_name = "galerie-photos"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "local-dev-placeholder"
+id = "610551ec159e44aa8fd354b266fc6739"
