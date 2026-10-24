@@ -5,8 +5,8 @@
 // Navigation : les liens entre pages du site ne rechargent pas la page. Le
 // contenu est remplacé sur place, avec une transition (View Transitions
 // quand le navigateur sait faire, simple fondu sinon). C'est ce qui permet
-// à la photo « prise » par l'appareil de l'accueil de s'envoler jusqu'à la
-// page tarifs, et de revenir dans l'appareil au retour. L'adresse et le
+// à la photo choisie sur l'accueil de s'ouvrir puis de glisser jusqu'à la
+// page tarifs, et d'y revenir au retour. L'adresse et le
 // bouton « retour » du navigateur restent ceux d'un site classique.
 
 const SITE_URL = "https://nicolasleveugle.be/";
@@ -212,8 +212,9 @@ function mouvementReduit() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// type : "page" (page à page), "appareil" (départ de l'accueil après la
-// photo), "retour" (vers l'accueil), "univers" (changement d'univers).
+// type : "page" (page à page), "ouverture" (départ de l'accueil quand on
+// choisit une des deux photos), "retour" (vers l'accueil), "univers"
+// (changement d'univers).
 // Les animations elles-mêmes sont dans css/style.css (« Transitions »).
 async function transition(maj, type) {
   if (mouvementReduit()) {

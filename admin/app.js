@@ -71,15 +71,14 @@ const SECTION_TYPES = [
     defaultData: () => ({ blocks: [{ type: "paragraph", text: "" }] }),
   },
   {
-    value: "appareil",
-    label: "Accueil : l'appareil photo (particulier / commerce)",
+    value: "diptyque",
+    label: "Accueil : deux grandes photos (particuliers / commerces)",
     defaultData: () => ({
-      eyebrow: "", title_line1: "", title_line2: "", subtitle: "", prompt: "Vous venez pour…",
-      choices: [
-        { label: "Particulier", desc: "", image: "", alt: "", position: "50% 50%", href: "services.html#particuliers" },
-        { label: "Commerce", desc: "", image: "", alt: "", position: "50% 50%", href: "services.html#commerces" },
+      eyebrow: "", title: "", text: "",
+      panels: [
+        { univers: "particuliers", label: "Particuliers", title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%", href: "services.html?pour=particuliers" },
+        { univers: "commerces", label: "Commerces", title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%", href: "services.html?pour=commerces" },
       ],
-      link_label: "Voir le portfolio", link_href: "portfolio.html",
     }),
   },
   {
@@ -438,7 +437,6 @@ function pageHtmlTemplate(seo, slug) {
   <div class="container univers-barre-inner">
     <span class="univers-libelle">Vous êtes</span>
     <div class="univers-switch" role="group" aria-label="Vous êtes">
-      <span class="univers-curseur" aria-hidden="true"></span>
       <button type="button" data-univers="particuliers" aria-pressed="false">Particulier</button>
       <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
     </div>

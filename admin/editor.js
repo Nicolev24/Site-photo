@@ -579,7 +579,7 @@ function buildEditableTexteJuridique(data, rerender) {
 }
 
 // Photo éditable dans un cadre fixe (changer la photo, texte alternatif,
-// cadrage via ⚙). Sert à l'appareil photo de l'accueil et aux onglets tarifs.
+// cadrage via ⚙). Sert au diptyque de l'accueil et à l'en-tête des tarifs.
 function editablePhotoFrame(obj, legend, height) {
   const frame = document.createElement("div");
   frame.style.position = "relative";
@@ -606,73 +606,46 @@ function editablePhotoFrame(obj, legend, height) {
   return wrap;
 }
 
-function buildEditableAppareil(data) {
-  data.choices = data.choices || [];
-  while (data.choices.length < 2) data.choices.push({ label: "", desc: "", image: "", alt: "", position: "50% 50%", href: "" });
+function buildEditableDiptyque(data) {
+  data.panels = data.panels || [];
+  const defauts = [
+    { univers: "particuliers", label: "Particuliers", href: "services.html?pour=particuliers" },
+    { univers: "commerces", label: "Commerces", href: "services.html?pour=commerces" },
+  ];
+  while (data.panels.length < 2) data.panels.push({ ...defauts[data.panels.length], title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%" });
 
   const sectionEl = document.createElement("section");
-  sectionEl.className = "appareil";
-  const grid = document.createElement("div");
-  grid.className = "appareil-grid";
-  grid.style.minHeight = "0";
+  sectionEl.className = "diptyque";
+  const entete = document.createElement("div");
+  entete.className = "container diptyque-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Titre lu par Google (ex. Photographe à Ath)" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "p", className: "diptyque-accroche", placeholder: "Accroche" }));
+  entete.appendChild(editableSpan(data, "text", { tag: "p", className: "diptyque-texte-intro", placeholder: "Courte présentation (optionnelle)" }));
+  sectionEl.appendChild(entete);
 
-  const intro = document.createElement("div");
-  intro.className = "appareil-intro";
-  intro.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Titre lu par Google (ex. Photographe à Ath)" }));
-  const h1 = document.createElement("p");
-  h1.className = "appareil-titre";
-  h1.appendChild(editableSpan(data, "title_line1", { placeholder: "Titre — 1ère ligne" }));
-  h1.appendChild(document.createElement("br"));
-  h1.appendChild(editableSpan(data, "title_line2", { placeholder: "Titre — 2ème ligne" }));
-  intro.appendChild(h1);
-  intro.appendChild(editableSpan(data, "subtitle", { tag: "p", className: "appareil-sous-titre", placeholder: "Sous-titre" }));
-  grid.appendChild(intro);
-
-  const choix = document.createElement("div");
-  choix.className = "appareil-choix";
-  choix.appendChild(editableSpan(data, "prompt", { tag: "p", className: "appareil-invite", placeholder: "Question au-dessus des choix" }));
-  const optionsEl = document.createElement("div");
-  optionsEl.className = "appareil-options";
-  data.choices.slice(0, 2).forEach((c) => {
-    const opt = document.createElement("div");
-    opt.className = "appareil-option";
-    const textes = document.createElement("span");
-    textes.appendChild(editableSpan(c, "label", { tag: "span", className: "appareil-option-titre", placeholder: "Nom du choix" }));
-    textes.appendChild(editableSpan(c, "desc", { tag: "span", className: "appareil-option-desc", placeholder: "Courte description" }));
-    opt.appendChild(textes);
-    opt.appendChild(buildSettingsPopover([{ label: "Page ouverte après le déclic", obj: c, key: "href" }]));
-    optionsEl.appendChild(opt);
+  const grille = document.createElement("div");
+  grille.className = "container";
+  grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:24px;padding-bottom:40px";
+  data.panels.slice(0, 2).forEach((p, i) => {
+    const col = document.createElement("div");
+    col.appendChild(editablePhotoFrame(p, `Grande photo « ${p.label || defauts[i].label} »`, 360));
+    const textes = document.createElement("div");
+    textes.style.cssText = "display:grid;gap:6px;margin-top:12px";
+    textes.appendChild(editableSpan(p, "label", { tag: "span", className: "diptyque-libelle", placeholder: "Particuliers / Commerces" }));
+    textes.appendChild(editableSpan(p, "title", { tag: "span", className: "diptyque-titre", placeholder: "Titre sur la photo" }));
+    const lien = document.createElement("span");
+    lien.appendChild(editableSpan(p, "link_label", { tag: "span", className: "diptyque-lien", placeholder: "Texte du lien" }));
+    lien.appendChild(buildSettingsPopover([{ label: "Page ouverte au clic", obj: p, key: "href" }]));
+    textes.appendChild(lien);
+    col.appendChild(textes);
+    grille.appendChild(col);
   });
-  choix.appendChild(optionsEl);
-  const bas = document.createElement("div");
-  bas.className = "appareil-bas";
-  const lien = editableSpan(data, "link_label", { tag: "a", className: "btn-secondary", placeholder: "Lien secondaire (optionnel)" });
-  lien.href = "#";
-  const lienRow = document.createElement("span");
-  lienRow.appendChild(lien);
-  lienRow.appendChild(buildSettingsPopover([{ label: "Adresse du lien", obj: data, key: "link_href" }]));
-  bas.appendChild(lienRow);
-  choix.appendChild(bas);
-  grid.appendChild(choix);
+  sectionEl.appendChild(grille);
 
-  const scene = document.createElement("div");
-  scene.className = "appareil-scene";
-  scene.style.flexDirection = "column";
-  scene.style.gap = "16px";
   const hint = document.createElement("p");
-  hint.className = "admin-hint";
-  hint.style.margin = "0";
-  hint.textContent = "Sur le site, ces deux photos s'affichent dans l'écran de l'appareil photo animé (selon le choix survolé).";
-  scene.appendChild(hint);
-  const photos = document.createElement("div");
-  photos.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%";
-  data.choices.slice(0, 2).forEach((c, i) => {
-    photos.appendChild(editablePhotoFrame(c, `Photo « ${c.label || (i === 0 ? "Particulier" : "Commerce")} »`, 220));
-  });
-  scene.appendChild(photos);
-  grid.appendChild(scene);
-
-  sectionEl.appendChild(grid);
+  hint.className = "admin-hint container";
+  hint.textContent = "Sur le site, les deux photos s'affichent côte à côte en grand. Au clic, la photo s'ouvre puis glisse vers la page tarifs : pour une transition parfaite, mets la même photo et le même cadrage que dans l'en-tête des tarifs. Utilise des photos en pleine définition.";
+  sectionEl.appendChild(hint);
   return sectionEl;
 }
 
@@ -725,7 +698,7 @@ function buildEditableOngletsTarifs(data) {
 
   const hint = document.createElement("p");
   hint.className = "admin-hint";
-  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Pour une transition parfaite depuis l'accueil, mets la même photo et le même cadrage que sur l'appareil photo.";
+  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Pour une transition parfaite depuis l'accueil, mets la même photo et le même cadrage que sur l'accueil.";
   container.appendChild(hint);
 
   const NOMS = { particuliers: "Particuliers", commerces: "Commerces" };
@@ -825,7 +798,7 @@ const EDITABLE_BUILDERS = {
   cta: buildEditableCta,
   contact: buildEditableContact,
   texte_juridique: buildEditableTexteJuridique,
-  appareil: buildEditableAppareil,
+  diptyque: buildEditableDiptyque,
   contact_bref: buildEditableContactBref,
   onglets_tarifs: buildEditableOngletsTarifs,
   faq: buildEditableFaq,
@@ -834,9 +807,9 @@ const EDITABLE_BUILDERS = {
 // Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page
 // contient une section à onglets (page tarifs).
 function buildTabSelect(section, sections) {
-  // L'accueil (appareil photo) est commun aux deux univers ; l'en-tête des
+  // L'accueil (diptyque) est commun aux deux univers ; l'en-tête des
   // tarifs gère déjà les deux.
-  if (sections.some((s) => s.type === "appareil") || section.type === "onglets_tarifs") return null;
+  if (sections.some((s) => s.type === "diptyque") || section.type === "onglets_tarifs") return null;
   const select = document.createElement("select");
   select.className = "admin-tab-select";
   select.title = "Pour quels visiteurs cette section s'affiche (choix Particulier / Commerce en haut du site)";

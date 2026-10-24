@@ -307,251 +307,88 @@ function buildCta(data, basePath) {
   );
 }
 
-// ---------- Accueil : l'appareil photo ----------
+// ---------- Accueil : le diptyque Particuliers / Commerces ----------
 //
-// Deux choix (particulier / commerce). Survoler un choix change l'image sur
-// l'écran de l'appareil ; cliquer déclenche (mise au point, obturateur)
-// puis la photo de l'écran s'envole jusqu'à sa place sur la page tarifs du
-// bon univers (transition gérée par js/render.js). Sans JavaScript, ou si
-// le visiteur a demandé moins d'animations, ce sont de simples liens.
+// Deux grandes photos côte à côte (l'une au-dessus de l'autre sur
+// téléphone), une par univers. Au survol, la photo s'élargit un peu. Au
+// clic, elle s'ouvre sur toute la largeur, puis glisse jusqu'à sa place
+// sur la page tarifs de cet univers (transition « ouverture », gérée par
+// js/render.js et css/style.css). Sans JavaScript, ou si le visiteur a
+// demandé moins d'animations, ce sont de simples liens.
 
-const ICONE_CHEVRON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const ICONE_SON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path class="onde" d="M16.5 8.5a5 5 0 010 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="muet" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
-
-function buildAppareil(data, basePath) {
-  const choix = (data.choices || []).slice(0, 2);
-  const [part, com] = [choix[0] || {}, choix[1] || {}];
-  const modeInitial = window.Univers ? window.Univers.mode() : "particulier";
-  const actif = modeInitial === "commerce" ? com : part;
-
-  // La photo visible porte la classe photo-univers (nom de transition).
-  const calque = (c, cls) => `
-    <div class="appareil-calque ${cls}${cls === modeInitial ? " photo-univers" : ""}">
-      <img src="${resolveSrc(c.image, basePath)}"${attributsTaillesHtml(c.image, basePath, "(max-width: 900px) 90vw, 560px")} alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === modeInitial ? 'fetchpriority="high"' : ""} decoding="async" />
-    </div>`;
-
-  const option = (c, mode) => `
-    <a class="appareil-option${mode === modeInitial ? " est-actif" : ""}" href="${resolveHref(c.href, basePath)}" data-mode="${mode}">
-      <span>
-        <span class="appareil-option-titre">${escapeHtml(c.label)}</span>
-        <span class="appareil-option-desc">${escapeHtml(c.desc)}</span>
-      </span>
-      ${ICONE_CHEVRON}
-    </a>`;
-
+function buildDiptyque(data, basePath) {
+  const u = universCourant();
+  const panneaux = (data.panels || []).slice(0, 2);
   const section = el(
     "section",
-    { class: `appareil${modeInitial === "commerce" ? " est-commerce" : ""}` },
+    { class: "diptyque" },
     `
-    <div class="appareil-grid">
-      <div class="appareil-intro">
-        <h1 class="eyebrow appareil-entree">${escapeHtml(data.eyebrow)}</h1>
-        <p class="appareil-titre appareil-entree d2">${escapeHtml(data.title_line1)}<br>${escapeHtml(data.title_line2)}</p>
-        <p class="appareil-sous-titre appareil-entree d3">${escapeHtml(data.subtitle)}</p>
-      </div>
-
-      <div class="appareil-choix appareil-entree d4">
-        <p class="appareil-invite">${escapeHtml(data.prompt)}</p>
-        <div class="appareil-options">
-          ${option(part, "particulier")}
-          ${option(com, "commerce")}
-        </div>
-        <div class="appareil-bas">
-          ${data.link_label ? `<a class="btn-secondary" href="${resolveHref(data.link_href, basePath)}">${escapeHtml(data.link_label)}</a>` : "<span></span>"}
-          <button type="button" class="appareil-son" aria-pressed="false" aria-label="Activer le son du déclencheur" title="Activer le son du déclencheur">${ICONE_SON}</button>
-        </div>
-      </div>
-
-      <div class="appareil-scene" aria-hidden="true">
-        <div class="appareil-cadre">
-          <div class="appareil-echelle">
-            <div class="appareil-boitier">
-              <div class="appareil-coque">
-                <div class="appareil-viseur"></div>
-                <div class="appareil-corps"></div>
-                <div class="appareil-molette">
-                  <div class="appareil-molette-crantee"></div>
-                  <div class="appareil-molette-face"></div>
-                  <span class="appareil-molette-repere part">PART.</span>
-                  <span class="appareil-molette-repere com">COM.</span>
-                </div>
-                <div class="appareil-rosace"><span>OK</span></div>
-                <div class="appareil-touches"><span>MENU</span><span>INFO</span></div>
-                <div class="appareil-anneau"></div>
-              </div>
-              <button type="button" class="appareil-declencheur" tabindex="-1"></button>
-              <div class="appareil-ecran">
-                <div class="appareil-ecran-int">
-                  ${calque(part, "particulier")}
-                  ${calque(com, "commerce")}
-                  <div class="appareil-ui">
-                    <span class="tiers t1"></span><span class="tiers t2"></span><span class="tiers t3"></span><span class="tiers t4"></span>
-                    <span class="appareil-af"></span>
-                    <span class="appareil-infos"><span class="appareil-infos-mode">${escapeHtml(actif.label || "")}</span><span>f/2.8 · 1/250</span></span>
-                  </div>
-                  <div class="appareil-obturateur"></div>
-                  <div class="appareil-eclair"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="container diptyque-entete">
+      <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
+      <p class="diptyque-accroche">${escapeHtml(data.title)}</p>
+      ${data.text ? `<p class="diptyque-texte-intro">${escapeHtml(data.text)}</p>` : ""}
+    </div>
+    <div class="diptyque-panneaux">
+      ${panneaux
+        .map(
+          (p, i) => `
+      <a class="diptyque-panneau" href="${resolveHref(p.href, basePath)}" data-univers="${escapeHtml(p.univers)}">
+        <figure class="diptyque-photo${p.univers === u ? " photo-univers" : ""}">
+          <img src="${resolveSrc(p.image, basePath)}"${attributsTaillesHtml(p.image, basePath, "(max-width: 860px) 100vw, 50vw")} alt="${escapeHtml(p.alt || "")}" style="object-position:${escapeHtml(p.position || "50% 50%")}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async" />
+        </figure>
+        <span class="diptyque-legende">
+          <span class="diptyque-libelle">${escapeHtml(p.label)}</span>
+          <span class="diptyque-titre">${escapeHtml(p.title)}</span>
+          <span class="diptyque-lien">${escapeHtml(p.link_label || "Voir les formules")}</span>
+        </span>
+      </a>`
+        )
+        .join("")}
     </div>
   `
   );
-
-  initAppareil(section, { particulier: part, commerce: com }, modeInitial);
+  initDiptyque(section);
   return section;
 }
 
-function initAppareil(section, choix, modeInitial) {
+function initDiptyque(section) {
   if (section.closest && section.closest(".admin-live-editor")) return;
-
   const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const scene = section.querySelector(".appareil-scene");
-  const cadre = section.querySelector(".appareil-cadre");
-  const boitier = section.querySelector(".appareil-boitier");
-  const infosMode = section.querySelector(".appareil-infos-mode");
-  const calques = Array.from(section.querySelectorAll(".appareil-calque"));
-  const options = Array.from(section.querySelectorAll(".appareil-option"));
-  const boutonSon = section.querySelector(".appareil-son");
-  const declencheur = section.querySelector(".appareil-declencheur");
-  let mode = modeInitial || "particulier";
+  const panneaux = Array.from(section.querySelectorAll(".diptyque-panneau"));
   let enCours = false;
-  let sonActif = false;
-  let minuteurs = [];
-  let audio = null;
-
-  const ajusterEchelle = () => {
-    const largeur = scene.clientWidth;
-    if (!largeur) return;
-    cadre.style.setProperty("--echelle", Math.min(1, largeur / 680).toFixed(4));
-  };
-  ajusterEchelle();
-  if (window.ResizeObserver) new ResizeObserver(ajusterEchelle).observe(scene);
-  else window.addEventListener("resize", ajusterEchelle);
-
-  const choisir = (m) => {
-    if (enCours || m === mode) return;
-    mode = m;
-    section.classList.toggle("est-commerce", m === "commerce");
-    options.forEach((o) => o.classList.toggle("est-actif", o.dataset.mode === m));
-    calques.forEach((c) => c.classList.toggle("photo-univers", c.classList.contains(m)));
-    infosMode.textContent = (choix[m] && choix[m].label) || "";
-  };
-
-  const reinitialiser = () => {
-    minuteurs.forEach(clearTimeout);
-    minuteurs = [];
-    enCours = false;
-    section.classList.remove("en-cours", "phase-appui", "phase-obturation", "phase-depart");
-  };
-
-  const cliquetis = () => {
-    try {
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return;
-      audio = audio || new Ctx();
-      const salve = (debut, duree, gain, freq) => {
-        const n = Math.floor(audio.sampleRate * duree);
-        const tampon = audio.createBuffer(1, n, audio.sampleRate);
-        const d = tampon.getChannelData(0);
-        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
-        const src = audio.createBufferSource();
-        src.buffer = tampon;
-        const filtre = audio.createBiquadFilter();
-        filtre.type = "bandpass";
-        filtre.frequency.value = freq;
-        const g = audio.createGain();
-        g.gain.value = gain;
-        src.connect(filtre);
-        filtre.connect(g);
-        g.connect(audio.destination);
-        src.start(audio.currentTime + debut);
-      };
-      salve(0, 0.045, 0.8, 2600);
-      salve(0.085, 0.06, 0.5, 1800);
-    } catch (e) {
-      // le son reste un bonus : silence si le navigateur refuse
-    }
-  };
 
   const ouvrir = (href) => {
-    if (typeof window.naviguerVers === "function") window.naviguerVers(href, { transition: "appareil" });
+    if (typeof window.naviguerVers === "function") window.naviguerVers(href, { transition: "ouverture" });
     else window.location.href = href;
   };
 
-  // Mise au point (le cadre AF se resserre), obturateur (deux rideaux qui
-  // se croisent), petit éclair sur l'écran… puis la photo part vers la page.
-  const declencher = (m, href) => {
-    if (enCours) return;
-    choisir(m);
-    if (window.Univers) window.Univers.definir(window.Univers.depuisMode(m));
-    if (reduit) {
-      ouvrir(href);
-      return;
-    }
-    enCours = true;
-    if (sonActif) cliquetis();
-    boitier.classList.add("sans-inclinaison");
-    boitier.style.setProperty("--tilt-x", "0deg");
-    boitier.style.setProperty("--tilt-y", "0deg");
-    section.classList.add("en-cours", "phase-appui");
-    const etape = (ms, fn) => minuteurs.push(setTimeout(fn, ms));
-    etape(170, () => section.classList.replace("phase-appui", "phase-obturation"));
-    etape(400, () => {
-      section.classList.replace("phase-obturation", "phase-depart");
-      ouvrir(href);
-    });
-  };
-
-  options.forEach((o) => {
-    o.addEventListener("mouseenter", () => choisir(o.dataset.mode));
-    o.addEventListener("focus", () => choisir(o.dataset.mode));
-    o.addEventListener("click", (e) => {
+  panneaux.forEach((panneau) => {
+    panneau.addEventListener("click", (e) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       e.preventDefault();
-      declencher(o.dataset.mode, o.href);
+      if (enCours) return;
+      enCours = true;
+      if (window.Univers) window.Univers.definir(panneau.dataset.univers);
+      // Seule la photo choisie voyage jusqu'à la page tarifs.
+      section.querySelectorAll(".photo-univers").forEach((f) => f.classList.remove("photo-univers"));
+      panneau.querySelector(".diptyque-photo").classList.add("photo-univers");
+      if (reduit) {
+        ouvrir(panneau.href);
+        return;
+      }
+      section.classList.add("est-ouvert");
+      panneau.classList.add("est-choisi");
+      setTimeout(() => ouvrir(panneau.href), 520);
     });
   });
 
-  declencheur.addEventListener("click", () => {
-    const o = options.find((x) => x.dataset.mode === mode);
-    if (o) declencher(mode, o.href);
-  });
-
-  boutonSon.addEventListener("click", () => {
-    sonActif = !sonActif;
-    boutonSon.setAttribute("aria-pressed", sonActif ? "true" : "false");
-    const label = sonActif ? "Couper le son du déclencheur" : "Activer le son du déclencheur";
-    boutonSon.setAttribute("aria-label", label);
-    boutonSon.title = label;
-  });
-
-  if (!reduit && window.matchMedia("(hover: hover)").matches) {
-    let image = null;
-    section.addEventListener("mousemove", (e) => {
-      if (enCours || image) return;
-      const r = section.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      image = requestAnimationFrame(() => {
-        image = null;
-        boitier.style.setProperty("--tilt-x", `${(-y * 5).toFixed(2)}deg`);
-        boitier.style.setProperty("--tilt-y", `${(x * 7).toFixed(2)}deg`);
-      });
-    });
-    section.addEventListener("mouseleave", () => {
-      boitier.style.setProperty("--tilt-x", "0deg");
-      boitier.style.setProperty("--tilt-y", "0deg");
-    });
-  }
-
-  // Retour arrière vers une page restaurée telle quelle par le navigateur
-  // (après être passé par l'espace client, par exemple) : on remet l'appareil.
+  // Retour arrière vers une page gardée en mémoire par le navigateur : on
+  // remet le diptyque dans son état de départ.
   window.addEventListener("pageshow", (e) => {
-    if (e.persisted) reinitialiser();
+    if (!e.persisted) return;
+    enCours = false;
+    section.classList.remove("est-ouvert");
+    panneaux.forEach((p) => p.classList.remove("est-choisi"));
   });
 }
 
@@ -592,7 +429,7 @@ async function buildContactBref(data, basePath) {
 //
 // Titre de la page et photo de l'univers affiché (particuliers ou
 // commerces). La photo est encadrée à une taille où elle reste parfaitement
-// nette, et c'est elle que la photo « prise » par l'appareil de l'accueil
+// nette, et c'est elle que la photo choisie sur l'accueil
 // vient remplacer pendant la transition (view-transition-name, voir le CSS).
 // Les sections de la page qui portent un champ "tab" ne s'affichent que
 // dans leur univers.
@@ -784,7 +621,7 @@ const SECTION_BUILDERS = {
   cta: buildCta,
   contact: buildContact,
   texte_juridique: buildTexteJuridique,
-  appareil: buildAppareil,
+  diptyque: buildDiptyque,
   contact_bref: buildContactBref,
   onglets_tarifs: buildOngletsTarifs,
   faq: buildFaq,

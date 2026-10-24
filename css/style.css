@@ -7,44 +7,23 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Newsreader";
-  src: url("../fonts/newsreader-latin-400-normal.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Newsreader";
-  src: url("../fonts/newsreader-latin-500-normal.woff2") format("woff2");
+  font-family: "Cormorant Garamond";
+  src: url("../fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2");
+  font-family: "Jost";
+  src: url("../fonts/jost-latin-400-normal.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2");
+  font-family: "Jost";
+  src: url("../fonts/jost-latin-500-normal.woff2") format("woff2");
   font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  src: url("../fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("../fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
-  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -66,15 +45,14 @@
   --couleur-sur-accent: #1c1916;
   --couleur-bordure: rgba(245, 241, 234, 0.12);
   --couleur-header: #1c1916;
-  --police-titres: "Newsreader", Georgia, serif;
-  --police-texte: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --police-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --poids-titres: 400;
-  --espacement-titres: -0.01em;
-  --eyebrow-casse: none;
-  --eyebrow-espacement: 0;
-  --eyebrow-taille: 0.875rem;
-  --eyebrow-poids: 400;
+  --police-titres: "Cormorant Garamond", "Times New Roman", serif;
+  --police-texte: "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --poids-titres: 500;
+  --espacement-titres: 0;
+  --eyebrow-casse: uppercase;
+  --eyebrow-espacement: 0.18em;
+  --eyebrow-taille: 0.7rem;
+  --eyebrow-poids: 500;
   --largeur-max: 1180px;
   --rayon-bordure: 4px;
   --rayon-bouton: 3px;
@@ -185,7 +163,7 @@ h1.eyebrow {
   text-transform: var(--eyebrow-casse);
   letter-spacing: var(--eyebrow-espacement);
   font-size: var(--eyebrow-taille);
-  color: var(--couleur-accent-texte);
+  color: var(--couleur-texte-attenue);
   font-weight: var(--eyebrow-poids);
   margin-bottom: 14px;
   display: block;
@@ -207,18 +185,22 @@ h1.eyebrow {
 /* ============ Boutons : 1 style principal (plein) + 1 style secondaire (lien) ============ */
 .btn {
   display: inline-block;
-  padding: 14px 26px;
+  padding: 15px 28px;
   border-radius: var(--rayon-bouton);
   font-family: var(--police-texte);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   line-height: 1.2;
   border: 1px solid transparent;
   cursor: pointer;
   text-align: center;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
-.theme-clair .btn:not(.theme-sombre *) { font-weight: 600; padding: 15px 32px; }
+.theme-clair .btn:not(.theme-sombre *) { font-weight: 600; padding: 15px 32px; font-size: 0.95rem; letter-spacing: 0; text-transform: none; }
+.theme-clair .btn-small:not(.theme-sombre *) { font-size: 0.85rem; }
+.theme-clair .nav-links a:not(.theme-sombre *) { font-size: 0.9rem; letter-spacing: 0; text-transform: none; }
 
 .btn-primary {
   background: var(--couleur-accent);
@@ -241,8 +223,8 @@ h1.eyebrow {
 }
 
 .btn-small {
-  padding: 9px 20px;
-  font-size: 0.85rem;
+  padding: 11px 20px;
+  font-size: 0.7rem;
 }
 
 /* Lien secondaire : texte souligné (site), ou texte + flèche (admin) */
@@ -297,8 +279,8 @@ h1.eyebrow {
 .logo {
   font-family: var(--police-titres);
   font-weight: var(--poids-titres);
-  font-size: 1.45rem;
-  letter-spacing: -0.01em;
+  font-size: 1.6rem;
+  letter-spacing: 0.01em;
 }
 .theme-clair .logo:not(.theme-sombre *) { font-size: 1.2rem; }
 
@@ -317,8 +299,10 @@ h1.eyebrow {
 }
 
 .nav-links a {
-  font-size: 0.9rem;
-  font-weight: 400;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--couleur-texte-attenue);
   padding-bottom: 5px;
   border-bottom: 1px solid transparent;
@@ -604,6 +588,7 @@ h1.eyebrow {
 }
 
 .price-tag {
+  font-variant-numeric: lining-nums;
   font-family: var(--police-titres);
   font-weight: var(--poids-titres);
   font-size: 2.75rem;
@@ -1003,511 +988,170 @@ mark.placeholder-a-completer {
 }
 
 
-/* ============ Accueil : l'appareil photo ============ */
-.appareil {
-  position: relative;
+/* ============ Accueil : le diptyque Particuliers / Commerces ============ */
+/* Deux grandes photos, bord à bord. La photo fait le travail ; le texte
+   reste petit, posé en bas à gauche comme une légende. */
+/* Titre + deux photos tiennent exactement dans le premier écran. */
+.diptyque {
   padding: 0;
-  overflow: hidden;
-}
-
-.appareil-grid {
-  max-width: var(--largeur-max);
-  margin: 0 auto;
-  padding: 40px 24px 64px;
-  min-height: clamp(640px, calc(100vh - 77px), 880px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr);
-  grid-template-rows: auto auto;
-  align-content: center;
-  column-gap: 48px;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: calc(100svh - 77px);
+  min-height: 640px;
+  max-height: 1080px;
 }
 
-.appareil-intro { grid-column: 1; grid-row: 1; align-self: end; }
-.appareil-choix { grid-column: 1; grid-row: 2; align-self: start; max-width: 450px; }
-.appareil-scene { grid-column: 2; grid-row: 1 / span 2; align-self: center; display: flex; justify-content: center; }
+.diptyque-entete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  column-gap: 48px;
+  align-items: end;
+  padding-top: 36px;
+  padding-bottom: 30px;
+}
 
-.appareil-titre {
+.diptyque-entete .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: 12px;
+}
+
+.diptyque-accroche {
+  margin: 0;
   font-family: var(--police-titres);
   font-weight: var(--poids-titres);
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  line-height: 1.04;
   letter-spacing: var(--espacement-titres);
-  font-size: clamp(2.5rem, 4.4vw, 3.75rem);
-  line-height: 1.06;
-  margin: 0 0 20px;
+  text-wrap: balance;
 }
 
-.appareil-sous-titre {
+.diptyque-texte-intro {
+  margin: 0;
   color: var(--couleur-texte-attenue);
-  font-size: 1rem;
-  line-height: 1.65;
-  max-width: 440px;
-  margin: 0 0 34px;
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
-.appareil-invite {
-  font-size: 0.82rem;
-  color: var(--couleur-texte-attenue);
-  margin: 0 0 12px;
-}
-
-.appareil-options {
+.diptyque-panneaux {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 4px;
+  min-height: 0;
 }
 
-.appareil-option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  min-height: 76px;
-  padding: 12px 22px;
-  border: 1px solid var(--couleur-bordure);
-  border-radius: var(--rayon-bordure);
-  color: var(--couleur-texte);
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-
-.appareil-option:hover,
-.appareil-option:focus-visible,
-.appareil-option.est-actif {
-  border-color: var(--couleur-accent);
-  outline: none;
-}
-
-.appareil-option.est-actif {
-  background: rgba(174, 140, 91, 0.1);
-}
-
-.appareil-option-titre {
-  display: block;
-  font-family: var(--police-titres);
-  font-size: 1.45rem;
-  line-height: 1.2;
-}
-
-.appareil-option-desc {
-  display: block;
-  font-size: 0.82rem;
-  color: var(--couleur-texte-attenue);
-  margin-top: 2px;
-}
-
-.appareil-option svg {
-  flex-shrink: 0;
-  transition: transform 0.25s ease;
-}
-
-.appareil-option:hover svg {
-  transform: translateX(3px);
-}
-
-.appareil-bas {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 22px;
-}
-
-.appareil-son {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--rayon-bouton);
-  border: 1px solid var(--couleur-bordure);
-  background: transparent;
-  color: var(--couleur-texte-attenue);
-  cursor: pointer;
-}
-
-.appareil-son:hover {
-  color: var(--couleur-texte);
-}
-
-.appareil-son .onde { opacity: 0; }
-.appareil-son .muet { opacity: 1; }
-.appareil-son[aria-pressed="true"] .onde { opacity: 1; }
-.appareil-son[aria-pressed="true"] .muet { opacity: 0; }
-
-/* Le boîtier est dessiné à taille fixe (680 x 476) puis mis à l'échelle de
-   sa colonne par js/sections-renderer.js (variable --echelle). */
-.appareil-cadre {
+.diptyque-panneau {
   position: relative;
-  width: calc(680px * var(--echelle, 1));
-  height: calc(476px * var(--echelle, 1));
-}
-
-.appareil-echelle {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 680px;
-  height: 476px;
-  transform: scale(var(--echelle, 1));
-  transform-origin: 0 0;
-}
-
-.appareil-boitier {
-  position: absolute;
-  left: 0;
-  top: 46px;
-  width: 680px;
-  height: 430px;
-  transform: perspective(1600px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform 0.4s ease-out;
-}
-
-.appareil-coque {
-  position: absolute;
-  inset: 0;
-  transition: opacity 0.3s ease;
-}
-
-.appareil-viseur {
-  position: absolute;
-  top: -46px;
-  left: 228px;
-  width: 156px;
-  height: 58px;
-  border-radius: 14px 14px 0 0;
-  background: linear-gradient(180deg, #2f2a24, #23201b);
-}
-
-.appareil-viseur::after {
-  content: "";
-  position: absolute;
-  left: 32px;
-  top: 12px;
-  width: 92px;
-  height: 36px;
-  border-radius: 10px;
-  background: #0d0c0a;
-  box-shadow: inset 0 0 0 2px #1e1b17;
-}
-
-.appareil-corps {
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  background-color: #25211c;
-  background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.03) 0 1px, rgba(255, 255, 255, 0) 1.5px), linear-gradient(180deg, #2d2822, #1a1714);
-  background-size: 5px 5px, 100% 100%;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -2px 0 rgba(0, 0, 0, 0.35);
-}
-
-.appareil-molette {
-  position: absolute;
-  right: 44px;
-  top: 56px;
-  width: 120px;
-  height: 120px;
-}
-
-.appareil-molette-crantee {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: repeating-conic-gradient(#38322b 0deg 5deg, #201c18 5deg 10deg);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
-}
-
-.appareil-molette-face {
-  position: absolute;
-  inset: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #36302a, #1c1915);
-  transform: rotate(-40deg);
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
-}
-
-.appareil-molette-face::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 8px;
-  width: 3px;
-  height: 22px;
-  margin-left: -1.5px;
-  border-radius: 2px;
-  background: var(--couleur-accent);
-}
-
-.appareil-molette-repere {
-  position: absolute;
-  top: 0;
-  font-family: var(--police-mono);
-  font-size: 11.5px;
-  color: rgba(245, 241, 234, 0.38);
-  transition: color 0.25s ease;
-}
-
-.appareil-molette-repere.part { left: -8px; top: -24px; color: var(--couleur-accent); }
-.appareil-molette-repere.com { right: -8px; top: -24px; }
-
-.appareil-rosace {
-  position: absolute;
-  right: 58px;
-  top: 222px;
-  width: 92px;
-  height: 92px;
-  border-radius: 50%;
-  background: #191613;
-  box-shadow: inset 0 0 0 2px #35302a;
-}
-
-.appareil-rosace span {
-  position: absolute;
-  inset: 28px;
-  border-radius: 50%;
-  background: #28231e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--police-mono);
-  font-size: 10px;
-  color: rgba(245, 241, 234, 0.5);
-}
-
-.appareil-touches {
-  position: absolute;
-  right: 52px;
-  bottom: 36px;
-  display: flex;
-  gap: 12px;
-  font-family: var(--police-mono);
-  font-size: 10px;
-  color: rgba(245, 241, 234, 0.42);
-}
-
-.appareil-touches span {
-  border: 1px solid rgba(245, 241, 234, 0.16);
-  border-radius: 5px;
-  padding: 5px 8px;
-}
-
-.appareil-declencheur,
-.appareil-anneau {
-  position: absolute;
-  top: -26px;
-  right: 74px;
-  width: 76px;
-  height: 30px;
-  border-radius: 20px 20px 5px 5px;
-}
-
-.appareil-declencheur {
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  background: linear-gradient(180deg, #c9a874, #977548);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 0 #5e4a2e;
-  transition: opacity 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.appareil-anneau {
-  border: 1.5px solid var(--couleur-accent);
-  pointer-events: none;
-  animation: appareilAnneau 3s ease-out infinite;
-}
-
-@keyframes appareilAnneau {
-  0% { transform: scale(1); opacity: 0.5; }
-  70%, 100% { transform: scale(1.6); opacity: 0; }
-}
-
-.appareil-ecran {
-  position: absolute;
-  left: 36px;
-  top: 60px;
-  width: 450px;
-  height: 310px;
-  padding: 10px;
-  border-radius: 10px;
-  background: rgba(10, 9, 8, 1);
-  z-index: 2;
-}
-
-.appareil-ecran-int {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 3px;
+  flex: 1 1 0;
+  min-width: 0;
   overflow: hidden;
-  background: #000;
+  color: #f7f5f1;
+  background: #0d0c0b;
+  transition: flex-grow 0.9s cubic-bezier(0.65, 0, 0.2, 1);
 }
 
-.appareil-calque {
+.diptyque-photo {
   position: absolute;
   inset: 0;
+  margin: 0;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.35s ease;
 }
 
-.appareil-calque.particulier { opacity: 1; }
-
-.appareil-calque img {
-  position: absolute;
-  inset: 0;
+.diptyque-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: appareilVisee 10s ease-in-out infinite alternate;
+  transform: scale(1.001);
+  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s ease;
 }
 
-@keyframes appareilVisee {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.07) translate(-1%, -0.6%); }
-}
-
-.appareil-ui {
-  position: absolute;
-  inset: 0;
-  transition: opacity 0.2s ease;
-}
-
-.appareil-ui .tiers {
-  position: absolute;
-  background: rgba(245, 241, 234, 0.14);
-}
-
-.appareil-ui .t1 { top: 0; bottom: 0; left: 33.33%; width: 1px; }
-.appareil-ui .t2 { top: 0; bottom: 0; left: 66.66%; width: 1px; }
-.appareil-ui .t3 { left: 0; right: 0; top: 33.33%; height: 1px; }
-.appareil-ui .t4 { left: 0; right: 0; top: 66.66%; height: 1px; }
-
-.appareil-af {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: 66px;
-  height: 46px;
-  margin: -23px 0 0 -33px;
-  border: 1.5px solid rgba(245, 241, 234, 0.8);
-  border-radius: 2px;
-  transition: border-color 0.1s ease;
-}
-
-.appareil-infos {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 9px;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--police-mono);
-  font-size: 10.5px;
-  color: #f5f1ea;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-/* Obturateur : deux rideaux qui se croisent, comme un vrai boîtier */
-.appareil-obturateur {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.appareil-obturateur::before,
-.appareil-obturateur::after {
+.diptyque-panneau::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 50.5%;
-  background: #050505;
-  transform: scaleY(0);
-}
-
-.appareil-obturateur::before { top: 0; transform-origin: 50% 0; }
-.appareil-obturateur::after { bottom: 0; transform-origin: 50% 100%; }
-
-.appareil-eclair {
-  position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 45%, rgba(255, 253, 248, 0.75), rgba(255, 253, 248, 0.18) 65%, rgba(255, 253, 248, 0) 85%);
-  opacity: 0;
+  background: linear-gradient(180deg, rgba(10, 9, 8, 0) 45%, rgba(10, 9, 8, 0.62) 100%);
   pointer-events: none;
 }
 
-.appareil-intro,
-.appareil-choix {
-  transition: opacity 0.25s ease;
+.diptyque-legende {
+  position: absolute;
+  left: clamp(20px, 3vw, 40px);
+  right: clamp(20px, 3vw, 40px);
+  bottom: clamp(22px, 3vw, 40px);
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  transition: opacity 0.35s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Mode commerce */
-.appareil.est-commerce .appareil-calque.particulier { opacity: 0; }
-.appareil.est-commerce .appareil-calque.commerce { opacity: 1; }
-.appareil.est-commerce .appareil-molette-face { transform: rotate(40deg); }
-.appareil.est-commerce .appareil-molette-repere.part { color: rgba(245, 241, 234, 0.38); }
-.appareil.est-commerce .appareil-molette-repere.com { color: var(--couleur-accent); }
-
-/* Déclenchement : mise au point, obturateur, éclair — puis la photo part
-   vers la page tarifs (voir « Transitions entre pages »). */
-.appareil.en-cours .appareil-anneau { animation: none; opacity: 0; }
-.appareil-boitier.sans-inclinaison { transition: transform 0.16s ease-out; }
-.appareil-af { transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1), border-color 0.12s ease; }
-.appareil.en-cours .appareil-af { transform: scale(0.8); border-color: var(--couleur-accent); }
-.appareil.phase-appui .appareil-declencheur,
-.appareil.phase-obturation .appareil-declencheur {
-  transform: translateY(4px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 #5e4a2e;
-}
-.appareil.phase-obturation .appareil-obturateur::before,
-.appareil.phase-obturation .appareil-obturateur::after {
-  animation: appareilRideau 0.2s cubic-bezier(0.6, 0, 0.4, 1);
-}
-.appareil.phase-obturation .appareil-eclair {
-  animation: appareilEclair 0.42s ease-out 0.1s;
+.diptyque-libelle {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 
-@keyframes appareilRideau {
-  0% { transform: scaleY(0); }
-  45%, 55% { transform: scaleY(1); }
-  100% { transform: scaleY(0); }
+.diptyque-titre {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+  line-height: 1.08;
 }
 
-@keyframes appareilEclair {
-  0% { opacity: 0; }
-  15% { opacity: 1; }
-  100% { opacity: 0; }
+.diptyque-lien {
+  justify-self: start;
+  margin-top: 6px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 28px 1px no-repeat;
+  transition: background-size 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Apparition au chargement */
-.appareil-entree {
-  opacity: 0;
-  animation: appareilEntree 0.8s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
-}
-.appareil-entree.d2 { animation-delay: 0.12s; }
-.appareil-entree.d3 { animation-delay: 0.24s; }
-.appareil-entree.d4 { animation-delay: 0.36s; }
-
-@keyframes appareilEntree {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: none; }
+.diptyque-panneau:focus-visible {
+  outline: 2px solid var(--couleur-accent);
+  outline-offset: -4px;
 }
 
-@media (max-width: 900px) {
-  .appareil-grid {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    padding: 36px 24px 56px;
-    min-height: 0;
-    row-gap: 28px;
-  }
-  .appareil-intro { grid-column: 1; grid-row: 1; }
-  .appareil-scene { grid-column: 1; grid-row: 2; }
-  .appareil-choix { grid-column: 1; grid-row: 3; max-width: none; }
-  .appareil-sous-titre { margin-bottom: 0; }
+/* Survol (souris) : la photo survolée prend un peu plus de place */
+@media (hover: hover) {
+  .diptyque-panneaux:hover .diptyque-panneau:hover { flex-grow: 1.3; }
+  .diptyque-panneaux:hover .diptyque-panneau:not(:hover) .diptyque-photo img { filter: brightness(0.62) saturate(0.85); }
+  .diptyque-panneau:hover .diptyque-photo img { transform: scale(1.035); }
+  .diptyque-panneau:hover .diptyque-lien { background-size: 100% 1px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .appareil-entree { opacity: 1; animation: none; }
-  .appareil-calque img,
-  .appareil-anneau { animation: none; }
-  .appareil-boitier { transform: none; }
+/* Choix : la photo choisie s'ouvre sur toute la largeur, l'autre s'efface */
+.diptyque.est-ouvert .diptyque-panneau { pointer-events: none; transition-duration: 0.55s; }
+.diptyque.est-ouvert .diptyque-panneau.est-choisi { flex-grow: 40; }
+.diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) { flex-grow: 0.0001; }
+.diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) .diptyque-photo img { filter: brightness(0.3); }
+.diptyque.est-ouvert .diptyque-legende { opacity: 0; transform: translateY(8px); }
+.diptyque.est-ouvert .diptyque-panneau.est-choisi .diptyque-photo img { transform: scale(1); filter: none; }
+
+/* Arrivée sur l'accueil : les photos se posent doucement */
+@media (prefers-reduced-motion: no-preference) {
+  .diptyque-photo img { animation: diptyqueEntree 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .diptyque-panneau + .diptyque-panneau .diptyque-photo img { animation-delay: 0.12s; }
+  .diptyque-legende { animation: diptyqueLegende 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both; }
+}
+
+@keyframes diptyqueEntree {
+  from { opacity: 0; transform: scale(1.06); }
+}
+
+@keyframes diptyqueLegende {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+@media (max-width: 860px) {
+  .diptyque { display: block; height: auto; min-height: 0; max-height: none; }
+  .diptyque-entete { grid-template-columns: 1fr; row-gap: 14px; padding-top: 28px; padding-bottom: 24px; }
+  .diptyque-panneaux { flex-direction: column; height: auto; }
+  .diptyque-panneau { flex: none; height: clamp(300px, 46svh, 460px); transition: height 0.55s cubic-bezier(0.65, 0, 0.2, 1); }
+  .diptyque.est-ouvert .diptyque-panneau.est-choisi { height: calc(100svh - 77px); }
+  .diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) { height: 0; }
 }
 
 /* ============ Accueil : contact ============ */
@@ -1554,7 +1198,7 @@ mark.placeholder-a-completer {
 }
 
 /* ============ Page tarifs : en-tête de l'univers ============ */
-/* La photo est encadrée (3:2, comme l'écran de l'appareil) à une taille où
+/* La photo est encadrée (3:2) à une taille où
    elle reste nette, plutôt qu'étirée sur toute la largeur. */
 .univers-entete {
   padding: 56px 0 48px;
@@ -1714,12 +1358,12 @@ mark.placeholder-a-completer {
 .contact-grid > div { scroll-margin-top: 88px; }
 
 /* ============ Sélecteur d'univers (haut de page) ============ */
-/* Particulier / Commerce : visible sur toutes les pages sauf l'accueil, où
-   c'est l'appareil photo qui fait choisir. La pastille dorée glisse d'un
-   choix à l'autre. js/univers.js pose data-univers sur <html> avant
-   l'affichage, donc le bon choix est allumé dès le départ. */
+/* Particulier / Commerce : deux onglets texte, visibles sur toutes les pages
+   sauf l'accueil (où ce sont les deux grandes photos qui font choisir).
+   js/univers.js pose data-univers sur <html> avant l'affichage, donc le bon
+   onglet est souligné dès le départ. */
 .univers-barre {
-  background: #161310;
+  background: var(--couleur-fond);
   border-bottom: 1px solid var(--couleur-bordure);
 }
 
@@ -1730,39 +1374,51 @@ html[data-page="index"] .univers-barre {
 .univers-barre-inner {
   display: flex;
   align-items: center;
-  gap: 14px;
-  min-height: 46px;
+  gap: 22px;
+  min-height: 42px;
+}
+
+.univers-libelle,
+.univers-switch button {
+  font-family: var(--police-texte);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
 .univers-libelle {
-  font-size: 0.8rem;
   color: var(--couleur-texte-attenue);
+  opacity: 0.75;
 }
 
 .univers-switch {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 3px;
-  border: 1px solid var(--couleur-bordure);
-  border-radius: 999px;
+  display: flex;
+  gap: 22px;
 }
 
 .univers-switch button {
   position: relative;
-  z-index: 1;
-  min-width: 108px;
-  padding: 7px 16px;
+  padding: 14px 0 12px;
   border: 0;
-  border-radius: 999px;
   background: none;
   color: var(--couleur-texte-attenue);
-  font-family: var(--police-texte);
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1;
   cursor: pointer;
-  transition: color 0.35s ease;
+  transition: color 0.3s ease;
+}
+
+.univers-switch button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0.18em;
+  bottom: 6px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .univers-switch button:hover {
@@ -1771,43 +1427,28 @@ html[data-page="index"] .univers-barre {
 
 .univers-switch button:focus-visible {
   outline: 1px solid var(--couleur-accent);
-  outline-offset: 2px;
+  outline-offset: 4px;
 }
 
 html[data-univers="particuliers"] .univers-switch [data-univers="particuliers"],
 html[data-univers="commerces"] .univers-switch [data-univers="commerces"] {
-  color: var(--couleur-sur-accent);
+  color: var(--couleur-texte);
 }
 
-.univers-curseur {
-  position: absolute;
-  top: 3px;
-  bottom: 3px;
-  left: 3px;
-  width: calc(50% - 3px);
-  border-radius: 999px;
-  background: var(--couleur-accent);
-  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-html[data-univers="commerces"] .univers-curseur {
-  transform: translateX(100%);
-}
-
-@media (max-width: 520px) {
-  .univers-switch button { min-width: 0; padding: 7px 14px; }
+html[data-univers="particuliers"] .univers-switch [data-univers="particuliers"]::after,
+html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after {
+  transform: scaleX(1);
 }
 
 /* ============ Transitions entre pages ============ */
 /* js/render.js change de page sans recharger, à l'intérieur d'une « View
    Transition » ; data-transition sur <html> indique laquelle :
    - page     : l'ancienne page s'efface, la nouvelle monte doucement ;
-   - appareil : après la photo, l'image de l'écran s'envole jusqu'à sa
-                place sur la page tarifs pendant que l'appareil s'efface ;
-   - retour   : l'inverse, la photo revient dans l'appareil ;
+   - ouverture : sur l'accueil, la photo choisie s'ouvre sur toute la
+                largeur puis glisse jusqu'à sa place sur la page tarifs ;
+   - retour   : l'inverse, la photo revient à sa place dans l'accueil ;
    - univers  : changement Particulier / Commerce, fondu enchaîné.
-   L'image qui voyage est toujours la photo nette de la page d'arrivée
-   (jamais l'aperçu de l'écran agrandi). */
+   L'image qui voyage est toujours la photo nette de la page d'arrivée. */
 @media (prefers-reduced-motion: no-preference) {
   .site-header { view-transition-name: entete; }
   .univers-barre { view-transition-name: univers-barre; }
@@ -1831,28 +1472,45 @@ html[data-univers="commerces"] .univers-curseur {
   html[data-transition="univers"]::view-transition-old(univers-barre) { animation: none; opacity: 0; }
   html[data-transition="univers"]::view-transition-new(univers-barre) { animation: none; }
 
-  /* Appareil → tarifs */
-  html[data-transition="appareil"]::view-transition-group(photo-univers) {
-    animation-duration: 0.95s;
-    animation-timing-function: cubic-bezier(0.65, 0, 0.15, 1);
+  /* La photo qui voyage change de proportions (grand panneau → cadre 3:2) :
+     elle reste rognée à son cadre pendant tout le trajet. */
+  ::view-transition-image-pair(photo-univers) {
+    overflow: clip;
   }
-  html[data-transition="appareil"]::view-transition-old(photo-univers) {
-    display: none;
-  }
-  html[data-transition="appareil"]::view-transition-new(photo-univers) {
-    animation: none;
+  ::view-transition-old(photo-univers),
+  ::view-transition-new(photo-univers) {
+    width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  html[data-transition="appareil"]::view-transition-old(root) {
-    animation: vtSortieAppareil 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+  /* Accueil → tarifs */
+  html[data-transition="ouverture"]::view-transition-group(photo-univers) {
+    animation-duration: 0.95s;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.15, 1);
   }
-  html[data-transition="appareil"]::view-transition-new(root) {
+  /* La grande photo de l'accueil (nette) se resserre jusqu'au cadre, puis
+     laisse la place à la photo de la page tarifs. */
+  html[data-transition="ouverture"]::view-transition-old(photo-univers) {
+    animation: none;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: normal;
+  }
+  html[data-transition="ouverture"]::view-transition-new(photo-univers) {
+    animation: vtApparition 0.3s ease 0.62s both;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: normal;
+  }
+  html[data-transition="ouverture"]::view-transition-old(root) {
+    animation: vtSortieAccueil 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  html[data-transition="ouverture"]::view-transition-new(root) {
     animation: vtEntree 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both;
   }
 
-  /* Tarifs → accueil : la photo nette rentre dans l'écran, puis l'écran
-     de l'appareil prend le relais. */
+  /* Tarifs → accueil : la photo revient à sa place dans le diptyque. */
   html[data-transition="retour"]::view-transition-group(photo-univers) {
     animation-duration: 0.8s;
     animation-timing-function: cubic-bezier(0.65, 0, 0.15, 1);
@@ -1899,7 +1557,7 @@ html[data-univers="commerces"] .univers-curseur {
   from { opacity: 0; transform: translateY(18px); }
 }
 
-@keyframes vtSortieAppareil {
+@keyframes vtSortieAccueil {
   to { opacity: 0; transform: scale(0.985); }
 }
 

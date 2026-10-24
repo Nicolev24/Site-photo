@@ -7,33 +7,33 @@
   "sections": [
     {
       "id": "accueil",
-      "type": "appareil",
+      "type": "diptyque",
       "data": {
         "eyebrow": "Photographe à Ath · Wallonie & Bruxelles",
-        "title_line1": "Des photos naturelles,",
-        "title_line2": "qui vous ressemblent.",
-        "subtitle": "Mariages, portraits, couples, événements et commerces — un style épuré, chaleureux, sans surenchère de retouche.",
-        "prompt": "Vous venez pour…",
-        "choices": [
+        "title": "Des photos naturelles, qui vous ressemblent.",
+        "text": "Mariages, portraits, couples, événements et commerces — un style épuré, chaleureux, sans surenchère de retouche.",
+        "panels": [
           {
-            "label": "Particulier",
-            "desc": "Portraits, couples, mariages, événements",
+            "univers": "particuliers",
+            "label": "Particuliers",
+            "title": "Mariages, portraits & couples",
+            "link_label": "Voir les formules",
             "image": "images/teaser-evenements.jpg",
             "alt": "Mariés entourés de leurs témoins",
             "position": "50% 40%",
             "href": "services.html?pour=particuliers"
           },
           {
-            "label": "Commerce",
-            "desc": "Photos de votre commerce et site vitrine",
+            "univers": "commerces",
+            "label": "Commerces",
+            "title": "Photos de commerce & site vitrine",
+            "link_label": "Voir les formules",
             "image": "images/teaser-entreprises.jpg",
             "alt": "Séance chez un barbier",
             "position": "50% 32%",
             "href": "services.html?pour=commerces"
           }
-        ],
-        "link_label": "Voir le portfolio",
-        "link_href": "portfolio.html"
+        ]
       }
     },
     {

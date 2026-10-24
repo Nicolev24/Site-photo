@@ -75,15 +75,14 @@ function versionTexte(page, donnees) {
   for (const s of page.sections || []) {
     const d = s.data || {};
     switch (s.type) {
-      case "appareil":
+      case "diptyque":
         morceaux.push(titre(d.eyebrow, 1));
-        morceaux.push(`<p>${echapper([d.title_line1, d.title_line2].filter(Boolean).join(" "))}</p>`);
-        if (d.subtitle) morceaux.push(`<p>${echapper(d.subtitle)}</p>`);
-        morceaux.push(
-          `<ul>${(d.choices || [])
-            .map((c) => `<li><a href="${echapper(c.href)}">${echapper(c.label)}</a> : ${echapper(c.desc)}</li>`)
-            .join("")}</ul>`
-        );
+        if (d.title) morceaux.push(`<p>${echapper(d.title)}</p>`);
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        for (const p of d.panels || []) {
+          morceaux.push(`<h2><a href="${echapper(p.href)}">${echapper(p.label)} : ${echapper(p.title)}</a></h2>`);
+          if (p.image) morceaux.push(img(p.image, p.alt));
+        }
         break;
       case "onglets_tarifs":
         morceaux.push(titre(d.eyebrow, 1));

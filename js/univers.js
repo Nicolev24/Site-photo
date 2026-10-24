@@ -1,6 +1,6 @@
 // Les deux « univers » du site : particuliers et commerces.
 //
-// Le visiteur choisit son univers sur l'accueil (l'appareil photo) ou avec
+// Le visiteur choisit son univers sur l'accueil (les deux grandes photos) ou avec
 // le sélecteur en haut des autres pages ; ensuite tarifs, portfolio et
 // contact n'affichent que ce qui le concerne. Le choix est retenu
 // (localStorage) et écrit dans l'adresse (?pour=commerces) pour qu'un lien
@@ -75,8 +75,5 @@
     normaliser,
     depuisAdresse,
     pageDepuisAdresse,
-    // « particulier » / « commerce » (vocabulaire de l'appareil photo)
-    mode: () => LISTE.find((u) => u.id === courant).mode,
-    depuisMode: (mode) => (LISTE.find((u) => u.mode === mode) || LISTE[0]).id,
   };
 })();
