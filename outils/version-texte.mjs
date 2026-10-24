@@ -193,6 +193,8 @@ async function donneesStructurees(donnees) {
     "@type": "ProfessionalService",
     "@id": `${SITE}#photographe`,
     name: "Nicolas Leveugle Photographie",
+    // nom affiché sur la fiche Google Business
+    alternateName: "Nicolas Leveugle",
     description: (accueil.seo && accueil.seo.description) || undefined,
     url: SITE,
     image: `${SITE}images/hero.jpg`,
