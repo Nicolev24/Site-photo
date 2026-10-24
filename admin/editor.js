@@ -745,6 +745,75 @@ function buildEditableOngletsTarifs(data) {
   return sectionEl;
 }
 
+// FAQ : chaque question s'affiche ouverte pour pouvoir modifier la réponse
+// (sur le site, elles sont repliées et s'ouvrent au clic).
+function buildEditableFaq(data, rerender) {
+  data.items = data.items || [];
+  const section = document.createElement("section");
+  section.className = "faq";
+  const container = document.createElement("div");
+  container.className = "container faq-inner";
+
+  const entete = document.createElement("div");
+  entete.className = "faq-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { className: "eyebrow", placeholder: "Surtitre (optionnel)" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  container.appendChild(entete);
+
+  const liste = document.createElement("div");
+  liste.className = "faq-liste";
+  data.items.forEach((item, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "faq-item admin-legal-block";
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "admin-legal-block-toolbar";
+    toolbar.innerHTML = `
+      <span class="admin-section-type-badge">Question</span>
+      <button type="button" class="admin-icon-btn f-up" title="Monter" ${idx === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" class="admin-icon-btn f-down" title="Descendre" ${idx === data.items.length - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" class="admin-icon-btn danger f-delete" title="Supprimer">🗑</button>
+    `;
+    toolbar.querySelector(".f-up").addEventListener("click", () => {
+      if (idx === 0) return;
+      swapAdjacent(data.items, idx, idx - 1);
+      rerender();
+    });
+    toolbar.querySelector(".f-down").addEventListener("click", () => {
+      if (idx === data.items.length - 1) return;
+      swapAdjacent(data.items, idx, idx + 1);
+      rerender();
+    });
+    toolbar.querySelector(".f-delete").addEventListener("click", () => {
+      if (!confirm("Supprimer cette question ?")) return;
+      data.items.splice(idx, 1);
+      rerender();
+    });
+    wrap.appendChild(toolbar);
+
+    wrap.appendChild(editableSpan(item, "question", { tag: "div", className: "faq-question", placeholder: "Question" }));
+    wrap.appendChild(editableSpan(item, "answer", { tag: "p", placeholder: "Réponse" }));
+    liste.appendChild(wrap);
+  });
+  container.appendChild(liste);
+
+  const addRow = document.createElement("div");
+  addRow.className = "admin-add-block-row";
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "btn-outline btn-small";
+  addBtn.textContent = "+ Ajouter une question";
+  addBtn.addEventListener("click", () => {
+    data.items.push({ question: "", answer: "" });
+    rerender();
+  });
+  addRow.appendChild(addBtn);
+  container.appendChild(addRow);
+
+  section.appendChild(container);
+  return section;
+}
+
 const EDITABLE_BUILDERS = {
   hero: buildEditableHero,
   texte_image: buildEditableTexteImage,
@@ -758,6 +827,7 @@ const EDITABLE_BUILDERS = {
   appareil: buildEditableAppareil,
   contact_bref: buildEditableContactBref,
   onglets_tarifs: buildEditableOngletsTarifs,
+  faq: buildEditableFaq,
 };
 
 // Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page

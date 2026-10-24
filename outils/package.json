@@ -1,0 +1,9 @@
+{
+  "name": "site-photo-outils",
+  "private": true,
+  "description": "Outils lancés automatiquement par GitHub (voir .github/workflows/images.yml)",
+  "type": "module",
+  "dependencies": {
+    "sharp": "0.34.4"
+  }
+}

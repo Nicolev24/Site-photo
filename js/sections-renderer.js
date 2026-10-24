@@ -39,6 +39,39 @@ async function fetchJson(basePath, path) {
   return res.json();
 }
 
+// Versions allégées des photos (images/tailles/, listées dans
+// content/images.json par outils/optimiser-images.mjs). Le navigateur choisit
+// la plus petite qui reste nette sur son écran ; l'original fait partie du
+// choix, donc un grand écran ou un écran Retina garde la qualité maximale.
+let TAILLES_IMAGES = null;
+
+async function chargerTaillesImages(basePath) {
+  if (TAILLES_IMAGES) return;
+  try {
+    TAILLES_IMAGES = (await fetchJson(basePath, "content/images.json")).images || {};
+  } catch {
+    TAILLES_IMAGES = {};
+  }
+}
+
+// Attributs srcset/sizes pour une photo du site, ou {} si elle n'a pas
+// (encore) de versions allégées — l'original est alors utilisé seul.
+function attributsTailles(src, basePath, sizes) {
+  const info = TAILLES_IMAGES && TAILLES_IMAGES[src];
+  if (!info || !info.tailles || !info.tailles.length) return {};
+  const sansExt = src.slice("images/".length).replace(/\.[^.]+$/, "");
+  const candidats = info.tailles.map((w) => `${basePath}images/tailles/${sansExt}-${w}.webp ${w}w`);
+  candidats.push(`${resolveSrc(src, basePath)} ${info.l}w`);
+  return { srcset: candidats.join(", "), sizes };
+}
+
+function attributsTaillesHtml(src, basePath, sizes) {
+  const a = attributsTailles(src, basePath, sizes);
+  return a.srcset ? ` srcset="${escapeHtml(a.srcset)}" sizes="${escapeHtml(a.sizes)}"` : "";
+}
+
+const TAILLES_PLEINE_LARGEUR = "100vw";
+
 function el(tag, attrs = {}, html) {
   const node = document.createElement(tag);
   Object.entries(attrs).forEach(([k, v]) => {
@@ -56,6 +89,7 @@ function buildHero(data, basePath) {
   const section = el("section", { class: "hero" });
   const img = el("img", {
     src: resolveSrc(data.image, basePath),
+    ...attributsTailles(data.image, basePath, TAILLES_PLEINE_LARGEUR),
     alt: data.alt || "",
     fetchpriority: "high",
   });
@@ -92,6 +126,7 @@ function buildTexteImage(data, basePath) {
   const container = el("div", { class: "container two-col" }, textHtml);
   const img = el("img", {
     src: resolveSrc(data.image, basePath),
+    ...attributsTailles(data.image, basePath, "(max-width: 860px) 100vw, 560px"),
     alt: data.alt || "",
     loading: "lazy",
     decoding: "async",
@@ -137,6 +172,7 @@ function buildGalerieCategories(data, basePath) {
     });
     const img = el("img", {
       src: resolveSrc(teaser.image, basePath),
+      ...attributsTailles(teaser.image, basePath, "(max-width: 860px) 50vw, 280px"),
       alt: teaser.alt || "",
       loading: "lazy",
       decoding: "async",
@@ -171,6 +207,7 @@ async function buildPortfolioGalerie(data, basePath) {
       div.appendChild(
         el("img", {
           src: resolveSrc(item.image, basePath),
+          ...attributsTailles(item.image, basePath, "(max-width: 520px) 100vw, (max-width: 860px) 50vw, 380px"),
           alt: item.alt || "",
           loading: "lazy",
           decoding: "async",
@@ -210,7 +247,9 @@ function buildTarifs(data, basePath) {
     (plan.features || []).forEach((f) => (html += `<li>${escapeHtml(f)}</li>`));
     html += `</ul>`;
     const btnClass = plan.highlight ? "btn btn-primary" : "btn btn-contour";
-    html += `<a href="${resolveHref("contact.html", basePath)}" class="${btnClass}">${escapeHtml(plan.cta_label)}</a>`;
+    // La page contact lit ?formule=… pour présélectionner la formule choisie.
+    const lien = `${resolveHref("contact.html", basePath)}?formule=${encodeURIComponent(plan.title || "")}`;
+    html += `<a href="${escapeHtml(lien)}" class="${btnClass}">${escapeHtml(plan.cta_label)}</a>`;
     card.innerHTML = html;
     grid.appendChild(card);
   });
@@ -258,7 +297,7 @@ function buildAppareil(data, basePath) {
 
   const calque = (c, cls) => `
     <div class="appareil-calque ${cls}">
-      <img src="${resolveSrc(c.image, basePath)}" alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === "particulier" ? 'fetchpriority="high"' : 'loading="lazy"'} />
+      <img src="${resolveSrc(c.image, basePath)}"${attributsTaillesHtml(c.image, basePath, TAILLES_PLEINE_LARGEUR)} alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === "particulier" ? 'fetchpriority="high"' : 'loading="lazy"'} />
     </div>`;
 
   const option = (c, mode) => `
@@ -544,7 +583,7 @@ function buildOngletsTarifs(data, basePath) {
       ${onglets
         .map(
           (t, i) =>
-            `<img src="${resolveSrc(t.image, basePath)}" alt="${escapeHtml(t.alt || "")}" data-onglet-image="${escapeHtml(t.id)}" style="object-position:${escapeHtml(t.position || "50% 50%")};opacity:${i === 0 ? 1 : 0}" ${i === 0 ? 'fetchpriority="high"' : ""} />`
+            `<img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, TAILLES_PLEINE_LARGEUR)} alt="${escapeHtml(t.alt || "")}" data-onglet-image="${escapeHtml(t.id)}" style="object-position:${escapeHtml(t.position || "50% 50%")};opacity:${i === 0 ? 1 : 0}" ${i === 0 ? 'fetchpriority="high"' : ""} />`
         )
         .join("")}
     </div>
@@ -618,13 +657,8 @@ async function buildContact(data, basePath) {
       <input type="email" id="email" name="Email" required />
     </div>
     <div>
-      <label for="type">Type de séance</label>
-      <select id="type" name="Type de séance">
-        <option>Formule découverte</option>
-        <option>Formule complète</option>
-        <option>Sur devis</option>
-        <option>Autre</option>
-      </select>
+      <label for="type">Formule souhaitée</label>
+      <select id="type" name="Formule souhaitée"></select>
     </div>
     <div>
       <label for="message">Message</label>
@@ -638,6 +672,7 @@ async function buildContact(data, basePath) {
     <p class="form-note">En envoyant ce formulaire, votre client mail s'ouvre avec le message pré-rempli.</p>
   `;
   right.appendChild(form);
+  await remplirFormules(form.querySelector("#type"), basePath);
 
   try {
     const contact = await fetchJson(basePath, "content/contact.json");
@@ -654,6 +689,76 @@ async function buildContact(data, basePath) {
 
   container.appendChild(left);
   container.appendChild(right);
+  section.appendChild(container);
+  return section;
+}
+
+// Liste des formules du formulaire de contact : reprise de la page tarifs
+// (un groupe par onglet), pour rester à jour quand les formules changent
+// dans l'admin. Le lien « Choisir cette formule » ajoute ?formule=<nom>,
+// qui est alors présélectionné.
+async function remplirFormules(select, basePath) {
+  const groupes = [];
+  try {
+    const page = await fetchJson(basePath, "content/pages/services.json");
+    const sections = page.sections || [];
+    const onglets = sections.find((s) => s.type === "onglets_tarifs")?.data?.tabs || [];
+    sections
+      .filter((s) => s.type === "tarifs")
+      .forEach((s) => {
+        const titres = (s.data?.plans || []).map((p) => p.title).filter(Boolean);
+        if (!titres.length) return;
+        const libelle = onglets.find((t) => t.id === s.tab)?.label || "";
+        groupes.push({ libelle, titres });
+      });
+  } catch (e) {
+    console.error(e);
+  }
+
+  groupes.forEach(({ libelle, titres }) => {
+    const parent = libelle ? el("optgroup", { label: libelle }) : select;
+    titres.forEach((t) => parent.appendChild(el("option", { value: t }, escapeHtml(t))));
+    if (parent !== select) select.appendChild(parent);
+  });
+
+  const voulue = new URLSearchParams(window.location.search).get("formule");
+  if (voulue && !Array.from(select.options).some((o) => o.value === voulue)) {
+    select.appendChild(el("option", { value: voulue }, escapeHtml(voulue)));
+  }
+  select.appendChild(el("option", { value: "Autre" }, "Autre / je ne sais pas encore"));
+  select.value = voulue || "Autre";
+
+  // Sur téléphone, le formulaire est sous les coordonnées : on y descend
+  // directement quand le visiteur arrive depuis une formule.
+  if (voulue && window.matchMedia("(max-width: 900px)").matches) {
+    // On vise la colonne du formulaire (avec son titre), pas le formulaire seul.
+    setTimeout(() => select.closest("form")?.parentElement?.scrollIntoView({ behavior: "smooth", block: "start" }), 400);
+  }
+}
+
+// ---------- FAQ (questions fréquentes, en accordéon) ----------
+
+function buildFaq(data) {
+  const section = el("section", { class: "faq" });
+  const container = el("div", { class: "container faq-inner" });
+  let entete = "";
+  if (data.eyebrow) entete += `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>`;
+  if (data.title) entete += `<h2>${escapeHtml(data.title)}</h2>`;
+  container.appendChild(el("div", { class: "faq-entete" }, entete));
+
+  const liste = el("div", { class: "faq-liste" });
+  (data.items || []).forEach((item) => {
+    if (!item.question) return;
+    liste.appendChild(
+      el(
+        "details",
+        { class: "faq-item" },
+        `<summary>${escapeHtml(item.question)}<span class="faq-signe" aria-hidden="true"></span></summary>
+        <p>${escapeHtml(item.answer)}</p>`
+      )
+    );
+  });
+  container.appendChild(liste);
   section.appendChild(container);
   return section;
 }
@@ -689,6 +794,7 @@ const SECTION_BUILDERS = {
   appareil: buildAppareil,
   contact_bref: buildContactBref,
   onglets_tarifs: buildOngletsTarifs,
+  faq: buildFaq,
 };
 
 // Met en évidence toute note du type "[À COMPLÉTER]" ou
@@ -723,6 +829,7 @@ function highlightPlaceholders(root) {
 }
 
 async function renderSections(container, sections, basePath = "") {
+  await chargerTaillesImages(basePath);
   container.innerHTML = "";
   for (const section of sections || []) {
     const builder = SECTION_BUILDERS[section.type];

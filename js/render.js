@@ -26,13 +26,20 @@ function applyAppearance(appearance) {
   });
 
   if (appearance.favicon_image) {
-    let link = document.querySelector('link[rel="icon"]');
-    if (!link) {
-      link = document.createElement("link");
+    // Un favicon choisi dans l'admin remplace l'icône NL par défaut
+    // (les deux balises : .ico et .svg).
+    let links = Array.from(document.querySelectorAll('link[rel="icon"]'));
+    if (!links.length) {
+      const link = document.createElement("link");
       link.rel = "icon";
       document.head.appendChild(link);
+      links = [link];
     }
-    link.href = appearance.favicon_image;
+    links.forEach((link) => {
+      link.href = appearance.favicon_image;
+      link.removeAttribute("type");
+      link.removeAttribute("sizes");
+    });
   }
 }
 

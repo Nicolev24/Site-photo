@@ -1603,3 +1603,108 @@ mark.placeholder-a-completer {
   .contact-bref dl { margin-top: 0; grid-template-columns: 90px 1fr; }
   .cta-band-inner { flex-direction: column; align-items: flex-start; }
 }
+
+/* ---------- FAQ (page tarifs) ---------- */
+
+.faq {
+  padding: 24px 0 88px;
+}
+
+.faq-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.faq-entete h2 {
+  font-size: 1.9rem;
+  margin: 0;
+}
+
+.faq-liste {
+  border-top: 1px solid var(--couleur-bordure);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0;
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--couleur-texte);
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary:focus-visible {
+  outline: 1px solid var(--couleur-accent);
+  outline-offset: 4px;
+}
+
+.faq-signe {
+  position: relative;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.faq-signe::before,
+.faq-signe::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6.5px;
+  width: 14px;
+  height: 1px;
+  background: var(--couleur-accent);
+  transition: transform 0.3s ease;
+}
+
+.faq-signe::after { transform: rotate(90deg); }
+.faq-item[open] .faq-signe::after { transform: rotate(0deg); }
+
+.faq-item p {
+  margin: -6px 0 22px;
+  max-width: 62ch;
+  color: var(--couleur-texte-attenue);
+  line-height: 1.65;
+}
+
+.faq-item[open] p {
+  animation: faq-apparition 0.35s ease;
+}
+
+@keyframes faq-apparition {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Éditeur de l'admin : la question est un champ modifiable, pas un <summary> */
+.faq-item .faq-question {
+  display: block;
+  padding: 20px 0 10px;
+  font-size: 1.02rem;
+  font-weight: 500;
+}
+
+.faq-item.admin-legal-block p { margin-top: 0; }
+
+@media (max-width: 860px) {
+  .faq-inner { grid-template-columns: 1fr; gap: 20px; }
+  .faq { padding-bottom: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item[open] p { animation: none; }
+}
+
+.contact-grid > div { scroll-margin-top: 88px; }

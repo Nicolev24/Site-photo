@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": "Services & tarifs — Nicolas Leveugle Photographie",
-    "description": "Formules photo à Ath : découverte 100€, formule complète 200€, ou devis personnalisé pour événements et entreprises.",
+    "description": "Tarifs photo à Ath : formule découverte 100€, formule complète 200€, devis pour les événements. Commerces : séance photo, site vitrine et pack photo + site.",
     "og_image": "images/hero.jpg"
   },
   "sections": [
@@ -82,6 +82,37 @@
       }
     },
     {
+      "id": "faq-particuliers",
+      "type": "faq",
+      "tab": "particuliers",
+      "data": {
+        "eyebrow": "",
+        "title": "Questions fréquentes",
+        "items": [
+          {
+            "question": "Quand est-ce que je reçois mes photos ?",
+            "answer": "Le délai dépend de la période et de la séance : je vous l'indique dès la réservation. Vos photos vous attendent ensuite dans votre galerie privée en ligne."
+          },
+          {
+            "question": "Combien de photos vais-je recevoir ?",
+            "answer": "Il n'y a aucune limite sur le nombre de photos livrées, quelle que soit la formule."
+          },
+          {
+            "question": "Vous vous déplacez ?",
+            "answer": "Oui. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
+          },
+          {
+            "question": "Comment réserver une date ?",
+            "answer": "Envoyez-moi un message via la page contact, je vous réponds sous 48h. Un acompte permet de bloquer la date, le solde est réglé le jour de la séance."
+          },
+          {
+            "question": "Je ne sais pas quelle formule choisir",
+            "answer": "Pas de souci : décrivez-moi votre projet en quelques mots et je vous conseille la formule la plus adaptée."
+          }
+        ]
+      }
+    },
+    {
       "id": "tarifs-commerces",
       "type": "tarifs",
       "tab": "commerces",
@@ -131,6 +162,37 @@
       }
     },
     {
+      "id": "faq-commerces",
+      "type": "faq",
+      "tab": "commerces",
+      "data": {
+        "eyebrow": "",
+        "title": "Questions fréquentes",
+        "items": [
+          {
+            "question": "Où pourrai-je utiliser les photos ?",
+            "answer": "Sur votre fiche Google, vos réseaux sociaux et votre site internet : elles sont préparées pour ça."
+          },
+          {
+            "question": "La séance se fait dans mon commerce ?",
+            "answer": "Oui, je viens sur place. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
+          },
+          {
+            "question": "Quand est-ce que je reçois les photos ?",
+            "answer": "Le délai dépend de la période et de la séance : je vous l'indique dès la réservation. Vos photos vous attendent ensuite dans votre galerie privée en ligne."
+          },
+          {
+            "question": "Comment se passe la création du site ?",
+            "answer": "Je vous prépare d'abord une maquette gratuite et sans engagement. Si elle vous plaît, je finalise le site avec vos photos et vos informations."
+          },
+          {
+            "question": "Comment réserver ?",
+            "answer": "Envoyez-moi un message via la page contact, je vous réponds sous 48h. Pour la séance photo, un acompte permet de bloquer la date, le solde est réglé le jour de la séance."
+          }
+        ]
+      }
+    },
+    {
       "id": "cta-commerces",
       "type": "cta",
       "tab": "commerces",
@@ -138,7 +200,7 @@
         "title": "Vous n'avez pas de site ?",
         "text": "Je vous prépare une maquette gratuite, sans engagement.",
         "button_label": "Me contacter",
-        "button_href": "contact.html"
+        "button_href": "contact.html?formule=Maquette%20de%20site%20gratuite"
       }
     }
   ]

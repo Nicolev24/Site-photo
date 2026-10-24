@@ -1,0 +1,55 @@
+# Après chaque envoi sur main (par exemple une photo ajoutée depuis l'admin),
+# prépare les versions allégées des photos et met à jour le plan du site.
+# Les originaux ne sont jamais modifiés. Voir outils/optimiser-images.mjs.
+name: Photos allégées et plan du site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "images/**"
+      - "content/site.json"
+      - "outils/**"
+      - ".github/workflows/images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: images
+  cancel-in-progress: false
+
+jobs:
+  optimiser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: outils/package-lock.json
+
+      - name: Préparer les versions allégées
+        run: |
+          npm ci --prefix outils --no-audit --no-fund
+          node outils/optimiser-images.mjs
+
+      - name: Enregistrer s'il y a du nouveau
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/tailles content/images.json sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Rien à mettre à jour."
+            exit 0
+          fi
+          git commit -m "Photos : versions allégées et plan du site (automatique)"
+          # L'admin a pu enregistrer autre chose entre-temps : on se remet à jour avant d'envoyer.
+          for essai in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1

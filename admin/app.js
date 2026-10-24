@@ -98,6 +98,11 @@ const SECTION_TYPES = [
       ],
     }),
   },
+  {
+    value: "faq",
+    label: "Questions fréquentes (FAQ)",
+    defaultData: () => ({ eyebrow: "", title: "Questions fréquentes", items: [{ question: "", answer: "" }] }),
+  },
 ];
 
 function sectionTypeLabel(type) {
@@ -364,10 +369,19 @@ async function uploadPendingImagesDeep(node, folder = "images/uploads") {
   }
 }
 
+// Adresse publique du site : les aperçus de partage (WhatsApp, Facebook…)
+// demandent une adresse complète pour l'image.
+const SITE_URL = "https://nicolasleveugle.be/";
+
+function urlAbsolue(chemin) {
+  if (!chemin || /^https?:\/\//i.test(chemin)) return chemin || "";
+  return SITE_URL + chemin.replace(/^\//, "");
+}
+
 function patchSeoHead(html, seo) {
   const title = escapeHtmlAttr(seo.title || "");
   const desc = escapeHtmlAttr(seo.description || "");
-  const ogImage = escapeHtmlAttr(seo.og_image || "");
+  const ogImage = escapeHtmlAttr(urlAbsolue(seo.og_image));
 
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
   html = html.replace(
@@ -389,10 +403,11 @@ function patchSeoHead(html, seo) {
   return html;
 }
 
-function pageHtmlTemplate(seo) {
+function pageHtmlTemplate(seo, slug) {
   const title = escapeHtmlAttr(seo.title || "");
   const desc = escapeHtmlAttr(seo.description || "");
-  const ogImage = escapeHtmlAttr(seo.og_image || "");
+  const ogImage = escapeHtmlAttr(urlAbsolue(seo.og_image));
+  const url = escapeHtmlAttr(`${SITE_URL}${slug}.html`);
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -404,7 +419,17 @@ function pageHtmlTemplate(seo) {
 <meta property="og:description" content="${desc}" />
 <meta property="og:image" content="${ogImage}" />
 <meta name="twitter:card" content="summary_large_image" />
+<meta property="og:url" content="${url}" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Nicolas Leveugle Photographie" />
+<meta property="og:locale" content="fr_BE" />
+<link rel="canonical" href="${url}" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="icon" href="favicon.ico" sizes="48x48" />
+<link rel="icon" href="icones/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#1c1916" />
 </head>
 <body>
 
@@ -878,7 +903,7 @@ document.getElementById("page-save").addEventListener("click", async (e) => {
         method: "PUT",
         body: JSON.stringify({
           message: `Création de la page « ${slug} » (admin)`,
-          content: utf8ToBase64(pageHtmlTemplate(cleanData.seo)),
+          content: utf8ToBase64(pageHtmlTemplate(cleanData.seo, slug)),
           branch: BRANCH,
         }),
       });
