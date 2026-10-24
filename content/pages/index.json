@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Nicolas Leveugle Photographie — Photographe indépendant à Ath",
-    "description": "Photographe indépendant à Ath (Belgique) : portraits, couples, mariages, événements et photos pour les commerces. Des photos naturelles et chaleureuses.",
+    "title": "Photographe à Ath – Mariage, portrait & commerce | Nicolas Leveugle",
+    "description": "Nicolas Leveugle, photographe indépendant basé à Ath : mariages, portraits, couples, événements et photos pour commerces. En Wallonie et à Bruxelles.",
     "og_image": "images/hero.jpg"
   },
   "sections": [
@@ -9,10 +9,10 @@
       "id": "accueil",
       "type": "appareil",
       "data": {
-        "eyebrow": "Photographe indépendant · Ath & environs",
+        "eyebrow": "Photographe à Ath · Wallonie & Bruxelles",
         "title_line1": "Des photos naturelles,",
         "title_line2": "qui vous ressemblent.",
-        "subtitle": "Portraits, couples, commerces locaux et événements — un style épuré, chaleureux, sans surenchère de retouche.",
+        "subtitle": "Mariages, portraits, couples, événements et commerces — un style épuré, chaleureux, sans surenchère de retouche.",
         "prompt": "Vous venez pour…",
         "choices": [
           {

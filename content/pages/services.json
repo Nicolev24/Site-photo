@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Services & tarifs — Nicolas Leveugle Photographie",
-    "description": "Tarifs photo à Ath : formule découverte 100€, formule complète 200€, devis pour les événements. Commerces : séance photo, site vitrine et pack photo + site.",
+    "title": "Tarifs photographe à Ath – Séance photo dès 100€ | Nicolas Leveugle",
+    "description": "Tarifs photo clairs : séance découverte 100€, formule complète 200€, devis mariage et événements. Commerces : séance photo, site vitrine, pack. Ath, Wallonie, Bruxelles.",
     "og_image": "images/hero.jpg"
   },
   "sections": [
@@ -9,7 +9,7 @@
       "id": "en-tete",
       "type": "onglets_tarifs",
       "data": {
-        "eyebrow": "Services & tarifs",
+        "eyebrow": "Tarifs · Photographe à Ath",
         "title": "Des formules simples et claires",
         "tabs": [
           {
@@ -99,7 +99,7 @@
           },
           {
             "question": "Vous vous déplacez ?",
-            "answer": "Oui. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
+            "answer": "Oui, partout en Wallonie et à Bruxelles. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
           },
           {
             "question": "Comment réserver une date ?",
@@ -175,7 +175,7 @@
           },
           {
             "question": "La séance se fait dans mon commerce ?",
-            "answer": "Oui, je viens sur place. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
+            "answer": "Oui, je viens sur place, partout en Wallonie et à Bruxelles. Les déplacements sont inclus dans la région d'Ath ; plus loin, les frais de déplacement vous sont indiqués à l'avance."
           },
           {
             "question": "Quand est-ce que je reçois les photos ?",

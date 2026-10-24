@@ -173,6 +173,14 @@ section {
   background: var(--couleur-fond-alt);
 }
 
+/* Sur l'accueil et les tarifs, le titre lu par Google (« Photographe à
+   Ath… ») est la petite ligne dorée ; le grand texte est une accroche. */
+h1.eyebrow {
+  font-family: var(--police-texte);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
 .eyebrow {
   text-transform: var(--eyebrow-casse);
   letter-spacing: var(--eyebrow-espacement);
@@ -1018,7 +1026,10 @@ mark.placeholder-a-completer {
 .appareil-choix { grid-column: 1; grid-row: 2; align-self: start; max-width: 450px; }
 .appareil-scene { grid-column: 2; grid-row: 1 / span 2; align-self: center; display: flex; justify-content: center; }
 
-.appareil-intro h1 {
+.appareil-titre {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  letter-spacing: var(--espacement-titres);
   font-size: clamp(2.5rem, 4.4vw, 3.75rem);
   line-height: 1.06;
   margin: 0 0 20px;
@@ -1556,7 +1567,10 @@ mark.placeholder-a-completer {
   align-items: center;
 }
 
-.univers-entete h1 {
+.univers-entete-titre {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  letter-spacing: var(--espacement-titres);
   font-size: clamp(2.2rem, 4vw, 3.25rem);
   line-height: 1.08;
   margin: 0 0 16px;

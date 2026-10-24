@@ -345,8 +345,8 @@ function buildAppareil(data, basePath) {
     `
     <div class="appareil-grid">
       <div class="appareil-intro">
-        <span class="eyebrow appareil-entree">${escapeHtml(data.eyebrow)}</span>
-        <h1 class="appareil-entree d2">${escapeHtml(data.title_line1)}<br>${escapeHtml(data.title_line2)}</h1>
+        <h1 class="eyebrow appareil-entree">${escapeHtml(data.eyebrow)}</h1>
+        <p class="appareil-titre appareil-entree d2">${escapeHtml(data.title_line1)}<br>${escapeHtml(data.title_line2)}</p>
         <p class="appareil-sous-titre appareil-entree d3">${escapeHtml(data.subtitle)}</p>
       </div>
 
@@ -607,8 +607,8 @@ function buildOngletsTarifs(data, basePath) {
     `
     <div class="container univers-entete-grid">
       <div class="univers-entete-texte">
-        <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
-        <h1>${escapeHtml(data.title)}</h1>
+        <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
+        <p class="univers-entete-titre">${escapeHtml(data.title)}</p>
         <p class="univers-entete-intro">${escapeHtml(t.text || "")}</p>
       </div>
       ${

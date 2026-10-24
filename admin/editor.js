@@ -618,8 +618,9 @@ function buildEditableAppareil(data) {
 
   const intro = document.createElement("div");
   intro.className = "appareil-intro";
-  intro.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
-  const h1 = document.createElement("h1");
+  intro.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Titre lu par Google (ex. Photographe à Ath)" }));
+  const h1 = document.createElement("p");
+  h1.className = "appareil-titre";
   h1.appendChild(editableSpan(data, "title_line1", { placeholder: "Titre — 1ère ligne" }));
   h1.appendChild(document.createElement("br"));
   h1.appendChild(editableSpan(data, "title_line2", { placeholder: "Titre — 2ème ligne" }));
@@ -720,7 +721,7 @@ function buildEditableOngletsTarifs(data) {
   container.style.paddingBottom = "32px";
 
   container.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
-  container.appendChild(editableSpan(data, "title", { tag: "h1", placeholder: "Titre de la page" }));
+  container.appendChild(editableSpan(data, "title", { tag: "p", className: "univers-entete-titre", placeholder: "Titre de la page" }));
 
   const hint = document.createElement("p");
   hint.className = "admin-hint";

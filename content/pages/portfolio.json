@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Portfolio — Nicolas Leveugle Photographie",
-    "description": "Portfolio photo : portraits, couples, entreprises et commerces locaux, événements. Style naturel et chaleureux.",
+    "title": "Portfolio – Photographe mariage, portrait & commerce à Ath | Nicolas Leveugle",
+    "description": "Portfolio de Nicolas Leveugle, photographe à Ath : mariages, couples, portraits, événements, commerces et entreprises. Photos naturelles et chaleureuses.",
     "og_image": "images/teaser-portraits.jpg"
   },
   "sections": [
@@ -10,8 +10,8 @@
       "type": "texte",
       "tab": "particuliers",
       "data": {
-        "eyebrow": "Portfolio",
-        "title": "Un aperçu de mon travail",
+        "eyebrow": "Portfolio · Photographe à Ath",
+        "title": "Mariages, portraits & couples",
         "text": "Portraits, couples, mariages et événements : une sélection de séances. Photos naturelles, lumière franche, peu de retouche."
       }
     },
@@ -20,7 +20,7 @@
       "type": "texte",
       "tab": "commerces",
       "data": {
-        "eyebrow": "Portfolio",
+        "eyebrow": "Portfolio · Photographe à Ath",
         "title": "Commerces & entreprises",
         "text": "Une sélection de séances réalisées pour des commerces et des entreprises. Des photos naturelles, prêtes pour Google, les réseaux et votre site."
       }

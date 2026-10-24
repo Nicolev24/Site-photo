@@ -1,15 +1,18 @@
-# Après chaque envoi sur main (par exemple une photo ajoutée depuis l'admin),
-# prépare les versions allégées des photos et met à jour le plan du site.
-# Les originaux ne sont jamais modifiés. Voir outils/optimiser-images.mjs.
-name: Photos allégées et plan du site
+# Après chaque envoi sur main (par exemple une photo ou un texte modifié
+# depuis l'admin) :
+# - prépare les versions allégées des photos (les originaux ne sont jamais
+#   modifiés) et met à jour le plan du site — outils/optimiser-images.mjs ;
+# - met à jour ce que Google lit directement dans les pages (version texte,
+#   données de l'entreprise) — outils/version-texte.mjs.
+name: Photos allégées et données Google
 
 on:
   push:
     branches: [main]
     paths:
       - "images/**"
-      - "content/site.json"
-      - "content/pages/**"
+      - "content/**"
+      - "*.html"
       - "outils/**"
       - ".github/workflows/images.yml"
   workflow_dispatch:
@@ -33,21 +36,22 @@ jobs:
           cache: npm
           cache-dependency-path: outils/package-lock.json
 
-      - name: Préparer les versions allégées
+      - name: Préparer les versions allégées et les données Google
         run: |
           npm ci --prefix outils --no-audit --no-fund
           node outils/optimiser-images.mjs
+          node outils/version-texte.mjs
 
       - name: Enregistrer s'il y a du nouveau
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add images/tailles content/images.json sitemap.xml
+          git add images/tailles content/images.json sitemap.xml ./*.html
           if git diff --cached --quiet; then
             echo "Rien à mettre à jour."
             exit 0
           fi
-          git commit -m "Photos : versions allégées et plan du site (automatique)"
+          git commit -m "Photos allégées, plan du site et données Google (automatique)"
           # L'admin a pu enregistrer autre chose entre-temps : on se remet à jour avant d'envoyer.
           for essai in 1 2 3; do
             git pull --rebase origin main && git push origin HEAD:main && exit 0
