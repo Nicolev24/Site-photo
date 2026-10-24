@@ -194,24 +194,22 @@ async function buildPortfolioGalerie(data, basePath) {
 }
 
 function buildTarifs(data, basePath) {
-  const section = el("section", { style: "padding-top:24px" });
+  const section = el("section", { style: "padding:8px 0 64px" });
   const container = el("div", { class: "container" });
   const grid = el("div", { class: "pricing-grid" });
 
   (data.plans || []).forEach((plan) => {
     const card = el("div", { class: plan.highlight ? "price-card highlight" : "price-card" });
-    let html = "";
+    let html = `<div class="price-card-head"><h3>${escapeHtml(plan.title)}</h3>`;
     if (plan.badge) html += `<span class="badge">${escapeHtml(plan.badge)}</span>`;
-    html += `<h3>${escapeHtml(plan.title)}</h3>`;
-    if (plan.subtitle) {
-      html += `<p style="color:var(--couleur-texte-attenue);font-size:0.9rem;margin:-6px 0 2px">${escapeHtml(plan.subtitle)}</p>`;
-    }
+    html += `</div>`;
     html += `<div class="price-tag">${escapeHtml(plan.price)}`;
     if (plan.price_suffix) html += `<span> ${escapeHtml(plan.price_suffix)}</span>`;
-    html += `</div><ul>`;
+    html += `</div>`;
+    html += `<p class="price-card-sub">${escapeHtml(plan.subtitle || "")}</p><ul>`;
     (plan.features || []).forEach((f) => (html += `<li>${escapeHtml(f)}</li>`));
     html += `</ul>`;
-    const btnClass = plan.highlight ? "btn btn-primary" : "btn-secondary";
+    const btnClass = plan.highlight ? "btn btn-primary" : "btn btn-contour";
     html += `<a href="${resolveHref("contact.html", basePath)}" class="${btnClass}">${escapeHtml(plan.cta_label)}</a>`;
     card.innerHTML = html;
     grid.appendChild(card);
@@ -232,11 +230,366 @@ function buildCta(data, basePath) {
     "div",
     { class: "cta-band" },
     `
-    <h2>${escapeHtml(data.title)}</h2>
-    <p>${escapeHtml(data.text)}</p>
-    <a href="${resolveHref(data.button_href, basePath)}" class="btn btn-primary">${escapeHtml(data.button_label)}</a>
+    <div class="cta-band-inner">
+      <div>
+        <h2>${escapeHtml(data.title)}</h2>
+        <p>${escapeHtml(data.text)}</p>
+      </div>
+      <a href="${resolveHref(data.button_href, basePath)}" class="btn btn-primary">${escapeHtml(data.button_label)}</a>
+    </div>
   `
   );
+}
+
+// ---------- Accueil : l'appareil photo ----------
+//
+// Deux choix (particulier / commerce). Survoler un choix change l'image sur
+// l'écran de l'appareil ; cliquer déclenche (obturateur, flash, l'écran
+// s'agrandit jusqu'à remplir la page) puis ouvre le lien du choix — par
+// défaut la page tarifs sur le bon onglet. Sans JavaScript, ou si le
+// visiteur a demandé moins d'animations, ce sont de simples liens.
+
+const ICONE_CHEVRON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICONE_SON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path class="onde" d="M16.5 8.5a5 5 0 010 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="muet" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+
+function buildAppareil(data, basePath) {
+  const choix = (data.choices || []).slice(0, 2);
+  const [part, com] = [choix[0] || {}, choix[1] || {}];
+
+  const calque = (c, cls) => `
+    <div class="appareil-calque ${cls}">
+      <img src="${resolveSrc(c.image, basePath)}" alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === "particulier" ? 'fetchpriority="high"' : 'loading="lazy"'} />
+    </div>`;
+
+  const option = (c, mode) => `
+    <a class="appareil-option${mode === "particulier" ? " est-actif" : ""}" href="${resolveHref(c.href, basePath)}" data-mode="${mode}">
+      <span>
+        <span class="appareil-option-titre">${escapeHtml(c.label)}</span>
+        <span class="appareil-option-desc">${escapeHtml(c.desc)}</span>
+      </span>
+      ${ICONE_CHEVRON}
+    </a>`;
+
+  const section = el(
+    "section",
+    { class: "appareil" },
+    `
+    <div class="appareil-grid">
+      <div class="appareil-intro">
+        <span class="eyebrow appareil-entree">${escapeHtml(data.eyebrow)}</span>
+        <h1 class="appareil-entree d2">${escapeHtml(data.title_line1)}<br>${escapeHtml(data.title_line2)}</h1>
+        <p class="appareil-sous-titre appareil-entree d3">${escapeHtml(data.subtitle)}</p>
+      </div>
+
+      <div class="appareil-choix appareil-entree d4">
+        <p class="appareil-invite">${escapeHtml(data.prompt)}</p>
+        <div class="appareil-options">
+          ${option(part, "particulier")}
+          ${option(com, "commerce")}
+        </div>
+        <div class="appareil-bas">
+          ${data.link_label ? `<a class="btn-secondary" href="${resolveHref(data.link_href, basePath)}">${escapeHtml(data.link_label)}</a>` : "<span></span>"}
+          <button type="button" class="appareil-son" aria-pressed="false" aria-label="Activer le son du déclencheur" title="Activer le son du déclencheur">${ICONE_SON}</button>
+        </div>
+      </div>
+
+      <div class="appareil-scene" aria-hidden="true">
+        <div class="appareil-cadre">
+          <div class="appareil-echelle">
+            <div class="appareil-boitier">
+              <div class="appareil-coque">
+                <div class="appareil-viseur"></div>
+                <div class="appareil-corps"></div>
+                <div class="appareil-molette">
+                  <div class="appareil-molette-crantee"></div>
+                  <div class="appareil-molette-face"></div>
+                  <span class="appareil-molette-repere part">PART.</span>
+                  <span class="appareil-molette-repere com">COM.</span>
+                </div>
+                <div class="appareil-rosace"><span>OK</span></div>
+                <div class="appareil-touches"><span>MENU</span><span>INFO</span></div>
+                <div class="appareil-anneau"></div>
+              </div>
+              <button type="button" class="appareil-declencheur" tabindex="-1"></button>
+              <div class="appareil-ecran">
+                <div class="appareil-ecran-int">
+                  ${calque(part, "particulier")}
+                  ${calque(com, "commerce")}
+                  <div class="appareil-ui">
+                    <span class="tiers t1"></span><span class="tiers t2"></span><span class="tiers t3"></span><span class="tiers t4"></span>
+                    <span class="appareil-af"></span>
+                    <span class="appareil-infos"><span class="appareil-infos-mode">${escapeHtml(part.label || "")}</span><span>f/2.8 · 1/250</span></span>
+                  </div>
+                  <div class="appareil-noir"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="appareil-flash"></div>
+  `
+  );
+
+  initAppareil(section, { particulier: part, commerce: com });
+  return section;
+}
+
+function initAppareil(section, choix) {
+  if (section.closest && section.closest(".admin-live-editor")) return;
+
+  const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const scene = section.querySelector(".appareil-scene");
+  const cadre = section.querySelector(".appareil-cadre");
+  const boitier = section.querySelector(".appareil-boitier");
+  const ecran = section.querySelector(".appareil-ecran");
+  const infosMode = section.querySelector(".appareil-infos-mode");
+  const options = Array.from(section.querySelectorAll(".appareil-option"));
+  const boutonSon = section.querySelector(".appareil-son");
+  const declencheur = section.querySelector(".appareil-declencheur");
+  let mode = "particulier";
+  let enCours = false;
+  let sonActif = false;
+  let minuteurs = [];
+  let audio = null;
+
+  const ajusterEchelle = () => {
+    const largeur = scene.clientWidth;
+    if (!largeur) return;
+    cadre.style.setProperty("--echelle", Math.min(1, largeur / 680).toFixed(4));
+  };
+  ajusterEchelle();
+  if (window.ResizeObserver) new ResizeObserver(ajusterEchelle).observe(scene);
+  else window.addEventListener("resize", ajusterEchelle);
+
+  const choisir = (m) => {
+    if (enCours || m === mode) return;
+    mode = m;
+    section.classList.toggle("est-commerce", m === "commerce");
+    options.forEach((o) => o.classList.toggle("est-actif", o.dataset.mode === m));
+    infosMode.textContent = (choix[m] && choix[m].label) || "";
+  };
+
+  const reinitialiser = () => {
+    minuteurs.forEach(clearTimeout);
+    minuteurs = [];
+    enCours = false;
+    section.classList.remove("en-cours", "phase-appui", "phase-obturation", "phase-flash", "phase-zoom");
+    document.documentElement.style.overflow = "";
+  };
+
+  const cliquetis = () => {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      audio = audio || new Ctx();
+      const salve = (debut, duree, gain, freq) => {
+        const n = Math.floor(audio.sampleRate * duree);
+        const tampon = audio.createBuffer(1, n, audio.sampleRate);
+        const d = tampon.getChannelData(0);
+        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
+        const src = audio.createBufferSource();
+        src.buffer = tampon;
+        const filtre = audio.createBiquadFilter();
+        filtre.type = "bandpass";
+        filtre.frequency.value = freq;
+        const g = audio.createGain();
+        g.gain.value = gain;
+        src.connect(filtre);
+        filtre.connect(g);
+        g.connect(audio.destination);
+        src.start(audio.currentTime + debut);
+      };
+      salve(0, 0.045, 0.8, 2600);
+      salve(0.085, 0.06, 0.5, 1800);
+    } catch (e) {
+      // le son reste un bonus : silence si le navigateur refuse
+    }
+  };
+
+  // Facteur d'agrandissement pour que l'écran recouvre toute la fenêtre.
+  const echelleZoom = () => {
+    const r = ecran.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const sx = (2 * Math.max(cx, vw - cx)) / r.width;
+    const sy = (2 * Math.max(cy, vh - cy)) / r.height;
+    return (Math.max(sx, sy) * 1.04).toFixed(3);
+  };
+
+  const declencher = (m, href) => {
+    if (enCours) return;
+    choisir(m);
+    if (reduit) {
+      window.location.href = href;
+      return;
+    }
+    enCours = true;
+    if (sonActif) cliquetis();
+    boitier.style.setProperty("--tilt-x", "0deg");
+    boitier.style.setProperty("--tilt-y", "0deg");
+    section.classList.add("en-cours", "phase-appui");
+    const etape = (ms, fn) => minuteurs.push(setTimeout(fn, ms));
+    etape(80, () => section.classList.replace("phase-appui", "phase-obturation"));
+    etape(150, () => section.classList.replace("phase-obturation", "phase-flash"));
+    etape(190, () => {
+      ecran.style.setProperty("--zoom-ecran", echelleZoom());
+      document.documentElement.style.overflow = "hidden";
+      section.classList.remove("phase-flash");
+      section.classList.add("phase-zoom");
+    });
+    etape(820, () => {
+      window.location.href = href;
+    });
+  };
+
+  options.forEach((o) => {
+    o.addEventListener("mouseenter", () => choisir(o.dataset.mode));
+    o.addEventListener("focus", () => choisir(o.dataset.mode));
+    o.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      declencher(o.dataset.mode, o.href);
+    });
+  });
+
+  declencheur.addEventListener("click", () => {
+    const o = options.find((x) => x.dataset.mode === mode);
+    if (o) declencher(mode, o.href);
+  });
+
+  boutonSon.addEventListener("click", () => {
+    sonActif = !sonActif;
+    boutonSon.setAttribute("aria-pressed", sonActif ? "true" : "false");
+    const label = sonActif ? "Couper le son du déclencheur" : "Activer le son du déclencheur";
+    boutonSon.setAttribute("aria-label", label);
+    boutonSon.title = label;
+  });
+
+  if (!reduit && window.matchMedia("(hover: hover)").matches) {
+    let image = null;
+    section.addEventListener("mousemove", (e) => {
+      if (enCours || image) return;
+      const r = section.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      image = requestAnimationFrame(() => {
+        image = null;
+        boitier.style.setProperty("--tilt-x", `${(-y * 5).toFixed(2)}deg`);
+        boitier.style.setProperty("--tilt-y", `${(x * 7).toFixed(2)}deg`);
+      });
+    });
+    section.addEventListener("mouseleave", () => {
+      boitier.style.setProperty("--tilt-x", "0deg");
+      boitier.style.setProperty("--tilt-y", "0deg");
+    });
+  }
+
+  // Retour arrière depuis la page tarifs : le navigateur peut restaurer la
+  // page telle qu'on l'a quittée (écran agrandi) — on remet l'appareil.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) reinitialiser();
+  });
+}
+
+// ---------- Accueil : bloc contact ----------
+
+async function buildContactBref(data, basePath) {
+  const section = el("section", { class: "contact-bref" });
+  const container = el(
+    "div",
+    { class: "container contact-bref-grid" },
+    `
+    <div>
+      <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
+      <h2>${escapeHtml(data.title)}</h2>
+      <p>${escapeHtml(data.text)}</p>
+      <a href="${resolveHref(data.button_href, basePath)}" class="btn btn-primary">${escapeHtml(data.button_label)}</a>
+    </div>
+  `
+  );
+  const dl = el("dl", {});
+  container.appendChild(dl);
+  section.appendChild(container);
+
+  try {
+    const contact = await fetchJson(basePath, "content/contact.json");
+    dl.innerHTML = `
+      <dt>Email</dt><dd><a href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.email)}</a></dd>
+      <dt>Instagram</dt><dd><a href="${escapeHtml(contact.instagram_url)}" target="_blank" rel="noopener">${escapeHtml(contact.instagram_handle)}</a></dd>
+      <dt>Zone</dt><dd>${escapeHtml(contact.zone)}</dd>
+    `;
+  } catch (e) {
+    console.error(e);
+  }
+  return section;
+}
+
+// ---------- Page tarifs : bandeau + onglets ----------
+//
+// Les sections de la page qui portent un champ "tab" (ex. "commerces") ne
+// s'affichent que lorsque cet onglet est actif. L'onglet de départ vient de
+// l'adresse (services.html#commerces), sinon c'est le premier.
+
+function buildOngletsTarifs(data, basePath) {
+  const onglets = data.tabs || [];
+  const section = el(
+    "section",
+    { class: "onglets-tarifs" },
+    `
+    <div class="onglets-bandeau">
+      ${onglets
+        .map(
+          (t, i) =>
+            `<img src="${resolveSrc(t.image, basePath)}" alt="${escapeHtml(t.alt || "")}" data-onglet-image="${escapeHtml(t.id)}" style="object-position:${escapeHtml(t.position || "50% 50%")};opacity:${i === 0 ? 1 : 0}" ${i === 0 ? 'fetchpriority="high"' : ""} />`
+        )
+        .join("")}
+    </div>
+    <div class="container onglets-entete">
+      <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
+      <h1>${escapeHtml(data.title)}</h1>
+      <p class="onglets-intro">${escapeHtml((onglets[0] && onglets[0].text) || "")}</p>
+      <div class="onglets-boutons" role="tablist" aria-label="Type de client">
+        ${onglets
+          .map(
+            (t, i) =>
+              `<button type="button" role="tab" class="onglet-btn" data-onglet-btn="${escapeHtml(t.id)}" aria-selected="${i === 0 ? "true" : "false"}">${escapeHtml(t.label)}</button>`
+          )
+          .join("")}
+      </div>
+    </div>
+  `
+  );
+  section._onglets = onglets;
+  return section;
+}
+
+function initOngletsTarifs(container) {
+  const entete = container.querySelector(".onglets-tarifs");
+  if (!entete || !entete._onglets || !entete._onglets.length) return;
+  const onglets = entete._onglets;
+  const intro = entete.querySelector(".onglets-intro");
+  const sections = Array.from(container.querySelectorAll("[data-onglet]"));
+
+  const activer = (id, majAdresse) => {
+    const t = onglets.find((o) => o.id === id) || onglets[0];
+    entete.querySelectorAll("[data-onglet-btn]").forEach((b) => b.setAttribute("aria-selected", b.dataset.ongletBtn === t.id ? "true" : "false"));
+    entete.querySelectorAll("[data-onglet-image]").forEach((img) => (img.style.opacity = img.dataset.ongletImage === t.id ? "1" : "0"));
+    intro.textContent = t.text || "";
+    sections.forEach((s) => (s.hidden = s.dataset.onglet !== t.id));
+    if (majAdresse && window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", `#${t.id}`);
+    }
+  };
+
+  entete.querySelectorAll("[data-onglet-btn]").forEach((b) => b.addEventListener("click", () => activer(b.dataset.ongletBtn, true)));
+
+  const depuisAdresse = window.location.hash.slice(1);
+  const correspondance = onglets.find((o) => o.id === depuisAdresse || o.id.replace(/s$/, "") === depuisAdresse.replace(/s$/, ""));
+  activer(correspondance ? correspondance.id : onglets[0].id, false);
 }
 
 async function buildContact(data, basePath) {
@@ -333,6 +686,9 @@ const SECTION_BUILDERS = {
   cta: buildCta,
   contact: buildContact,
   texte_juridique: buildTexteJuridique,
+  appareil: buildAppareil,
+  contact_bref: buildContactBref,
+  onglets_tarifs: buildOngletsTarifs,
 };
 
 // Met en évidence toute note du type "[À COMPLÉTER]" ou
@@ -375,6 +731,7 @@ async function renderSections(container, sections, basePath = "") {
       const node = await builder(section.data || {}, basePath);
       if (node) {
         if (section.id) node.id = section.id;
+        if (section.tab) node.dataset.onglet = section.tab;
         container.appendChild(node);
       }
     } catch (err) {
@@ -382,6 +739,7 @@ async function renderSections(container, sections, basePath = "") {
     }
   }
   highlightPlaceholders(container);
+  initOngletsTarifs(container);
 
   if (typeof window.initScrollReveal === "function") window.initScrollReveal();
 }

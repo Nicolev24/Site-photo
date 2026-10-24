@@ -1036,3 +1036,20 @@
   font-family: var(--police-texte);
   background: #fff;
 }
+
+/* Sélecteur d'onglet (page tarifs à onglets) dans la barre d'outils d'une section */
+.admin-section-toolbar .admin-tab-select {
+  width: auto;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+/* Le prix est un champ modifiable (span) : il garde la taille du prix, pas celle du complément */
+.price-tag .price-valeur {
+  font: inherit;
+  color: inherit;
+}

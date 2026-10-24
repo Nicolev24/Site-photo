@@ -6,17 +6,35 @@
   },
   "sections": [
     {
-      "id": "header-1",
-      "type": "texte",
+      "id": "en-tete",
+      "type": "onglets_tarifs",
       "data": {
         "eyebrow": "Services & tarifs",
         "title": "Des formules simples et claires",
-        "text": "Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète."
+        "tabs": [
+          {
+            "id": "particuliers",
+            "label": "Particuliers",
+            "image": "images/teaser-evenements.jpg",
+            "alt": "Mariés entourés de leurs témoins",
+            "position": "50% 40%",
+            "text": "Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète."
+          },
+          {
+            "id": "commerces",
+            "label": "Commerces",
+            "image": "images/teaser-entreprises.jpg",
+            "alt": "Séance chez un barbier",
+            "position": "50% 42%",
+            "text": "Des photos pro et un site simple pour les petits commerces de la région."
+          }
+        ]
       }
     },
     {
       "id": "tarifs-1",
       "type": "tarifs",
+      "tab": "particuliers",
       "data": {
         "plans": [
           {
@@ -25,7 +43,11 @@
             "price_suffix": "",
             "highlight": false,
             "badge": "",
-            "features": ["Environ 1h de séance", "1 lieu", "Galerie privée en ligne"],
+            "features": [
+              "Environ 1h de séance",
+              "1 lieu",
+              "Galerie privée en ligne"
+            ],
             "cta_label": "Choisir cette formule"
           },
           {
@@ -34,17 +56,25 @@
             "price_suffix": "",
             "highlight": true,
             "badge": "Le plus demandé",
-            "features": ["2h à 3h de séance", "Plusieurs lieux possibles", "Galerie privée en ligne"],
+            "features": [
+              "2h à 3h de séance",
+              "Plusieurs lieux possibles",
+              "Galerie privée en ligne"
+            ],
             "cta_label": "Choisir cette formule"
           },
           {
             "title": "Sur devis",
-            "subtitle": "Pour les événements et les grandes entreprises. Vous êtes un petit commerce ? Voir la section ci-dessous.",
+            "subtitle": "Pour les événements et les grandes entreprises.",
             "price": "Devis",
             "price_suffix": "personnalisé",
             "highlight": false,
             "badge": "",
-            "features": ["Événements, journées complètes, entreprises...", "Durée et lieux adaptés à votre besoin", "Galerie privée en ligne"],
+            "features": [
+              "Événements, journées complètes, entreprises...",
+              "Durée et lieux adaptés à votre besoin",
+              "Galerie privée en ligne"
+            ],
             "cta_label": "Demander un devis"
           }
         ],
@@ -52,17 +82,9 @@
       }
     },
     {
-      "id": "commerces",
-      "type": "texte",
-      "data": {
-        "eyebrow": "Pour les commerces",
-        "title": "Pour les commerces",
-        "text": "Des photos pro et un site simple pour les petits commerces de la région."
-      }
-    },
-    {
       "id": "tarifs-commerces",
       "type": "tarifs",
+      "tab": "commerces",
       "data": {
         "plans": [
           {
@@ -71,7 +93,11 @@
             "price_suffix": "",
             "highlight": false,
             "badge": "",
-            "features": ["1h sur place", "Photos retouchées", "Prêtes pour Google, les réseaux et votre site"],
+            "features": [
+              "1h sur place",
+              "Photos retouchées",
+              "Prêtes pour Google, les réseaux et votre site"
+            ],
             "cta_label": "Choisir cette formule"
           },
           {
@@ -80,7 +106,11 @@
             "price_suffix": "",
             "highlight": false,
             "badge": "",
-            "features": ["Un site moderne et rapide", "Adapté à tous les écrans (ordinateur, téléphone, tablette)", "Vos photos intégrées"],
+            "features": [
+              "Un site moderne et rapide",
+              "Adapté à tous les écrans (ordinateur, téléphone, tablette)",
+              "Vos photos intégrées"
+            ],
             "cta_label": "Choisir cette formule"
           },
           {
@@ -89,7 +119,11 @@
             "price_suffix": "au lieu de 590€",
             "highlight": true,
             "badge": "Le plus choisi",
-            "features": ["Séance photo commerce incluse", "Site vitrine 1 page inclus", "90€ d'économie"],
+            "features": [
+              "Séance photo commerce incluse",
+              "Site vitrine 1 page inclus",
+              "90€ d'économie"
+            ],
             "cta_label": "Choisir cette formule"
           }
         ],
@@ -99,19 +133,10 @@
     {
       "id": "cta-commerces",
       "type": "cta",
+      "tab": "commerces",
       "data": {
         "title": "Vous n'avez pas de site ?",
         "text": "Je vous prépare une maquette gratuite, sans engagement.",
-        "button_label": "Me contacter",
-        "button_href": "contact.html"
-      }
-    },
-    {
-      "id": "cta-1",
-      "type": "cta",
-      "data": {
-        "title": "Prêt·e à réserver ?",
-        "text": "Dites-m'en un peu plus sur votre projet.",
         "button_label": "Me contacter",
         "button_href": "contact.html"
       }

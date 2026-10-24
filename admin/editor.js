@@ -298,15 +298,20 @@ function buildEditableTarifs(data, rerender) {
     });
     card.appendChild(toolbar);
 
-    card.appendChild(editableSpan(plan, "badge", { tag: "span", className: "badge", placeholder: "Badge" }));
-    card.appendChild(editableSpan(plan, "title", { tag: "h3", placeholder: "Nom de la formule" }));
+    const head = document.createElement("div");
+    head.className = "price-card-head";
+    head.appendChild(editableSpan(plan, "title", { tag: "h3", placeholder: "Nom de la formule" }));
+    head.appendChild(editableSpan(plan, "badge", { tag: "span", className: "badge", placeholder: "Badge" }));
+    card.appendChild(head);
 
     const priceTag = document.createElement("div");
     priceTag.className = "price-tag";
-    priceTag.appendChild(editableSpan(plan, "price", { placeholder: "Prix" }));
+    priceTag.appendChild(editableSpan(plan, "price", { className: "price-valeur", placeholder: "Prix" }));
     priceTag.appendChild(document.createTextNode(" "));
     priceTag.appendChild(editableSpan(plan, "price_suffix", { placeholder: "complément" }));
     card.appendChild(priceTag);
+
+    card.appendChild(editableSpan(plan, "subtitle", { tag: "p", className: "price-card-sub", placeholder: "Précision sous le prix (optionnel)" }));
 
     const ul = document.createElement("ul");
     plan.features = plan.features || [];
@@ -352,7 +357,7 @@ function buildEditableTarifs(data, rerender) {
     ul.appendChild(addFeatLi);
     card.appendChild(ul);
 
-    const cta = editableSpan(plan, "cta_label", { tag: "a", className: plan.highlight ? "btn btn-primary" : "btn-secondary", placeholder: "Texte du bouton" });
+    const cta = editableSpan(plan, "cta_label", { tag: "a", className: plan.highlight ? "btn btn-primary" : "btn btn-contour", placeholder: "Texte du bouton" });
     cta.href = "#";
     card.appendChild(cta);
 
@@ -387,8 +392,12 @@ function buildEditableTarifs(data, rerender) {
 function buildEditableCta(data) {
   const wrap = document.createElement("div");
   wrap.className = "cta-band";
-  wrap.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
-  wrap.appendChild(editableSpan(data, "text", { tag: "p", placeholder: "Texte" }));
+  const inner = document.createElement("div");
+  inner.className = "cta-band-inner";
+  const texte = document.createElement("div");
+  texte.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", placeholder: "Texte" }));
+  inner.appendChild(texte);
 
   const row = document.createElement("div");
   row.style.display = "inline-flex";
@@ -398,7 +407,8 @@ function buildEditableCta(data) {
   btn.href = "#";
   row.appendChild(btn);
   row.appendChild(buildSettingsPopover([{ label: "Lien du bouton", obj: data, key: "button_href" }]));
-  wrap.appendChild(row);
+  inner.appendChild(row);
+  wrap.appendChild(inner);
   return wrap;
 }
 
@@ -567,6 +577,174 @@ function buildEditableTexteJuridique(data, rerender) {
   return sectionEl;
 }
 
+// Photo éditable dans un cadre fixe (changer la photo, texte alternatif,
+// cadrage via ⚙). Sert à l'appareil photo de l'accueil et aux onglets tarifs.
+function editablePhotoFrame(obj, legend, height) {
+  const frame = document.createElement("div");
+  frame.style.position = "relative";
+  frame.style.height = `${height}px`;
+  frame.style.borderRadius = "4px";
+  frame.style.overflow = "hidden";
+  frame.style.background = "#000";
+
+  const img = document.createElement("img");
+  img.src = obj._previewUrl || sitePath(obj.image) || "";
+  img.alt = obj.alt || "";
+  img.style.cssText = `width:100%;height:100%;object-fit:cover;object-position:${obj.position || "50% 50%"};display:block`;
+  frame.appendChild(img);
+  attachImageOverlay(frame, img, obj, obj);
+
+  const caption = document.createElement("div");
+  caption.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:0.85rem;color:var(--couleur-texte-attenue)";
+  caption.textContent = legend;
+  caption.appendChild(buildSettingsPopover([{ label: "Cadrage de la photo (ex : 50% 30% — horizontal puis vertical)", obj, key: "position" }]));
+
+  const wrap = document.createElement("div");
+  wrap.appendChild(frame);
+  wrap.appendChild(caption);
+  return wrap;
+}
+
+function buildEditableAppareil(data) {
+  data.choices = data.choices || [];
+  while (data.choices.length < 2) data.choices.push({ label: "", desc: "", image: "", alt: "", position: "50% 50%", href: "" });
+
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "appareil";
+  const grid = document.createElement("div");
+  grid.className = "appareil-grid";
+  grid.style.minHeight = "0";
+
+  const intro = document.createElement("div");
+  intro.className = "appareil-intro";
+  intro.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  const h1 = document.createElement("h1");
+  h1.appendChild(editableSpan(data, "title_line1", { placeholder: "Titre — 1ère ligne" }));
+  h1.appendChild(document.createElement("br"));
+  h1.appendChild(editableSpan(data, "title_line2", { placeholder: "Titre — 2ème ligne" }));
+  intro.appendChild(h1);
+  intro.appendChild(editableSpan(data, "subtitle", { tag: "p", className: "appareil-sous-titre", placeholder: "Sous-titre" }));
+  grid.appendChild(intro);
+
+  const choix = document.createElement("div");
+  choix.className = "appareil-choix";
+  choix.appendChild(editableSpan(data, "prompt", { tag: "p", className: "appareil-invite", placeholder: "Question au-dessus des choix" }));
+  const optionsEl = document.createElement("div");
+  optionsEl.className = "appareil-options";
+  data.choices.slice(0, 2).forEach((c) => {
+    const opt = document.createElement("div");
+    opt.className = "appareil-option";
+    const textes = document.createElement("span");
+    textes.appendChild(editableSpan(c, "label", { tag: "span", className: "appareil-option-titre", placeholder: "Nom du choix" }));
+    textes.appendChild(editableSpan(c, "desc", { tag: "span", className: "appareil-option-desc", placeholder: "Courte description" }));
+    opt.appendChild(textes);
+    opt.appendChild(buildSettingsPopover([{ label: "Page ouverte après le déclic", obj: c, key: "href" }]));
+    optionsEl.appendChild(opt);
+  });
+  choix.appendChild(optionsEl);
+  const bas = document.createElement("div");
+  bas.className = "appareil-bas";
+  const lien = editableSpan(data, "link_label", { tag: "a", className: "btn-secondary", placeholder: "Lien secondaire (optionnel)" });
+  lien.href = "#";
+  const lienRow = document.createElement("span");
+  lienRow.appendChild(lien);
+  lienRow.appendChild(buildSettingsPopover([{ label: "Adresse du lien", obj: data, key: "link_href" }]));
+  bas.appendChild(lienRow);
+  choix.appendChild(bas);
+  grid.appendChild(choix);
+
+  const scene = document.createElement("div");
+  scene.className = "appareil-scene";
+  scene.style.flexDirection = "column";
+  scene.style.gap = "16px";
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.style.margin = "0";
+  hint.textContent = "Sur le site, ces deux photos s'affichent dans l'écran de l'appareil photo animé (selon le choix survolé).";
+  scene.appendChild(hint);
+  const photos = document.createElement("div");
+  photos.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%";
+  data.choices.slice(0, 2).forEach((c, i) => {
+    photos.appendChild(editablePhotoFrame(c, `Photo « ${c.label || (i === 0 ? "Particulier" : "Commerce")} »`, 220));
+  });
+  scene.appendChild(photos);
+  grid.appendChild(scene);
+
+  sectionEl.appendChild(grid);
+  return sectionEl;
+}
+
+function buildEditableContactBref(data) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "contact-bref";
+  const container = document.createElement("div");
+  container.className = "container contact-bref-grid";
+
+  const left = document.createElement("div");
+  left.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  left.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  left.appendChild(editableSpan(data, "text", { tag: "p", placeholder: "Texte" }));
+  const row = document.createElement("div");
+  row.style.cssText = "display:inline-flex;align-items:center;gap:4px";
+  const btn = editableSpan(data, "button_label", { tag: "a", className: "btn btn-primary", placeholder: "Texte du bouton" });
+  btn.href = "#";
+  row.appendChild(btn);
+  row.appendChild(buildSettingsPopover([{ label: "Lien du bouton", obj: data, key: "button_href" }]));
+  left.appendChild(row);
+
+  const right = document.createElement("div");
+  const c = (state.contact && state.contact.data) || {};
+  right.innerHTML = `
+    <dl>
+      <dt>Email</dt><dd>${escapeHtml(c.email || "")}</dd>
+      <dt>Instagram</dt><dd>${escapeHtml(c.instagram_handle || "")}</dd>
+      <dt>Zone</dt><dd>${escapeHtml(c.zone || "")}</dd>
+    </dl>
+    <p class="admin-hint" style="margin-top:14px">Ces coordonnées se modifient sur la page Contact (section « Coordonnées + formulaire »).</p>
+  `;
+
+  container.appendChild(left);
+  container.appendChild(right);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
+function buildEditableOngletsTarifs(data) {
+  data.tabs = data.tabs || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "onglets-tarifs";
+  const container = document.createElement("div");
+  container.className = "container";
+  container.style.paddingTop = "32px";
+  container.style.paddingBottom = "32px";
+
+  container.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  container.appendChild(editableSpan(data, "title", { tag: "h1", placeholder: "Titre de la page" }));
+
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Un onglet par type de client : photo du bandeau, nom de l'onglet et phrase d'introduction. Les sections plus bas s'affichent dans l'onglet choisi dans leur barre d'outils.";
+  container.appendChild(hint);
+
+  const grid = document.createElement("div");
+  grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:24px;margin-top:16px";
+  data.tabs.forEach((t) => {
+    const col = document.createElement("div");
+    col.appendChild(editablePhotoFrame(t, "Photo du bandeau", 180));
+    const label = editableSpan(t, "label", { tag: "div", className: "onglet-btn", placeholder: "Nom de l'onglet" });
+    label.style.display = "inline-flex";
+    label.style.alignItems = "center";
+    label.style.marginTop = "14px";
+    label.setAttribute("aria-selected", "true");
+    col.appendChild(label);
+    col.appendChild(editableSpan(t, "text", { tag: "p", className: "onglets-intro", placeholder: "Phrase d'introduction de l'onglet" }));
+    grid.appendChild(col);
+  });
+  container.appendChild(grid);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
 const EDITABLE_BUILDERS = {
   hero: buildEditableHero,
   texte_image: buildEditableTexteImage,
@@ -577,7 +755,35 @@ const EDITABLE_BUILDERS = {
   cta: buildEditableCta,
   contact: buildEditableContact,
   texte_juridique: buildEditableTexteJuridique,
+  appareil: buildEditableAppareil,
+  contact_bref: buildEditableContactBref,
+  onglets_tarifs: buildEditableOngletsTarifs,
 };
+
+// Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page
+// contient une section à onglets (page tarifs).
+function buildTabSelect(section, sections) {
+  const ongletsSection = sections.find((s) => s.type === "onglets_tarifs");
+  if (!ongletsSection || section.type === "onglets_tarifs") return null;
+  const select = document.createElement("select");
+  select.className = "admin-tab-select";
+  select.title = "Onglet dans lequel cette section s'affiche";
+  const options = [{ id: "", label: "Tous les onglets" }].concat(
+    ((ongletsSection.data && ongletsSection.data.tabs) || []).map((t) => ({ id: t.id, label: `Onglet : ${t.label || t.id}` }))
+  );
+  options.forEach((o) => {
+    const opt = document.createElement("option");
+    opt.value = o.id;
+    opt.textContent = o.label;
+    if ((section.tab || "") === o.id) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.addEventListener("change", () => {
+    if (select.value) section.tab = select.value;
+    else delete section.tab;
+  });
+  return select;
+}
 
 // ---------- Barre d'insertion entre deux sections ----------
 
@@ -632,6 +838,8 @@ function buildSectionWrap(section, index, sections, rerender) {
     <button type="button" class="admin-icon-btn f-down" title="Descendre" ${index === sections.length - 1 ? "disabled" : ""}>↓</button>
     <button type="button" class="admin-icon-btn danger f-delete" title="Supprimer">🗑</button>
   `;
+  const tabSelect = buildTabSelect(section, sections);
+  if (tabSelect) toolbar.querySelector(".admin-section-type-badge").after(tabSelect);
   toolbar.querySelector(".f-up").addEventListener("click", () => {
     if (index === 0) return;
     swapAdjacent(sections, index, index - 1);

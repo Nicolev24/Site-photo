@@ -70,6 +70,34 @@ const SECTION_TYPES = [
     label: "Texte juridique (mentions légales, CGV...)",
     defaultData: () => ({ blocks: [{ type: "paragraph", text: "" }] }),
   },
+  {
+    value: "appareil",
+    label: "Accueil : l'appareil photo (particulier / commerce)",
+    defaultData: () => ({
+      eyebrow: "", title_line1: "", title_line2: "", subtitle: "", prompt: "Vous venez pour…",
+      choices: [
+        { label: "Particulier", desc: "", image: "", alt: "", position: "50% 50%", href: "services.html#particuliers" },
+        { label: "Commerce", desc: "", image: "", alt: "", position: "50% 50%", href: "services.html#commerces" },
+      ],
+      link_label: "Voir le portfolio", link_href: "portfolio.html",
+    }),
+  },
+  {
+    value: "contact_bref",
+    label: "Contact court (titre, bouton, coordonnées)",
+    defaultData: () => ({ eyebrow: "Contact", title: "", text: "", button_label: "Me contacter", button_href: "contact.html" }),
+  },
+  {
+    value: "onglets_tarifs",
+    label: "Tarifs : bandeau + onglets (particuliers / commerces)",
+    defaultData: () => ({
+      eyebrow: "Services & tarifs", title: "",
+      tabs: [
+        { id: "particuliers", label: "Particuliers", image: "", alt: "", position: "50% 50%", text: "" },
+        { id: "commerces", label: "Commerces", image: "", alt: "", position: "50% 50%", text: "" },
+      ],
+    }),
+  },
 ];
 
 function sectionTypeLabel(type) {
