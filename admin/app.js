@@ -89,7 +89,7 @@ const SECTION_TYPES = [
   },
   {
     value: "onglets_tarifs",
-    label: "Tarifs : bandeau + onglets (particuliers / commerces)",
+    label: "Tarifs : en-tête (photo + texte pour particuliers / commerces)",
     defaultData: () => ({
       eyebrow: "Services & tarifs", title: "",
       tabs: [
@@ -425,6 +425,7 @@ function pageHtmlTemplate(seo, slug) {
 <meta property="og:locale" content="fr_BE" />
 <link rel="canonical" href="${url}" />
 <link rel="stylesheet" href="css/style.css" />
+<script src="js/univers.js"></script>
 <link rel="icon" href="favicon.ico" sizes="48x48" />
 <link rel="icon" href="icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
@@ -432,6 +433,17 @@ function pageHtmlTemplate(seo, slug) {
 <meta name="theme-color" content="#1c1916" />
 </head>
 <body>
+
+<div class="univers-barre" id="univers-barre">
+  <div class="container univers-barre-inner">
+    <span class="univers-libelle">Vous êtes</span>
+    <div class="univers-switch" role="group" aria-label="Vous êtes">
+      <span class="univers-curseur" aria-hidden="true"></span>
+      <button type="button" data-univers="particuliers" aria-pressed="false">Particulier</button>
+      <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
+    </div>
+  </div>
+</div>
 
 <header class="site-header">
   <div class="container">
@@ -847,6 +859,26 @@ function selectField(container, label, obj, key, options) {
   return wrap;
 }
 
+// Une photo trop petite paraît floue sur grand écran ou sur un écran Retina :
+// on prévient (sans bloquer) quand son grand côté fait moins de 2000 px.
+const DEFINITION_CONSEILLEE = 2000;
+
+function verifierDefinition(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    if (Math.max(img.naturalWidth, img.naturalHeight) < DEFINITION_CONSEILLEE) {
+      showStatus(
+        `Attention : « ${file.name} » ne fait que ${img.naturalWidth} × ${img.naturalHeight} px, elle risque d'être un peu floue sur grand écran. Utilise de préférence le fichier original (au moins ${DEFINITION_CONSEILLEE} px) : le site prépare tout seul les versions légères.`,
+        "error"
+      );
+    }
+  };
+  img.onerror = () => URL.revokeObjectURL(url);
+  img.src = url;
+}
+
 function imageField(container, label, obj, rerender) {
   const wrap = document.createElement("div");
   wrap.className = "admin-field";
@@ -861,6 +893,7 @@ function imageField(container, label, obj, rerender) {
   wrap.querySelector("input[type=file]").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    verifierDefinition(file);
     obj._file = file;
     obj._previewUrl = URL.createObjectURL(file);
     rerender();
@@ -981,6 +1014,7 @@ function renderPortfolioList() {
     card.querySelector(".f-file").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
+      verifierDefinition(file);
       item._file = file;
       item._previewUrl = URL.createObjectURL(file);
       renderPortfolioList();

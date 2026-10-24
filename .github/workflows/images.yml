@@ -9,6 +9,7 @@ on:
     paths:
       - "images/**"
       - "content/site.json"
+      - "content/pages/**"
       - "outils/**"
       - ".github/workflows/images.yml"
   workflow_dispatch:

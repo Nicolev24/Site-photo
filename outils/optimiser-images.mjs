@@ -134,9 +134,28 @@ async function nettoyerTailles(attendues) {
   }
 }
 
+// Une page dont le contenu change selon l'univers (particuliers /
+// commerces) a deux adresses : services.html et services.html?pour=commerces.
+async function aDesUnivers(slug) {
+  try {
+    const page = JSON.parse(await fs.readFile(abs(`content/pages/${slug}.json`), "utf8"));
+    return (page.sections || []).some((s) => s.tab || s.type === "portfolio_galerie" || s.type === "contact");
+  } catch {
+    return false;
+  }
+}
+
 async function genererSitemap() {
   const site = JSON.parse(await fs.readFile(abs("content/site.json"), "utf8"));
-  const urls = (site.pages || []).map((p) => (p.slug === "index" ? SITE : `${SITE}${p.slug}.html`));
+  const urls = [];
+  for (const p of site.pages || []) {
+    if (p.slug === "index") {
+      urls.push(SITE);
+      continue;
+    }
+    urls.push(`${SITE}${p.slug}.html`);
+    if (await aDesUnivers(p.slug)) urls.push(`${SITE}${p.slug}.html?pour=commerces`);
+  }
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

@@ -8,10 +8,21 @@
     {
       "id": "header-1",
       "type": "texte",
+      "tab": "particuliers",
       "data": {
         "eyebrow": "Portfolio",
         "title": "Un aperçu de mon travail",
-        "text": "Une sélection de séances, classées par catégorie. Photos naturelles, lumière franche, peu de retouche."
+        "text": "Portraits, couples, mariages et événements : une sélection de séances. Photos naturelles, lumière franche, peu de retouche."
+      }
+    },
+    {
+      "id": "header-commerces",
+      "type": "texte",
+      "tab": "commerces",
+      "data": {
+        "eyebrow": "Portfolio",
+        "title": "Commerces & entreprises",
+        "text": "Une sélection de séances réalisées pour des commerces et des entreprises. Des photos naturelles, prêtes pour Google, les réseaux et votre site."
       }
     },
     {

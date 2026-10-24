@@ -2,8 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://nicolasleveugle.be/</loc></url>
   <url><loc>https://nicolasleveugle.be/portfolio.html</loc></url>
+  <url><loc>https://nicolasleveugle.be/portfolio.html?pour=commerces</loc></url>
   <url><loc>https://nicolasleveugle.be/services.html</loc></url>
+  <url><loc>https://nicolasleveugle.be/services.html?pour=commerces</loc></url>
   <url><loc>https://nicolasleveugle.be/contact.html</loc></url>
+  <url><loc>https://nicolasleveugle.be/contact.html?pour=commerces</loc></url>
   <url><loc>https://nicolasleveugle.be/mentions-legales.html</loc></url>
   <url><loc>https://nicolasleveugle.be/confidentialite.html</loc></url>
 </urlset>

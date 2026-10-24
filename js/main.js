@@ -70,6 +70,9 @@ function initScrollReveal() {
   );
 
   sections.forEach((section) => {
+    // Déjà à l'écran (arrivée sur la page, retour arrière) : affichée tout
+    // de suite, sinon elle clignoterait pendant la transition de page.
+    if (section.getBoundingClientRect().top < window.innerHeight * 0.92) return;
     section.classList.add("reveal-on-scroll");
     observer.observe(section);
   });

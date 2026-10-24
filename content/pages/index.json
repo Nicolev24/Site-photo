@@ -21,7 +21,7 @@
             "image": "images/teaser-evenements.jpg",
             "alt": "Mariés entourés de leurs témoins",
             "position": "50% 40%",
-            "href": "services.html#particuliers"
+            "href": "services.html?pour=particuliers"
           },
           {
             "label": "Commerce",
@@ -29,7 +29,7 @@
             "image": "images/teaser-entreprises.jpg",
             "alt": "Séance chez un barbier",
             "position": "50% 32%",
-            "href": "services.html#commerces"
+            "href": "services.html?pour=commerces"
           }
         ],
         "link_label": "Voir le portfolio",

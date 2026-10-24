@@ -31,169 +31,198 @@
       "empreinte": "caa9b4891dd4"
     },
     "images/portfolio/couples/img1.jpg": {
-      "l": 1100,
-      "h": 733,
+      "l": 1800,
+      "h": 1200,
       "tailles": [
         480,
-        800
+        800,
+        1200,
+        1600
       ],
-      "empreinte": "d770170a59bf"
+      "empreinte": "8a08140fd72f"
     },
     "images/portfolio/couples/img2.jpg": {
-      "l": 618,
-      "h": 1100,
+      "l": 1012,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "ff6c5e243783"
+      "empreinte": "be7bd7125742"
     },
     "images/portfolio/couples/img3.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1200,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "41e72d18f861"
+      "empreinte": "d7090ac38170"
     },
     "images/portfolio/couples/img4.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1199,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "1e26ca7485c3"
+      "empreinte": "7390ff405bd3"
     },
     "images/portfolio/entreprises/img1.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1200,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "51bd0fe535ba"
+      "empreinte": "a0e88258181c"
     },
     "images/portfolio/entreprises/img2.jpg": {
-      "l": 1100,
-      "h": 733,
+      "l": 1800,
+      "h": 1199,
       "tailles": [
         480,
-        800
+        800,
+        1200,
+        1600
       ],
-      "empreinte": "27765498d5ab"
+      "empreinte": "8452ce6aea7f"
     },
     "images/portfolio/entreprises/img3.jpg": {
-      "l": 1100,
-      "h": 733,
+      "l": 1800,
+      "h": 1199,
       "tailles": [
         480,
-        800
+        800,
+        1200,
+        1600
       ],
-      "empreinte": "77b3ade6f1cb"
+      "empreinte": "3aeb16c3872f"
     },
     "images/portfolio/entreprises/img4.jpg": {
-      "l": 1100,
-      "h": 733,
+      "l": 1800,
+      "h": 1199,
       "tailles": [
         480,
-        800
+        800,
+        1200,
+        1600
       ],
-      "empreinte": "51569c516ab4"
+      "empreinte": "9c08dee19c99"
     },
     "images/portfolio/evenements/img1.jpg": {
-      "l": 733,
-      "h": 1100,
-      "tailles": [
-        480
-      ],
-      "empreinte": "fc59a7ea1be9"
-    },
-    "images/portfolio/evenements/img2.jpg": {
-      "l": 1100,
-      "h": 733,
+      "l": 1199,
+      "h": 1800,
       "tailles": [
         480,
         800
       ],
-      "empreinte": "82b222b00241"
+      "empreinte": "c8e8323ccaf9"
+    },
+    "images/portfolio/evenements/img2.jpg": {
+      "l": 1800,
+      "h": 1199,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "f5d5e032f0e2"
     },
     "images/portfolio/evenements/img3.jpg": {
-      "l": 618,
-      "h": 1100,
+      "l": 1012,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "c13d98e715da"
+      "empreinte": "17c4fca1276d"
     },
     "images/portfolio/evenements/img4.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1199,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "86de95b5132d"
+      "empreinte": "006b6a449c56"
     },
     "images/portfolio/portraits/img1.jpg": {
-      "l": 825,
-      "h": 1100,
+      "l": 1350,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800,
+        1200
       ],
-      "empreinte": "431bc01412b8"
+      "empreinte": "0684c21aca31"
     },
     "images/portfolio/portraits/img2.jpg": {
-      "l": 880,
-      "h": 1100,
+      "l": 1440,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800,
+        1200
       ],
-      "empreinte": "dd3bab5b09e4"
+      "empreinte": "d75773580d05"
     },
     "images/portfolio/portraits/img3.jpg": {
-      "l": 824,
-      "h": 1100,
+      "l": 1348,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800,
+        1200
       ],
-      "empreinte": "fa1b4009f2f7"
+      "empreinte": "a66f20165a35"
     },
     "images/portfolio/portraits/img4.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1200,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "89bbf2dfe8db"
+      "empreinte": "c309ef829fed"
     },
     "images/teaser-couples.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1199,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "1e26ca7485c3"
+      "empreinte": "7390ff405bd3"
     },
     "images/teaser-entreprises.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1200,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "51bd0fe535ba"
+      "empreinte": "a0e88258181c"
     },
     "images/teaser-evenements.jpg": {
-      "l": 733,
-      "h": 1100,
+      "l": 1199,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800
       ],
-      "empreinte": "fc59a7ea1be9"
+      "empreinte": "c8e8323ccaf9"
     },
     "images/teaser-portraits.jpg": {
-      "l": 880,
-      "h": 1100,
+      "l": 1440,
+      "h": 1800,
       "tailles": [
-        480
+        480,
+        800,
+        1200
       ],
-      "empreinte": "dd3bab5b09e4"
+      "empreinte": "d75773580d05"
     }
   }
 }

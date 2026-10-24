@@ -15,6 +15,7 @@
 <meta property="og:locale" content="fr_BE" />
 <link rel="canonical" href="https://nicolasleveugle.be/contact.html" />
 <link rel="stylesheet" href="css/style.css" />
+<script src="js/univers.js"></script>
 <link rel="icon" href="favicon.ico" sizes="48x48" />
 <link rel="icon" href="icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
@@ -22,6 +23,17 @@
 <meta name="theme-color" content="#1c1916" />
 </head>
 <body>
+
+<div class="univers-barre" id="univers-barre">
+  <div class="container univers-barre-inner">
+    <span class="univers-libelle">Vous êtes</span>
+    <div class="univers-switch" role="group" aria-label="Vous êtes">
+      <span class="univers-curseur" aria-hidden="true"></span>
+      <button type="button" data-univers="particuliers" aria-pressed="false">Particulier</button>
+      <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
+    </div>
+  </div>
+</div>
 
 <header class="site-header">
   <div class="container">

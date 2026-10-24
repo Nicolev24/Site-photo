@@ -70,6 +70,7 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
   fileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (typeof verifierDefinition === "function") verifierDefinition(file);
     obj._file = file;
     obj._previewUrl = URL.createObjectURL(file);
     img.src = obj._previewUrl;
@@ -712,7 +713,7 @@ function buildEditableContactBref(data) {
 function buildEditableOngletsTarifs(data) {
   data.tabs = data.tabs || [];
   const sectionEl = document.createElement("section");
-  sectionEl.className = "onglets-tarifs";
+  sectionEl.className = "univers-entete";
   const container = document.createElement("div");
   container.className = "container";
   container.style.paddingTop = "32px";
@@ -723,21 +724,20 @@ function buildEditableOngletsTarifs(data) {
 
   const hint = document.createElement("p");
   hint.className = "admin-hint";
-  hint.textContent = "Un onglet par type de client : photo du bandeau, nom de l'onglet et phrase d'introduction. Les sections plus bas s'affichent dans l'onglet choisi dans leur barre d'outils.";
+  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Pour une transition parfaite depuis l'accueil, mets la même photo et le même cadrage que sur l'appareil photo.";
   container.appendChild(hint);
 
+  const NOMS = { particuliers: "Particuliers", commerces: "Commerces" };
   const grid = document.createElement("div");
   grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:24px;margin-top:16px";
   data.tabs.forEach((t) => {
     const col = document.createElement("div");
-    col.appendChild(editablePhotoFrame(t, "Photo du bandeau", 180));
-    const label = editableSpan(t, "label", { tag: "div", className: "onglet-btn", placeholder: "Nom de l'onglet" });
-    label.style.display = "inline-flex";
-    label.style.alignItems = "center";
-    label.style.marginTop = "14px";
-    label.setAttribute("aria-selected", "true");
-    col.appendChild(label);
-    col.appendChild(editableSpan(t, "text", { tag: "p", className: "onglets-intro", placeholder: "Phrase d'introduction de l'onglet" }));
+    const titre = document.createElement("p");
+    titre.className = "eyebrow";
+    titre.textContent = NOMS[t.id] || t.label || t.id;
+    col.appendChild(titre);
+    col.appendChild(editablePhotoFrame(t, "Photo de l'en-tête", 200));
+    col.appendChild(editableSpan(t, "text", { tag: "p", className: "univers-entete-intro", placeholder: "Phrase d'introduction" }));
     grid.appendChild(col);
   });
   container.appendChild(grid);
@@ -833,14 +833,17 @@ const EDITABLE_BUILDERS = {
 // Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page
 // contient une section à onglets (page tarifs).
 function buildTabSelect(section, sections) {
-  const ongletsSection = sections.find((s) => s.type === "onglets_tarifs");
-  if (!ongletsSection || section.type === "onglets_tarifs") return null;
+  // L'accueil (appareil photo) est commun aux deux univers ; l'en-tête des
+  // tarifs gère déjà les deux.
+  if (sections.some((s) => s.type === "appareil") || section.type === "onglets_tarifs") return null;
   const select = document.createElement("select");
   select.className = "admin-tab-select";
-  select.title = "Onglet dans lequel cette section s'affiche";
-  const options = [{ id: "", label: "Tous les onglets" }].concat(
-    ((ongletsSection.data && ongletsSection.data.tabs) || []).map((t) => ({ id: t.id, label: `Onglet : ${t.label || t.id}` }))
-  );
+  select.title = "Pour quels visiteurs cette section s'affiche (choix Particulier / Commerce en haut du site)";
+  const options = [
+    { id: "", label: "Visible pour tous" },
+    { id: "particuliers", label: "Particuliers seulement" },
+    { id: "commerces", label: "Commerces seulement" },
+  ];
   options.forEach((o) => {
     const opt = document.createElement("option");
     opt.value = o.id;

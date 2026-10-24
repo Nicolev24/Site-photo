@@ -6,12 +6,24 @@
 //
 // `basePath` vaut "" sur les pages à la racine du site, "../" depuis /admin/.
 
+// Chaque catégorie du portfolio appartient à un univers (js/univers.js).
 const CATEGORIES = [
-  { value: "portraits", label: "Portraits" },
-  { value: "couples", label: "Couples" },
-  { value: "entreprises", label: "Entreprises & commerces" },
-  { value: "evenements", label: "Événements" },
+  { value: "portraits", label: "Portraits", univers: "particuliers" },
+  { value: "couples", label: "Couples", univers: "particuliers" },
+  { value: "entreprises", label: "Entreprises & commerces", univers: "commerces" },
+  { value: "evenements", label: "Événements", univers: "particuliers" },
 ];
+
+// Univers affiché (« particuliers » ou « commerces »), ou null quand
+// js/univers.js n'est pas chargé : tout s'affiche alors.
+function universCourant() {
+  return window.Univers ? window.Univers.courant() : null;
+}
+
+function estDeLUnivers(univers) {
+  const u = universCourant();
+  return !u || !univers || univers === u;
+}
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -33,10 +45,21 @@ function resolveSrc(src, basePath) {
   return basePath + src;
 }
 
-async function fetchJson(basePath, path) {
-  const res = await fetch(basePath + path, { cache: "no-cache" });
-  if (!res.ok) throw new Error(`Impossible de charger ${path} (${res.status})`);
-  return res.json();
+// Chaque fichier n'est chargé qu'une fois par visite : passer d'une page à
+// l'autre (ou d'un univers à l'autre) est alors immédiat.
+const CACHE_JSON = new Map();
+
+function fetchJson(basePath, path) {
+  const cle = basePath + path;
+  if (!CACHE_JSON.has(cle)) {
+    const promesse = fetch(cle, { cache: "no-cache" }).then((res) => {
+      if (!res.ok) throw new Error(`Impossible de charger ${path} (${res.status})`);
+      return res.json();
+    });
+    promesse.catch(() => CACHE_JSON.delete(cle));
+    CACHE_JSON.set(cle, promesse);
+  }
+  return CACHE_JSON.get(cle);
 }
 
 // Versions allégées des photos (images/tailles/, listées dans
@@ -190,19 +213,23 @@ function buildGalerieCategories(data, basePath) {
 async function buildPortfolioGalerie(data, basePath) {
   const section = el("section", { style: "padding-top:0" });
   const container = el("div", { class: "container" });
+  const categories = CATEGORIES.filter((c) => estDeLUnivers(c.univers));
   const filters = el(
     "div",
     { class: "filters" },
     `
     <button class="filter-btn active" data-filter="all">Tous</button>
-    ${CATEGORIES.map((c) => `<button class="filter-btn" data-filter="${c.value}">${escapeHtml(c.label)}</button>`).join("")}
+    ${categories.map((c) => `<button class="filter-btn" data-filter="${c.value}">${escapeHtml(c.label)}</button>`).join("")}
   `
   );
+  // Une seule catégorie dans cet univers : pas besoin de filtres.
+  if (categories.length < 2) filters.hidden = true;
   const gallery = el("div", { class: "gallery" });
 
   try {
     const portfolio = await fetchJson(basePath, "content/portfolio.json");
-    portfolio.items.forEach((item) => {
+    const valeurs = new Set(categories.map((c) => c.value));
+    portfolio.items.filter((item) => valeurs.has(item.category)).forEach((item) => {
       const div = el("div", { class: "gallery-item", "data-category": item.category });
       div.appendChild(
         el("img", {
@@ -283,10 +310,10 @@ function buildCta(data, basePath) {
 // ---------- Accueil : l'appareil photo ----------
 //
 // Deux choix (particulier / commerce). Survoler un choix change l'image sur
-// l'écran de l'appareil ; cliquer déclenche (obturateur, flash, l'écran
-// s'agrandit jusqu'à remplir la page) puis ouvre le lien du choix — par
-// défaut la page tarifs sur le bon onglet. Sans JavaScript, ou si le
-// visiteur a demandé moins d'animations, ce sont de simples liens.
+// l'écran de l'appareil ; cliquer déclenche (mise au point, obturateur)
+// puis la photo de l'écran s'envole jusqu'à sa place sur la page tarifs du
+// bon univers (transition gérée par js/render.js). Sans JavaScript, ou si
+// le visiteur a demandé moins d'animations, ce sont de simples liens.
 
 const ICONE_CHEVRON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICONE_SON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path class="onde" d="M16.5 8.5a5 5 0 010 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="muet" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
@@ -294,14 +321,17 @@ const ICONE_SON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" a
 function buildAppareil(data, basePath) {
   const choix = (data.choices || []).slice(0, 2);
   const [part, com] = [choix[0] || {}, choix[1] || {}];
+  const modeInitial = window.Univers ? window.Univers.mode() : "particulier";
+  const actif = modeInitial === "commerce" ? com : part;
 
+  // La photo visible porte la classe photo-univers (nom de transition).
   const calque = (c, cls) => `
-    <div class="appareil-calque ${cls}">
-      <img src="${resolveSrc(c.image, basePath)}"${attributsTaillesHtml(c.image, basePath, TAILLES_PLEINE_LARGEUR)} alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === "particulier" ? 'fetchpriority="high"' : 'loading="lazy"'} />
+    <div class="appareil-calque ${cls}${cls === modeInitial ? " photo-univers" : ""}">
+      <img src="${resolveSrc(c.image, basePath)}"${attributsTaillesHtml(c.image, basePath, "(max-width: 900px) 90vw, 560px")} alt="" style="object-position:${escapeHtml(c.position || "50% 50%")}" ${cls === modeInitial ? 'fetchpriority="high"' : ""} decoding="async" />
     </div>`;
 
   const option = (c, mode) => `
-    <a class="appareil-option${mode === "particulier" ? " est-actif" : ""}" href="${resolveHref(c.href, basePath)}" data-mode="${mode}">
+    <a class="appareil-option${mode === modeInitial ? " est-actif" : ""}" href="${resolveHref(c.href, basePath)}" data-mode="${mode}">
       <span>
         <span class="appareil-option-titre">${escapeHtml(c.label)}</span>
         <span class="appareil-option-desc">${escapeHtml(c.desc)}</span>
@@ -311,7 +341,7 @@ function buildAppareil(data, basePath) {
 
   const section = el(
     "section",
-    { class: "appareil" },
+    { class: `appareil${modeInitial === "commerce" ? " est-commerce" : ""}` },
     `
     <div class="appareil-grid">
       <div class="appareil-intro">
@@ -357,9 +387,10 @@ function buildAppareil(data, basePath) {
                   <div class="appareil-ui">
                     <span class="tiers t1"></span><span class="tiers t2"></span><span class="tiers t3"></span><span class="tiers t4"></span>
                     <span class="appareil-af"></span>
-                    <span class="appareil-infos"><span class="appareil-infos-mode">${escapeHtml(part.label || "")}</span><span>f/2.8 · 1/250</span></span>
+                    <span class="appareil-infos"><span class="appareil-infos-mode">${escapeHtml(actif.label || "")}</span><span>f/2.8 · 1/250</span></span>
                   </div>
-                  <div class="appareil-noir"></div>
+                  <div class="appareil-obturateur"></div>
+                  <div class="appareil-eclair"></div>
                 </div>
               </div>
             </div>
@@ -367,27 +398,26 @@ function buildAppareil(data, basePath) {
         </div>
       </div>
     </div>
-    <div class="appareil-flash"></div>
   `
   );
 
-  initAppareil(section, { particulier: part, commerce: com });
+  initAppareil(section, { particulier: part, commerce: com }, modeInitial);
   return section;
 }
 
-function initAppareil(section, choix) {
+function initAppareil(section, choix, modeInitial) {
   if (section.closest && section.closest(".admin-live-editor")) return;
 
   const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scene = section.querySelector(".appareil-scene");
   const cadre = section.querySelector(".appareil-cadre");
   const boitier = section.querySelector(".appareil-boitier");
-  const ecran = section.querySelector(".appareil-ecran");
   const infosMode = section.querySelector(".appareil-infos-mode");
+  const calques = Array.from(section.querySelectorAll(".appareil-calque"));
   const options = Array.from(section.querySelectorAll(".appareil-option"));
   const boutonSon = section.querySelector(".appareil-son");
   const declencheur = section.querySelector(".appareil-declencheur");
-  let mode = "particulier";
+  let mode = modeInitial || "particulier";
   let enCours = false;
   let sonActif = false;
   let minuteurs = [];
@@ -407,6 +437,7 @@ function initAppareil(section, choix) {
     mode = m;
     section.classList.toggle("est-commerce", m === "commerce");
     options.forEach((o) => o.classList.toggle("est-actif", o.dataset.mode === m));
+    calques.forEach((c) => c.classList.toggle("photo-univers", c.classList.contains(m)));
     infosMode.textContent = (choix[m] && choix[m].label) || "";
   };
 
@@ -414,8 +445,7 @@ function initAppareil(section, choix) {
     minuteurs.forEach(clearTimeout);
     minuteurs = [];
     enCours = false;
-    section.classList.remove("en-cours", "phase-appui", "phase-obturation", "phase-flash", "phase-zoom");
-    document.documentElement.style.overflow = "";
+    section.classList.remove("en-cours", "phase-appui", "phase-obturation", "phase-depart");
   };
 
   const cliquetis = () => {
@@ -447,41 +477,32 @@ function initAppareil(section, choix) {
     }
   };
 
-  // Facteur d'agrandissement pour que l'écran recouvre toute la fenêtre.
-  const echelleZoom = () => {
-    const r = ecran.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const sx = (2 * Math.max(cx, vw - cx)) / r.width;
-    const sy = (2 * Math.max(cy, vh - cy)) / r.height;
-    return (Math.max(sx, sy) * 1.04).toFixed(3);
+  const ouvrir = (href) => {
+    if (typeof window.naviguerVers === "function") window.naviguerVers(href, { transition: "appareil" });
+    else window.location.href = href;
   };
 
+  // Mise au point (le cadre AF se resserre), obturateur (deux rideaux qui
+  // se croisent), petit éclair sur l'écran… puis la photo part vers la page.
   const declencher = (m, href) => {
     if (enCours) return;
     choisir(m);
+    if (window.Univers) window.Univers.definir(window.Univers.depuisMode(m));
     if (reduit) {
-      window.location.href = href;
+      ouvrir(href);
       return;
     }
     enCours = true;
     if (sonActif) cliquetis();
+    boitier.classList.add("sans-inclinaison");
     boitier.style.setProperty("--tilt-x", "0deg");
     boitier.style.setProperty("--tilt-y", "0deg");
     section.classList.add("en-cours", "phase-appui");
     const etape = (ms, fn) => minuteurs.push(setTimeout(fn, ms));
-    etape(80, () => section.classList.replace("phase-appui", "phase-obturation"));
-    etape(150, () => section.classList.replace("phase-obturation", "phase-flash"));
-    etape(190, () => {
-      ecran.style.setProperty("--zoom-ecran", echelleZoom());
-      document.documentElement.style.overflow = "hidden";
-      section.classList.remove("phase-flash");
-      section.classList.add("phase-zoom");
-    });
-    etape(820, () => {
-      window.location.href = href;
+    etape(170, () => section.classList.replace("phase-appui", "phase-obturation"));
+    etape(400, () => {
+      section.classList.replace("phase-obturation", "phase-depart");
+      ouvrir(href);
     });
   };
 
@@ -527,8 +548,8 @@ function initAppareil(section, choix) {
     });
   }
 
-  // Retour arrière depuis la page tarifs : le navigateur peut restaurer la
-  // page telle qu'on l'a quittée (écran agrandi) — on remet l'appareil.
+  // Retour arrière vers une page restaurée telle quelle par le navigateur
+  // (après être passé par l'espace client, par exemple) : on remet l'appareil.
   window.addEventListener("pageshow", (e) => {
     if (e.persisted) reinitialiser();
   });
@@ -567,68 +588,39 @@ async function buildContactBref(data, basePath) {
   return section;
 }
 
-// ---------- Page tarifs : bandeau + onglets ----------
+// ---------- Page tarifs : en-tête de l'univers ----------
 //
-// Les sections de la page qui portent un champ "tab" (ex. "commerces") ne
-// s'affichent que lorsque cet onglet est actif. L'onglet de départ vient de
-// l'adresse (services.html#commerces), sinon c'est le premier.
+// Titre de la page et photo de l'univers affiché (particuliers ou
+// commerces). La photo est encadrée à une taille où elle reste parfaitement
+// nette, et c'est elle que la photo « prise » par l'appareil de l'accueil
+// vient remplacer pendant la transition (view-transition-name, voir le CSS).
+// Les sections de la page qui portent un champ "tab" ne s'affichent que
+// dans leur univers.
 
 function buildOngletsTarifs(data, basePath) {
   const onglets = data.tabs || [];
-  const section = el(
+  const u = universCourant();
+  const t = onglets.find((o) => o.id === u) || onglets[0] || {};
+  return el(
     "section",
-    { class: "onglets-tarifs" },
+    { class: "univers-entete" },
     `
-    <div class="onglets-bandeau">
-      ${onglets
-        .map(
-          (t, i) =>
-            `<img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, TAILLES_PLEINE_LARGEUR)} alt="${escapeHtml(t.alt || "")}" data-onglet-image="${escapeHtml(t.id)}" style="object-position:${escapeHtml(t.position || "50% 50%")};opacity:${i === 0 ? 1 : 0}" ${i === 0 ? 'fetchpriority="high"' : ""} />`
-        )
-        .join("")}
-    </div>
-    <div class="container onglets-entete">
-      <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
-      <h1>${escapeHtml(data.title)}</h1>
-      <p class="onglets-intro">${escapeHtml((onglets[0] && onglets[0].text) || "")}</p>
-      <div class="onglets-boutons" role="tablist" aria-label="Type de client">
-        ${onglets
-          .map(
-            (t, i) =>
-              `<button type="button" role="tab" class="onglet-btn" data-onglet-btn="${escapeHtml(t.id)}" aria-selected="${i === 0 ? "true" : "false"}">${escapeHtml(t.label)}</button>`
-          )
-          .join("")}
+    <div class="container univers-entete-grid">
+      <div class="univers-entete-texte">
+        <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
+        <h1>${escapeHtml(data.title)}</h1>
+        <p class="univers-entete-intro">${escapeHtml(t.text || "")}</p>
       </div>
+      ${
+        t.image
+          ? `<figure class="univers-entete-photo photo-univers">
+        <img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, "(max-width: 860px) 100vw, 600px")} alt="${escapeHtml(t.alt || "")}" style="object-position:${escapeHtml(t.position || "50% 50%")}" fetchpriority="high" decoding="async" />
+      </figure>`
+          : ""
+      }
     </div>
   `
   );
-  section._onglets = onglets;
-  return section;
-}
-
-function initOngletsTarifs(container) {
-  const entete = container.querySelector(".onglets-tarifs");
-  if (!entete || !entete._onglets || !entete._onglets.length) return;
-  const onglets = entete._onglets;
-  const intro = entete.querySelector(".onglets-intro");
-  const sections = Array.from(container.querySelectorAll("[data-onglet]"));
-
-  const activer = (id, majAdresse) => {
-    const t = onglets.find((o) => o.id === id) || onglets[0];
-    entete.querySelectorAll("[data-onglet-btn]").forEach((b) => b.setAttribute("aria-selected", b.dataset.ongletBtn === t.id ? "true" : "false"));
-    entete.querySelectorAll("[data-onglet-image]").forEach((img) => (img.style.opacity = img.dataset.ongletImage === t.id ? "1" : "0"));
-    intro.textContent = t.text || "";
-    sections.forEach((s) => (s.hidden = s.dataset.onglet !== t.id));
-    if (majAdresse && window.history && window.history.replaceState) {
-      window.history.replaceState(null, "", `#${t.id}`);
-    }
-  };
-
-  entete.querySelectorAll("[data-onglet-btn]").forEach((b) => b.addEventListener("click", () => activer(b.dataset.ongletBtn, true)));
-
-  const depuisAdresse = window.location.hash.slice(1);
-  const correspondance = onglets.find((o) => o.id === depuisAdresse || o.id.replace(/s$/, "") === depuisAdresse.replace(/s$/, ""));
-  activer(correspondance ? correspondance.id : onglets[0].id, false);
 }
 
 async function buildContact(data, basePath) {
@@ -708,7 +700,8 @@ async function remplirFormules(select, basePath) {
       .forEach((s) => {
         const titres = (s.data?.plans || []).map((p) => p.title).filter(Boolean);
         if (!titres.length) return;
-        const libelle = onglets.find((t) => t.id === s.tab)?.label || "";
+        if (!estDeLUnivers(s.tab)) return;
+        const libelle = universCourant() ? "" : onglets.find((t) => t.id === s.tab)?.label || "";
         groupes.push({ libelle, titres });
       });
   } catch (e) {
@@ -833,12 +826,11 @@ async function renderSections(container, sections, basePath = "") {
   container.innerHTML = "";
   for (const section of sections || []) {
     const builder = SECTION_BUILDERS[section.type];
-    if (!builder) continue;
+    if (!builder || !estDeLUnivers(section.tab)) continue;
     try {
       const node = await builder(section.data || {}, basePath);
       if (node) {
         if (section.id) node.id = section.id;
-        if (section.tab) node.dataset.onglet = section.tab;
         container.appendChild(node);
       }
     } catch (err) {
@@ -846,7 +838,6 @@ async function renderSections(container, sections, basePath = "") {
     }
   }
   highlightPlaceholders(container);
-  initOngletsTarifs(container);
 
   if (typeof window.initScrollReveal === "function") window.initScrollReveal();
 }
