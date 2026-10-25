@@ -28,6 +28,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Caveat";
+  src: url("../fonts/caveat-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============ Base & variables ============
    Thème sombre par défaut (site public). Les outils d'administration
    ajoutent la classe .theme-clair sur <body> pour garder une interface
@@ -988,170 +996,201 @@ mark.placeholder-a-completer {
 }
 
 
-/* ============ Accueil : le diptyque Particuliers / Commerces ============ */
-/* Deux grandes photos, bord à bord. La photo fait le travail ; le texte
-   reste petit, posé en bas à gauche comme une légende. */
-/* Titre + deux photos tiennent exactement dans le premier écran. */
-.diptyque {
+/* ============ Accueil : deux Polaroïds posés sur la table ============ */
+/* Chaque Polaroïd est positionné par des variables (--rot, --y, --s) pour que
+   le survol, le choix et l'arrivée s'animent tous par la même transition. */
+.polaroids {
   padding: 0;
+  overflow: hidden;
+}
+
+.polaroids-grille {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  height: calc(100svh - 77px);
-  min-height: 640px;
-  max-height: 1080px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  column-gap: 40px;
+  min-height: clamp(620px, calc(100svh - 77px), 860px);
+  padding-top: 32px;
+  padding-bottom: 48px;
 }
 
-.diptyque-entete {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-  column-gap: 48px;
-  align-items: end;
-  padding-top: 36px;
-  padding-bottom: 30px;
-}
-
-.diptyque-entete .eyebrow {
-  grid-column: 1 / -1;
-  margin-bottom: 12px;
-}
-
-.diptyque-accroche {
+.polaroids-accroche {
   margin: 0;
   font-family: var(--police-titres);
   font-weight: var(--poids-titres);
-  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
-  line-height: 1.04;
-  letter-spacing: var(--espacement-titres);
+  font-size: clamp(2.2rem, 3.7vw, 3.25rem);
   text-wrap: balance;
+  line-height: 1.05;
+  letter-spacing: var(--espacement-titres);
 }
 
-.diptyque-texte-intro {
-  margin: 0;
+.polaroids-intro {
+  margin: 20px 0 0;
+  max-width: 430px;
   color: var(--couleur-texte-attenue);
   font-size: 0.95rem;
   line-height: 1.7;
 }
 
-.diptyque-panneaux {
-  display: flex;
-  gap: 4px;
-  min-height: 0;
-}
-
-.diptyque-panneau {
+.polaroids-table {
   position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  color: #f7f5f1;
-  background: #0d0c0b;
-  transition: flex-grow 0.9s cubic-bezier(0.65, 0, 0.2, 1);
+  height: 600px;
 }
 
-.diptyque-photo {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  overflow: hidden;
-}
-
-.diptyque-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.001);
-  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s ease;
-}
-
-.diptyque-panneau::after {
+/* Une lumière douce sur la table */
+.polaroids-table::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10, 9, 8, 0) 45%, rgba(10, 9, 8, 0.62) 100%);
+  inset: -60px -80px;
+  background: radial-gradient(ellipse at 50% 45%, rgba(245, 241, 234, 0.07), rgba(245, 241, 234, 0) 62%);
   pointer-events: none;
 }
 
-.diptyque-legende {
+.polaroid {
+  --rot: 0deg;
+  --y: 0px;
+  --s: 1;
   position: absolute;
-  left: clamp(20px, 3vw, 40px);
-  right: clamp(20px, 3vw, 40px);
-  bottom: clamp(22px, 3vw, 40px);
+  width: 320px;
+  padding: 16px 16px 0;
+  background: #f3efe7;
+  color: #2a2622;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+  transform: translateY(var(--y)) rotate(var(--rot)) scale(var(--s));
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.55s ease, filter 0.4s ease, opacity 0.35s ease;
+}
+
+.polaroid-1 { --rot: -5deg; left: 2%; top: 34px; z-index: 1; }
+.polaroid-2 { --rot: 4deg; left: 46%; top: 112px; z-index: 2; }
+
+.polaroid-photo {
+  position: relative;
+  display: block;
+  width: 288px;
+  height: 288px;
+  overflow: hidden;
+  background: #d9d3c8;
+}
+
+.polaroid-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.polaroid-legende {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80px;
+  padding: 0 4px;
+}
+
+.polaroid-main {
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.polaroid-sous {
+  margin-top: 7px;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6d665d;
+}
+
+.polaroid-scotch {
+  position: absolute;
+  top: -13px;
+  left: 50%;
   z-index: 1;
-  display: grid;
-  gap: 8px;
-  transition: opacity 0.35s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  width: 92px;
+  height: 26px;
+  margin-left: -46px;
+  background: rgba(240, 233, 218, 0.5);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transform: rotate(-3deg);
 }
 
-.diptyque-libelle {
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.85;
+.polaroids-indice {
+  position: absolute;
+  left: 48%;
+  bottom: 18px;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: 1.55rem;
+  color: var(--couleur-texte-attenue);
+  transform: rotate(-2deg);
 }
 
-.diptyque-titre {
-  font-family: var(--police-titres);
-  font-weight: var(--poids-titres);
-  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
-  line-height: 1.08;
-}
-
-.diptyque-lien {
-  justify-self: start;
-  margin-top: 6px;
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  padding-bottom: 5px;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 28px 1px no-repeat;
-  transition: background-size 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.diptyque-panneau:focus-visible {
+.polaroid:focus-visible {
   outline: 2px solid var(--couleur-accent);
-  outline-offset: -4px;
+  outline-offset: 6px;
 }
 
-/* Survol (souris) : la photo survolée prend un peu plus de place */
+/* Survol : le Polaroïd se redresse et se soulève */
 @media (hover: hover) {
-  .diptyque-panneaux:hover .diptyque-panneau:hover { flex-grow: 1.3; }
-  .diptyque-panneaux:hover .diptyque-panneau:not(:hover) .diptyque-photo img { filter: brightness(0.62) saturate(0.85); }
-  .diptyque-panneau:hover .diptyque-photo img { transform: scale(1.035); }
-  .diptyque-panneau:hover .diptyque-lien { background-size: 100% 1px; }
+  .polaroid:hover {
+    --rot: 0deg;
+    --y: -12px;
+    --s: 1.04;
+    z-index: 3;
+    box-shadow: 0 34px 70px rgba(0, 0, 0, 0.6), 0 3px 8px rgba(0, 0, 0, 0.35);
+  }
+  .polaroids-table:hover .polaroid:not(:hover) { filter: brightness(0.72); }
 }
 
-/* Choix : la photo choisie s'ouvre sur toute la largeur, l'autre s'efface */
-.diptyque.est-ouvert .diptyque-panneau { pointer-events: none; transition-duration: 0.55s; }
-.diptyque.est-ouvert .diptyque-panneau.est-choisi { flex-grow: 40; }
-.diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) { flex-grow: 0.0001; }
-.diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) .diptyque-photo img { filter: brightness(0.3); }
-.diptyque.est-ouvert .diptyque-legende { opacity: 0; transform: translateY(8px); }
-.diptyque.est-ouvert .diptyque-panneau.est-choisi .diptyque-photo img { transform: scale(1); filter: none; }
+/* Choix : on « prend » le Polaroïd, l'autre s'efface */
+.polaroids.est-choisi .polaroid { pointer-events: none; }
+.polaroids.est-choisi .polaroid.est-pris {
+  --rot: 0deg;
+  --y: -16px;
+  --s: 1.07;
+  z-index: 5;
+  filter: none;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.65), 0 3px 8px rgba(0, 0, 0, 0.35);
+}
+.polaroids.est-choisi .polaroid:not(.est-pris),
+.polaroids.est-choisi .polaroids-indice { opacity: 0.25; }
 
-/* Arrivée sur l'accueil : les photos se posent doucement */
+/* Arrivée sur l'accueil : les tirages se posent, puis se développent */
 @media (prefers-reduced-motion: no-preference) {
-  .diptyque-photo img { animation: diptyqueEntree 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-  .diptyque-panneau + .diptyque-panneau .diptyque-photo img { animation-delay: 0.12s; }
-  .diptyque-legende { animation: diptyqueLegende 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both; }
+  .polaroids-arrivee .polaroid { animation: polaroidPose 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  .polaroids-arrivee .polaroid-2 { animation-delay: 0.18s; }
+  .polaroids-arrivee .polaroid-photo img { animation: polaroidDeveloppe 2.6s ease-out 0.6s both; }
+  .polaroids-arrivee .polaroid-2 .polaroid-photo img { animation-delay: 0.8s; }
+  .polaroids-arrivee .polaroids-indice { animation: polaroidIndice 0.8s ease 2.4s both; }
 }
 
-@keyframes diptyqueEntree {
-  from { opacity: 0; transform: scale(1.06); }
+@keyframes polaroidPose {
+  from { opacity: 0; transform: translateY(-36px) rotate(calc(var(--rot) * 2.4)) scale(1.04); }
 }
 
-@keyframes diptyqueLegende {
-  from { opacity: 0; transform: translateY(10px); }
+/* D'un voile laiteux et sans couleur à la photo finale, comme un vrai Polaroïd */
+@keyframes polaroidDeveloppe {
+  from { filter: brightness(1.55) contrast(0.45) saturate(0) sepia(0.3) blur(1.2px); }
+  45% { filter: brightness(1.2) contrast(0.75) saturate(0.45) sepia(0.15) blur(0.4px); }
+  to { filter: none; }
+}
+
+@keyframes polaroidIndice {
+  from { opacity: 0; transform: rotate(-2deg) translateY(6px); }
 }
 
 @media (max-width: 860px) {
-  .diptyque { display: block; height: auto; min-height: 0; max-height: none; }
-  .diptyque-entete { grid-template-columns: 1fr; row-gap: 14px; padding-top: 28px; padding-bottom: 24px; }
-  .diptyque-panneaux { flex-direction: column; height: auto; }
-  .diptyque-panneau { flex: none; height: clamp(300px, 46svh, 460px); transition: height 0.55s cubic-bezier(0.65, 0, 0.2, 1); }
-  .diptyque.est-ouvert .diptyque-panneau.est-choisi { height: calc(100svh - 77px); }
-  .diptyque.est-ouvert .diptyque-panneau:not(.est-choisi) { height: 0; }
+  .polaroids-grille { grid-template-columns: 1fr; min-height: 0; row-gap: 16px; padding-top: 28px; padding-bottom: 40px; }
+  .polaroids-table { --w: min(62vw, 250px); height: calc(var(--w) * 2 + 168px); max-width: 420px; }
+  .polaroid { width: var(--w); padding: 12px 12px 0; }
+  .polaroid-photo { width: calc(var(--w) - 24px); height: calc(var(--w) - 24px); }
+  .polaroid-legende { height: 64px; }
+  .polaroid-main { font-size: 1.65rem; }
+  .polaroid-1 { left: 0; top: 14px; }
+  /* Le second tirage chevauche le coin du premier sans cacher sa légende */
+  .polaroid-2 { left: auto; right: 0; top: calc(var(--w) + 66px); }
+  .polaroids-indice { left: 4px; bottom: 0; }
 }
 
 /* ============ Accueil : contact ============ */
@@ -1359,7 +1398,7 @@ mark.placeholder-a-completer {
 
 /* ============ Sélecteur d'univers (haut de page) ============ */
 /* Particulier / Commerce : deux onglets texte, visibles sur toutes les pages
-   sauf l'accueil (où ce sont les deux grandes photos qui font choisir).
+   sauf l'accueil (où ce sont les deux Polaroïds qui font choisir).
    js/univers.js pose data-univers sur <html> avant l'affichage, donc le bon
    onglet est souligné dès le départ. */
 .univers-barre {
@@ -1444,9 +1483,9 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
 /* js/render.js change de page sans recharger, à l'intérieur d'une « View
    Transition » ; data-transition sur <html> indique laquelle :
    - page     : l'ancienne page s'efface, la nouvelle monte doucement ;
-   - ouverture : sur l'accueil, la photo choisie s'ouvre sur toute la
-                largeur puis glisse jusqu'à sa place sur la page tarifs ;
-   - retour   : l'inverse, la photo revient à sa place dans l'accueil ;
+   - ouverture : sur l'accueil, la photo du Polaroïd choisi en sort et
+                glisse jusqu'à sa place sur la page tarifs ;
+   - retour   : l'inverse, la photo rentre dans son Polaroïd ;
    - univers  : changement Particulier / Commerce, fondu enchaîné.
    L'image qui voyage est toujours la photo nette de la page d'arrivée. */
 @media (prefers-reduced-motion: no-preference) {
@@ -1489,18 +1528,14 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
     animation-duration: 0.95s;
     animation-timing-function: cubic-bezier(0.65, 0, 0.15, 1);
   }
-  /* La grande photo de l'accueil (nette) se resserre jusqu'au cadre, puis
-     laisse la place à la photo de la page tarifs. */
+  /* La photo sort du Polaroïd et grandit jusqu'au cadre de la page tarifs :
+     c'est la photo nette de la page d'arrivée qui voyage, réduite au départ. */
   html[data-transition="ouverture"]::view-transition-old(photo-univers) {
     animation: none;
-    height: 100%;
-    object-fit: cover;
-    mix-blend-mode: normal;
+    opacity: 0;
   }
   html[data-transition="ouverture"]::view-transition-new(photo-univers) {
-    animation: vtApparition 0.3s ease 0.62s both;
-    height: 100%;
-    object-fit: cover;
+    animation: none;
     mix-blend-mode: normal;
   }
   html[data-transition="ouverture"]::view-transition-old(root) {
@@ -1510,7 +1545,7 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
     animation: vtEntree 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both;
   }
 
-  /* Tarifs → accueil : la photo revient à sa place dans le diptyque. */
+  /* Tarifs → accueil : la photo rentre dans son Polaroïd. */
   html[data-transition="retour"]::view-transition-group(photo-univers) {
     animation-duration: 0.8s;
     animation-timing-function: cubic-bezier(0.65, 0, 0.15, 1);

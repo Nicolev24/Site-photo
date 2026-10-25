@@ -307,54 +307,61 @@ function buildCta(data, basePath) {
   );
 }
 
-// ---------- Accueil : le diptyque Particuliers / Commerces ----------
+// ---------- Accueil : deux Polaroïds posés sur la table ----------
 //
-// Deux grandes photos côte à côte (l'une au-dessus de l'autre sur
-// téléphone), une par univers. Au survol, la photo s'élargit un peu. Au
-// clic, elle s'ouvre sur toute la largeur, puis glisse jusqu'à sa place
-// sur la page tarifs de cet univers (transition « ouverture », gérée par
-// js/render.js et css/style.css). Sans JavaScript, ou si le visiteur a
-// demandé moins d'animations, ce sont de simples liens.
+// Un Polaroïd par univers (particuliers / commerces), légende écrite à la
+// main. À l'arrivée, les tirages se posent puis « se développent » (d'un
+// voile laiteux à la couleur). Au survol, le Polaroïd se redresse et se
+// soulève. Au clic, il se redresse, puis sa photo sort du cadre et glisse
+// jusqu'à sa place sur la page tarifs de cet univers (transition
+// « ouverture », voir js/render.js et css/style.css). Sans JavaScript, ou si
+// le visiteur a demandé moins d'animations, ce sont de simples liens.
 
-function buildDiptyque(data, basePath) {
+function buildPolaroids(data, basePath) {
   const u = universCourant();
-  const panneaux = (data.panels || []).slice(0, 2);
+  const polaroids = (data.panels || []).slice(0, 2);
+  // Pas de « développement » quand on revient d'une autre page du site : la
+  // photo arrive déjà développée par la transition.
+  const arrivee = !document.documentElement.dataset.transition;
   const section = el(
     "section",
-    { class: "diptyque" },
+    { class: `polaroids${arrivee ? " polaroids-arrivee" : ""}` },
     `
-    <div class="container diptyque-entete">
-      <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
-      <p class="diptyque-accroche">${escapeHtml(data.title)}</p>
-      ${data.text ? `<p class="diptyque-texte-intro">${escapeHtml(data.text)}</p>` : ""}
-    </div>
-    <div class="diptyque-panneaux">
-      ${panneaux
-        .map(
-          (p, i) => `
-      <a class="diptyque-panneau" href="${resolveHref(p.href, basePath)}" data-univers="${escapeHtml(p.univers)}">
-        <figure class="diptyque-photo${p.univers === u ? " photo-univers" : ""}">
-          <img src="${resolveSrc(p.image, basePath)}"${attributsTaillesHtml(p.image, basePath, "(max-width: 860px) 100vw, 50vw")} alt="${escapeHtml(p.alt || "")}" style="object-position:${escapeHtml(p.position || "50% 50%")}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async" />
-        </figure>
-        <span class="diptyque-legende">
-          <span class="diptyque-libelle">${escapeHtml(p.label)}</span>
-          <span class="diptyque-titre">${escapeHtml(p.title)}</span>
-          <span class="diptyque-lien">${escapeHtml(p.link_label || "Voir les formules")}</span>
-        </span>
-      </a>`
-        )
-        .join("")}
+    <div class="container polaroids-grille">
+      <div class="polaroids-texte">
+        <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
+        <p class="polaroids-accroche">${escapeHtml(data.title)}</p>
+        ${data.text ? `<p class="polaroids-intro">${escapeHtml(data.text)}</p>` : ""}
+      </div>
+      <div class="polaroids-table">
+        ${polaroids
+          .map(
+            (p, i) => `
+        <a class="polaroid polaroid-${i + 1}" href="${resolveHref(p.href, basePath)}" data-univers="${escapeHtml(p.univers)}">
+          ${i === 0 ? '<span class="polaroid-scotch" aria-hidden="true"></span>' : ""}
+          <span class="polaroid-photo${p.univers === u ? " photo-univers" : ""}">
+            <img src="${resolveSrc(p.image, basePath)}"${attributsTaillesHtml(p.image, basePath, "(max-width: 860px) 60vw, 320px")} alt="${escapeHtml(p.alt || "")}" style="object-position:${escapeHtml(p.position || "50% 50%")}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async" />
+          </span>
+          <span class="polaroid-legende">
+            <span class="polaroid-main">${escapeHtml(p.label)}</span>
+            ${p.title ? `<span class="polaroid-sous">${escapeHtml(p.title)}</span>` : ""}
+          </span>
+        </a>`
+          )
+          .join("")}
+        ${data.hint ? `<span class="polaroids-indice">${escapeHtml(data.hint)}</span>` : ""}
+      </div>
     </div>
   `
   );
-  initDiptyque(section);
+  initPolaroids(section);
   return section;
 }
 
-function initDiptyque(section) {
+function initPolaroids(section) {
   if (section.closest && section.closest(".admin-live-editor")) return;
   const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const panneaux = Array.from(section.querySelectorAll(".diptyque-panneau"));
+  const polaroids = Array.from(section.querySelectorAll(".polaroid"));
   let enCours = false;
 
   const ouvrir = (href) => {
@@ -362,33 +369,34 @@ function initDiptyque(section) {
     else window.location.href = href;
   };
 
-  panneaux.forEach((panneau) => {
-    panneau.addEventListener("click", (e) => {
+  polaroids.forEach((polaroid) => {
+    polaroid.addEventListener("click", (e) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       e.preventDefault();
       if (enCours) return;
       enCours = true;
-      if (window.Univers) window.Univers.definir(panneau.dataset.univers);
+      if (window.Univers) window.Univers.definir(polaroid.dataset.univers);
       // Seule la photo choisie voyage jusqu'à la page tarifs.
       section.querySelectorAll(".photo-univers").forEach((f) => f.classList.remove("photo-univers"));
-      panneau.querySelector(".diptyque-photo").classList.add("photo-univers");
+      polaroid.querySelector(".polaroid-photo").classList.add("photo-univers");
       if (reduit) {
-        ouvrir(panneau.href);
+        ouvrir(polaroid.href);
         return;
       }
-      section.classList.add("est-ouvert");
-      panneau.classList.add("est-choisi");
-      setTimeout(() => ouvrir(panneau.href), 520);
+      // On « prend » le Polaroïd : il se redresse et vient au premier plan.
+      section.classList.add("est-choisi");
+      polaroid.classList.add("est-pris");
+      setTimeout(() => ouvrir(polaroid.href), 380);
     });
   });
 
   // Retour arrière vers une page gardée en mémoire par le navigateur : on
-  // remet le diptyque dans son état de départ.
+  // repose les Polaroïds.
   window.addEventListener("pageshow", (e) => {
     if (!e.persisted) return;
     enCours = false;
-    section.classList.remove("est-ouvert");
-    panneaux.forEach((p) => p.classList.remove("est-choisi"));
+    section.classList.remove("est-choisi");
+    polaroids.forEach((p) => p.classList.remove("est-pris"));
   });
 }
 
@@ -621,7 +629,7 @@ const SECTION_BUILDERS = {
   cta: buildCta,
   contact: buildContact,
   texte_juridique: buildTexteJuridique,
-  diptyque: buildDiptyque,
+  polaroids: buildPolaroids,
   contact_bref: buildContactBref,
   onglets_tarifs: buildOngletsTarifs,
   faq: buildFaq,

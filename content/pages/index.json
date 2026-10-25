@@ -7,7 +7,7 @@
   "sections": [
     {
       "id": "accueil",
-      "type": "diptyque",
+      "type": "polaroids",
       "data": {
         "eyebrow": "Photographe à Ath · Wallonie & Bruxelles",
         "title": "Des photos naturelles, qui vous ressemblent.",
@@ -16,24 +16,23 @@
           {
             "univers": "particuliers",
             "label": "Particuliers",
-            "title": "Mariages, portraits & couples",
-            "link_label": "Voir les formules",
+            "title": "Mariages · portraits",
             "image": "images/teaser-evenements.jpg",
             "alt": "Mariés entourés de leurs témoins",
-            "position": "50% 40%",
+            "position": "50% 45%",
             "href": "services.html?pour=particuliers"
           },
           {
             "univers": "commerces",
             "label": "Commerces",
-            "title": "Photos de commerce & site vitrine",
-            "link_label": "Voir les formules",
+            "title": "Photos & site vitrine",
             "image": "images/teaser-entreprises.jpg",
             "alt": "Séance chez un barbier",
-            "position": "50% 32%",
+            "position": "50% 30%",
             "href": "services.html?pour=commerces"
           }
-        ]
+        ],
+        "hint": "↑ choisissez votre photo"
       }
     },
     {

@@ -1053,3 +1053,11 @@
   font: inherit;
   color: inherit;
 }
+
+/* Petite phrase manuscrite sous les Polaroïds (éditeur de l'accueil) */
+.polaroids-indice-admin {
+  margin: 14px 0 0;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: 1.4rem;
+  color: var(--couleur-texte-attenue);
+}

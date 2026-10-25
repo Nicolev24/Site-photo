@@ -75,12 +75,12 @@ function versionTexte(page, donnees) {
   for (const s of page.sections || []) {
     const d = s.data || {};
     switch (s.type) {
-      case "diptyque":
+      case "polaroids":
         morceaux.push(titre(d.eyebrow, 1));
         if (d.title) morceaux.push(`<p>${echapper(d.title)}</p>`);
         if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
         for (const p of d.panels || []) {
-          morceaux.push(`<h2><a href="${echapper(p.href)}">${echapper(p.label)} : ${echapper(p.title)}</a></h2>`);
+          morceaux.push(`<h2><a href="${echapper(p.href)}">${echapper(p.label)}${p.title ? ` : ${echapper(p.title)}` : ""}</a></h2>`);
           if (p.image) morceaux.push(img(p.image, p.alt));
         }
         break;

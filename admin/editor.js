@@ -579,7 +579,7 @@ function buildEditableTexteJuridique(data, rerender) {
 }
 
 // Photo éditable dans un cadre fixe (changer la photo, texte alternatif,
-// cadrage via ⚙). Sert au diptyque de l'accueil et à l'en-tête des tarifs.
+// cadrage via ⚙). Sert aux Polaroïds de l'accueil et à l'en-tête des tarifs.
 function editablePhotoFrame(obj, legend, height) {
   const frame = document.createElement("div");
   frame.style.position = "relative";
@@ -606,45 +606,51 @@ function editablePhotoFrame(obj, legend, height) {
   return wrap;
 }
 
-function buildEditableDiptyque(data) {
+function buildEditablePolaroids(data) {
   data.panels = data.panels || [];
   const defauts = [
     { univers: "particuliers", label: "Particuliers", href: "services.html?pour=particuliers" },
     { univers: "commerces", label: "Commerces", href: "services.html?pour=commerces" },
   ];
-  while (data.panels.length < 2) data.panels.push({ ...defauts[data.panels.length], title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%" });
+  while (data.panels.length < 2) data.panels.push({ ...defauts[data.panels.length], title: "", image: "", alt: "", position: "50% 50%" });
 
   const sectionEl = document.createElement("section");
-  sectionEl.className = "diptyque";
-  const entete = document.createElement("div");
-  entete.className = "container diptyque-entete";
-  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Titre lu par Google (ex. Photographe à Ath)" }));
-  entete.appendChild(editableSpan(data, "title", { tag: "p", className: "diptyque-accroche", placeholder: "Accroche" }));
-  entete.appendChild(editableSpan(data, "text", { tag: "p", className: "diptyque-texte-intro", placeholder: "Courte présentation (optionnelle)" }));
-  sectionEl.appendChild(entete);
-
+  sectionEl.className = "polaroids";
   const grille = document.createElement("div");
   grille.className = "container";
-  grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:24px;padding-bottom:40px";
+  grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:40px;align-items:center;padding-top:40px;padding-bottom:40px";
+
+  const texte = document.createElement("div");
+  texte.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Titre lu par Google (ex. Photographe à Ath)" }));
+  texte.appendChild(editableSpan(data, "title", { tag: "p", className: "polaroids-accroche", placeholder: "Accroche" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", className: "polaroids-intro", placeholder: "Courte présentation (optionnelle)" }));
+  grille.appendChild(texte);
+
+  const table = document.createElement("div");
+  table.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:20px";
   data.panels.slice(0, 2).forEach((p, i) => {
-    const col = document.createElement("div");
-    col.appendChild(editablePhotoFrame(p, `Grande photo « ${p.label || defauts[i].label} »`, 360));
-    const textes = document.createElement("div");
-    textes.style.cssText = "display:grid;gap:6px;margin-top:12px";
-    textes.appendChild(editableSpan(p, "label", { tag: "span", className: "diptyque-libelle", placeholder: "Particuliers / Commerces" }));
-    textes.appendChild(editableSpan(p, "title", { tag: "span", className: "diptyque-titre", placeholder: "Titre sur la photo" }));
-    const lien = document.createElement("span");
-    lien.appendChild(editableSpan(p, "link_label", { tag: "span", className: "diptyque-lien", placeholder: "Texte du lien" }));
-    lien.appendChild(buildSettingsPopover([{ label: "Page ouverte au clic", obj: p, key: "href" }]));
-    textes.appendChild(lien);
-    col.appendChild(textes);
-    grille.appendChild(col);
+    const carte = document.createElement("div");
+    carte.style.cssText = "background:#f3efe7;color:#2a2622;padding:12px 12px 10px";
+    carte.appendChild(editablePhotoFrame(p, `Photo « ${p.label || defauts[i].label} »`, 230));
+    const legende = document.createElement("div");
+    legende.style.cssText = "display:grid;gap:4px;margin-top:6px";
+    legende.appendChild(editableSpan(p, "label", { tag: "span", className: "polaroid-main", placeholder: "Légende manuscrite" }));
+    const sous = document.createElement("span");
+    sous.appendChild(editableSpan(p, "title", { tag: "span", className: "polaroid-sous", placeholder: "Petite ligne sous la légende" }));
+    sous.appendChild(buildSettingsPopover([{ label: "Page ouverte au clic", obj: p, key: "href" }]));
+    legende.appendChild(sous);
+    carte.appendChild(legende);
+    table.appendChild(carte);
   });
+  const colonne = document.createElement("div");
+  colonne.appendChild(table);
+  colonne.appendChild(editableSpan(data, "hint", { tag: "p", className: "polaroids-indice-admin", placeholder: "Petite phrase manuscrite (ex. ↑ choisissez votre photo)" }));
+  grille.appendChild(colonne);
   sectionEl.appendChild(grille);
 
   const hint = document.createElement("p");
   hint.className = "admin-hint container";
-  hint.textContent = "Sur le site, les deux photos s'affichent côte à côte en grand. Au clic, la photo s'ouvre puis glisse vers la page tarifs : pour une transition parfaite, mets la même photo et le même cadrage que dans l'en-tête des tarifs. Utilise des photos en pleine définition.";
+  hint.textContent = "Sur le site, les photos sont présentées comme deux Polaroïds posés de travers. Au clic, la photo sort du Polaroïd et glisse vers la page tarifs : pour une transition parfaite, mets la même photo que dans l'en-tête des tarifs. Utilise des photos en pleine définition.";
   sectionEl.appendChild(hint);
   return sectionEl;
 }
@@ -798,7 +804,7 @@ const EDITABLE_BUILDERS = {
   cta: buildEditableCta,
   contact: buildEditableContact,
   texte_juridique: buildEditableTexteJuridique,
-  diptyque: buildEditableDiptyque,
+  polaroids: buildEditablePolaroids,
   contact_bref: buildEditableContactBref,
   onglets_tarifs: buildEditableOngletsTarifs,
   faq: buildEditableFaq,
@@ -807,9 +813,9 @@ const EDITABLE_BUILDERS = {
 // Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page
 // contient une section à onglets (page tarifs).
 function buildTabSelect(section, sections) {
-  // L'accueil (diptyque) est commun aux deux univers ; l'en-tête des
+  // L'accueil (Polaroïds) est commun aux deux univers ; l'en-tête des
   // tarifs gère déjà les deux.
-  if (sections.some((s) => s.type === "diptyque") || section.type === "onglets_tarifs") return null;
+  if (sections.some((s) => s.type === "polaroids") || section.type === "onglets_tarifs") return null;
   const select = document.createElement("select");
   select.className = "admin-tab-select";
   select.title = "Pour quels visiteurs cette section s'affiche (choix Particulier / Commerce en haut du site)";

@@ -71,13 +71,13 @@ const SECTION_TYPES = [
     defaultData: () => ({ blocks: [{ type: "paragraph", text: "" }] }),
   },
   {
-    value: "diptyque",
-    label: "Accueil : deux grandes photos (particuliers / commerces)",
+    value: "polaroids",
+    label: "Accueil : deux Polaroïds (particuliers / commerces)",
     defaultData: () => ({
-      eyebrow: "", title: "", text: "",
+      eyebrow: "", title: "", text: "", hint: "↑ choisissez votre photo",
       panels: [
-        { univers: "particuliers", label: "Particuliers", title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%", href: "services.html?pour=particuliers" },
-        { univers: "commerces", label: "Commerces", title: "", link_label: "Voir les formules", image: "", alt: "", position: "50% 50%", href: "services.html?pour=commerces" },
+        { univers: "particuliers", label: "Particuliers", title: "", image: "", alt: "", position: "50% 50%", href: "services.html?pour=particuliers" },
+        { univers: "commerces", label: "Commerces", title: "", image: "", alt: "", position: "50% 50%", href: "services.html?pour=commerces" },
       ],
     }),
   },
