@@ -49,6 +49,10 @@
         <button type="button" id="filtre-tout" class="actif">Toutes les photos</button>
         <button type="button" id="filtre-favoris">♥ Mes favoris (<span id="favoris-compte">0</span>)</button>
       </div>
+      <div class="galerie-actions">
+        <button type="button" id="btn-selection" class="galerie-action">Sélectionner</button>
+        <button type="button" id="btn-tout-telecharger" class="btn btn-primary btn-small">Tout télécharger</button>
+      </div>
       <p class="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
     </div>
 
@@ -74,7 +78,26 @@
   <button type="button" class="lightbox-next" aria-label="Photo suivante">›</button>
   <div class="lightbox-actions">
     <button type="button" id="lightbox-favori" class="lightbox-favori" aria-pressed="false" title="Ajouter à mes favoris (F)"></button>
-    <a id="lightbox-download" class="btn btn-primary lightbox-download" download>Télécharger</a>
+    <button type="button" id="lightbox-download" class="btn btn-primary lightbox-download">Télécharger</button>
+  </div>
+</div>
+
+<!-- Barre du mode sélection -->
+<div id="barre-selection" class="barre-selection" hidden>
+  <span id="selection-compte" class="selection-compte" aria-live="polite"></span>
+  <button type="button" id="selection-tout" class="galerie-action">Tout sélectionner</button>
+  <button type="button" id="selection-annuler" class="galerie-action">Annuler</button>
+  <button type="button" id="selection-telecharger" class="btn btn-primary btn-small">Télécharger</button>
+</div>
+
+<!-- Fenêtre de téléchargement -->
+<div id="panneau-telechargement" class="panneau-telechargement" role="dialog" aria-modal="true" aria-labelledby="pt-titre" hidden>
+  <div class="panneau-boite">
+    <h2 id="pt-titre">Téléchargement</h2>
+    <p id="pt-message" class="pt-message" aria-live="polite"></p>
+    <div class="pt-barre" aria-hidden="true"><span id="pt-progression"></span></div>
+    <div id="pt-lots" class="pt-lots"></div>
+    <button type="button" id="pt-fermer" class="galerie-action pt-fermer">Fermer</button>
   </div>
 </div>
 
