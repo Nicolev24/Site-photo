@@ -417,6 +417,7 @@ const ptMessage = document.getElementById("pt-message");
 const ptProgression = document.getElementById("pt-progression");
 const ptLots = document.getElementById("pt-lots");
 const ptAide = document.getElementById("pt-aide");
+const ptFermer = document.getElementById("pt-fermer");
 let travailEnCours = null;
 
 // Photo affichée dans la visionneuse sur iPhone : on la prépare tout de
@@ -461,6 +462,7 @@ function ouvrirPanneau(titre) {
   ptLots.innerHTML = "";
   ptProgression.style.width = "0%";
   ptProgression.parentElement.hidden = false;
+  ptFermer.textContent = "Fermer";
   panneau.hidden = false;
 }
 
@@ -471,7 +473,7 @@ function fermerPanneau() {
   ptLots.innerHTML = "";
 }
 
-document.getElementById("pt-fermer").addEventListener("click", fermerPanneau);
+ptFermer.addEventListener("click", fermerPanneau);
 panneau.addEventListener("click", (e) => {
   if (e.target === panneau) fermerPanneau();
 });
@@ -606,12 +608,51 @@ function partagerPhotos(photos, textes) {
 
 // Android : il n'existe pas d'« Enregistrer dans la galerie » accessible à
 // un site. Les photos téléchargées arrivent quand même dans la galerie, dans
-// l'album des téléchargements : on le dit clairement, avec le bon chemin.
-function ouTrouverSurAndroid(n) {
-  const lesPhotos = n > 1 ? "vos photos sont" : "votre photo est";
+// l'album des téléchargements : une fenêtre explique, étape par étape, comment
+// le trouver. Elle reste accessible ensuite par « Où sont mes photos ? ».
+const ICONES_GUIDE = {
+  appli: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.6"/><path d="M5 18l5-5 3 3 2-2 4 4"/></svg>',
+  onglet: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M5 17h14"/><circle cx="9" cy="19.5" r="0.6"/><circle cx="12" cy="19.5" r="1.3" class="plein"/><circle cx="15" cy="19.5" r="0.6"/></svg>',
+  dossier: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9.5 13.5L12 16l2.5-2.5"/></svg>',
+};
+
+function etapesGuideAndroid() {
   return EST_SAMSUNG
-    ? `C'est fait : ${lesPhotos} dans l'app Galerie › Albums › « Téléchargement ».`
-    : `C'est fait : ${lesPhotos} dans la galerie de votre téléphone, album « Download » (ou « Téléchargements »). Dans Google Photos : Bibliothèque › Download.`;
+    ? [
+        ["appli", "Ouvrez l'application <strong>Galerie</strong> de votre téléphone."],
+        ["onglet", "En bas de l'écran, touchez <strong>Albums</strong>."],
+        ["dossier", "Ouvrez l'album <strong>Téléchargement</strong> : vos photos y sont, les plus récentes en premier."],
+      ]
+    : [
+        ["appli", "Ouvrez l'application <strong>Google Photos</strong> (ou <strong>Galerie</strong>)."],
+        ["onglet", "En bas de l'écran, touchez <strong>Collections</strong> (sur certains téléphones : <strong>Bibliothèque</strong> ou <strong>Albums</strong>)."],
+        ["dossier", "Ouvrez le dossier <strong>Download</strong> (ou <strong>Téléchargements</strong>) : vos photos y sont, les plus récentes en premier."],
+      ];
+}
+
+function afficherGuideAndroid(n) {
+  ouvrirPanneau(n ? "C'est fait !" : "Retrouver vos photos");
+  ptProgression.parentElement.hidden = true;
+  const vos = n > 1 ? `Vos ${n} photos sont` : "Votre photo est";
+  ptMessage.textContent = n
+    ? `${vos} sur votre téléphone. Pour ${n > 1 ? "les" : "la"} retrouver :`
+    : "Les photos téléchargées depuis cette page sont dans la galerie de votre téléphone. Pour les retrouver :";
+  const liste = document.createElement("ol");
+  liste.className = "pt-etapes";
+  etapesGuideAndroid().forEach(([icone, texte], i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="pt-etape-num">${i + 1}</span><span class="pt-etape-icone">${ICONES_GUIDE[icone]}</span><span class="pt-etape-texte">${texte}</span>`;
+    liste.appendChild(li);
+  });
+  ptLots.appendChild(liste);
+  ptFermer.textContent = "J'ai compris";
+  ptFermer.focus();
+}
+
+const boutonOuPhotos = document.getElementById("btn-ou-photos");
+if (EST_ANDROID) {
+  boutonOuPhotos.hidden = false;
+  boutonOuPhotos.addEventListener("click", () => afficherGuideAndroid(0));
 }
 
 function choisirSurAndroid(photos) {
@@ -683,11 +724,7 @@ async function telechargerUneParUne(photos, options = {}) {
       // Petite pause : certains navigateurs ignorent les téléchargements trop rapprochés.
       await new Promise((r) => setTimeout(r, 250));
     });
-    if (options.android) {
-      ptAide.hidden = true;
-      ptMessage.textContent = ouTrouverSurAndroid(photos.length);
-      return;
-    }
+    if (options.android) return afficherGuideAndroid(photos.length);
     ptMessage.textContent = plusieurs
       ? `${photos.length} photos téléchargées dans votre dossier Téléchargements. Si votre navigateur a demandé l'autorisation de télécharger plusieurs fichiers, acceptez-la.`
       : "Photo téléchargée dans votre dossier Téléchargements.";
