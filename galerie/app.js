@@ -377,10 +377,27 @@ document.getElementById("selection-telecharger").addEventListener("click", () =>
 //   la mémoire du téléphone) ;
 // - ordinateur avec Chrome ou Edge : directement dans un dossier choisi
 //   une fois (plusieurs photos) ;
-// - les autres (Firefox, Safari sur Mac, Android) : les fichiers arrivent
-//   un par un dans le dossier Téléchargements.
+// - Android : au choix, dans la galerie du téléphone (album
+//   « Téléchargement », et la fenêtre dit où le trouver) ou par le menu
+//   Partager (Google Photos, WhatsApp…) ;
+// - les autres (Firefox, Safari sur Mac) : les fichiers arrivent un par un
+//   dans le dossier Téléchargements.
 
 const EST_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const EST_ANDROID = /Android/i.test(navigator.userAgent);
+
+// Samsung range ses téléchargements dans Galerie › Albums › Téléchargement ;
+// on le détecte pour donner le bon chemin. Chrome ne donne plus le modèle
+// du téléphone dans son identifiant, d'où la seconde vérification.
+let EST_SAMSUNG = /SamsungBrowser|SM-[A-Z0-9]/i.test(navigator.userAgent);
+if (EST_ANDROID && !EST_SAMSUNG && navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+  navigator.userAgentData
+    .getHighEntropyValues(["model"])
+    .then((v) => {
+      if (/^SM-/i.test(v.model || "")) EST_SAMSUNG = true;
+    })
+    .catch(() => {});
+}
 const LOT_MAX_PHOTOS = 10;
 const LOT_MAX_OCTETS = 150 * 1024 * 1024;
 const TELECHARGEMENTS_SIMULTANES = 3;
@@ -399,6 +416,7 @@ const panneau = document.getElementById("panneau-telechargement");
 const ptMessage = document.getElementById("pt-message");
 const ptProgression = document.getElementById("pt-progression");
 const ptLots = document.getElementById("pt-lots");
+const ptAide = document.getElementById("pt-aide");
 let travailEnCours = null;
 
 // Photo affichée dans la visionneuse sur iPhone : on la prépare tout de
@@ -438,8 +456,11 @@ function enregistrerFichierSurOrdinateur(fichier) {
 function ouvrirPanneau(titre) {
   document.getElementById("pt-titre").textContent = titre;
   ptMessage.textContent = "";
+  ptAide.textContent = "";
+  ptAide.hidden = true;
   ptLots.innerHTML = "";
   ptProgression.style.width = "0%";
+  ptProgression.parentElement.hidden = false;
   panneau.hidden = false;
 }
 
@@ -480,13 +501,36 @@ async function recupererPhotos(photos, signal, recevoir) {
 
 function telechargerPhotos(photos) {
   if (!photos.length) return;
-  if (MODE_PARTAGE) return enregistrerDansPhotos(photos);
+  if (MODE_PARTAGE) return partagerPhotos(photos, TEXTES_IPHONE);
+  if (EST_ANDROID) return choisirSurAndroid(photos);
   if (photos.length > 1 && typeof window.showDirectoryPicker === "function") return enregistrerDansUnDossier(photos);
   return telechargerUneParUne(photos);
 }
 
-// iPhone / iPad : feuille de partage → « Enregistrer les images ».
-function enregistrerDansPhotos(photos) {
+// Textes de la feuille de partage selon l'appareil.
+const TEXTES_IPHONE = {
+  titre: (n) => (n > 1 ? `Enregistrer ${n} photos` : "Enregistrer la photo"),
+  boutonUnique: (n) => (n > 1 ? `Enregistrer ${n} photos dans mes photos` : "Enregistrer dans mes photos"),
+  boutonLot: (debut, fin) => `Enregistrer les photos ${debut} à ${fin}`,
+  fait: "✓ Enregistré",
+  consigne: (plusieursLots, n) =>
+    plusieursLots
+      ? "Touchez chaque bouton, puis « Enregistrer les images » : vos photos arrivent dans l'app Photos."
+      : `Touchez le bouton, puis « Enregistrer ${n > 1 ? "les images" : "l'image"} » : ${n > 1 ? "vos photos arrivent" : "votre photo arrive"} dans l'app Photos.`,
+};
+
+const TEXTES_ANDROID = {
+  titre: (n) => (n > 1 ? `Envoyer ${n} photos` : "Envoyer la photo"),
+  boutonUnique: (n) => (n > 1 ? `Envoyer les ${n} photos` : "Envoyer la photo"),
+  boutonLot: (debut, fin) => `Envoyer les photos ${debut} à ${fin}`,
+  fait: "✓ Envoyé",
+  consigne: (plusieursLots) =>
+    `Touchez ${plusieursLots ? "chaque bouton" : "le bouton"}, puis choisissez Google Photos (« Importer dans Photos »), WhatsApp ou une autre application.`,
+};
+
+// Feuille de partage du téléphone : « Enregistrer les images » sur iPhone,
+// Google Photos / WhatsApp… sur Android.
+function partagerPhotos(photos, textes) {
   // Photo déjà prête (visionneuse) : la feuille de partage s'ouvre tout de
   // suite, sans fenêtre intermédiaire.
   if (photos.length === 1) {
@@ -497,7 +541,7 @@ function enregistrerDansPhotos(photos) {
     }
   }
 
-  ouvrirPanneau(photos.length > 1 ? `Enregistrer ${photos.length} photos` : "Enregistrer la photo");
+  ouvrirPanneau(textes.titre(photos.length));
   const controle = new AbortController();
   travailEnCours = controle;
   const lots = [];
@@ -513,7 +557,7 @@ function enregistrerDansPhotos(photos) {
       navigator
         .share({ files: l.fichiers })
         .then(() => {
-          bouton.textContent = "✓ Enregistré";
+          bouton.textContent = textes.fait;
           bouton.classList.add("est-fait");
         })
         .catch(() => {});
@@ -524,10 +568,9 @@ function enregistrerDansPhotos(photos) {
 
   const libelle = (l) => {
     const n = l.fichiers.length;
-    if (photos.length === 1) return "Enregistrer dans mes photos";
-    // Un seul lot pour tout : un seul bouton « Enregistrer N photos ».
-    if (n === photos.length) return `Enregistrer ${n} photos dans mes photos`;
-    return `Enregistrer les photos ${l.debut} à ${l.debut + n - 1}`;
+    // Un seul lot pour tout : un seul bouton.
+    if (n === photos.length) return textes.boutonUnique(n);
+    return textes.boutonLot(l.debut, l.debut + n - 1);
   };
 
   const terminerLot = (l) => {
@@ -550,10 +593,7 @@ function enregistrerDansPhotos(photos) {
   })
     .then(() => {
       terminerLot(lot);
-      ptMessage.textContent =
-        lots.length > 1
-          ? `Touchez chaque bouton, puis « Enregistrer les images » : vos photos arrivent dans l'app Photos.`
-          : `Touchez le bouton, puis « Enregistrer ${photos.length > 1 ? "les images" : "l'image"} » : ${photos.length > 1 ? "vos photos arrivent" : "votre photo arrive"} dans l'app Photos.`;
+      ptMessage.textContent = textes.consigne(lots.length > 1, photos.length);
     })
     .catch((err) => {
       if (controle.signal.aborted) return;
@@ -562,6 +602,41 @@ function enregistrerDansPhotos(photos) {
     .finally(() => {
       if (travailEnCours === controle) travailEnCours = null;
     });
+}
+
+// Android : il n'existe pas d'« Enregistrer dans la galerie » accessible à
+// un site. Les photos téléchargées arrivent quand même dans la galerie, dans
+// l'album des téléchargements : on le dit clairement, avec le bon chemin.
+function ouTrouverSurAndroid(n) {
+  const lesPhotos = n > 1 ? "vos photos sont" : "votre photo est";
+  return EST_SAMSUNG
+    ? `C'est fait : ${lesPhotos} dans l'app Galerie › Albums › « Téléchargement ».`
+    : `C'est fait : ${lesPhotos} dans la galerie de votre téléphone, album « Download » (ou « Téléchargements »). Dans Google Photos : Bibliothèque › Download.`;
+}
+
+function choisirSurAndroid(photos) {
+  const n = photos.length;
+  ouvrirPanneau(n > 1 ? `Télécharger ${n} photos` : "Télécharger la photo");
+  ptMessage.textContent = EST_SAMSUNG
+    ? `${n > 1 ? "Les photos seront enregistrées" : "La photo sera enregistrée"} dans votre Galerie, album « Téléchargement ».`
+    : `${n > 1 ? "Les photos seront enregistrées" : "La photo sera enregistrée"} dans la galerie de votre téléphone, album « Download » (ou « Téléchargements »).`;
+  ptProgression.parentElement.hidden = true;
+
+  const galerie = document.createElement("button");
+  galerie.type = "button";
+  galerie.className = "btn btn-primary pt-lot";
+  galerie.textContent = "Enregistrer dans ma galerie";
+  galerie.addEventListener("click", () => telechargerUneParUne(photos, { android: true }));
+  ptLots.appendChild(galerie);
+
+  if (peutPartagerDesFichiers()) {
+    const envoyer = document.createElement("button");
+    envoyer.type = "button";
+    envoyer.className = "galerie-action pt-lot";
+    envoyer.textContent = "Envoyer vers Google Photos, WhatsApp…";
+    envoyer.addEventListener("click", () => partagerPhotos(photos, TEXTES_ANDROID));
+    ptLots.appendChild(envoyer);
+  }
 }
 
 // Chrome / Edge sur ordinateur : toutes les photos dans un dossier choisi.
@@ -593,9 +668,13 @@ async function enregistrerDansUnDossier(photos) {
 
 // Les autres navigateurs : les photos arrivent une par une dans
 // Téléchargements.
-async function telechargerUneParUne(photos) {
+async function telechargerUneParUne(photos, options = {}) {
   const plusieurs = photos.length > 1;
   ouvrirPanneau(plusieurs ? `Téléchargement de ${photos.length} photos` : "Téléchargement de la photo");
+  if (options.android && plusieurs) {
+    ptAide.textContent = "Si votre téléphone demande d'autoriser plusieurs téléchargements, appuyez sur « Autoriser ».";
+    ptAide.hidden = false;
+  }
   const controle = new AbortController();
   travailEnCours = controle;
   try {
@@ -604,6 +683,11 @@ async function telechargerUneParUne(photos) {
       // Petite pause : certains navigateurs ignorent les téléchargements trop rapprochés.
       await new Promise((r) => setTimeout(r, 250));
     });
+    if (options.android) {
+      ptAide.hidden = true;
+      ptMessage.textContent = ouTrouverSurAndroid(photos.length);
+      return;
+    }
     ptMessage.textContent = plusieurs
       ? `${photos.length} photos téléchargées dans votre dossier Téléchargements. Si votre navigateur a demandé l'autorisation de télécharger plusieurs fichiers, acceptez-la.`
       : "Photo téléchargée dans votre dossier Téléchargements.";

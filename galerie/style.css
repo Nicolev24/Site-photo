@@ -474,3 +474,16 @@
     flex-basis: 100%;
   }
 }
+
+.pt-aide {
+  color: var(--couleur-texte);
+}
+
+.pt-aide[hidden] {
+  display: none;
+}
+
+.pt-lots .galerie-action.pt-lot {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
