@@ -9,6 +9,180 @@
       ],
       "empreinte": "46b03ac7ca52"
     },
+    "images/mariages/baiser-cortege.jpg": {
+      "l": 2177,
+      "h": 1452,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "7bd6f22748a5"
+    },
+    "images/mariages/baiser-invites.jpg": {
+      "l": 1717,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "5e08ec9912a4"
+    },
+    "images/mariages/baiser-pont-chateau.jpg": {
+      "l": 2061,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "78ee311ff977"
+    },
+    "images/mariages/baiser-renverse.jpg": {
+      "l": 2060,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "0b3e048861a5"
+    },
+    "images/mariages/bouquet-chateau.jpg": {
+      "l": 1905,
+      "h": 2314,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "8ba3d5407dfc"
+    },
+    "images/mariages/bouquets-leves.jpg": {
+      "l": 2061,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "4379e9b1e96f"
+    },
+    "images/mariages/gateau-lumiere.jpg": {
+      "l": 2134,
+      "h": 1421,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "7fe1fac22ded"
+    },
+    "images/mariages/maries-chien.jpg": {
+      "l": 2576,
+      "h": 1717,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "0f5b192e87af"
+    },
+    "images/mariages/maries-colonnes.jpg": {
+      "l": 2061,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "c052c57bc56d"
+    },
+    "images/mariages/photo-instantanee.jpg": {
+      "l": 2061,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "9ee1b0375070"
+    },
+    "images/mariages/premiere-danse-etincelles.jpg": {
+      "l": 2264,
+      "h": 1508,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "084077cfcc25"
+    },
+    "images/mariages/premiere-danse-tournoiement.jpg": {
+      "l": 1887,
+      "h": 2359,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "78d050297d4f"
+    },
+    "images/mariages/preparatifs-boutons-manchette.jpg": {
+      "l": 2576,
+      "h": 1718,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "bfdcfc98d9b6"
+    },
+    "images/mariages/preparatifs-temoins.jpg": {
+      "l": 2061,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "638c929e95c3"
+    },
+    "images/mariages/selfie-temoins.jpg": {
+      "l": 2223,
+      "h": 1482,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "307aa543ac11"
+    },
+    "images/mariages/sortie-confettis.jpg": {
+      "l": 1717,
+      "h": 2576,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "67d4461a521a"
+    },
     "images/photographe.jpg": {
       "l": 1050,
       "h": 1400,

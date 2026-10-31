@@ -25,9 +25,9 @@
       "id": "photo-1",
       "type": "photo_pleine",
       "data": {
-        "image": "images/portfolio/evenements/img2.jpg",
-        "alt": "Cortège de mariage dans une cour",
-        "position": "50% 55%"
+        "image": "images/mariages/gateau-lumiere.jpg",
+        "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
+        "position": "50% 62%"
       }
     },
     {
@@ -43,12 +43,13 @@
         "image_side": "droite",
         "photos": [
           {
-            "image": "images/portfolio/couples/img4.jpg",
-            "alt": "Mariés enlacés, front contre front"
+            "image": "images/mariages/baiser-pont-chateau.jpg",
+            "alt": "Les mariés s'embrassent sur le pont d'un château",
+            "position": "50% 62%"
           },
           {
-            "image": "images/portfolio/couples/img1.jpg",
-            "alt": "Mariés avec leur chien sur l'herbe"
+            "image": "images/mariages/photo-instantanee.jpg",
+            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
           }
         ]
       }
@@ -82,32 +83,40 @@
       "data": {
         "photos": [
           {
-            "image": "images/portfolio/evenements/img1.jpg",
-            "alt": "Mariage, mariés entourés de leurs témoins"
+            "image": "images/mariages/preparatifs-temoins.jpg",
+            "alt": "Les témoins aident le marié à s'habiller"
           },
           {
-            "image": "images/portfolio/portraits/img2.jpg",
-            "alt": "Portrait d'un adolescent devant un mur de pierre, en noir et blanc"
+            "image": "images/mariages/baiser-invites.jpg",
+            "alt": "Baiser des mariés à la sortie de la cérémonie, entourés des invités"
           },
           {
-            "image": "images/portfolio/couples/img3.jpg",
-            "alt": "Le marié à genoux offre un bouquet à la mariée devant un château"
+            "image": "images/mariages/sortie-confettis.jpg",
+            "alt": "Sortie des mariés sous les confettis, vue de dos"
           },
           {
-            "image": "images/portfolio/entreprises/img3.jpg",
-            "alt": "Manutention en entrepôt"
+            "image": "images/mariages/baiser-cortege.jpg",
+            "alt": "Baiser des mariés pendant que le cortège passe devant eux"
           },
           {
-            "image": "images/portfolio/evenements/img3.jpg",
-            "alt": "Première danse des mariés devant les invités"
+            "image": "images/mariages/maries-chien.jpg",
+            "alt": "Les mariés assis dans l'herbe avec leur chien"
           },
           {
-            "image": "images/portfolio/portraits/img4.jpg",
-            "alt": "Portrait d'un jeune homme en costume devant un mur sombre"
+            "image": "images/mariages/selfie-temoins.jpg",
+            "alt": "Le marié prend un selfie avec ses témoins, en noir et blanc"
           },
           {
-            "image": "images/portfolio/couples/img2.jpg",
-            "alt": "Mariée s'avançant vers le marié"
+            "image": "images/mariages/maries-colonnes.jpg",
+            "alt": "Les mariés main dans la main sous des colonnes de pierre"
+          },
+          {
+            "image": "images/mariages/bouquet-chateau.jpg",
+            "alt": "Le marié à genoux offre un bouquet de roses blanches à la mariée devant un château"
+          },
+          {
+            "image": "images/mariages/premiere-danse-etincelles.jpg",
+            "alt": "Première danse des mariés entre deux fontaines d'étincelles"
           }
         ]
       }

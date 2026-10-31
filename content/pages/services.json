@@ -65,9 +65,9 @@
               "Galerie privée en ligne"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/portfolio/couples/img4.jpg",
-            "alt": "Mariés enlacés, front contre front",
-            "position": "50% 35%"
+            "image": "images/mariages/maries-colonnes.jpg",
+            "alt": "Les mariés main dans la main sous des colonnes de pierre",
+            "position": "50% 30%"
           },
           {
             "title": "Sur devis",
@@ -82,9 +82,9 @@
               "Galerie privée en ligne"
             ],
             "cta_label": "Demander un devis",
-            "image": "images/portfolio/evenements/img3.jpg",
-            "alt": "Première danse des mariés devant les invités",
-            "position": "50% 35%"
+            "image": "images/mariages/premiere-danse-etincelles.jpg",
+            "alt": "Première danse des mariés entre deux fontaines d'étincelles",
+            "position": "50% 45%"
           }
         ],
         "note": "Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées."
@@ -102,26 +102,28 @@
           {
             "title": "Premier contact",
             "text": "Vous m'écrivez via la page contact. Je vous réponds sous 48h pour parler de votre projet, de la date et du lieu.",
-            "image": "images/portfolio/portraits/img1.jpg",
-            "alt": "Portrait devant une voiture, en extérieur"
+            "image": "images/mariages/photo-instantanee.jpg",
+            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
           },
           {
             "title": "Préparation",
             "text": "On choisit ensemble la formule, le lieu et l'ambiance. Un acompte permet de bloquer la date.",
-            "image": "images/portfolio/evenements/img4.jpg",
-            "alt": "Mariés marchant vers le château"
+            "image": "images/mariages/preparatifs-temoins.jpg",
+            "alt": "Les témoins aident le marié à s'habiller",
+            "position": "50% 40%"
           },
           {
             "title": "La séance",
             "text": "Je vous guide sans vous figer : on prend le temps, dans une ambiance détendue, pour des photos naturelles.",
-            "image": "images/portfolio/couples/img1.jpg",
-            "alt": "Mariés avec leur chien sur l'herbe"
+            "image": "images/mariages/baiser-renverse.jpg",
+            "alt": "Le marié renverse la mariée pour un baiser à la fin de la cérémonie"
           },
           {
             "title": "Votre galerie privée",
             "text": "Vos photos arrivent dans une galerie en ligne rien qu'à vous : vous choisissez vos favorites et les téléchargez en un geste.",
-            "image": "images/portfolio/couples/1791567610764-1z6-0954.jpg",
-            "alt": "Mariés derrière leur pièce montée, en noir et blanc"
+            "image": "images/mariages/selfie-temoins.jpg",
+            "alt": "Le marié prend un selfie avec ses témoins, en noir et blanc",
+            "position": "50% 50%"
           }
         ]
       }
