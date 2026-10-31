@@ -270,9 +270,10 @@
                 "position": "50% 45%"
               },
               "tirage1": {
-                "image": "images/uploads/1793488133306-salon-de-massimo-dsc3533.jpg",
+                "image": "images/uploads/1793488318895-salon-de-massimo-dsc3868.jpg",
                 "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
-                "position": "66.8% 50%"
+                "position": "100% 100%",
+                "zoom": 1.265
               },
               "tirage2": {
                 "image": "images/commerces/salon-trophees.jpg",
