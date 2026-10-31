@@ -22,7 +22,12 @@
         "formulaire_title": "Formulaire de contact",
         "image": "images/mariages/sortie-confettis.jpg",
         "alt": "Sortie des mariés sous les confettis, vue de dos",
-        "position": "50% 55%"
+        "position": "50% 55%",
+        "photo_commerces": {
+          "image": "images/portfolio/entreprises/img1.jpg",
+          "alt": "Séance chez un barbier",
+          "position": "50% 35%"
+        }
       }
     }
   ]

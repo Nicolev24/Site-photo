@@ -1108,9 +1108,11 @@
   margin: 0 -28px 24px;
 }
 
-.admin-contact-photo {
+.admin-contact-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
   margin-top: 8px;
-  max-width: 420px;
 }
 
 .admin-photo-outils {

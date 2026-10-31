@@ -119,7 +119,7 @@ function versionTexte(page, donnees) {
         break;
       case "presentation":
       case "texte_duo":
-        if (d.eyebrow) morceaux.push(d.titre_page ? titre(d.eyebrow, 1) : `<p>${echapper(d.eyebrow)}</p>`);
+        if (d.eyebrow) morceaux.push(d.titre_page ? titre(d.eyebrow) : `<p>${echapper(d.eyebrow)}</p>`);
         morceaux.push(titre(d.title));
         if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
         if (d.text_suite) morceaux.push(`<p>${echapper(d.text_suite)}</p>`);

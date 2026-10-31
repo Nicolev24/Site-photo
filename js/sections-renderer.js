@@ -400,7 +400,9 @@ async function buildContact(data, basePath) {
   const left = el("div", {}, `<h3>${escapeHtml(data.coordonnees_title)}</h3>`);
   const list = el("ul", { class: "contact-info-list" });
   left.appendChild(list);
-  if (data.image) left.appendChild(el("figure", { class: "contact-photo" }, imageHtml(data, basePath, "(max-width: 860px) 100vw, 480px")));
+  // Une photo par univers : celle des commerces si elle existe, sinon l'autre.
+  const photo = universCourant() === "commerces" && data.photo_commerces && data.photo_commerces.image ? data.photo_commerces : data;
+  if (photo.image) left.appendChild(el("figure", { class: "contact-photo" }, imageHtml(photo, basePath, "(max-width: 860px) 100vw, 480px")));
 
   const right = el(
     "div",

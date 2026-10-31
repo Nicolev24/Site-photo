@@ -6,32 +6,34 @@
   },
   "sections": [
     {
-      "id": "qui-je-suis",
+      "id": "qui-je-suis-particuliers",
       "type": "presentation",
       "data": {
         "titre_page": true,
         "eyebrow": "À propos · Photographe à Ath",
         "title": "Derrière l'objectif",
-        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements, mais aussi commerces et entreprises : j'aime photographier les gens tels qu'ils sont.",
+        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements : j'aime photographier les gens tels qu'ils sont.",
         "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
         "button_label": "",
         "button_href": "",
         "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
         "position": "50% 50%"
-      }
+      },
+      "tab": "particuliers"
     },
     {
-      "id": "photo-1",
+      "id": "photo-particuliers",
       "type": "photo_pleine",
       "data": {
         "image": "images/mariages/gateau-lumiere.jpg",
         "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
         "position": "50% 62%"
-      }
+      },
+      "tab": "particuliers"
     },
     {
-      "id": "facon-de-travailler",
+      "id": "facon-de-travailler-particuliers",
       "type": "texte_duo",
       "data": {
         "eyebrow": "Ma façon de travailler",
@@ -52,33 +54,11 @@
             "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
           }
         ]
-      }
+      },
+      "tab": "particuliers"
     },
     {
-      "id": "commerces",
-      "type": "texte_duo",
-      "data": {
-        "eyebrow": "Pour les commerces",
-        "title": "Des photos qui donnent envie de pousser la porte",
-        "text": "Pour les commerces et les entreprises, je réalise des photos prêtes pour votre fiche Google, vos réseaux et votre site.",
-        "text_suite": "Et si vous n'avez pas encore de site, je peux aussi vous créer un site vitrine simple et efficace.",
-        "button_label": "Voir les offres commerces",
-        "button_href": "services.html?pour=commerces",
-        "image_side": "gauche",
-        "photos": [
-          {
-            "image": "images/portfolio/entreprises/img1.jpg",
-            "alt": "Séance chez un barbier"
-          },
-          {
-            "image": "images/portfolio/entreprises/img4.jpg",
-            "alt": "Équipe sur un chantier"
-          }
-        ]
-      }
-    },
-    {
-      "id": "photos",
+      "id": "photos-particuliers",
       "type": "bande_photos",
       "data": {
         "photos": [
@@ -95,10 +75,6 @@
             "alt": "Baiser des mariés à la sortie de la cérémonie, entourés des invités"
           },
           {
-            "image": "images/mariages/sortie-confettis.jpg",
-            "alt": "Sortie des mariés sous les confettis, vue de dos"
-          },
-          {
             "image": "images/mariages/baiser-cortege.jpg",
             "alt": "Baiser des mariés pendant que le cortège passe devant eux"
           },
@@ -107,34 +83,163 @@
             "alt": "Les mariés enlacés pendant leur première danse, devant leurs invités"
           },
           {
-            "image": "images/mariages/maries-chien.jpg",
-            "alt": "Les mariés assis dans l'herbe avec leur chien"
-          },
-          {
             "image": "images/mariages/selfie-temoins.jpg",
             "alt": "Le marié prend un selfie avec ses témoins, en noir et blanc"
           },
           {
+            "image": "images/mariages/premiere-danse-etincelles.jpg",
+            "alt": "Première danse des mariés entre deux fontaines d'étincelles"
+          },
+          {
+            "image": "images/mariages/bouquets-leves.jpg",
+            "alt": "Les mariés s'embrassent, entourés de leurs témoins qui lèvent leurs bouquets"
+          },
+          {
+            "image": "images/mariages/baiser-renverse.jpg",
+            "alt": "Le marié renverse la mariée pour un baiser à la fin de la cérémonie"
+          },
+          {
+            "image": "images/mariages/maries-course-jardin.jpg",
+            "alt": "Les mariés courent dans un jardin, la robe de la mariée au vent"
+          },
+          {
+            "image": "images/mariages/preparatifs-boutons-manchette.jpg",
+            "alt": "Le marié ajuste ses boutons de manchette devant ses témoins"
+          }
+        ]
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "instagram",
+      "type": "instagram",
+      "data": {
+        "eyebrow": "Instagram",
+        "title": "Tout mon travail est sur Instagram",
+        "text": "Mes dernières séances et les coulisses : venez faire un tour pour découvrir mon univers.",
+        "button_label": "Voir mon Instagram",
+        "photos": [
+          {
             "image": "images/mariages/maries-colonnes.jpg",
-            "alt": "Les mariés main dans la main sous des colonnes de pierre"
+            "alt": "Les mariés main dans la main sous des colonnes de pierre",
+            "position": "50% 30%"
+          },
+          {
+            "image": "images/mariages/sortie-confettis.jpg",
+            "alt": "Sortie des mariés sous les confettis, vue de dos",
+            "position": "50% 60%"
+          },
+          {
+            "image": "images/mariages/maries-chien.jpg",
+            "alt": "Les mariés assis dans l'herbe avec leur chien"
           },
           {
             "image": "images/mariages/bouquet-chateau.jpg",
-            "alt": "Le marié à genoux offre un bouquet de roses blanches à la mariée devant un château"
+            "alt": "Le marié à genoux offre un bouquet de roses blanches à la mariée devant un château",
+            "position": "50% 55%"
           },
           {
-            "image": "images/mariages/premiere-danse-etincelles.jpg",
-            "alt": "Première danse des mariés entre deux fontaines d'étincelles"
+            "image": "images/mariages/gateau-lumiere.jpg",
+            "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière"
+          },
+          {
+            "image": "images/mariages/premiere-danse-tournoiement.jpg",
+            "alt": "La mariée tourne pendant la première danse, devant les invités",
+            "position": "50% 65%"
+          }
+        ]
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "contact-particuliers",
+      "type": "cta",
+      "data": {
+        "title": "Envie qu'on travaille ensemble ?",
+        "text": "Parlez-moi de votre projet : je vous réponds sous 48h.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "qui-je-suis-commerces",
+      "type": "presentation",
+      "tab": "commerces",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "À propos · Photographe à Ath",
+        "title": "Derrière l'objectif",
+        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Pour les commerces et les entreprises, je réalise des photos qui montrent votre lieu, votre équipe et votre savoir-faire.",
+        "text_suite": "Des photos prêtes pour votre fiche Google, vos réseaux et votre site — et si vous n'avez pas encore de site, je peux aussi vous en créer un.",
+        "button_label": "",
+        "button_href": "",
+        "image": "images/nicolas-leveugle-portrait.jpg",
+        "alt": "Nicolas Leveugle, photographe à Ath",
+        "position": "50% 50%"
+      }
+    },
+    {
+      "id": "photo-commerces",
+      "type": "photo_pleine",
+      "tab": "commerces",
+      "data": {
+        "image": "images/portfolio/entreprises/img2.jpg",
+        "alt": "Réunion sur un chantier",
+        "position": "50% 45%"
+      }
+    },
+    {
+      "id": "facon-de-travailler-commerces",
+      "type": "texte_duo",
+      "tab": "commerces",
+      "data": {
+        "eyebrow": "Ma façon de travailler",
+        "title": "Des photos qui vous ressemblent",
+        "text": "Je viens sur place, au moment qui vous arrange, et je m'adapte à votre activité. On prépare ensemble la liste des photos utiles : vitrine, équipe, produits, ambiance.",
+        "text_suite": "Le résultat : des photos naturelles, qui donnent envie de pousser la porte.",
+        "button_label": "",
+        "button_href": "",
+        "image_side": "droite",
+        "photos": [
+          {
+            "image": "images/portfolio/entreprises/img1.jpg",
+            "alt": "Séance chez un barbier"
+          },
+          {
+            "image": "images/portfolio/entreprises/img3.jpg",
+            "alt": "Manutention en entrepôt"
           }
         ]
       }
     },
     {
-      "id": "contact",
-      "type": "cta",
+      "id": "site-vitrine",
+      "type": "texte_duo",
       "data": {
-        "title": "Envie qu'on travaille ensemble ?",
-        "text": "Parlez-moi de votre projet : je vous réponds sous 48h.",
+        "eyebrow": "Photos + site vitrine",
+        "title": "Votre commerce, en ligne",
+        "text": "Vous n'avez pas encore de site ? Je crée des sites vitrines simples et efficaces, avec vos photos, vos horaires et vos coordonnées.",
+        "text_suite": "Je vous prépare d'abord une maquette gratuite et sans engagement.",
+        "button_label": "Voir les offres commerces",
+        "button_href": "services.html?pour=commerces",
+        "image_side": "gauche",
+        "photos": [
+          {
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          }
+        ]
+      },
+      "tab": "commerces"
+    },
+    {
+      "id": "contact-commerces",
+      "type": "cta",
+      "tab": "commerces",
+      "data": {
+        "title": "Parlons de votre commerce",
+        "text": "Dites-moi ce dont vous avez besoin : je vous réponds sous 48h.",
         "button_label": "Me contacter",
         "button_href": "contact.html"
       }

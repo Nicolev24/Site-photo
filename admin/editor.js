@@ -409,9 +409,23 @@ function buildEditableContact(data, rerender) {
     row("Délai de réponse", c, "response_delay");
   }
   left.appendChild(list);
-  const photo = editablePhoto(data, { ratio: "4 / 5", retirer: retirerPhoto(data, rerender) });
-  photo.classList.add("admin-contact-photo");
-  left.appendChild(photo);
+  // Une photo par univers (Particulier / Commerce en haut du site).
+  data.photo_commerces = data.photo_commerces || { image: "", alt: "" };
+  const photos = document.createElement("div");
+  photos.className = "admin-contact-photos";
+  [
+    ["Photo vue par les particuliers", data],
+    ["Photo vue par les commerces", data.photo_commerces],
+  ].forEach(([titre, obj]) => {
+    const col = document.createElement("div");
+    const legende = document.createElement("p");
+    legende.className = "admin-hint";
+    legende.textContent = titre;
+    col.appendChild(legende);
+    col.appendChild(editablePhoto(obj, { ratio: "4 / 5", retirer: retirerPhoto(obj, rerender) }));
+    photos.appendChild(col);
+  });
+  left.appendChild(photos);
 
   const right = document.createElement("div");
   right.appendChild(editableSpan(data, "formulaire_title", { tag: "h3", placeholder: "Titre de la colonne formulaire" }));

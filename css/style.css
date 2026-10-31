@@ -1281,8 +1281,7 @@ mark.placeholder-a-completer {
   border-bottom: 1px solid var(--couleur-bordure);
 }
 
-html[data-page="index"] .univers-barre,
-html[data-page="a-propos"] .univers-barre {
+html[data-page="index"] .univers-barre {
   display: none;
 }
 
