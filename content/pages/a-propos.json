@@ -2,7 +2,7 @@
   "seo": {
     "title": "À propos – Nicolas Leveugle, photographe à Ath",
     "description": "Nicolas Leveugle, photographe indépendant à Ath : sa façon de travailler, son style naturel, pour les particuliers comme pour les commerces, en Wallonie et à Bruxelles.",
-    "og_image": "images/photographe.jpg"
+    "og_image": "images/nicolas-leveugle-portrait.jpg"
   },
   "sections": [
     {
@@ -16,9 +16,9 @@
         "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
         "button_label": "",
         "button_href": "",
-        "image": "images/photographe.jpg",
+        "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
-        "position": "50% 32%"
+        "position": "50% 50%"
       }
     },
     {
