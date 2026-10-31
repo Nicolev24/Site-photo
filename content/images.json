@@ -517,6 +517,15 @@
       ],
       "empreinte": "c309ef829fed"
     },
+    "images/portrait-machu-picchu.jpg": {
+      "l": 1050,
+      "h": 1400,
+      "tailles": [
+        480,
+        800
+      ],
+      "empreinte": "5114056b316e"
+    },
     "images/teaser-couples.jpg": {
       "l": 1199,
       "h": 1800,

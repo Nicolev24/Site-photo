@@ -42,6 +42,165 @@ function editableSpan(obj, key, opts = {}) {
 
 // ---------- Photos éditables en place ----------
 
+// ---------- Photothèque ----------
+//
+// Toutes les photos déjà envoyées sur le site restent stockées dans images/,
+// même quand plus aucune page ne les affiche. La photothèque les liste
+// (d'après content/images.json, tenu à jour par outils/optimiser-images.mjs)
+// pour qu'on puisse en remettre une sans repasser par l'ordinateur. Elle
+// indique celles qui sont affichées sur le site, et reprend leur description.
+
+const DOSSIERS_PHOTOTHEQUE = [
+  ["mariages", "Mariages"],
+  ["commerces", "Commerces"],
+  ["uploads", "Ajoutées depuis l'admin"],
+  ["portfolio", "Ancien portfolio"],
+  ["formules", "Exemples de site"],
+  ["", "Autres"],
+];
+
+// Rechargée à chaque ouverture : une photo envoyée entre-temps y apparaît
+// dès que le site a fini de la traiter (environ une minute).
+async function chargerPhototheque() {
+  const frais = `?v=${Date.now()}`;
+  const manifeste = await fetch(sitePath("content/images.json") + frais).then((r) => r.json());
+  // Où chaque photo est affichée, et sa description, d'après les pages.
+  const usages = {};
+  const site = await fetch(sitePath("content/site.json") + frais).then((r) => r.json()).catch(() => ({ pages: [] }));
+  await Promise.all(
+    (site.pages || []).map(async (pg) => {
+      const page = await fetch(sitePath(`content/pages/${pg.slug}.json`) + frais).then((r) => r.json()).catch(() => null);
+      const parcourir = (n) => {
+        if (Array.isArray(n)) return n.forEach(parcourir);
+        if (!n || typeof n !== "object") return;
+        if (typeof n.image === "string" && n.image) {
+          const u = (usages[n.image] = usages[n.image] || { pages: new Set(), alt: "" });
+          u.pages.add(pg.title);
+          if (!u.alt && n.alt) u.alt = n.alt;
+        }
+        Object.values(n).forEach(parcourir);
+      };
+      if (page) parcourir(page.sections);
+    })
+  );
+  return Object.entries(manifeste.images || {}).map(([chemin, info]) => {
+    const reste = chemin.replace(/^images\//, "");
+    const dossier = reste.includes("/") ? reste.split("/")[0] : "";
+    const vignette = info.tailles && info.tailles.length
+      ? `images/tailles/${reste.replace(/\.[^.]+$/, "")}-${info.tailles[0]}.webp`
+      : chemin;
+    const u = usages[chemin];
+    return { chemin, dossier, vignette, nom: reste.split("/").pop(), alt: u ? u.alt : "", pages: u ? Array.from(u.pages) : [] };
+  });
+}
+
+// Ouvre la photothèque. `plusieurs` : choix de plusieurs photos (ajout dans
+// une liste). `surChoix(photos)` reçoit [{ image, alt }] pour des photos de
+// la photothèque, `surFichiers(files)` des fichiers venant de l'ordinateur.
+function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
+  const fond = document.createElement("div");
+  fond.className = "admin-phototheque";
+  fond.innerHTML = `
+    <div class="admin-phototheque-boite" role="dialog" aria-modal="true" aria-label="Choisir une photo">
+      <div class="admin-phototheque-tete">
+        <h3>${plusieurs ? "Ajouter des photos" : "Choisir une photo"}</h3>
+        <label class="btn btn-primary btn-small admin-phototheque-import">📷 Importer depuis mon ordinateur<input type="file" accept="image/*" hidden ${plusieurs ? "multiple" : ""} /></label>
+        <button type="button" class="admin-icon-btn admin-phototheque-fermer" title="Fermer">✕</button>
+      </div>
+      <p class="admin-hint">Ou choisis une photo déjà envoyée sur le site${plusieurs ? " (tu peux en sélectionner plusieurs)" : ""} :</p>
+      <div class="admin-phototheque-filtres"></div>
+      <div class="admin-phototheque-grille"><p class="admin-hint">Chargement des photos…</p></div>
+      ${plusieurs ? '<div class="admin-phototheque-pied"><button type="button" class="btn btn-primary btn-small admin-phototheque-valider" disabled>Ajouter</button></div>' : ""}
+    </div>
+  `;
+  document.body.appendChild(fond);
+  const fermer = () => {
+    fond.remove();
+    document.removeEventListener("keydown", surTouche);
+  };
+  const surTouche = (e) => {
+    if (e.key === "Escape") fermer();
+  };
+  document.addEventListener("keydown", surTouche);
+  fond.addEventListener("click", (e) => {
+    if (e.target === fond) fermer();
+  });
+  fond.querySelector(".admin-phototheque-fermer").addEventListener("click", fermer);
+  fond.querySelector(".admin-phototheque-import input").addEventListener("change", (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    files.forEach((f) => typeof verifierDefinition === "function" && verifierDefinition(f));
+    fermer();
+    surFichiers(files);
+  });
+
+  const choisies = new Set();
+  const valider = fond.querySelector(".admin-phototheque-valider");
+  if (valider) {
+    valider.addEventListener("click", () => {
+      const liste = Array.from(choisies);
+      fermer();
+      surChoix(liste);
+    });
+  }
+
+  chargerPhototheque()
+    .then((photos) => {
+      const grille = fond.querySelector(".admin-phototheque-grille");
+      const filtres = fond.querySelector(".admin-phototheque-filtres");
+      const groupes = DOSSIERS_PHOTOTHEQUE.map(([id, titre]) => [id, titre, photos.filter((p) => p.dossier === id || (!id && !DOSSIERS_PHOTOTHEQUE.some(([d]) => d && d === p.dossier)))]).filter(([, , l]) => l.length);
+      let filtre = "tout";
+      const afficher = () => {
+        filtres.innerHTML = "";
+        [["tout", `Toutes (${photos.length})`], ["site", "Sur le site"], ["libres", "Pas affichées"], ...groupes.map(([id, titre, l]) => [id || "autres", `${titre} (${l.length})`])].forEach(([id, txt]) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = txt;
+          if (id === filtre) b.className = "actif";
+          b.addEventListener("click", () => {
+            filtre = id;
+            afficher();
+          });
+          filtres.appendChild(b);
+        });
+        let visibles = photos;
+        if (filtre === "site") visibles = photos.filter((p) => p.pages.length);
+        else if (filtre === "libres") visibles = photos.filter((p) => !p.pages.length);
+        else if (filtre !== "tout") visibles = (groupes.find(([id]) => (id || "autres") === filtre) || [, , []])[2];
+        // Les plus récentes (ajoutées depuis l'admin) d'abord, puis par dossier
+        // (leur nom commence par la date d'envoi)
+        const recente = (p) => (p.dossier === "uploads" ? 1 : 0);
+        visibles = visibles.slice().sort((a, b) => recente(b) - recente(a) || (recente(a) ? b.nom.localeCompare(a.nom) : a.chemin.localeCompare(b.chemin)));
+        grille.innerHTML = visibles.length ? "" : '<p class="admin-hint">Aucune photo ici.</p>';
+        visibles.forEach((p) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "admin-phototheque-photo";
+          if (choisies.has(p)) b.classList.add("est-choisie");
+          b.title = p.pages.length ? `Sur le site : ${p.pages.join(", ")}` : "Pas affichée sur le site pour l'instant";
+          b.innerHTML = `<img src="${escapeHtml(sitePath(p.vignette))}" alt="" loading="lazy" />${p.pages.length ? '<span class="admin-phototheque-badge">Sur le site</span>' : ""}`;
+          b.addEventListener("click", () => {
+            if (!plusieurs) {
+              fermer();
+              surChoix([p]);
+              return;
+            }
+            if (choisies.has(p)) choisies.delete(p);
+            else choisies.add(p);
+            b.classList.toggle("est-choisie");
+            valider.disabled = !choisies.size;
+            valider.textContent = choisies.size ? `Ajouter ${choisies.size} photo${choisies.size > 1 ? "s" : ""}` : "Ajouter";
+          });
+          grille.appendChild(b);
+        });
+      };
+      afficher();
+    })
+    .catch(() => {
+      fond.querySelector(".admin-phototheque-grille").innerHTML = '<p class="admin-hint">Impossible de charger la photothèque pour le moment. Tu peux toujours importer une photo depuis ton ordinateur.</p>';
+    });
+}
+
 // `positionedEl` doit déjà avoir position:relative (ou obtenir la classe
 // admin-image-hotspot, qui la lui donne) : la superposition se cale dessus.
 function attachImageOverlay(positionedEl, img, obj, altObj) {
@@ -50,15 +209,11 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
   const overlay = document.createElement("div");
   overlay.className = "admin-image-overlay";
 
-  const label = document.createElement("label");
-  label.className = "admin-image-upload-btn";
-  label.textContent = "📷 Changer la photo";
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.hidden = true;
-  label.appendChild(fileInput);
-  overlay.appendChild(label);
+  const bouton = document.createElement("button");
+  bouton.type = "button";
+  bouton.className = "admin-image-upload-btn";
+  bouton.textContent = "📷 Changer la photo";
+  overlay.appendChild(bouton);
 
   const altInput = document.createElement("input");
   altInput.type = "text";
@@ -67,18 +222,41 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
   altInput.value = altObj.alt || "";
   overlay.appendChild(altInput);
 
-  // Un clic sur la photo elle-même ouvre aussi le choix du fichier.
-  img.addEventListener("click", () => fileInput.click());
+  const afficher = (src) => {
+    img.src = src;
+    // Un cadre vide qui reçoit une photo redevient un cadre normal.
+    const cadre = img.closest(".admin-photo-vide");
+    if (cadre) {
+      cadre.classList.remove("admin-photo-vide");
+      bouton.textContent = "📷 Changer la photo";
+    }
+  };
+  const choisir = () =>
+    ouvrirPhototheque({
+      surFichiers: ([file]) => {
+        obj._file = file;
+        obj._previewUrl = URL.createObjectURL(file);
+        afficher(obj._previewUrl);
+      },
+      surChoix: ([photo]) => {
+        obj.image = photo.chemin;
+        delete obj._file;
+        delete obj._previewUrl;
+        // Reprend la description déjà utilisée pour cette photo.
+        altObj.alt = photo.alt || "";
+        altInput.value = altObj.alt;
+        afficher(sitePath(photo.chemin));
+      },
+    });
+
+  bouton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    choisir();
+  });
+  // Un clic sur la photo elle-même ouvre aussi la photothèque.
+  img.addEventListener("click", choisir);
   img.title = "Cliquer pour changer la photo";
 
-  fileInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (typeof verifierDefinition === "function") verifierDefinition(file);
-    obj._file = file;
-    obj._previewUrl = URL.createObjectURL(file);
-    img.src = obj._previewUrl;
-  });
   altInput.addEventListener("input", (e) => {
     altObj.alt = e.target.value;
   });
@@ -682,25 +860,26 @@ function editablePhotoList(liste, rerender, { max = 30, ratio = "4 / 5", aide = 
     wrap.appendChild(item);
   });
   if (liste.length < max) {
-    const ajout = document.createElement("label");
+    const ajout = document.createElement("button");
+    ajout.type = "button";
     ajout.className = "admin-photo-ajout";
     ajout.style.aspectRatio = ratio;
     ajout.innerHTML = "<span>+ Ajouter une photo</span>";
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.multiple = true;
-    input.hidden = true;
-    input.addEventListener("change", () => {
-      Array.from(input.files)
-        .slice(0, max - liste.length)
-        .forEach((file) => {
-          if (typeof verifierDefinition === "function") verifierDefinition(file);
-          liste.push({ image: "", alt: "", _file: file, _previewUrl: URL.createObjectURL(file) });
-        });
-      rerender();
-    });
-    ajout.appendChild(input);
+    ajout.addEventListener("click", () =>
+      ouvrirPhototheque({
+        plusieurs: true,
+        surFichiers: (files) => {
+          files.slice(0, max - liste.length).forEach((file) => {
+            liste.push({ image: "", alt: "", _file: file, _previewUrl: URL.createObjectURL(file) });
+          });
+          rerender();
+        },
+        surChoix: (photos) => {
+          photos.slice(0, max - liste.length).forEach((p) => liste.push({ image: p.chemin, alt: p.alt || "" }));
+          rerender();
+        },
+      })
+    );
     wrap.appendChild(ajout);
   }
   const bloc = document.createElement("div");

@@ -821,6 +821,8 @@
 }
 
 .admin-image-upload-btn {
+  border: none;
+  font-family: var(--police-texte);
   background: #fff;
   color: #1c1916;
   padding: 7px 13px;
@@ -1154,6 +1156,9 @@
 }
 
 .admin-photo-ajout {
+  width: 100%;
+  background: none;
+  font: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1201,4 +1206,144 @@
 
 .vp-liste .admin-feature-remove {
   margin-left: auto;
+}
+
+/* Photothèque : choisir une photo déjà envoyée, ou en importer une */
+.admin-phototheque {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 17, 14, 0.6);
+}
+
+.admin-phototheque-boite {
+  width: min(980px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.admin-phototheque-tete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-phototheque-tete h3 {
+  margin: 0 auto 0 0;
+  font-size: 1.3rem;
+}
+
+.admin-phototheque-import {
+  margin: 0;
+  cursor: pointer;
+}
+
+.admin-phototheque .admin-hint {
+  margin: 0;
+}
+
+.admin-phototheque-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-phototheque-filtres button {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #fff;
+  color: #444;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.admin-phototheque-filtres button.actif {
+  background: #1c1916;
+  border-color: #1c1916;
+  color: #fff;
+}
+
+.admin-phototheque-grille {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  align-content: start;
+}
+
+.admin-phototheque-photo {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #eee;
+  cursor: pointer;
+}
+
+.admin-phototheque-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-phototheque-photo:hover {
+  border-color: #c9b48f;
+}
+
+.admin-phototheque-photo.est-choisie {
+  border-color: var(--couleur-accent);
+}
+
+.admin-phototheque-photo.est-choisie::after {
+  content: "✓";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--couleur-accent);
+  color: #fff;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.admin-phototheque-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(28, 25, 22, 0.75);
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.admin-phototheque-pied {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-phototheque-pied .btn {
+  margin: 0;
 }
