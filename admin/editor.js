@@ -99,23 +99,37 @@ async function chargerPhototheque() {
 // la photothèque, `surFichiers(files)` des fichiers venant de l'ordinateur.
 // ---------- Galeries clients dans la photothèque ----------
 // Les photos des galeries envoyées aux clients (Worker « galerie-api »,
-// stockage privé R2) sont proposées aussi. Accès avec la même session que
-// l'espace galeries (/galerie-admin/, même navigateur) ou son mot de passe.
+// stockage privé R2) sont proposées aussi, sans rien demander : l'admin
+// réutilise la session de l'espace galeries (/galerie-admin/, même
+// navigateur) et, quand elle a expiré, se reconnecte tout seul avec le mot
+// de passe des galeries retenu dans ce navigateur (essayé aussi au moment
+// de la connexion à l'admin, au cas où c'est le même). Le mot de passe
+// n'est demandé qu'une fois par appareil si rien de tout ça ne marche.
 // Une photo choisie est copiée sur le site en version allégée (2600 px) au
 // moment d'enregistrer : la galerie, elle, reste privée.
 
 const API_GALERIES = "https://galerie-api.nicoleveugle.workers.dev";
 const SESSION_GALERIES = "galerie-admin-session";
+const MDP_GALERIES = "galerie-admin-mdp";
 const TAILLE_COPIE_GALERIE = 2600;
 
-async function appelGaleries(chemin) {
-  const session = localStorage.getItem(SESSION_GALERIES);
-  if (!session) throw Object.assign(new Error("Connexion requise"), { connexion: true });
-  const res = await fetch(`${API_GALERIES}${chemin}`, { headers: { Authorization: `Bearer ${session}` } });
-  if (res.status === 401) {
+async function appelGaleries(chemin, deuxiemeEssai = false) {
+  const reconnecter = async () => {
     localStorage.removeItem(SESSION_GALERIES);
-    throw Object.assign(new Error("Connexion requise"), { connexion: true });
-  }
+    const mdp = localStorage.getItem(MDP_GALERIES);
+    if (deuxiemeEssai || !mdp) throw Object.assign(new Error("Connexion requise"), { connexion: true });
+    try {
+      await connexionGaleries(mdp);
+    } catch {
+      localStorage.removeItem(MDP_GALERIES);
+      throw Object.assign(new Error("Connexion requise"), { connexion: true });
+    }
+    return appelGaleries(chemin, true);
+  };
+  const session = localStorage.getItem(SESSION_GALERIES);
+  if (!session) return reconnecter();
+  const res = await fetch(`${API_GALERIES}${chemin}`, { headers: { Authorization: `Bearer ${session}` } });
+  if (res.status === 401) return reconnecter();
   if (!res.ok) throw new Error(`Erreur des galeries (${res.status})`);
   return res.json();
 }
@@ -129,6 +143,7 @@ async function connexionGaleries(motDePasse) {
   const corps = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(corps.error || "Connexion impossible.");
   localStorage.setItem(SESSION_GALERIES, corps.token);
+  localStorage.setItem(MDP_GALERIES, motDePasse);
 }
 
 function urlPhotoGalerie(galerie, filename, variante) {
@@ -259,7 +274,7 @@ function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
     sousFiltres.hidden = true;
     grille.innerHTML = `
       <form class="admin-phototheque-connexion">
-        <p>${escapeHtml(message || "Pour voir tes galeries clients, connecte-toi avec le mot de passe de l'espace galeries.")}</p>
+        <p>${escapeHtml(message || "Pour voir tes galeries clients, entre une seule fois le mot de passe de l'espace galeries : ce navigateur s'en souviendra.")}</p>
         <input type="password" placeholder="Mot de passe des galeries" autocomplete="current-password" />
         <button type="submit" class="btn btn-primary btn-small">Se connecter</button>
       </form>`;

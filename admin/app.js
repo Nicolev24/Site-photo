@@ -635,6 +635,11 @@ document.getElementById("password-login-btn").addEventListener("click", async ()
     const blob = await fetchAuthBlob();
     const token = await decryptTokenWithPassword(password, blob);
     localStorage.setItem(TOKEN_KEY, token);
+    // Si le mot de passe des galeries clients est le même, la photothèque y
+    // aura accès sans rien demander (voir connexionGaleries, editor.js).
+    if (!localStorage.getItem("galerie-admin-mdp") && typeof connexionGaleries === "function") {
+      connexionGaleries(password).catch(() => {});
+    }
     enterApp();
   } catch (err) {
     passwordLoginError.textContent = "Mot de passe incorrect.";
