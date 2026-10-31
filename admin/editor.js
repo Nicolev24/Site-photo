@@ -97,6 +97,64 @@ async function chargerPhototheque() {
 // Ouvre la photothèque. `plusieurs` : choix de plusieurs photos (ajout dans
 // une liste). `surChoix(photos)` reçoit [{ image, alt }] pour des photos de
 // la photothèque, `surFichiers(files)` des fichiers venant de l'ordinateur.
+// ---------- Galeries clients dans la photothèque ----------
+// Les photos des galeries envoyées aux clients (Worker « galerie-api »,
+// stockage privé R2) sont proposées aussi. Accès avec la même session que
+// l'espace galeries (/galerie-admin/, même navigateur) ou son mot de passe.
+// Une photo choisie est copiée sur le site en version allégée (2600 px) au
+// moment d'enregistrer : la galerie, elle, reste privée.
+
+const API_GALERIES = "https://galerie-api.nicoleveugle.workers.dev";
+const SESSION_GALERIES = "galerie-admin-session";
+const TAILLE_COPIE_GALERIE = 2600;
+
+async function appelGaleries(chemin) {
+  const session = localStorage.getItem(SESSION_GALERIES);
+  if (!session) throw Object.assign(new Error("Connexion requise"), { connexion: true });
+  const res = await fetch(`${API_GALERIES}${chemin}`, { headers: { Authorization: `Bearer ${session}` } });
+  if (res.status === 401) {
+    localStorage.removeItem(SESSION_GALERIES);
+    throw Object.assign(new Error("Connexion requise"), { connexion: true });
+  }
+  if (!res.ok) throw new Error(`Erreur des galeries (${res.status})`);
+  return res.json();
+}
+
+async function connexionGaleries(motDePasse) {
+  const res = await fetch(`${API_GALERIES}/api/admin/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: motDePasse }),
+  });
+  const corps = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(corps.error || "Connexion impossible.");
+  localStorage.setItem(SESSION_GALERIES, corps.token);
+}
+
+function urlPhotoGalerie(galerie, filename, variante) {
+  return `${API_GALERIES}/api/gallery/${encodeURIComponent(galerie.token)}/photo/${encodeURIComponent(filename)}?variant=${variante}`;
+}
+
+// Télécharge l'original et en fait une copie JPEG de 2600 px au plus (sens
+// de la photo respecté), prête à être envoyée sur le site.
+async function copieDepuisGalerie(photo) {
+  const res = await fetch(urlPhotoGalerie(photo.galerie, photo.filename, "original"));
+  if (!res.ok) throw new Error(`Photo indisponible (${photo.filename})`);
+  const image = await createImageBitmap(await res.blob());
+  const echelle = Math.min(1, TAILLE_COPIE_GALERIE / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(image.width * echelle);
+  canvas.height = Math.round(image.height * echelle);
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  image.close();
+  const blob = await new Promise((ok) => canvas.toBlob(ok, "image/jpeg", 0.9));
+  const prefixe = slugify(photo.galerie.title || photo.galerie.name || "galerie");
+  const nom = `${prefixe}-${photo.filename.replace(/^\d+-+/, "").replace(/\.[^.]+$/, "")}.jpg`;
+  return new File([blob], nom, { type: "image/jpeg" });
+}
+
 function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
   const fond = document.createElement("div");
   fond.className = "admin-phototheque";
@@ -107,9 +165,11 @@ function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
         <label class="btn btn-primary btn-small admin-phototheque-import">📷 Importer depuis mon ordinateur<input type="file" accept="image/*" hidden ${plusieurs ? "multiple" : ""} /></label>
         <button type="button" class="admin-icon-btn admin-phototheque-fermer" title="Fermer">✕</button>
       </div>
-      <p class="admin-hint">Ou choisis une photo déjà envoyée sur le site${plusieurs ? " (tu peux en sélectionner plusieurs)" : ""} :</p>
+      <p class="admin-hint">Ou choisis une photo déjà envoyée sur le site ou dans tes galeries clients${plusieurs ? " (tu peux en sélectionner plusieurs)" : ""} :</p>
       <div class="admin-phototheque-filtres"></div>
+      <div class="admin-phototheque-sousfiltres" hidden></div>
       <div class="admin-phototheque-grille"><p class="admin-hint">Chargement des photos…</p></div>
+      <p class="admin-phototheque-etat" hidden></p>
       ${plusieurs ? '<div class="admin-phototheque-pied"><button type="button" class="btn btn-primary btn-small admin-phototheque-valider" disabled>Ajouter</button></div>' : ""}
     </div>
   `;
@@ -134,35 +194,153 @@ function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
     surFichiers(files);
   });
 
-  const choisies = new Set();
+  const grille = fond.querySelector(".admin-phototheque-grille");
+  const filtres = fond.querySelector(".admin-phototheque-filtres");
+  const sousFiltres = fond.querySelector(".admin-phototheque-sousfiltres");
+  const etat = fond.querySelector(".admin-phototheque-etat");
   const valider = fond.querySelector(".admin-phototheque-valider");
-  if (valider) {
-    valider.addEventListener("click", () => {
-      const liste = Array.from(choisies);
-      fermer();
-      surChoix(liste);
-    });
-  }
+  const choisies = new Set();
 
+  // Photos des galeries : copiées (versions allégées) avant d'être données.
+  const terminer = async (liste) => {
+    const site = liste.filter((p) => !p.galerie);
+    const galeries = liste.filter((p) => p.galerie);
+    const fichiers = [];
+    if (galeries.length) {
+      fond.classList.add("est-occupe");
+      try {
+        for (const [i, p] of galeries.entries()) {
+          etat.hidden = false;
+          etat.textContent = `Préparation de la photo ${galeries.length > 1 ? `${i + 1} sur ${galeries.length}` : ""}…`;
+          fichiers.push(await copieDepuisGalerie(p));
+        }
+      } catch (err) {
+        fond.classList.remove("est-occupe");
+        etat.textContent = `Impossible de récupérer la photo : ${err.message}`;
+        return;
+      }
+    }
+    fermer();
+    if (site.length) surChoix(site);
+    if (fichiers.length) surFichiers(fichiers);
+  };
+  if (valider) valider.addEventListener("click", () => terminer(Array.from(choisies)));
+
+  const majValider = () => {
+    if (!valider) return;
+    valider.disabled = !choisies.size;
+    valider.textContent = choisies.size ? `Ajouter ${choisies.size} photo${choisies.size > 1 ? "s" : ""}` : "Ajouter";
+  };
+
+  const vignette = (p, src, titre, badge) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "admin-phototheque-photo";
+    if (choisies.has(p)) b.classList.add("est-choisie");
+    b.title = titre;
+    b.innerHTML = `<img src="${escapeHtml(src)}" alt="" loading="lazy" />${badge ? `<span class="admin-phototheque-badge">${escapeHtml(badge)}</span>` : ""}`;
+    b.addEventListener("click", () => {
+      if (fond.classList.contains("est-occupe")) return;
+      if (!plusieurs) return terminer([p]);
+      if (choisies.has(p)) choisies.delete(p);
+      else choisies.add(p);
+      b.classList.toggle("est-choisie");
+      majValider();
+    });
+    return b;
+  };
+
+  // --- Galeries clients ---
+  let galeries = null; // liste des galeries (chargée une fois)
+  const photosGaleries = new Map(); // id -> [photos]
+  let galerieChoisie = null;
+
+  const afficherConnexion = (message) => {
+    sousFiltres.hidden = true;
+    grille.innerHTML = `
+      <form class="admin-phototheque-connexion">
+        <p>${escapeHtml(message || "Pour voir tes galeries clients, connecte-toi avec le mot de passe de l'espace galeries.")}</p>
+        <input type="password" placeholder="Mot de passe des galeries" autocomplete="current-password" />
+        <button type="submit" class="btn btn-primary btn-small">Se connecter</button>
+      </form>`;
+    const form = grille.querySelector("form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await connexionGaleries(form.querySelector("input").value);
+        afficherGaleries();
+      } catch (err) {
+        afficherConnexion(err.message);
+      }
+    });
+    form.querySelector("input").focus();
+  };
+
+  const afficherGaleries = async () => {
+    grille.innerHTML = '<p class="admin-hint">Chargement des galeries…</p>';
+    try {
+      if (!galeries) galeries = (await appelGaleries("/api/admin/galleries")).galleries.filter((g) => g.photoCount);
+      if (!galeries.length) {
+        grille.innerHTML = '<p class="admin-hint">Aucune galerie avec des photos pour l\'instant.</p>';
+        return;
+      }
+      if (!galerieChoisie || !galeries.includes(galerieChoisie)) galerieChoisie = galeries[0];
+      sousFiltres.hidden = false;
+      sousFiltres.innerHTML = "";
+      galeries.forEach((g) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = `${g.title || g.name} (${g.photoCount})`;
+        if (g === galerieChoisie) b.className = "actif";
+        b.addEventListener("click", () => {
+          galerieChoisie = g;
+          afficherGaleries();
+        });
+        sousFiltres.appendChild(b);
+      });
+      const g = galerieChoisie;
+      if (!photosGaleries.has(g.id)) {
+        grille.innerHTML = '<p class="admin-hint">Chargement des photos…</p>';
+        const detail = await appelGaleries(`/api/admin/galleries/${encodeURIComponent(g.id)}`);
+        const favoris = new Set(detail.favoris || []);
+        photosGaleries.set(
+          g.id,
+          (detail.photos || []).map((ph) => ({ galerie: g, filename: ph.filename, favori: favoris.has(ph.filename) }))
+        );
+      }
+      if (galerieChoisie !== g) return; // une autre galerie a été choisie entre-temps
+      grille.innerHTML = "";
+      photosGaleries.get(g.id).forEach((p) => {
+        grille.appendChild(vignette(p, urlPhotoGalerie(g, p.filename, "thumb"), `${g.title || g.name} — ${p.filename}`, p.favori ? "♥ Favori du client" : ""));
+      });
+    } catch (err) {
+      if (err.connexion) afficherConnexion();
+      else grille.innerHTML = `<p class="admin-hint">Impossible de charger les galeries : ${escapeHtml(err.message)}</p>`;
+    }
+  };
+
+  // --- Photos du site + onglet « Galeries clients » ---
   chargerPhototheque()
+    .catch(() => [])
     .then((photos) => {
-      const grille = fond.querySelector(".admin-phototheque-grille");
-      const filtres = fond.querySelector(".admin-phototheque-filtres");
       const groupes = DOSSIERS_PHOTOTHEQUE.map(([id, titre]) => [id, titre, photos.filter((p) => p.dossier === id || (!id && !DOSSIERS_PHOTOTHEQUE.some(([d]) => d && d === p.dossier)))]).filter(([, , l]) => l.length);
       let filtre = "tout";
       const afficher = () => {
         filtres.innerHTML = "";
-        [["tout", `Toutes (${photos.length})`], ["site", "Sur le site"], ["libres", "Pas affichées"], ...groupes.map(([id, titre, l]) => [id || "autres", `${titre} (${l.length})`])].forEach(([id, txt]) => {
+        [["tout", `Toutes (${photos.length})`], ["site", "Sur le site"], ["libres", "Pas affichées"], ...groupes.map(([id, titre, l]) => [id || "autres", `${titre} (${l.length})`]), ["galeries", "📁 Galeries clients"]].forEach(([id, txt]) => {
           const b = document.createElement("button");
           b.type = "button";
           b.textContent = txt;
           if (id === filtre) b.className = "actif";
+          if (id === "galeries") b.classList.add("filtre-galeries");
           b.addEventListener("click", () => {
             filtre = id;
             afficher();
           });
           filtres.appendChild(b);
         });
+        if (filtre === "galeries") return afficherGaleries();
+        sousFiltres.hidden = true;
         let visibles = photos;
         if (filtre === "site") visibles = photos.filter((p) => p.pages.length);
         else if (filtre === "libres") visibles = photos.filter((p) => !p.pages.length);
@@ -173,31 +351,12 @@ function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
         visibles = visibles.slice().sort((a, b) => recente(b) - recente(a) || (recente(a) ? b.nom.localeCompare(a.nom) : a.chemin.localeCompare(b.chemin)));
         grille.innerHTML = visibles.length ? "" : '<p class="admin-hint">Aucune photo ici.</p>';
         visibles.forEach((p) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "admin-phototheque-photo";
-          if (choisies.has(p)) b.classList.add("est-choisie");
-          b.title = p.pages.length ? `Sur le site : ${p.pages.join(", ")}` : "Pas affichée sur le site pour l'instant";
-          b.innerHTML = `<img src="${escapeHtml(sitePath(p.vignette))}" alt="" loading="lazy" />${p.pages.length ? '<span class="admin-phototheque-badge">Sur le site</span>' : ""}`;
-          b.addEventListener("click", () => {
-            if (!plusieurs) {
-              fermer();
-              surChoix([p]);
-              return;
-            }
-            if (choisies.has(p)) choisies.delete(p);
-            else choisies.add(p);
-            b.classList.toggle("est-choisie");
-            valider.disabled = !choisies.size;
-            valider.textContent = choisies.size ? `Ajouter ${choisies.size} photo${choisies.size > 1 ? "s" : ""}` : "Ajouter";
-          });
-          grille.appendChild(b);
+          grille.appendChild(
+            vignette(p, sitePath(p.vignette), p.pages.length ? `Sur le site : ${p.pages.join(", ")}` : "Pas affichée sur le site pour l'instant", p.pages.length ? "Sur le site" : "")
+          );
         });
       };
       afficher();
-    })
-    .catch(() => {
-      fond.querySelector(".admin-phototheque-grille").innerHTML = '<p class="admin-hint">Impossible de charger la photothèque pour le moment. Tu peux toujours importer une photo depuis ton ordinateur.</p>';
     });
 }
 

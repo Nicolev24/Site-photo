@@ -1505,3 +1505,80 @@
 .price-card .admin-maquette {
   margin-bottom: 20px;
 }
+
+/* Photothèque : galeries clients */
+.admin-phototheque-sousfiltres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f5f1ea;
+}
+
+.admin-phototheque-sousfiltres[hidden] {
+  display: none;
+}
+
+.admin-phototheque-sousfiltres button {
+  padding: 5px 11px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #fff;
+  color: #444;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.admin-phototheque-sousfiltres button.actif {
+  background: var(--couleur-accent);
+  border-color: var(--couleur-accent);
+  color: #fff;
+}
+
+.admin-phototheque-filtres .filtre-galeries:not(.actif) {
+  border-color: var(--couleur-accent);
+  color: #7a5f37;
+}
+
+.admin-phototheque-connexion {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f5f1ea;
+}
+
+.admin-phototheque-connexion p {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.admin-phototheque-connexion input {
+  flex: 1;
+  min-width: 200px;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.admin-phototheque-connexion .btn {
+  margin: 0;
+}
+
+.admin-phototheque-etat {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #7a5f37;
+}
+
+.admin-phototheque.est-occupe .admin-phototheque-grille {
+  opacity: 0.5;
+  pointer-events: none;
+}
