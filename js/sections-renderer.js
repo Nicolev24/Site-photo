@@ -87,12 +87,25 @@ function attributsTaillesHtml(src, basePath, sizes) {
 
 const TAILLES_PLEINE_LARGEUR = "100vw";
 
+// Cadrage choisi dans l'admin : `position` (« 50% 30% ») dit quelle partie de
+// la photo garder quand elle est rognée pour remplir son cadre, `zoom`
+// (1 à 4) resserre le cadrage autour de ce même point. Comme le point fixe
+// du zoom est aussi la position, le cadrage reste juste quelle que soit la
+// taille du cadre (ordinateur ou téléphone).
+function styleCadrage(photo) {
+  const pos = /^\d+(\.\d+)?% \d+(\.\d+)?%$/.test(photo.position || "") ? photo.position : "50% 50%";
+  const zoom = Math.min(4, Math.max(1, Number(photo.zoom) || 1));
+  let style = `object-position:${pos}`;
+  if (zoom > 1) style += `;transform:scale(${zoom});transform-origin:${pos}`;
+  return style;
+}
+
 // <img> d'une photo du site : versions allégées, dimensions (pour que la page
 // ne saute pas pendant le chargement) et cadrage choisi dans l'admin.
 function imageHtml(photo, basePath, sizes, attrs = "") {
   const info = TAILLES_IMAGES && TAILLES_IMAGES[photo.image];
   const dims = info ? ` width="${info.l}" height="${info.h}"` : "";
-  const cadrage = photo.position ? ` style="object-position:${escapeHtml(photo.position)}"` : "";
+  const cadrage = photo.position || photo.zoom ? ` style="${escapeHtml(styleCadrage(photo))}"` : "";
   return `<img src="${escapeHtml(resolveSrc(photo.image, basePath))}"${attributsTaillesHtml(photo.image, basePath, sizes)}${dims} alt="${escapeHtml(photo.alt || "")}"${cadrage} loading="lazy" decoding="async"${attrs} />`;
 }
 
@@ -265,7 +278,7 @@ function buildPolaroids(data, basePath) {
         <a class="polaroid polaroid-${i + 1}" href="${resolveHref(p.href, basePath)}" data-univers="${escapeHtml(p.univers)}">
           ${i === 0 ? '<span class="polaroid-scotch" aria-hidden="true"></span>' : ""}
           <span class="polaroid-photo${p.univers === u ? " photo-univers" : ""}">
-            <img src="${resolveSrc(p.image, basePath)}"${attributsTaillesHtml(p.image, basePath, "(max-width: 860px) 60vw, 320px")} alt="${escapeHtml(p.alt || "")}" style="object-position:${escapeHtml(p.position || "50% 50%")}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async" />
+            <img src="${resolveSrc(p.image, basePath)}"${attributsTaillesHtml(p.image, basePath, "(max-width: 860px) 60vw, 320px")} alt="${escapeHtml(p.alt || "")}" style="${escapeHtml(styleCadrage(p))}" ${i === 0 ? 'fetchpriority="high"' : ""} decoding="async" />
           </span>
           <span class="polaroid-legende">
             <span class="polaroid-main">${escapeHtml(p.label)}</span>
@@ -384,7 +397,7 @@ function buildOngletsTarifs(data, basePath) {
       ${
         t.image
           ? `<figure class="univers-entete-photo photo-univers">
-        <img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, "(max-width: 860px) 100vw, 600px")} alt="${escapeHtml(t.alt || "")}" style="object-position:${escapeHtml(t.position || "50% 50%")}" fetchpriority="high" decoding="async" />
+        <img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, "(max-width: 860px) 100vw, 600px")} alt="${escapeHtml(t.alt || "")}" style="${escapeHtml(styleCadrage(t))}" fetchpriority="high" decoding="async" />
       </figure>`
           : ""
       }

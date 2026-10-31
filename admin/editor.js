@@ -201,6 +201,213 @@ function ouvrirPhototheque({ plusieurs = false, surChoix, surFichiers }) {
     });
 }
 
+// ---------- Recadrage ----------
+//
+// Comme dans Lightroom : la photo entière, et par-dessus un cadre aux
+// proportions de l'emplacement sur le site. On déplace le cadre (souris ou
+// doigt) et on tire sur ses coins pour resserrer. Le résultat est enregistré
+// en `position` (« x% y% ») et `zoom`, que le site applique avec
+// object-position et transform (voir styleCadrage dans
+// js/sections-renderer.js) : à zoom 1, c'est exactement le cadrage d'avant.
+
+const ZOOM_MAX = 4;
+
+const FORMAT_POSITION = /^(\d+(?:\.\d+)?)% (\d+(?:\.\d+)?)%$/;
+
+function lirePosition(position) {
+  const m = FORMAT_POSITION.exec(position || "");
+  return m ? [Number(m[1]) / 100, Number(m[2]) / 100] : [0.5, 0.5];
+}
+
+// Même rendu que le site, pour l'aperçu dans l'admin.
+function appliquerCadrage(img, obj) {
+  const pos = FORMAT_POSITION.test(obj.position || "") ? obj.position : "50% 50%";
+  const zoom = Math.min(ZOOM_MAX, Math.max(1, Number(obj.zoom) || 1));
+  img.style.objectPosition = pos;
+  img.style.transform = zoom > 1 ? `scale(${zoom})` : "";
+  img.style.transformOrigin = pos;
+}
+
+function ratioEnNombre(ratio) {
+  const [a, b] = String(ratio).split("/").map((x) => Number(x.trim()));
+  return a && b ? a / b : 1;
+}
+
+function ouvrirRecadrage(obj, ratio, apres) {
+  const A = ratioEnNombre(ratio);
+  const fond = document.createElement("div");
+  fond.className = "admin-phototheque admin-recadrage";
+  fond.innerHTML = `
+    <div class="admin-phototheque-boite" role="dialog" aria-modal="true" aria-label="Recadrer la photo">
+      <div class="admin-phototheque-tete">
+        <h3>Recadrer la photo</h3>
+        <button type="button" class="admin-icon-btn admin-phototheque-fermer" title="Fermer">✕</button>
+      </div>
+      <p class="admin-hint">Déplace le cadre pour choisir la partie visible, tire sur les coins pour resserrer. Le cadre a les proportions de l'emplacement sur le site.</p>
+      <div class="rc-zone">
+        <div class="rc-image">
+          <img alt="" draggable="false" />
+          <div class="rc-masque"><div class="rc-ombre"></div></div>
+          <div class="rc-cadre">
+            <span class="rc-tiers"></span>
+            <span class="rc-coin" data-coin="nw"></span><span class="rc-coin" data-coin="ne"></span>
+            <span class="rc-coin" data-coin="sw"></span><span class="rc-coin" data-coin="se"></span>
+          </div>
+        </div>
+      </div>
+      <div class="admin-phototheque-pied">
+        <button type="button" class="btn btn-outline btn-small rc-reinit">Tout recentrer</button>
+        <span style="flex:1"></span>
+        <button type="button" class="btn btn-outline btn-small rc-annuler">Annuler</button>
+        <button type="button" class="btn btn-primary btn-small rc-valider">Valider le cadrage</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(fond);
+  const fermer = () => {
+    fond.remove();
+    document.removeEventListener("keydown", surTouche);
+  };
+  const surTouche = (e) => {
+    if (e.key === "Escape") fermer();
+  };
+  document.addEventListener("keydown", surTouche);
+  fond.querySelector(".admin-phototheque-fermer").addEventListener("click", fermer);
+  fond.querySelector(".rc-annuler").addEventListener("click", fermer);
+
+  const zoneImage = fond.querySelector(".rc-image");
+  const photo = zoneImage.querySelector("img");
+  const cadre = fond.querySelector(".rc-cadre");
+  const ombre = fond.querySelector(".rc-ombre");
+  // Cadre en pixels de la photo d'origine : L, T (coin haut gauche), w (largeur).
+  let W = 1, H = 1, cw0 = 1, L = 0, T = 0, w = 1;
+  const h = () => w / A;
+
+  const dessiner = () => {
+    const k = zoneImage.clientWidth / W; // pixels affichés par pixel d'origine
+    [cadre, ombre].forEach((el) => {
+      el.style.left = `${L * k}px`;
+      el.style.top = `${T * k}px`;
+      el.style.width = `${w * k}px`;
+      el.style.height = `${h() * k}px`;
+    });
+  };
+  const borner = () => {
+    w = Math.min(Math.max(w, cw0 / ZOOM_MAX), cw0);
+    L = Math.min(Math.max(L, 0), W - w);
+    T = Math.min(Math.max(T, 0), H - h());
+  };
+  const depuisObjet = () => {
+    const [px, py] = lirePosition(obj.position);
+    w = cw0 / Math.min(ZOOM_MAX, Math.max(1, Number(obj.zoom) || 1));
+    L = px * (W - w);
+    T = py * (H - h());
+    borner();
+    dessiner();
+  };
+
+  photo.addEventListener("load", () => {
+    W = photo.naturalWidth;
+    H = photo.naturalHeight;
+    cw0 = Math.min(W, H * A); // largeur du cadre sans zoom (la photo remplit l'emplacement)
+    // Photo affichée en entier dans la fenêtre.
+    const maxL = Math.min(860, window.innerWidth - 120);
+    const maxH = window.innerHeight * 0.58;
+    const echelle = Math.min(maxL / W, maxH / H);
+    zoneImage.style.width = `${Math.round(W * echelle)}px`;
+    depuisObjet();
+  });
+  photo.src = obj._previewUrl || sitePath(obj.image);
+
+  // Déplacer le cadre, ou le redimensionner par un coin (le coin opposé ne
+  // bouge pas, les proportions sont conservées).
+  let geste = null;
+  const pointEnImage = (e) => {
+    const r = zoneImage.getBoundingClientRect();
+    const k = r.width / W;
+    return [(e.clientX - r.left) / k, (e.clientY - r.top) / k];
+  };
+  cadre.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    cadre.setPointerCapture(e.pointerId);
+    const [x, y] = pointEnImage(e);
+    geste = { coin: e.target.dataset.coin || null, x, y, L, T, w, R: L + w, B: T + h() };
+  });
+  cadre.addEventListener("pointermove", (e) => {
+    if (!geste) return;
+    const [x, y] = pointEnImage(e);
+    if (!geste.coin) {
+      L = geste.L + (x - geste.x);
+      T = geste.T + (y - geste.y);
+    } else {
+      const c = geste.coin;
+      // Largeur voulue d'après le pointeur (horizontalement ou verticalement,
+      // la plus grande des deux), bornée par l'espace disponible.
+      const versX = c.includes("e") ? x - geste.L : geste.R - x;
+      const versY = (c.includes("s") ? y - geste.T : geste.B - y) * A;
+      const placeX = c.includes("e") ? W - geste.L : geste.R;
+      const placeY = (c.includes("s") ? H - geste.T : geste.B) * A;
+      w = Math.min(Math.max(versX, versY), placeX, placeY);
+      w = Math.min(Math.max(w, cw0 / ZOOM_MAX), cw0);
+      L = c.includes("e") ? geste.L : geste.R - w;
+      T = c.includes("s") ? geste.T : geste.B - h();
+    }
+    borner();
+    dessiner();
+  });
+  const finGeste = () => (geste = null);
+  cadre.addEventListener("pointerup", finGeste);
+  cadre.addEventListener("pointercancel", finGeste);
+  // Molette : resserrer / élargir autour du centre du cadre.
+  zoneImage.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      const cx = L + w / 2, cy = T + h() / 2;
+      w *= e.deltaY > 0 ? 1.06 : 1 / 1.06;
+      w = Math.min(Math.max(w, cw0 / ZOOM_MAX), cw0);
+      L = cx - w / 2;
+      T = cy - h() / 2;
+      borner();
+      dessiner();
+    },
+    { passive: false }
+  );
+
+  fond.querySelector(".rc-reinit").addEventListener("click", () => {
+    w = cw0;
+    L = (W - w) / 2;
+    T = (H - h()) / 2;
+    borner();
+    dessiner();
+  });
+  fond.querySelector(".rc-valider").addEventListener("click", () => {
+    const arrondi = (v) => Math.round(v * 1000) / 10; // en %, au dixième
+    const px = W - w > 0.5 ? L / (W - w) : 0.5;
+    const py = H - h() > 0.5 ? T / (H - h()) : 0.5;
+    obj.position = `${arrondi(px)}% ${arrondi(py)}%`;
+    const zoom = Math.round((cw0 / w) * 1000) / 1000;
+    if (zoom > 1.001) obj.zoom = zoom;
+    else delete obj.zoom;
+    fermer();
+    apres();
+  });
+}
+
+function boutonRecadrer(obj, ratio, img) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "admin-icon-btn admin-recadrer-btn";
+  btn.title = "Recadrer la photo";
+  btn.textContent = "⤢ Recadrer";
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!obj.image && !obj._previewUrl) return;
+    ouvrirRecadrage(obj, ratio, () => appliquerCadrage(img, obj));
+  });
+  return btn;
+}
+
 // `positionedEl` doit déjà avoir position:relative (ou obtenir la classe
 // admin-image-hotspot, qui la lui donne) : la superposition se cale dessus.
 function attachImageOverlay(positionedEl, img, obj, altObj) {
@@ -224,6 +431,12 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
 
   const afficher = (src) => {
     img.src = src;
+    // Nouvelle photo : on repart d'un cadrage centré.
+    if ("position" in obj || "zoom" in obj) {
+      obj.position = "50% 50%";
+      delete obj.zoom;
+      appliquerCadrage(img, obj);
+    }
     // Un cadre vide qui reçoit une photo redevient un cadre normal.
     const cadre = img.closest(".admin-photo-vide");
     if (cadre) {
@@ -746,10 +959,10 @@ function buildEditableTexteJuridique(data, rerender) {
 
 // Photo éditable dans un cadre fixe (changer la photo, texte alternatif,
 // cadrage via ⚙). Sert aux Polaroïds de l'accueil et à l'en-tête des tarifs.
-function editablePhotoFrame(obj, legend, height) {
+function editablePhotoFrame(obj, legend, ratio) {
   const frame = document.createElement("div");
   frame.style.position = "relative";
-  frame.style.height = `${height}px`;
+  frame.style.aspectRatio = ratio;
   frame.style.borderRadius = "4px";
   frame.style.overflow = "hidden";
   frame.style.background = "#000";
@@ -757,14 +970,15 @@ function editablePhotoFrame(obj, legend, height) {
   const img = document.createElement("img");
   img.src = obj._previewUrl || sitePath(obj.image) || "";
   img.alt = obj.alt || "";
-  img.style.cssText = `width:100%;height:100%;object-fit:cover;object-position:${obj.position || "50% 50%"};display:block`;
+  img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
+  appliquerCadrage(img, obj);
   frame.appendChild(img);
   attachImageOverlay(frame, img, obj, obj);
 
   const caption = document.createElement("div");
   caption.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:0.85rem;color:var(--couleur-texte-attenue)";
   caption.textContent = legend;
-  caption.appendChild(buildSettingsPopover([{ label: "Cadrage de la photo (ex : 50% 30% — horizontal puis vertical)", obj, key: "position" }]));
+  caption.appendChild(boutonRecadrer(obj, ratio, img));
 
   const wrap = document.createElement("div");
   wrap.appendChild(frame);
@@ -783,7 +997,7 @@ function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } 
   const img = document.createElement("img");
   img.src = obj._previewUrl || sitePath(obj.image) || "";
   img.alt = obj.alt || "";
-  img.style.objectPosition = obj.position || "50% 50%";
+  appliquerCadrage(img, obj);
   frame.appendChild(img);
   const overlay = attachImageOverlay(frame, img, obj, obj);
   if (!obj.image && !obj._previewUrl) {
@@ -792,7 +1006,7 @@ function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } 
   }
   const outils = document.createElement("div");
   outils.className = "admin-photo-outils";
-  if (cadrage) outils.appendChild(buildSettingsPopover([{ label: "Cadrage de la photo (ex : 50% 30% — horizontal puis vertical)", obj, key: "position" }]));
+  if (cadrage && (obj.image || obj._previewUrl)) outils.appendChild(boutonRecadrer(obj, ratio, img));
   if (retirer && (obj.image || obj._previewUrl)) {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -805,7 +1019,7 @@ function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } 
     });
     outils.appendChild(btn);
   }
-  // Les boutons sont hors du cadre, qui coupe ce qui dépasse (menu ⚙).
+  // Les boutons sont hors du cadre, qui coupe ce qui dépasse.
   const bloc = document.createElement("div");
   bloc.className = "admin-photo-bloc";
   bloc.appendChild(frame);
@@ -826,7 +1040,7 @@ function retirerPhoto(obj, rerender) {
 // Liste de photos (bande, Instagram, deux photos…) : vignettes à
 // réordonner (← →) ou supprimer, et une case « + Ajouter » qui ouvre
 // directement le choix du fichier.
-function editablePhotoList(liste, rerender, { max = 30, ratio = "4 / 5", aide = "" } = {}) {
+function editablePhotoList(liste, rerender, { max = 30, ratio = "4 / 5", aide = "", cadrage = true } = {}) {
   const wrap = document.createElement("div");
   wrap.className = "admin-photo-liste";
   liste.forEach((photo, i) => {
@@ -835,6 +1049,7 @@ function editablePhotoList(liste, rerender, { max = 30, ratio = "4 / 5", aide = 
     item.appendChild(
       editablePhoto(photo, {
         ratio,
+        cadrage,
         retirer: () => {
           liste.splice(i, 1);
           rerender();
@@ -993,6 +1208,7 @@ function buildEditableBandePhotos(data, rerender) {
   sectionEl.appendChild(
     editablePhotoList(data.photos, rerender, {
       ratio: "3 / 4",
+      cadrage: false,
       aide: "Sur le site, ces photos défilent lentement en bande, sur toute la largeur (le défilement s'arrête au survol). 6 à 10 photos, verticales et horizontales mélangées, c'est l'idéal.",
     })
   );
@@ -1233,7 +1449,7 @@ function buildEditablePolaroids(data) {
   data.panels.slice(0, 2).forEach((p, i) => {
     const carte = document.createElement("div");
     carte.style.cssText = "background:#f3efe7;color:#2a2622;padding:12px 12px 10px";
-    carte.appendChild(editablePhotoFrame(p, `Photo « ${p.label || defauts[i].label} »`, 230));
+    carte.appendChild(editablePhotoFrame(p, `Photo « ${p.label || defauts[i].label} »`, "1 / 1"));
     const legende = document.createElement("div");
     legende.style.cssText = "display:grid;gap:4px;margin-top:6px";
     legende.appendChild(editableSpan(p, "label", { tag: "span", className: "polaroid-main", placeholder: "Légende manuscrite" }));
@@ -1318,7 +1534,7 @@ function buildEditableOngletsTarifs(data) {
     titre.className = "eyebrow";
     titre.textContent = NOMS[t.id] || t.label || t.id;
     col.appendChild(titre);
-    col.appendChild(editablePhotoFrame(t, "Photo de l'en-tête", 200));
+    col.appendChild(editablePhotoFrame(t, "Photo de l'en-tête", "3 / 2"));
     col.appendChild(editableSpan(t, "text", { tag: "p", className: "univers-entete-intro", placeholder: "Phrase d'introduction" }));
     grid.appendChild(col);
   });
