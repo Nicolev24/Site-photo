@@ -107,6 +107,28 @@
       ],
       "empreinte": "c052c57bc56d"
     },
+    "images/mariages/maries-course-jardin.jpg": {
+      "l": 1779,
+      "h": 2224,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "2172dc7072b4"
+    },
+    "images/mariages/maries-ponton-noir-et-blanc.jpg": {
+      "l": 1923,
+      "h": 2401,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "76788d3641e5"
+    },
     "images/mariages/photo-instantanee.jpg": {
       "l": 2061,
       "h": 2576,
@@ -117,6 +139,17 @@
         1600
       ],
       "empreinte": "9ee1b0375070"
+    },
+    "images/mariages/premiere-danse-enlaces.jpg": {
+      "l": 1819,
+      "h": 2273,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "e31cc800e7d8"
     },
     "images/mariages/premiere-danse-etincelles.jpg": {
       "l": 2264,

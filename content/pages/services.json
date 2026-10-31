@@ -115,8 +115,9 @@
           {
             "title": "La séance",
             "text": "Je vous guide sans vous figer : on prend le temps, dans une ambiance détendue, pour des photos naturelles.",
-            "image": "images/mariages/baiser-renverse.jpg",
-            "alt": "Le marié renverse la mariée pour un baiser à la fin de la cérémonie"
+            "image": "images/mariages/maries-course-jardin.jpg",
+            "alt": "Les mariés courent dans un jardin, la robe de la mariée au vent",
+            "position": "50% 60%"
           },
           {
             "title": "Votre galerie privée",
