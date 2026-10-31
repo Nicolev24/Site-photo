@@ -67,6 +67,10 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
   altInput.value = altObj.alt || "";
   overlay.appendChild(altInput);
 
+  // Un clic sur la photo elle-même ouvre aussi le choix du fichier.
+  img.addEventListener("click", () => fileInput.click());
+  img.title = "Cliquer pour changer la photo";
+
   fileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;

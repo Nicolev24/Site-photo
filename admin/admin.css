@@ -786,9 +786,16 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
-/* Photos : survol = superposition pour changer la photo */
+/* Photos : un bouton « Changer la photo » toujours visible en bas de la
+   photo (et un clic sur la photo elle-même ouvre aussi le choix du
+   fichier). Pas d'apparition au survol : le bouton recouvrait la photo, qui
+   n'était alors plus survolée, et il disparaissait sous la souris. */
 .admin-image-hotspot {
   position: relative;
+}
+
+.admin-image-hotspot > img {
+  cursor: pointer;
 }
 
 .admin-editable-image-wrap {
@@ -798,49 +805,53 @@
 
 .admin-image-overlay {
   position: absolute;
-  inset: 0;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
   z-index: 10;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: rgba(20, 17, 14, 0.55);
-  opacity: 0;
+  gap: 6px;
   pointer-events: none;
-  transition: opacity 0.15s;
-  padding: 16px;
 }
 
-/* Ne se déclenche qu'au survol de la photo elle-même (pas de toute la
-   section) : sur le hero, le texte est visuellement par-dessus la photo et
-   ne doit jamais être caché par cette superposition quand on clique dessus
-   pour l'éditer — l'image ne reçoit le survol que dans les zones où le
-   texte ne la recouvre pas. */
-.admin-image-hotspot:has(> img:hover) .admin-image-overlay,
-.admin-editable-image-wrap:has(> img:hover) .admin-image-overlay {
-  opacity: 1;
+.admin-image-overlay > * {
   pointer-events: auto;
 }
 
 .admin-image-upload-btn {
   background: #fff;
-  color: var(--couleur-texte);
-  padding: 9px 16px;
+  color: #1c1916;
+  padding: 7px 13px;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.admin-image-upload-btn:hover {
+  background: var(--couleur-accent);
 }
 
 .admin-image-alt-input {
-  width: 100%;
-  max-width: 260px;
-  padding: 8px 12px;
+  flex: 1 1 140px;
+  min-width: 0;
+  padding: 6px 10px;
   border-radius: var(--rayon-bordure);
   border: none;
-  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: #1c1916;
+  font-size: 0.75rem;
   font-family: var(--police-texte);
+}
+
+/* Petites vignettes (listes de photos) : bouton plus compact */
+.admin-photo-liste-item .admin-image-upload-btn {
+  padding: 5px 9px;
+  font-size: 0.7rem;
 }
 
 /* Réglages additionnels (liens, position d'image...) via petite icône */
@@ -1087,9 +1098,9 @@
 }
 
 .admin-photo-vide .admin-image-overlay {
-  opacity: 1;
-  pointer-events: auto;
-  background: none;
+  top: 0;
+  bottom: 0;
+  justify-content: center;
 }
 
 .admin-photo-vide .admin-image-alt-input {
