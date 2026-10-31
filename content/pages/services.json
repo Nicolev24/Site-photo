@@ -51,7 +51,7 @@
             "cta_label": "Choisir cette formule",
             "image": "images/portfolio/portraits/img3.jpg",
             "alt": "Portrait de deux amies assises sur des marches",
-            "position": "50% 35%"
+            "position": "50% 40%"
           },
           {
             "title": "Formule complète",
@@ -65,9 +65,9 @@
               "Galerie privée en ligne"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/mariages/maries-colonnes.jpg",
-            "alt": "Les mariés main dans la main sous des colonnes de pierre",
-            "position": "50% 30%"
+            "image": "images/mariages/baiser-pont-chateau.jpg",
+            "alt": "Les mariés s'embrassent sur le pont d'un château",
+            "position": "50% 60%"
           },
           {
             "title": "Sur devis",
@@ -100,31 +100,64 @@
         "text": "",
         "steps": [
           {
-            "title": "Premier contact",
-            "text": "Vous m'écrivez via la page contact. Je vous réponds sous 48h pour parler de votre projet, de la date et du lieu.",
-            "image": "images/mariages/photo-instantanee.jpg",
-            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
+            "visuel": "message",
+            "title": "Prise de contact",
+            "text": "Un message sur Instagram, un email ou le formulaire : je vous réponds sous 48h pour parler de votre projet.",
+            "message_client": "Bonjour Nicolas ! On se marie le 14 juin à Ath, vous êtes disponible ?",
+            "message_reponse": "Bonjour, félicitations ! Oui, je suis libre ce jour-là. On s'appelle cette semaine ?"
           },
           {
+            "visuel": "planning",
             "title": "Préparation",
-            "text": "On choisit ensemble la formule, le lieu et l'ambiance. Un acompte permet de bloquer la date.",
-            "image": "images/mariages/preparatifs-temoins.jpg",
-            "alt": "Les témoins aident le marié à s'habiller",
-            "position": "50% 40%"
+            "text": "On s'appelle pour caler la date, les lieux et vos envies. Un acompte permet de bloquer la date.",
+            "date_mois": "Juin",
+            "date_jour": "14",
+            "appel": "Appel de préparation",
+            "checklist": [
+              "Date réservée",
+              "Lieux et horaires",
+              "Vos envies et les moments clés"
+            ]
           },
           {
-            "title": "La séance",
+            "visuel": "photo",
+            "title": "Le jour J",
             "text": "Je vous guide sans vous figer : on prend le temps, dans une ambiance détendue, pour des photos naturelles.",
             "image": "images/mariages/maries-course-jardin.jpg",
             "alt": "Les mariés courent dans un jardin, la robe de la mariée au vent",
             "position": "50% 60%"
           },
           {
+            "visuel": "galerie",
             "title": "Votre galerie privée",
             "text": "Vos photos arrivent dans une galerie en ligne rien qu'à vous : vous choisissez vos favorites et les téléchargez en un geste.",
-            "image": "images/mariages/selfie-temoins.jpg",
-            "alt": "Le marié prend un selfie avec ses témoins, en noir et blanc",
-            "position": "50% 50%"
+            "galerie_titre": "Votre galerie",
+            "photos": [
+              {
+                "image": "images/mariages/bouquets-leves.jpg",
+                "alt": "Les mariés s'embrassent, entourés de leurs témoins qui lèvent leurs bouquets"
+              },
+              {
+                "image": "images/mariages/maries-colonnes.jpg",
+                "alt": "Les mariés main dans la main sous des colonnes de pierre"
+              },
+              {
+                "image": "images/mariages/preparatifs-temoins.jpg",
+                "alt": "Les témoins aident le marié à s'habiller"
+              },
+              {
+                "image": "images/mariages/baiser-renverse.jpg",
+                "alt": "Le marié renverse la mariée pour un baiser à la fin de la cérémonie"
+              },
+              {
+                "image": "images/mariages/photo-instantanee.jpg",
+                "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
+              },
+              {
+                "image": "images/mariages/premiere-danse-enlaces.jpg",
+                "alt": "Les mariés enlacés pendant leur première danse, devant leurs invités"
+              }
+            ]
           }
         ]
       }
@@ -194,9 +227,9 @@
               "Vos photos intégrées"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/portfolio/entreprises/img2.jpg",
-            "alt": "Réunion sur un chantier",
-            "position": "50% 35%"
+            "image": "images/formules/site-vitrine.jpg",
+            "alt": "Exemple de site vitrine, sur ordinateur et sur téléphone",
+            "position": "50% 50%"
           },
           {
             "title": "Pack Photo + Site",
@@ -210,9 +243,9 @@
               "90€ d'économie"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/portfolio/entreprises/img4.jpg",
-            "alt": "Équipe sur un chantier",
-            "position": "50% 35%"
+            "image": "images/formules/pack-photo-site.jpg",
+            "alt": "Des photos de commerce et le site vitrine qui les met en valeur",
+            "position": "50% 50%"
           }
         ],
         "note": "Prix TVA comprise."
@@ -228,28 +261,56 @@
         "text": "",
         "steps": [
           {
-            "title": "Premier contact",
-            "text": "Vous m'écrivez via la page contact : on parle de votre commerce, de vos besoins et de vos délais. Réponse sous 48h.",
-            "image": "images/portfolio/entreprises/img2.jpg",
-            "alt": "Réunion sur un chantier"
+            "visuel": "message",
+            "title": "Prise de contact",
+            "text": "Un message sur Instagram, un email ou le formulaire : on parle de votre commerce et de vos besoins. Réponse sous 48h.",
+            "message_client": "Bonjour, j'ai un salon à Ath et j'aimerais de nouvelles photos pour ma fiche Google et mon site.",
+            "message_reponse": "Avec plaisir ! Je passe vous voir pour en parler ?"
           },
           {
+            "visuel": "planning",
             "title": "Préparation",
-            "text": "On liste ensemble les photos utiles : vitrine, équipe, produits, ambiance. Pour un site, je vous prépare une maquette gratuite.",
-            "image": "images/portfolio/entreprises/img3.jpg",
-            "alt": "Manutention en entrepôt"
+            "text": "On fixe un créneau qui vous arrange et la liste des photos utiles. Pour un site, je vous prépare une maquette gratuite.",
+            "date_mois": "Mars",
+            "date_jour": "9",
+            "appel": "Rendez-vous de préparation",
+            "checklist": [
+              "Créneau qui vous arrange",
+              "Vitrine, équipe, produits",
+              "Maquette du site offerte"
+            ]
           },
           {
+            "visuel": "photo",
             "title": "La séance",
             "text": "Je viens sur place, au moment qui vous arrange, partout en Wallonie et à Bruxelles.",
             "image": "images/portfolio/entreprises/img1.jpg",
-            "alt": "Séance chez un barbier"
+            "alt": "Séance chez un barbier",
+            "position": "50% 35%"
           },
           {
+            "visuel": "galerie",
             "title": "Vos photos, prêtes à l'emploi",
             "text": "Vous les recevez dans votre galerie privée, prêtes pour votre fiche Google, vos réseaux et votre site.",
-            "image": "images/portfolio/entreprises/img4.jpg",
-            "alt": "Équipe sur un chantier"
+            "galerie_titre": "Votre galerie",
+            "photos": [
+              {
+                "image": "images/portfolio/entreprises/img2.jpg",
+                "alt": "Réunion sur un chantier"
+              },
+              {
+                "image": "images/portfolio/entreprises/img1.jpg",
+                "alt": "Séance chez un barbier"
+              },
+              {
+                "image": "images/portfolio/entreprises/img4.jpg",
+                "alt": "Équipe sur un chantier"
+              },
+              {
+                "image": "images/portfolio/entreprises/img3.jpg",
+                "alt": "Manutention en entrepôt"
+              }
+            ]
           }
         ]
       }

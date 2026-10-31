@@ -672,10 +672,62 @@ async function buildInstagram(data, basePath) {
   );
 }
 
-// « Comment ça se passe » : les étapes, chacune avec sa photo.
+// « Comment ça se passe » : chaque étape a son visuel, qui raconte l'étape
+// sans légende :
+// - "message" : la prise de contact (une demande, la réponse) ;
+// - "planning" : l'organisation (la date, l'appel, la liste préparée) ;
+// - "photo" : une photo, celle du jour J ;
+// - "galerie" : la galerie privée, en mosaïque comme la vraie.
+// Les visuels s'animent doucement quand l'étape arrive à l'écran.
+
+const ICONES_ETAPES = {
+  instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" class="plein"/></svg>',
+  email: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>',
+  telephone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4-2 1.3a11 11 0 0 0 6.6 6.6l1.3-2 4 1.4v2.6a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>',
+  coche: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  coeur: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+};
+
+function visuelEtape(e, basePath) {
+  switch (e.visuel) {
+    case "message":
+      return `
+        <div class="etape-visuel visuel-message">
+          <div class="vm-canaux">${ICONES_ETAPES.instagram}${ICONES_ETAPES.email}</div>
+          ${e.message_client ? `<p class="vm-bulle vm-client">${escapeHtml(e.message_client)}</p>` : ""}
+          ${e.message_reponse ? `<p class="vm-bulle vm-reponse">${escapeHtml(e.message_reponse)}</p>` : ""}
+        </div>`;
+    case "planning":
+      return `
+        <div class="etape-visuel visuel-planning">
+          <div class="vp-carte">
+            <div class="vp-tete">
+              <span class="vp-date"><span>${escapeHtml(e.date_mois || "")}</span><b>${escapeHtml(e.date_jour || "")}</b></span>
+              <span class="vp-appel">${ICONES_ETAPES.telephone}${escapeHtml(e.appel || "")}</span>
+            </div>
+            <ul class="vp-liste">
+              ${(e.checklist || []).filter(Boolean).map((c) => `<li>${ICONES_ETAPES.coche}<span>${escapeHtml(c)}</span></li>`).join("")}
+            </ul>
+          </div>
+        </div>`;
+    case "galerie": {
+      const photos = photosRemplies(e.photos).slice(0, 6);
+      return `
+        <div class="etape-visuel visuel-galerie">
+          <div class="vg-barre"><span>${escapeHtml(e.galerie_titre || "Votre galerie")}</span><span class="vg-bouton">Tout télécharger</span></div>
+          <div class="vg-grille nb-${photos.length}">
+            ${photos.map((p, i) => `<span class="vg-case">${imageHtml(p, basePath, "120px")}${i === 1 || i === 4 ? `<span class="vg-coeur">${ICONES_ETAPES.coeur}</span>` : ""}</span>`).join("")}
+          </div>
+        </div>`;
+    }
+    default:
+      return e.image ? `<div class="etape-photo">${imageHtml(e, basePath, "(max-width: 860px) 75vw, 280px")}</div>` : "";
+  }
+}
+
 function buildEtapes(data, basePath) {
   const etapes = (data.steps || []).filter((e) => e.title || e.text);
-  return el(
+  const section = el(
     "section",
     { class: "etapes" },
     `
@@ -690,7 +742,7 @@ function buildEtapes(data, basePath) {
           .map(
             (e, i) => `
         <li class="etape">
-          ${e.image ? `<div class="etape-photo">${imageHtml(e, basePath, "(max-width: 860px) 75vw, 280px")}</div>` : ""}
+          ${visuelEtape(e, basePath)}
           <span class="etape-num">${String(i + 1).padStart(2, "0")}</span>
           <h3>${escapeHtml(e.title)}</h3>
           <p>${escapeHtml(e.text)}</p>
@@ -701,6 +753,22 @@ function buildEtapes(data, basePath) {
     </div>
   `
   );
+  // Les animations démarrent quand l'étape devient visible.
+  if ("IntersectionObserver" in window) {
+    const obs = new IntersectionObserver(
+      (entrees) =>
+        entrees.forEach((en) => {
+          if (!en.isIntersecting) return;
+          en.target.classList.add("est-anime");
+          obs.unobserve(en.target);
+        }),
+      { threshold: 0.35 }
+    );
+    section.querySelectorAll(".etape-visuel").forEach((v) => obs.observe(v));
+  } else {
+    section.querySelectorAll(".etape-visuel").forEach((v) => v.classList.add("est-anime"));
+  }
+  return section;
 }
 
 const SECTION_BUILDERS = {

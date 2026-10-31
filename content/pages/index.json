@@ -36,21 +36,6 @@
       }
     },
     {
-      "id": "presentation",
-      "type": "presentation",
-      "data": {
-        "eyebrow": "Votre photographe",
-        "title": "Bonjour, moi c'est Nicolas.",
-        "text": "Photographe indépendant basé à Ath, je photographie les mariages, les couples, les portraits, les événements et les commerces, partout en Wallonie et à Bruxelles.",
-        "text_suite": "Mon objectif : des photos naturelles, dans lesquelles vous vous reconnaissez vraiment. Je vous guide sans vous figer, pour que la séance reste un bon moment.",
-        "button_label": "En savoir plus sur moi",
-        "button_href": "a-propos.html",
-        "image": "images/nicolas-leveugle-portrait.jpg",
-        "alt": "Nicolas Leveugle, photographe à Ath",
-        "position": "50% 50%"
-      }
-    },
-    {
       "id": "contact",
       "type": "contact_bref",
       "data": {

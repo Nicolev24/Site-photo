@@ -1,5 +1,27 @@
 {
   "images": {
+    "images/formules/pack-photo-site.jpg": {
+      "l": 1800,
+      "h": 1200,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "70ad8be4dc61"
+    },
+    "images/formules/site-vitrine.jpg": {
+      "l": 1800,
+      "h": 1200,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "dbd118fea3fb"
+    },
     "images/hero.jpg": {
       "l": 1333,
       "h": 2000,

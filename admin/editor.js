@@ -844,6 +844,101 @@ function buildEditableInstagram(data, rerender) {
   return sectionEl;
 }
 
+// Mêmes icônes que les étapes du site (js/sections-renderer.js).
+const ICONES_ETAPES_ADMIN = {
+  instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" class="plein"/></svg>',
+  email: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>',
+  telephone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4-2 1.3a11 11 0 0 0 6.6 6.6l1.3-2 4 1.4v2.6a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>',
+  coche: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  coeur: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+};
+
+// Visuel d'une étape, modifiable en place (mêmes classes que le site).
+function visuelEtapeEditable(etape, rerender) {
+  const visuel = etape.visuel || "photo";
+  if (visuel === "photo") {
+    const photo = editablePhoto(etape, { ratio: "4 / 5", retirer: retirerPhoto(etape, rerender) });
+    photo.classList.add("admin-etape-photo");
+    return photo;
+  }
+  if (visuel === "galerie") {
+    etape.photos = etape.photos || [];
+    const bloc = document.createElement("div");
+    bloc.className = "admin-etape-photo";
+    bloc.appendChild(editableSpan(etape, "galerie_titre", { tag: "p", className: "admin-hint", placeholder: "Titre de la galerie (ex. Votre galerie)" }));
+    bloc.appendChild(
+      editablePhotoList(etape.photos, rerender, {
+        max: 6,
+        ratio: "1 / 1",
+        aide: "4 ou 6 photos : elles s'affichent en mosaïque, comme dans la vraie galerie client.",
+      })
+    );
+    return bloc;
+  }
+  const cadre = document.createElement("div");
+  cadre.className = `etape-visuel est-anime ${visuel === "message" ? "visuel-message" : "visuel-planning"}`;
+  if (visuel === "message") {
+    cadre.innerHTML = `<div class="vm-canaux">${ICONES_ETAPES_ADMIN.instagram}${ICONES_ETAPES_ADMIN.email}</div>`;
+    cadre.appendChild(editableSpan(etape, "message_client", { tag: "p", className: "vm-bulle vm-client", placeholder: "Message du client" }));
+    cadre.appendChild(editableSpan(etape, "message_reponse", { tag: "p", className: "vm-bulle vm-reponse", placeholder: "Ta réponse" }));
+    return cadre;
+  }
+  etape.checklist = etape.checklist || [];
+  const carte = document.createElement("div");
+  carte.className = "vp-carte";
+  const tete = document.createElement("div");
+  tete.className = "vp-tete";
+  const date = document.createElement("span");
+  date.className = "vp-date";
+  date.appendChild(editableSpan(etape, "date_mois", { placeholder: "Mois" }));
+  date.appendChild(editableSpan(etape, "date_jour", { tag: "b", placeholder: "Jour" }));
+  tete.appendChild(date);
+  const appel = document.createElement("span");
+  appel.className = "vp-appel";
+  appel.innerHTML = ICONES_ETAPES_ADMIN.telephone;
+  appel.appendChild(editableSpan(etape, "appel", { placeholder: "Ex. Appel de préparation" }));
+  tete.appendChild(appel);
+  carte.appendChild(tete);
+  const ul = document.createElement("ul");
+  ul.className = "vp-liste";
+  etape.checklist.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = ICONES_ETAPES_ADMIN.coche;
+    const span = document.createElement("span");
+    span.className = "admin-editable";
+    span.contentEditable = "true";
+    span.textContent = item;
+    span.addEventListener("input", () => (etape.checklist[i] = span.textContent));
+    span.addEventListener("blur", () => (etape.checklist[i] = span.textContent.trim()));
+    li.appendChild(span);
+    const suppr = document.createElement("button");
+    suppr.type = "button";
+    suppr.className = "admin-feature-remove";
+    suppr.title = "Retirer cette ligne";
+    suppr.textContent = "×";
+    suppr.addEventListener("click", () => {
+      etape.checklist.splice(i, 1);
+      rerender();
+    });
+    li.appendChild(suppr);
+    ul.appendChild(li);
+  });
+  carte.appendChild(ul);
+  if (etape.checklist.length < 4) {
+    const ajout = document.createElement("button");
+    ajout.type = "button";
+    ajout.className = "admin-feature-add";
+    ajout.textContent = "+ Ajouter une ligne";
+    ajout.addEventListener("click", () => {
+      etape.checklist.push("");
+      rerender();
+    });
+    carte.appendChild(ajout);
+  }
+  cadre.appendChild(carte);
+  return cadre;
+}
+
 function buildEditableEtapes(data, rerender) {
   data.steps = data.steps || [];
   const sectionEl = document.createElement("section");
@@ -883,10 +978,29 @@ function buildEditableEtapes(data, rerender) {
       data.steps.splice(i, 1);
       rerender();
     });
+    // Type de visuel de l'étape
+    const choix = document.createElement("select");
+    choix.className = "admin-tab-select";
+    choix.title = "Visuel de l'étape";
+    [
+      ["photo", "Photo"],
+      ["message", "Message (prise de contact)"],
+      ["planning", "Organisation (date, liste)"],
+      ["galerie", "Galerie (mosaïque de photos)"],
+    ].forEach(([v, l]) => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = l;
+      if ((etape.visuel || "photo") === v) o.selected = true;
+      choix.appendChild(o);
+    });
+    choix.addEventListener("change", () => {
+      etape.visuel = choix.value;
+      rerender();
+    });
+    outils.querySelector(".admin-section-type-badge").after(choix);
     li.appendChild(outils);
-    const photo = editablePhoto(etape, { ratio: "4 / 5", retirer: retirerPhoto(etape, rerender) });
-    photo.classList.add("admin-etape-photo");
-    li.appendChild(photo);
+    li.appendChild(visuelEtapeEditable(etape, rerender));
     const num = document.createElement("span");
     num.className = "etape-num";
     num.textContent = String(i + 1).padStart(2, "0");

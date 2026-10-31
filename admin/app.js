@@ -107,7 +107,12 @@ const SECTION_TYPES = [
     label: "Comment ça se passe (étapes avec photo)",
     defaultData: () => ({
       eyebrow: "Comment ça se passe", title: "", text: "",
-      steps: [1, 2, 3, 4].map(() => ({ title: "", text: "", image: "", alt: "" })),
+      steps: [
+        { visuel: "message", title: "Prise de contact", text: "", message_client: "", message_reponse: "" },
+        { visuel: "planning", title: "Préparation", text: "", date_mois: "", date_jour: "", appel: "Appel de préparation", checklist: ["", "", ""] },
+        { visuel: "photo", title: "Le jour J", text: "", image: "", alt: "" },
+        { visuel: "galerie", title: "Votre galerie privée", text: "", galerie_titre: "Votre galerie", photos: [] },
+      ],
     }),
   },
   {

@@ -1769,6 +1769,268 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   color: var(--couleur-texte-attenue);
 }
 
+/* Visuels des étapes : message, organisation, galerie */
+.etape-visuel {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 22px 18px;
+  border-radius: var(--rayon-bordure);
+  background: radial-gradient(ellipse at 50% 30%, #2f2923, var(--couleur-fond-alt) 75%);
+  border: 1px solid var(--couleur-bordure);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.etape-visuel svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.etape-visuel svg .plein {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* 1. Le message */
+.vm-canaux {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  color: var(--couleur-accent);
+}
+
+.vm-canaux svg {
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border: 1px solid rgba(174, 140, 91, 0.45);
+  border-radius: 50%;
+}
+
+.etape .vm-bulle {
+  max-width: 88%;
+  margin: 0;
+  padding: 10px 13px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  border-radius: 14px;
+}
+
+.etape .vm-client {
+  align-self: flex-start;
+  background: #f3efe7;
+  color: #2a2622;
+  border-bottom-left-radius: 4px;
+}
+
+.etape .vm-reponse {
+  align-self: flex-end;
+  background: var(--couleur-accent);
+  color: var(--couleur-sur-accent);
+  border-bottom-right-radius: 4px;
+}
+
+/* 2. L'organisation */
+.vp-carte {
+  padding: 16px;
+  background: #f3efe7;
+  color: #2a2622;
+  border-radius: 6px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  transform: rotate(-1.5deg);
+}
+
+.vp-tete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(42, 38, 34, 0.12);
+}
+
+.vp-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  flex: none;
+  border: 2px solid var(--couleur-accent);
+  border-radius: 50%;
+  line-height: 1;
+}
+
+.vp-date span {
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6d665d;
+}
+
+.vp-date b {
+  font-family: var(--police-titres);
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+
+.vp-appel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.vp-appel svg {
+  color: var(--couleur-accent);
+}
+
+.vp-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 0.74rem;
+}
+
+.vp-liste li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vp-liste svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+  border-radius: 50%;
+  background: var(--couleur-accent);
+  color: #f3efe7;
+  stroke-width: 3;
+}
+
+/* 4. La galerie */
+.visuel-galerie {
+  justify-content: flex-start;
+  padding: 0;
+  background: #f3efe7;
+}
+
+.vg-barre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 12px 10px;
+  color: #2a2622;
+  font-family: var(--police-titres);
+  font-size: 1rem;
+}
+
+.vg-bouton {
+  padding: 5px 9px;
+  border-radius: 3px;
+  background: var(--couleur-accent);
+  color: var(--couleur-sur-accent);
+  font-family: var(--police-texte);
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.vg-grille {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 4px;
+  padding: 0 4px 4px;
+}
+
+.vg-grille.nb-5,
+.vg-grille.nb-6 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.vg-case {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #d9d3c8;
+}
+
+.vg-case img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vg-coeur {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  display: flex;
+  padding: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ff4d6d;
+}
+
+.vg-coeur svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* Les visuels s'animent à leur arrivée à l'écran */
+@media (prefers-reduced-motion: no-preference) {
+  .vm-bulle,
+  .vp-liste li,
+  .vg-case {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .est-anime .vm-bulle,
+  .est-anime .vp-liste li,
+  .est-anime .vg-case {
+    animation: etapeApparait 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  .est-anime .vm-reponse { animation-delay: 0.9s; }
+  .est-anime .vp-liste li:nth-child(1) { animation-delay: 0.2s; }
+  .est-anime .vp-liste li:nth-child(2) { animation-delay: 0.5s; }
+  .est-anime .vp-liste li:nth-child(3) { animation-delay: 0.8s; }
+  .est-anime .vp-liste li:nth-child(4) { animation-delay: 1.1s; }
+  .est-anime .vg-case:nth-child(2) { animation-delay: 0.1s; }
+  .est-anime .vg-case:nth-child(3) { animation-delay: 0.2s; }
+  .est-anime .vg-case:nth-child(4) { animation-delay: 0.3s; }
+  .est-anime .vg-case:nth-child(5) { animation-delay: 0.4s; }
+  .est-anime .vg-case:nth-child(6) { animation-delay: 0.5s; }
+}
+
+@keyframes etapeApparait {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Photo en tête de chaque formule */
 .price-card-photo {
   aspect-ratio: 3 / 2;

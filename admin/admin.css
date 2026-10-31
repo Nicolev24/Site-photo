@@ -1176,3 +1176,18 @@
   border-color: transparent;
   padding: 3px 7px;
 }
+
+.admin-feature-add {
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #6d665d;
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.vp-liste .admin-feature-remove {
+  margin-left: auto;
+}
