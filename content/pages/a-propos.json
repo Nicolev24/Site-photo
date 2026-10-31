@@ -1,0 +1,126 @@
+{
+  "seo": {
+    "title": "À propos – Nicolas Leveugle, photographe à Ath",
+    "description": "Nicolas Leveugle, photographe indépendant à Ath : sa façon de travailler, son style naturel, pour les particuliers comme pour les commerces, en Wallonie et à Bruxelles.",
+    "og_image": "images/photographe.jpg"
+  },
+  "sections": [
+    {
+      "id": "qui-je-suis",
+      "type": "presentation",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "À propos · Photographe à Ath",
+        "title": "Derrière l'objectif",
+        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements, mais aussi commerces et entreprises : j'aime photographier les gens tels qu'ils sont.",
+        "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
+        "button_label": "",
+        "button_href": "",
+        "image": "images/photographe.jpg",
+        "alt": "Nicolas Leveugle, photographe à Ath",
+        "position": "50% 32%"
+      }
+    },
+    {
+      "id": "photo-1",
+      "type": "photo_pleine",
+      "data": {
+        "image": "images/portfolio/evenements/img2.jpg",
+        "alt": "Cortège de mariage dans une cour",
+        "position": "50% 55%"
+      }
+    },
+    {
+      "id": "facon-de-travailler",
+      "type": "texte_duo",
+      "data": {
+        "eyebrow": "Ma façon de travailler",
+        "title": "Naturel avant tout",
+        "text": "Je vous guide juste assez pour que vous soyez à l'aise, puis je laisse la place aux vrais moments : un regard, un rire, une main qui se serre.",
+        "text_suite": "Côté retouche, je reste sobre : une lumière soignée, des couleurs fidèles, et vous, tels que vous êtes.",
+        "button_label": "Voir les formules",
+        "button_href": "services.html?pour=particuliers",
+        "image_side": "droite",
+        "photos": [
+          {
+            "image": "images/portfolio/couples/img4.jpg",
+            "alt": "Mariés enlacés, front contre front"
+          },
+          {
+            "image": "images/portfolio/couples/img1.jpg",
+            "alt": "Mariés avec leur chien sur l'herbe"
+          }
+        ]
+      }
+    },
+    {
+      "id": "commerces",
+      "type": "texte_duo",
+      "data": {
+        "eyebrow": "Pour les commerces",
+        "title": "Des photos qui donnent envie de pousser la porte",
+        "text": "Pour les commerces et les entreprises, je réalise des photos prêtes pour votre fiche Google, vos réseaux et votre site.",
+        "text_suite": "Et si vous n'avez pas encore de site, je peux aussi vous créer un site vitrine simple et efficace.",
+        "button_label": "Voir les offres commerces",
+        "button_href": "services.html?pour=commerces",
+        "image_side": "gauche",
+        "photos": [
+          {
+            "image": "images/portfolio/entreprises/img1.jpg",
+            "alt": "Séance chez un barbier"
+          },
+          {
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          }
+        ]
+      }
+    },
+    {
+      "id": "photos",
+      "type": "bande_photos",
+      "data": {
+        "photos": [
+          {
+            "image": "images/portfolio/evenements/img1.jpg",
+            "alt": "Mariage, mariés entourés de leurs témoins"
+          },
+          {
+            "image": "images/portfolio/portraits/img2.jpg",
+            "alt": "Portrait d'un adolescent devant un mur de pierre, en noir et blanc"
+          },
+          {
+            "image": "images/portfolio/couples/img3.jpg",
+            "alt": "Le marié à genoux offre un bouquet à la mariée devant un château"
+          },
+          {
+            "image": "images/portfolio/entreprises/img3.jpg",
+            "alt": "Manutention en entrepôt"
+          },
+          {
+            "image": "images/portfolio/evenements/img3.jpg",
+            "alt": "Première danse des mariés devant les invités"
+          },
+          {
+            "image": "images/portfolio/portraits/img4.jpg",
+            "alt": "Portrait d'un jeune homme en costume devant un mur sombre"
+          },
+          {
+            "image": "images/portfolio/couples/img2.jpg",
+            "alt": "Mariée s'avançant vers le marié"
+          }
+        ]
+      }
+    },
+    {
+      "id": "contact",
+      "type": "cta",
+      "data": {
+        "title": "Envie qu'on travaille ensemble ?",
+        "text": "Parlez-moi de votre projet : je vous réponds sous 48h.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
+      }
+    }
+  ]
+}

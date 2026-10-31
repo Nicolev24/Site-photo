@@ -19,7 +19,10 @@
       "type": "contact",
       "data": {
         "coordonnees_title": "Coordonnées",
-        "formulaire_title": "Formulaire de contact"
+        "formulaire_title": "Formulaire de contact",
+        "image": "images/portfolio/couples/img2.jpg",
+        "alt": "Mariée s'avançant vers le marié",
+        "position": "50% 40%"
       }
     }
   ]

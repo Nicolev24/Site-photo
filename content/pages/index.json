@@ -36,6 +36,101 @@
       }
     },
     {
+      "id": "photos",
+      "type": "bande_photos",
+      "data": {
+        "photos": [
+          {
+            "image": "images/portfolio/couples/img4.jpg",
+            "alt": "Mariés enlacés, front contre front"
+          },
+          {
+            "image": "images/portfolio/entreprises/img1.jpg",
+            "alt": "Séance chez un barbier"
+          },
+          {
+            "image": "images/portfolio/evenements/img2.jpg",
+            "alt": "Cortège de mariage dans une cour"
+          },
+          {
+            "image": "images/portfolio/portraits/img3.jpg",
+            "alt": "Portrait de deux amies assises sur des marches"
+          },
+          {
+            "image": "images/portfolio/couples/img2.jpg",
+            "alt": "Mariée s'avançant vers le marié"
+          },
+          {
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          },
+          {
+            "image": "images/portfolio/evenements/img4.jpg",
+            "alt": "Mariés marchant vers le château"
+          },
+          {
+            "image": "images/portfolio/portraits/img1.jpg",
+            "alt": "Portrait devant une voiture, en extérieur"
+          },
+          {
+            "image": "images/portfolio/couples/1791567610764-1z6-0954.jpg",
+            "alt": "Mariés derrière leur pièce montée, en noir et blanc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "presentation",
+      "type": "presentation",
+      "data": {
+        "eyebrow": "Votre photographe",
+        "title": "Bonjour, moi c'est Nicolas.",
+        "text": "Photographe indépendant basé à Ath, je photographie les mariages, les couples, les portraits, les événements et les commerces, partout en Wallonie et à Bruxelles.",
+        "text_suite": "Mon objectif : des photos naturelles, dans lesquelles vous vous reconnaissez vraiment. Je vous guide sans vous figer, pour que la séance reste un bon moment.",
+        "button_label": "En savoir plus sur moi",
+        "button_href": "a-propos.html",
+        "image": "images/photographe.jpg",
+        "alt": "Nicolas Leveugle, photographe à Ath",
+        "position": "50% 32%"
+      }
+    },
+    {
+      "id": "instagram",
+      "type": "instagram",
+      "data": {
+        "eyebrow": "Instagram",
+        "title": "Tout mon travail est sur Instagram",
+        "text": "Mes dernières séances et les coulisses : venez faire un tour pour découvrir mon univers.",
+        "button_label": "Voir mon Instagram",
+        "photos": [
+          {
+            "image": "images/portfolio/evenements/img1.jpg",
+            "alt": "Mariage, mariés entourés de leurs témoins"
+          },
+          {
+            "image": "images/portfolio/portraits/img2.jpg",
+            "alt": "Portrait d'un adolescent devant un mur de pierre, en noir et blanc"
+          },
+          {
+            "image": "images/portfolio/entreprises/img2.jpg",
+            "alt": "Réunion sur un chantier"
+          },
+          {
+            "image": "images/portfolio/couples/img1.jpg",
+            "alt": "Mariés avec leur chien sur l'herbe"
+          },
+          {
+            "image": "images/portfolio/evenements/img3.jpg",
+            "alt": "Première danse des mariés devant les invités"
+          },
+          {
+            "image": "images/portfolio/portraits/img4.jpg",
+            "alt": "Portrait d'un jeune homme en costume devant un mur sombre"
+          }
+        ]
+      }
+    },
+    {
       "id": "contact",
       "type": "contact_bref",
       "data": {

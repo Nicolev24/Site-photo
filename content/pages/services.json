@@ -48,7 +48,10 @@
               "1 lieu",
               "Galerie privée en ligne"
             ],
-            "cta_label": "Choisir cette formule"
+            "cta_label": "Choisir cette formule",
+            "image": "images/portfolio/portraits/img3.jpg",
+            "alt": "Portrait de deux amies assises sur des marches",
+            "position": "50% 35%"
           },
           {
             "title": "Formule complète",
@@ -61,7 +64,10 @@
               "Plusieurs lieux possibles",
               "Galerie privée en ligne"
             ],
-            "cta_label": "Choisir cette formule"
+            "cta_label": "Choisir cette formule",
+            "image": "images/portfolio/couples/img4.jpg",
+            "alt": "Mariés enlacés, front contre front",
+            "position": "50% 35%"
           },
           {
             "title": "Sur devis",
@@ -75,10 +81,49 @@
               "Durée et lieux adaptés à votre besoin",
               "Galerie privée en ligne"
             ],
-            "cta_label": "Demander un devis"
+            "cta_label": "Demander un devis",
+            "image": "images/portfolio/evenements/img3.jpg",
+            "alt": "Première danse des mariés devant les invités",
+            "position": "50% 35%"
           }
         ],
         "note": "Quelle que soit la formule choisie : galerie privée en ligne et aucune limite sur le nombre de photos livrées."
+      }
+    },
+    {
+      "id": "etapes-particuliers",
+      "type": "etapes",
+      "tab": "particuliers",
+      "data": {
+        "eyebrow": "Comment ça se passe",
+        "title": "De votre message à vos photos",
+        "text": "",
+        "steps": [
+          {
+            "title": "Premier contact",
+            "text": "Vous m'écrivez via la page contact. Je vous réponds sous 48h pour parler de votre projet, de la date et du lieu.",
+            "image": "images/portfolio/portraits/img1.jpg",
+            "alt": "Portrait devant une voiture, en extérieur"
+          },
+          {
+            "title": "Préparation",
+            "text": "On choisit ensemble la formule, le lieu et l'ambiance. Un acompte permet de bloquer la date.",
+            "image": "images/portfolio/evenements/img4.jpg",
+            "alt": "Mariés marchant vers le château"
+          },
+          {
+            "title": "La séance",
+            "text": "Je vous guide sans vous figer : on prend le temps, dans une ambiance détendue, pour des photos naturelles.",
+            "image": "images/portfolio/couples/img1.jpg",
+            "alt": "Mariés avec leur chien sur l'herbe"
+          },
+          {
+            "title": "Votre galerie privée",
+            "text": "Vos photos arrivent dans une galerie en ligne rien qu'à vous : vous choisissez vos favorites et les téléchargez en un geste.",
+            "image": "images/portfolio/couples/1791567610764-1z6-0954.jpg",
+            "alt": "Mariés derrière leur pièce montée, en noir et blanc"
+          }
+        ]
       }
     },
     {
@@ -129,7 +174,10 @@
               "Photos retouchées",
               "Prêtes pour Google, les réseaux et votre site"
             ],
-            "cta_label": "Choisir cette formule"
+            "cta_label": "Choisir cette formule",
+            "image": "images/portfolio/entreprises/img1.jpg",
+            "alt": "Séance chez un barbier",
+            "position": "50% 35%"
           },
           {
             "title": "Site vitrine 1 page",
@@ -142,7 +190,10 @@
               "Adapté à tous les écrans (ordinateur, téléphone, tablette)",
               "Vos photos intégrées"
             ],
-            "cta_label": "Choisir cette formule"
+            "cta_label": "Choisir cette formule",
+            "image": "images/portfolio/entreprises/img2.jpg",
+            "alt": "Réunion sur un chantier",
+            "position": "50% 35%"
           },
           {
             "title": "Pack Photo + Site",
@@ -155,10 +206,49 @@
               "Site vitrine 1 page inclus",
               "90€ d'économie"
             ],
-            "cta_label": "Choisir cette formule"
+            "cta_label": "Choisir cette formule",
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier",
+            "position": "50% 35%"
           }
         ],
         "note": "Prix TVA comprise."
+      }
+    },
+    {
+      "id": "etapes-commerces",
+      "type": "etapes",
+      "tab": "commerces",
+      "data": {
+        "eyebrow": "Comment ça se passe",
+        "title": "De votre message à vos photos",
+        "text": "",
+        "steps": [
+          {
+            "title": "Premier contact",
+            "text": "Vous m'écrivez via la page contact : on parle de votre commerce, de vos besoins et de vos délais. Réponse sous 48h.",
+            "image": "images/portfolio/entreprises/img2.jpg",
+            "alt": "Réunion sur un chantier"
+          },
+          {
+            "title": "Préparation",
+            "text": "On liste ensemble les photos utiles : vitrine, équipe, produits, ambiance. Pour un site, je vous prépare une maquette gratuite.",
+            "image": "images/portfolio/entreprises/img3.jpg",
+            "alt": "Manutention en entrepôt"
+          },
+          {
+            "title": "La séance",
+            "text": "Je viens sur place, au moment qui vous arrange, partout en Wallonie et à Bruxelles.",
+            "image": "images/portfolio/entreprises/img1.jpg",
+            "alt": "Séance chez un barbier"
+          },
+          {
+            "title": "Vos photos, prêtes à l'emploi",
+            "text": "Vous les recevez dans votre galerie privée, prêtes pour votre fiche Google, vos réseaux et votre site.",
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          }
+        ]
       }
     },
     {

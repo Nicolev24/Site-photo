@@ -32,12 +32,6 @@ const ZONES = [
 ];
 
 const UNIVERS = { particuliers: "Particuliers", commerces: "Commerces" };
-const CATEGORIES = {
-  portraits: "Portraits",
-  couples: "Couples",
-  entreprises: "Entreprises & commerces",
-  evenements: "Événements",
-};
 
 const echapper = (v) =>
   String(v == null ? "" : v)
@@ -54,7 +48,7 @@ function prixNumerique(prix) {
 // ---------- Version texte d'une page ----------
 
 function versionTexte(page, donnees) {
-  const { contact, portfolio, images } = donnees;
+  const { contact, images } = donnees;
   let h1Fait = false;
   const titre = (texte, niveau = 2) => {
     if (!texte) return "";
@@ -66,6 +60,7 @@ function versionTexte(page, donnees) {
   };
   const suffixe = (s) => (s.tab && UNIVERS[s.tab] ? ` — ${UNIVERS[s.tab]}` : "");
   const img = (src, alt) => {
+    if (!src) return "";
     const info = images[src];
     const dims = info ? ` width="${info.l}" height="${info.h}"` : "";
     return `<img src="${echapper(src)}" alt="${echapper(alt)}"${dims} loading="lazy" />`;
@@ -122,13 +117,32 @@ function versionTexte(page, donnees) {
       case "contact":
         morceaux.push(titre(d.coordonnees_title || "Coordonnées"));
         break;
-      case "portfolio_galerie":
-        for (const [cat, libelle] of Object.entries(CATEGORIES)) {
-          const photos = (portfolio.items || []).filter((i) => i.category === cat);
-          if (!photos.length) continue;
-          morceaux.push(`<h2>${echapper(libelle)}</h2>`);
-          morceaux.push(photos.map((i) => img(i.image, i.alt)).join(""));
-        }
+      case "presentation":
+      case "texte_duo":
+        if (d.eyebrow) morceaux.push(d.titre_page ? titre(d.eyebrow, 1) : `<p>${echapper(d.eyebrow)}</p>`);
+        morceaux.push(titre(d.title));
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        if (d.text_suite) morceaux.push(`<p>${echapper(d.text_suite)}</p>`);
+        if (d.button_label) morceaux.push(`<p><a href="${echapper(d.button_href)}">${echapper(d.button_label)}</a></p>`);
+        if (d.image) morceaux.push(img(d.image, d.alt));
+        for (const p of d.photos || []) morceaux.push(img(p.image, p.alt));
+        break;
+      case "photo_pleine":
+        morceaux.push(img(d.image, d.alt));
+        break;
+      case "bande_photos":
+        morceaux.push((d.photos || []).map((p) => img(p.image, p.alt)).join(""));
+        break;
+      case "instagram":
+        morceaux.push(titre(d.title));
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        morceaux.push(`<p><a href="${echapper(contact.instagram_url)}">${echapper(d.button_label || "Voir mon Instagram")} (${echapper(contact.instagram_handle)})</a></p>`);
+        morceaux.push((d.photos || []).map((p) => img(p.image, p.alt)).join(""));
+        break;
+      case "etapes":
+        morceaux.push(`<h2>${echapper((d.title || "Comment ça se passe") + suffixe(s))}</h2>`);
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        morceaux.push(`<ol>${(d.steps || []).map((e) => `<li><strong>${echapper(e.title)}</strong> : ${echapper(e.text)}</li>`).join("")}</ol>`);
         break;
       case "texte_juridique":
         for (const b of d.blocks || []) {
@@ -224,7 +238,6 @@ function remplacerEntre(html, debut, fin, contenu, ancre) {
 
 const donnees = {
   contact: await lireJson("content/contact.json"),
-  portfolio: await lireJson("content/portfolio.json").catch(() => ({ items: [] })),
   images: (await lireJson("content/images.json").catch(() => ({ images: {} }))).images || {},
 };
 const site = await lireJson("content/site.json");

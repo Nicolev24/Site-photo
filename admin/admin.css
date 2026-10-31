@@ -1061,3 +1061,116 @@
   font-size: 1.4rem;
   color: var(--couleur-texte-attenue);
 }
+
+/* Photos des sections (portrait, deux photos, bande, Instagram, étapes,
+   formules, contact) */
+.admin-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.admin-photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-photo-vide > img {
+  visibility: hidden;
+}
+
+.admin-photo-vide {
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.admin-photo-vide .admin-image-overlay {
+  opacity: 1;
+  pointer-events: auto;
+  background: none;
+}
+
+.admin-photo-vide .admin-image-alt-input {
+  display: none;
+}
+
+.admin-photo-bloc {
+  position: relative;
+}
+
+.admin-etape-photo {
+  margin-bottom: 20px;
+}
+
+.admin-price-photo {
+  margin: 0 -28px 24px;
+}
+
+.admin-contact-photo {
+  margin-top: 8px;
+  max-width: 420px;
+}
+
+.admin-photo-outils {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 11;
+  display: flex;
+  gap: 4px;
+}
+
+.admin-photo-outils .admin-icon-btn,
+.admin-photo-outils .admin-gear-btn {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.admin-photo-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.admin-photo-fleches {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.admin-photo-ajout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  color: var(--couleur-texte-attenue);
+  font-size: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.admin-photo-ajout:hover {
+  border-color: var(--couleur-accent);
+  color: var(--couleur-texte);
+}
+
+/* Dans l'admin, les étapes restent en grille même sur petit écran */
+.admin-etapes-liste {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  overflow: visible !important;
+}
+
+.admin-photo-outils .admin-inline-popover {
+  left: auto;
+  right: 0;
+}
+
+.admin-photo-outils .admin-icon-btn {
+  color: #1c1916;
+  border-color: transparent;
+  padding: 3px 7px;
+}

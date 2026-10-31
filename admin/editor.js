@@ -220,43 +220,6 @@ function buildEditableTexte(data) {
   return sectionEl;
 }
 
-function buildEditableGalerieCategories(data) {
-  const sectionEl = document.createElement("section");
-  sectionEl.className = "section-alt";
-  const container = document.createElement("div");
-  container.className = "container";
-  container.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
-  container.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
-  container.appendChild(editableSpan(data, "text", { tag: "p", className: "lead", placeholder: "Texte" }));
-
-  const grid = document.createElement("div");
-  grid.className = "grid-4";
-  (data.teasers || []).forEach((teaser) => {
-    const a = document.createElement("a");
-    a.className = "teaser-card";
-    a.href = "#";
-    const img = document.createElement("img");
-    img.src = teaser._previewUrl || sitePath(teaser.image) || "";
-    img.alt = teaser.alt || "";
-    a.appendChild(img);
-    attachImageOverlay(a, img, teaser, teaser);
-    a.appendChild(editableSpan(teaser, "label", { tag: "span", className: "teaser-label" }));
-    grid.appendChild(a);
-  });
-  container.appendChild(grid);
-  sectionEl.appendChild(container);
-  return sectionEl;
-}
-
-function buildEditablePortfolioGalerie() {
-  const sectionEl = document.createElement("section");
-  const container = document.createElement("div");
-  container.className = "container";
-  container.innerHTML = `<p class="admin-hint" style="padding:32px 0">Cette section affiche automatiquement toutes les photos du portfolio (gérées dans l'onglet « Portfolio »), avec les filtres par catégorie. Rien à configurer ici.</p>`;
-  sectionEl.appendChild(container);
-  return sectionEl;
-}
-
 function buildEditableTarifs(data, rerender) {
   data.plans = data.plans || [];
   const sectionEl = document.createElement("section");
@@ -298,6 +261,10 @@ function buildEditableTarifs(data, rerender) {
       rerender();
     });
     card.appendChild(toolbar);
+
+    const photo = editablePhoto(plan, { ratio: "3 / 2", retirer: retirerPhoto(plan, rerender) });
+    photo.classList.add("admin-price-photo");
+    card.appendChild(photo);
 
     const head = document.createElement("div");
     head.className = "price-card-head";
@@ -413,7 +380,7 @@ function buildEditableCta(data) {
   return wrap;
 }
 
-function buildEditableContact(data) {
+function buildEditableContact(data, rerender) {
   const sectionEl = document.createElement("section");
   sectionEl.style.paddingTop = "24px";
   const container = document.createElement("div");
@@ -442,6 +409,9 @@ function buildEditableContact(data) {
     row("Délai de réponse", c, "response_delay");
   }
   left.appendChild(list);
+  const photo = editablePhoto(data, { ratio: "4 / 5", retirer: retirerPhoto(data, rerender) });
+  photo.classList.add("admin-contact-photo");
+  left.appendChild(photo);
 
   const right = document.createElement("div");
   right.appendChild(editableSpan(data, "formulaire_title", { tag: "h3", placeholder: "Titre de la colonne formulaire" }));
@@ -604,6 +574,327 @@ function editablePhotoFrame(obj, legend, height) {
   wrap.appendChild(frame);
   wrap.appendChild(caption);
   return wrap;
+}
+
+// Photo dans un cadre aux proportions du site (ex. "4 / 5") : changer la
+// photo, texte alternatif, cadrage via ⚙. Avec `retirer`, un bouton enlève
+// la photo (elle est facultative à cet endroit). Un cadre vide reste
+// cliquable pour en ajouter une.
+function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } = {}) {
+  const frame = document.createElement("div");
+  frame.className = "admin-photo";
+  frame.style.aspectRatio = ratio;
+  const img = document.createElement("img");
+  img.src = obj._previewUrl || sitePath(obj.image) || "";
+  img.alt = obj.alt || "";
+  img.style.objectPosition = obj.position || "50% 50%";
+  frame.appendChild(img);
+  const overlay = attachImageOverlay(frame, img, obj, obj);
+  if (!obj.image && !obj._previewUrl) {
+    frame.classList.add("admin-photo-vide");
+    overlay.querySelector(".admin-image-upload-btn").firstChild.textContent = "📷 Ajouter une photo";
+  }
+  const outils = document.createElement("div");
+  outils.className = "admin-photo-outils";
+  if (cadrage) outils.appendChild(buildSettingsPopover([{ label: "Cadrage de la photo (ex : 50% 30% — horizontal puis vertical)", obj, key: "position" }]));
+  if (retirer && (obj.image || obj._previewUrl)) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "admin-icon-btn danger";
+    btn.title = "Retirer la photo";
+    btn.textContent = "🗑";
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      retirer();
+    });
+    outils.appendChild(btn);
+  }
+  // Les boutons sont hors du cadre, qui coupe ce qui dépasse (menu ⚙).
+  const bloc = document.createElement("div");
+  bloc.className = "admin-photo-bloc";
+  bloc.appendChild(frame);
+  bloc.appendChild(outils);
+  return bloc;
+}
+
+function retirerPhoto(obj, rerender) {
+  return () => {
+    obj.image = "";
+    obj.alt = "";
+    delete obj._file;
+    delete obj._previewUrl;
+    rerender();
+  };
+}
+
+// Liste de photos (bande, Instagram, deux photos…) : vignettes à
+// réordonner (← →) ou supprimer, et une case « + Ajouter » qui ouvre
+// directement le choix du fichier.
+function editablePhotoList(liste, rerender, { max = 30, ratio = "4 / 5", aide = "" } = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "admin-photo-liste";
+  liste.forEach((photo, i) => {
+    const item = document.createElement("div");
+    item.className = "admin-photo-liste-item";
+    item.appendChild(
+      editablePhoto(photo, {
+        ratio,
+        retirer: () => {
+          liste.splice(i, 1);
+          rerender();
+        },
+      })
+    );
+    const fleches = document.createElement("div");
+    fleches.className = "admin-photo-fleches";
+    fleches.innerHTML = `
+      <button type="button" class="admin-icon-btn" title="Vers la gauche" ${i === 0 ? "disabled" : ""}>←</button>
+      <button type="button" class="admin-icon-btn" title="Vers la droite" ${i === liste.length - 1 ? "disabled" : ""}>→</button>
+    `;
+    const [avant, apres] = fleches.querySelectorAll("button");
+    avant.addEventListener("click", () => {
+      swapAdjacent(liste, i, i - 1);
+      rerender();
+    });
+    apres.addEventListener("click", () => {
+      swapAdjacent(liste, i, i + 1);
+      rerender();
+    });
+    item.appendChild(fleches);
+    wrap.appendChild(item);
+  });
+  if (liste.length < max) {
+    const ajout = document.createElement("label");
+    ajout.className = "admin-photo-ajout";
+    ajout.style.aspectRatio = ratio;
+    ajout.innerHTML = "<span>+ Ajouter une photo</span>";
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.multiple = true;
+    input.hidden = true;
+    input.addEventListener("change", () => {
+      Array.from(input.files)
+        .slice(0, max - liste.length)
+        .forEach((file) => {
+          if (typeof verifierDefinition === "function") verifierDefinition(file);
+          liste.push({ image: "", alt: "", _file: file, _previewUrl: URL.createObjectURL(file) });
+        });
+      rerender();
+    });
+    ajout.appendChild(input);
+    wrap.appendChild(ajout);
+  }
+  const bloc = document.createElement("div");
+  bloc.appendChild(wrap);
+  if (aide) {
+    const p = document.createElement("p");
+    p.className = "admin-hint";
+    p.textContent = aide;
+    bloc.appendChild(p);
+  }
+  return bloc;
+}
+
+function boutonEditable(data, classe = "btn-secondary") {
+  const row = document.createElement("div");
+  row.style.cssText = "display:inline-flex;align-items:center;gap:4px;margin-top:14px";
+  const btn = editableSpan(data, "button_label", { tag: "a", className: classe, placeholder: "Texte du bouton (optionnel)" });
+  btn.href = "#";
+  row.appendChild(btn);
+  row.appendChild(buildSettingsPopover([{ label: "Lien du bouton", obj: data, key: "button_href" }]));
+  return row;
+}
+
+// ---------- Les photos, partout sur le site ----------
+
+function buildEditablePresentation(data, rerender) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "presentation";
+  const grille = document.createElement("div");
+  grille.className = "container presentation-grille";
+
+  const polaroid = document.createElement("div");
+  polaroid.className = "presentation-polaroid";
+  polaroid.appendChild(editablePhoto(data, { ratio: "4 / 5", retirer: retirerPhoto(data, rerender) }));
+  grille.appendChild(polaroid);
+
+  const texte = document.createElement("div");
+  texte.className = "presentation-texte";
+  texte.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  texte.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", className: "lead", placeholder: "Texte principal" }));
+  texte.appendChild(editableSpan(data, "text_suite", { tag: "p", className: "presentation-suite", placeholder: "Second paragraphe (optionnel)" }));
+  texte.appendChild(boutonEditable(data));
+  grille.appendChild(texte);
+  sectionEl.appendChild(grille);
+
+  const hint = document.createElement("p");
+  hint.className = "admin-hint container";
+  hint.textContent = "Ton portrait est présenté comme un Polaroïd, légèrement penché. Sans photo, le texte s'affiche seul.";
+  sectionEl.appendChild(hint);
+  return sectionEl;
+}
+
+function buildEditableTexteDuo(data, rerender) {
+  data.photos = data.photos || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = `texte-duo${data.image_side === "gauche" ? " photos-a-gauche" : ""}`;
+  const grille = document.createElement("div");
+  grille.className = "container texte-duo-grille";
+
+  const texte = document.createElement("div");
+  texte.className = "texte-duo-texte";
+  texte.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  texte.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", className: "lead", placeholder: "Texte principal" }));
+  texte.appendChild(editableSpan(data, "text_suite", { tag: "p", className: "texte-duo-suite", placeholder: "Second paragraphe (optionnel)" }));
+  const bouton = boutonEditable(data);
+  bouton.appendChild(
+    buildSettingsPopover([
+      {
+        label: "Place des photos",
+        obj: data,
+        key: "image_side",
+        type: "select",
+        options: [
+          { value: "droite", label: "À droite du texte" },
+          { value: "gauche", label: "À gauche du texte" },
+        ],
+      },
+    ])
+  );
+  texte.appendChild(bouton);
+  grille.appendChild(texte);
+  grille.appendChild(
+    editablePhotoList(data.photos, rerender, {
+      max: 2,
+      aide: "Deux photos : la première en grand, la seconde plus petite, posée en décalé sur la première.",
+    })
+  );
+  sectionEl.appendChild(grille);
+  return sectionEl;
+}
+
+function buildEditablePhotoPleine(data, rerender) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "container";
+  sectionEl.style.padding = "24px";
+  sectionEl.appendChild(editablePhoto(data, { ratio: "21 / 9", retirer: retirerPhoto(data, rerender) }));
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Sur le site, cette photo occupe toute la largeur de l'écran. Une photo à l'horizontale rend le mieux ; règle le cadrage avec ⚙.";
+  sectionEl.appendChild(hint);
+  return sectionEl;
+}
+
+function buildEditableBandePhotos(data, rerender) {
+  data.photos = data.photos || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "container";
+  sectionEl.style.padding = "24px";
+  sectionEl.appendChild(
+    editablePhotoList(data.photos, rerender, {
+      ratio: "3 / 4",
+      aide: "Sur le site, ces photos défilent lentement en bande, sur toute la largeur (le défilement s'arrête au survol). 6 à 10 photos, verticales et horizontales mélangées, c'est l'idéal.",
+    })
+  );
+  return sectionEl;
+}
+
+function buildEditableInstagram(data, rerender) {
+  data.photos = data.photos || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "instagram";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "instagram-entete";
+  const texte = document.createElement("div");
+  texte.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  texte.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", placeholder: "Texte" }));
+  entete.appendChild(texte);
+  const btn = editableSpan(data, "button_label", { tag: "a", className: "btn btn-primary", placeholder: "Texte du bouton" });
+  btn.href = "#";
+  entete.appendChild(btn);
+  container.appendChild(entete);
+  container.appendChild(
+    editablePhotoList(data.photos, rerender, {
+      max: 6,
+      ratio: "1 / 1",
+      aide: "6 photos, présentées en carrés comme sur Instagram. Chaque photo et le bouton mènent à ton compte Instagram (l'adresse se modifie sur la page Contact).",
+    })
+  );
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
+function buildEditableEtapes(data, rerender) {
+  data.steps = data.steps || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "etapes";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "etapes-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  entete.appendChild(editableSpan(data, "text", { tag: "p", className: "lead", placeholder: "Introduction (optionnelle)" }));
+  container.appendChild(entete);
+
+  const liste = document.createElement("ol");
+  liste.className = "etapes-liste admin-etapes-liste";
+  data.steps.forEach((etape, i) => {
+    const li = document.createElement("li");
+    li.className = "etape";
+    const outils = document.createElement("div");
+    outils.className = "admin-legal-block-toolbar";
+    outils.innerHTML = `
+      <span class="admin-section-type-badge">Étape ${i + 1}</span>
+      <button type="button" class="admin-icon-btn f-up" title="Avant" ${i === 0 ? "disabled" : ""}>←</button>
+      <button type="button" class="admin-icon-btn f-down" title="Après" ${i === data.steps.length - 1 ? "disabled" : ""}>→</button>
+      <button type="button" class="admin-icon-btn danger f-delete" title="Supprimer">🗑</button>
+    `;
+    outils.querySelector(".f-up").addEventListener("click", () => {
+      swapAdjacent(data.steps, i, i - 1);
+      rerender();
+    });
+    outils.querySelector(".f-down").addEventListener("click", () => {
+      swapAdjacent(data.steps, i, i + 1);
+      rerender();
+    });
+    outils.querySelector(".f-delete").addEventListener("click", () => {
+      if (!confirm("Supprimer cette étape ?")) return;
+      data.steps.splice(i, 1);
+      rerender();
+    });
+    li.appendChild(outils);
+    const photo = editablePhoto(etape, { ratio: "4 / 5", retirer: retirerPhoto(etape, rerender) });
+    photo.classList.add("admin-etape-photo");
+    li.appendChild(photo);
+    const num = document.createElement("span");
+    num.className = "etape-num";
+    num.textContent = String(i + 1).padStart(2, "0");
+    li.appendChild(num);
+    li.appendChild(editableSpan(etape, "title", { tag: "h3", placeholder: "Titre de l'étape" }));
+    li.appendChild(editableSpan(etape, "text", { tag: "p", placeholder: "Texte" }));
+    liste.appendChild(li);
+  });
+  container.appendChild(liste);
+
+  const ajout = document.createElement("button");
+  ajout.type = "button";
+  ajout.className = "btn-outline btn-small";
+  ajout.style.marginTop = "24px";
+  ajout.textContent = "+ Ajouter une étape";
+  ajout.addEventListener("click", () => {
+    data.steps.push({ title: "", text: "", image: "", alt: "" });
+    rerender();
+  });
+  container.appendChild(ajout);
+  sectionEl.appendChild(container);
+  return sectionEl;
 }
 
 function buildEditablePolaroids(data) {
@@ -798,8 +1089,6 @@ const EDITABLE_BUILDERS = {
   hero: buildEditableHero,
   texte_image: buildEditableTexteImage,
   texte: buildEditableTexte,
-  galerie_categories: buildEditableGalerieCategories,
-  portfolio_galerie: buildEditablePortfolioGalerie,
   tarifs: buildEditableTarifs,
   cta: buildEditableCta,
   contact: buildEditableContact,
@@ -808,6 +1097,12 @@ const EDITABLE_BUILDERS = {
   contact_bref: buildEditableContactBref,
   onglets_tarifs: buildEditableOngletsTarifs,
   faq: buildEditableFaq,
+  presentation: buildEditablePresentation,
+  texte_duo: buildEditableTexteDuo,
+  photo_pleine: buildEditablePhotoPleine,
+  bande_photos: buildEditableBandePhotos,
+  instagram: buildEditableInstagram,
+  etapes: buildEditableEtapes,
 };
 
 // Sélecteur « Onglet » dans la barre d'outils d'une section, quand la page

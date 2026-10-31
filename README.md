@@ -2,14 +2,17 @@
 
 Site statique (HTML/CSS/JS, sans framework), hébergé sur GitHub Pages avec le domaine `nicolasleveugle.be`.
 
-4 pages : accueil, portfolio, services & tarifs, contact.
+4 pages : accueil, à propos, services & tarifs, contact. Le portfolio
+complet est sur Instagram : sur le site, les photos accompagnent le texte
+(bande qui défile, grande photo, texte + deux photos, étapes, formules…).
 
 ## Structure
 
 ```
-index.html, portfolio.html, services.html, contact.html   Les 4 pages
+index.html, a-propos.html, services.html, contact.html   Les 4 pages
+portfolio.html         Ancienne adresse, renvoie vers a-propos.html
 css/style.css          Tous les styles
-js/main.js               Menu mobile + logique de filtre du portfolio
+js/main.js               Menu mobile + apparition douce au défilement
 js/render.js              Charge le contenu depuis content/*.json et construit le DOM
 content/*.json             Contenu éditable (voir ci-dessous)
 images/                     Toutes les photos
@@ -31,7 +34,7 @@ les photos. Le token reste uniquement dans le navigateur de la personne
 connectée.
 
 **Sinon, à la main**, tout le contenu éditable vit dans `content/` :
-- `content/portfolio.json` — photos du portfolio (catégorie, image, description)
+- `content/pages/<page>.json` — sections de chaque page (textes et photos)
 - `content/services.json` — les 3 formules et tarifs
 - `content/contact.json` — email, Instagram, zone, délai de réponse
 - `content/settings.json` — photo de couverture, texte d'intro, vignettes de catégories (accueil)

@@ -1,7 +1,7 @@
 {
   "pages": [
     { "slug": "index", "title": "Accueil" },
-    { "slug": "portfolio", "title": "Portfolio" },
+    { "slug": "a-propos", "title": "À propos" },
     { "slug": "services", "title": "Services & tarifs" },
     { "slug": "contact", "title": "Contact" },
     { "slug": "mentions-legales", "title": "Mentions légales" },

@@ -139,7 +139,7 @@ async function nettoyerTailles(attendues) {
 async function aDesUnivers(slug) {
   try {
     const page = JSON.parse(await fs.readFile(abs(`content/pages/${slug}.json`), "utf8"));
-    return (page.sections || []).some((s) => s.tab || s.type === "portfolio_galerie" || s.type === "contact");
+    return (page.sections || []).some((s) => s.tab || s.type === "contact");
   } catch {
     return false;
   }

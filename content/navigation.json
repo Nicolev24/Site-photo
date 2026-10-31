@@ -1,13 +1,13 @@
 {
   "nav_links": [
     { "label": "Accueil", "href": "index.html" },
-    { "label": "Portfolio", "href": "portfolio.html" },
+    { "label": "À propos", "href": "a-propos.html" },
     { "label": "Services & tarifs", "href": "services.html" },
     { "label": "Espace client", "href": "galerie/index.html" }
   ],
   "cta_button": { "label": "Réserver", "href": "contact.html" },
   "footer_links": [
-    { "label": "Portfolio", "href": "portfolio.html" },
+    { "label": "À propos", "href": "a-propos.html" },
     { "label": "Services & tarifs", "href": "services.html" },
     { "label": "Contact", "href": "contact.html" }
   ],

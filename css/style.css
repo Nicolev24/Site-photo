@@ -402,51 +402,6 @@ h1.eyebrow {
   border-radius: var(--rayon-bordure);
 }
 
-/* ============ Category / teaser grid ============ */
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-top: 48px;
-}
-
-.teaser-card {
-  position: relative;
-  border-radius: var(--rayon-bordure);
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
-  display: block;
-}
-
-.teaser-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.teaser-card:hover img {
-  transform: scale(1.04);
-}
-
-.teaser-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%);
-}
-
-.teaser-label {
-  position: absolute;
-  left: 18px;
-  bottom: 16px;
-  z-index: 2;
-  color: #fff;
-  font-family: var(--police-titres);
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
 /* ============ Encart d'appel à l'action ============ */
 .cta-band {
   max-width: var(--largeur-max);
@@ -486,68 +441,6 @@ h1.eyebrow {
   border-top: 1px solid var(--couleur-bordure);
   border-bottom: 1px solid var(--couleur-bordure);
   padding: 88px 24px;
-}
-
-/* ============ Portfolio ============ */
-.filters[hidden] {
-  display: none;
-}
-
-.filters {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 40px 0 48px;
-}
-
-.filter-btn {
-  padding: 9px 18px;
-  border-radius: var(--rayon-bouton);
-  font-family: var(--police-texte);
-  border: 1px solid var(--couleur-bordure);
-  background: transparent;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--couleur-texte-attenue);
-  transition: all 0.15s ease;
-}
-
-.filter-btn:hover {
-  border-color: var(--couleur-accent);
-  color: var(--couleur-accent-fonce);
-}
-
-.filter-btn.active {
-  background: var(--couleur-texte);
-  border-color: var(--couleur-texte);
-  color: var(--couleur-fond);
-}
-
-.gallery {
-  columns: 3;
-  column-gap: 20px;
-}
-
-.gallery-item {
-  break-inside: avoid;
-  margin-bottom: 20px;
-  border-radius: var(--rayon-bordure);
-  overflow: hidden;
-  background: var(--couleur-fond-alt);
-}
-
-.gallery-item.hidden {
-  display: none;
-}
-
-.gallery-item img {
-  width: 100%;
-  transition: transform 0.4s ease;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.03);
 }
 
 /* ============ Pricing ============ */
@@ -865,10 +758,6 @@ textarea {
     gap: 36px;
   }
 
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .pricing-grid {
     grid-template-columns: 1fr;
   }
@@ -877,25 +766,12 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .gallery {
-    columns: 2;
-  }
-
   section {
     padding: 64px 0;
   }
 }
 
 @media (max-width: 520px) {
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .gallery {
-    columns: 1;
-  }
-
   .hero {
     height: 78vh;
   }
@@ -994,7 +870,6 @@ mark.placeholder-a-completer {
     transition: none;
   }
 }
-
 
 /* ============ Accueil : deux Polaroïds posés sur la table ============ */
 /* Chaque Polaroïd est positionné par des variables (--rot, --y, --s) pour que
@@ -1406,7 +1281,8 @@ mark.placeholder-a-completer {
   border-bottom: 1px solid var(--couleur-bordure);
 }
 
-html[data-page="index"] .univers-barre {
+html[data-page="index"] .univers-barre,
+html[data-page="a-propos"] .univers-barre {
   display: none;
 }
 
@@ -1602,4 +1478,364 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
 
 @keyframes vtApparition {
   from { opacity: 0; }
+}
+
+/* ============ Les photos, partout sur le site ============
+   Le portfolio complet est sur Instagram : ici, les photos accompagnent
+   le texte. Aucune légende sous les photos. */
+
+/* « Qui je suis » : portrait en Polaroïd + texte */
+.presentation-grille {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 88px;
+  align-items: center;
+}
+
+.presentation.sans-photo .presentation-grille {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 760px;
+}
+
+.presentation-polaroid {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 380px);
+  margin: 0;
+  padding: 18px 18px 74px;
+  background: #f3efe7;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+  transform: rotate(-2.5deg);
+}
+
+.presentation-photo {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #d9d3c8;
+}
+
+.presentation-photo img,
+.duo-photo img,
+.photo-pleine img,
+.instagram-case img,
+.etape-photo img,
+.price-card-photo img,
+.contact-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.presentation-texte h2,
+.texte-duo-texte h2 {
+  margin-bottom: 22px;
+}
+
+.presentation-suite,
+.texte-duo-suite {
+  color: var(--couleur-texte-attenue);
+  line-height: 1.75;
+  max-width: 60ch;
+}
+
+.presentation-texte .btn-secondary,
+.texte-duo-texte .btn-secondary {
+  margin-top: 14px;
+}
+
+/* Texte + deux photos qui se chevauchent */
+.texte-duo-grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 88px;
+  align-items: center;
+}
+
+.photos-a-gauche .texte-duo-texte {
+  order: 2;
+}
+
+.texte-duo-photos {
+  position: relative;
+  padding-bottom: 18%;
+}
+
+.duo-photo {
+  overflow: hidden;
+  border-radius: var(--rayon-bordure);
+  background: var(--couleur-fond-alt);
+}
+
+.duo-photo-1 {
+  width: 74%;
+  aspect-ratio: 4 / 5;
+}
+
+.duo-photo-2 {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 48%;
+  aspect-ratio: 4 / 5;
+  outline: 10px solid var(--couleur-fond);
+}
+
+.texte-duo-photos.nb-1 {
+  padding-bottom: 0;
+}
+
+.texte-duo-photos.nb-1 .duo-photo-1 {
+  width: 100%;
+}
+
+.photos-a-gauche .duo-photo-1 {
+  margin-left: auto;
+}
+
+.photos-a-gauche .duo-photo-2 {
+  right: auto;
+  left: 0;
+}
+
+/* Une grande photo sur toute la largeur */
+.photo-pleine {
+  padding: 0;
+  height: clamp(320px, 68vh, 720px);
+  overflow: hidden;
+}
+
+/* Bande de photos qui défile lentement */
+.bande-photos {
+  padding: 24px 0;
+  overflow: hidden;
+}
+
+.bande-piste {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: bandeDefile var(--duree, 60s) linear infinite;
+}
+
+.bande-photos:hover .bande-piste {
+  animation-play-state: paused;
+}
+
+.bande-photo {
+  flex: none;
+  height: clamp(240px, 30vw, 420px);
+  overflow: hidden;
+  border-radius: var(--rayon-bordure);
+  background: var(--couleur-fond-alt);
+}
+
+.bande-photo img {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.bande-photos + .cta-band {
+  margin-top: 72px;
+}
+
+@keyframes bandeDefile {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 7px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bande-photos {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .bande-piste {
+    animation: none;
+    padding: 0 24px;
+  }
+  .bande-photo {
+    scroll-snap-align: center;
+  }
+  .bande-photo[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* Instagram */
+.instagram-entete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+
+.instagram-entete h2 {
+  margin-bottom: 10px;
+}
+
+.instagram-entete p {
+  margin: 0;
+  color: var(--couleur-texte-attenue);
+  max-width: 52ch;
+}
+
+.instagram-entete .btn {
+  margin-top: 0;
+  flex: none;
+}
+
+.instagram-grille {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+.instagram-case {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--couleur-fond-alt);
+}
+
+.instagram-case img {
+  transition: transform 0.5s ease, opacity 0.3s ease;
+}
+
+.instagram-case:hover img {
+  transform: scale(1.05);
+  opacity: 0.85;
+}
+
+.instagram-compte {
+  margin: 18px 0 0;
+  font-size: 0.9rem;
+  color: var(--couleur-texte-attenue);
+}
+
+.instagram-compte a:hover {
+  color: var(--couleur-texte);
+}
+
+/* « Comment ça se passe » : les étapes */
+.etapes {
+  padding-top: 40px;
+}
+
+.etapes-entete {
+  max-width: 640px;
+  margin-bottom: 44px;
+}
+
+.etapes-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.etape-photo {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border-radius: var(--rayon-bordure);
+  background: var(--couleur-fond-alt);
+}
+
+.etape-num {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--police-titres);
+  font-size: 1.5rem;
+  color: var(--couleur-accent);
+  font-variant-numeric: lining-nums;
+}
+
+.etape h3 {
+  margin: 0 0 8px;
+  font-family: var(--police-texte);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.etape p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--couleur-texte-attenue);
+}
+
+/* Photo en tête de chaque formule */
+.price-card-photo {
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  margin: -30px -28px 24px;
+  border-radius: var(--rayon-bordure) var(--rayon-bordure) 0 0;
+  background: var(--couleur-fond-alt);
+}
+
+/* Photo sous les coordonnées (page contact) */
+.contact-photo {
+  margin: 8px 0 0;
+  aspect-ratio: 4 / 5;
+  max-height: 560px;
+  overflow: hidden;
+  border-radius: var(--rayon-bordure);
+}
+
+@media (max-width: 860px) {
+  .presentation-grille,
+  .texte-duo-grille {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+  .presentation-polaroid {
+    width: min(78%, 320px);
+    padding: 14px 14px 58px;
+  }
+  .texte-duo-texte,
+  .photos-a-gauche .texte-duo-texte {
+    order: 0;
+  }
+  .texte-duo-photos {
+    max-width: 520px;
+  }
+  .photo-pleine {
+    height: 56vh;
+  }
+  .instagram-entete {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .instagram-grille {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  /* Les étapes défilent au doigt, une carte et demie à l'écran */
+  .etapes-liste {
+    display: flex;
+    gap: 16px;
+    margin: 0 -24px;
+    padding: 0 24px 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .etapes-liste::-webkit-scrollbar {
+    display: none;
+  }
+  .etape {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
+    scroll-margin-left: 24px;
+  }
+  .contact-photo {
+    aspect-ratio: 3 / 2;
+  }
 }

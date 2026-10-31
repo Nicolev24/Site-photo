@@ -1,10 +1,10 @@
 // Les deux « univers » du site : particuliers et commerces.
 //
 // Le visiteur choisit son univers sur l'accueil (les deux Polaroïds) ou avec
-// le sélecteur en haut des autres pages ; ensuite tarifs, portfolio et
-// contact n'affichent que ce qui le concerne. Le choix est retenu
-// (localStorage) et écrit dans l'adresse (?pour=commerces) pour qu'un lien
-// partagé ouvre le bon univers.
+// le sélecteur en haut des autres pages ; ensuite tarifs et contact
+// n'affichent que ce qui le concerne. Le choix est retenu (localStorage)
+// et écrit dans l'adresse (?pour=commerces) pour qu'un lien partagé ouvre
+// le bon univers.
 //
 // Chargé dans le <head>, avant l'affichage : il pose data-univers et
 // data-page sur <html> pour que la page s'affiche directement dans le bon

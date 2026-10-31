@@ -111,7 +111,7 @@ async function buildFooter(navigation) {
 // Une page « a des univers » si son contenu change selon particuliers /
 // commerces : Google doit alors connaître les deux adresses.
 function pageAUnivers(page) {
-  return (page.sections || []).some((s) => s.tab || s.type === "portfolio_galerie" || s.type === "contact");
+  return (page.sections || []).some((s) => s.tab || s.type === "contact");
 }
 
 function applySeo(seo, slug, avecUnivers) {

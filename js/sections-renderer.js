@@ -6,14 +6,6 @@
 //
 // `basePath` vaut "" sur les pages à la racine du site, "../" depuis /admin/.
 
-// Chaque catégorie du portfolio appartient à un univers (js/univers.js).
-const CATEGORIES = [
-  { value: "portraits", label: "Portraits", univers: "particuliers" },
-  { value: "couples", label: "Couples", univers: "particuliers" },
-  { value: "entreprises", label: "Entreprises & commerces", univers: "commerces" },
-  { value: "evenements", label: "Événements", univers: "particuliers" },
-];
-
 // Univers affiché (« particuliers » ou « commerces »), ou null quand
 // js/univers.js n'est pas chargé : tout s'affiche alors.
 function universCourant() {
@@ -94,6 +86,19 @@ function attributsTaillesHtml(src, basePath, sizes) {
 }
 
 const TAILLES_PLEINE_LARGEUR = "100vw";
+
+// <img> d'une photo du site : versions allégées, dimensions (pour que la page
+// ne saute pas pendant le chargement) et cadrage choisi dans l'admin.
+function imageHtml(photo, basePath, sizes, attrs = "") {
+  const info = TAILLES_IMAGES && TAILLES_IMAGES[photo.image];
+  const dims = info ? ` width="${info.l}" height="${info.h}"` : "";
+  const cadrage = photo.position ? ` style="object-position:${escapeHtml(photo.position)}"` : "";
+  return `<img src="${escapeHtml(resolveSrc(photo.image, basePath))}"${attributsTaillesHtml(photo.image, basePath, sizes)}${dims} alt="${escapeHtml(photo.alt || "")}"${cadrage} loading="lazy" decoding="async"${attrs} />`;
+}
+
+function photosRemplies(liste) {
+  return (liste || []).filter((p) => p && p.image);
+}
 
 function el(tag, attrs = {}, html) {
   const node = document.createElement(tag);
@@ -176,87 +181,6 @@ function buildTexte(data) {
   return section;
 }
 
-function buildGalerieCategories(data, basePath) {
-  const section = el("section", { class: "section-alt" });
-  const container = el(
-    "div",
-    { class: "container" },
-    `
-    <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
-    <h2>${escapeHtml(data.title)}</h2>
-    <p class="lead">${escapeHtml(data.text)}</p>
-  `
-  );
-  const grid = el("div", { class: "grid-4" });
-  (data.teasers || []).forEach((teaser) => {
-    const a = el("a", {
-      class: "teaser-card",
-      href: resolveHref(`portfolio.html#${teaser.category}`, basePath),
-    });
-    const img = el("img", {
-      src: resolveSrc(teaser.image, basePath),
-      ...attributsTailles(teaser.image, basePath, "(max-width: 860px) 50vw, 280px"),
-      alt: teaser.alt || "",
-      loading: "lazy",
-      decoding: "async",
-    });
-    const label = el("span", { class: "teaser-label" }, escapeHtml(teaser.label));
-    a.appendChild(img);
-    a.appendChild(label);
-    grid.appendChild(a);
-  });
-  container.appendChild(grid);
-  section.appendChild(container);
-  return section;
-}
-
-async function buildPortfolioGalerie(data, basePath) {
-  const section = el("section", { style: "padding-top:0" });
-  const container = el("div", { class: "container" });
-  const categories = CATEGORIES.filter((c) => estDeLUnivers(c.univers));
-  const filters = el(
-    "div",
-    { class: "filters" },
-    `
-    <button class="filter-btn active" data-filter="all">Tous</button>
-    ${categories.map((c) => `<button class="filter-btn" data-filter="${c.value}">${escapeHtml(c.label)}</button>`).join("")}
-  `
-  );
-  // Une seule catégorie dans cet univers : pas besoin de filtres.
-  if (categories.length < 2) filters.hidden = true;
-  const gallery = el("div", { class: "gallery" });
-
-  try {
-    const portfolio = await fetchJson(basePath, "content/portfolio.json");
-    const valeurs = new Set(categories.map((c) => c.value));
-    portfolio.items.filter((item) => valeurs.has(item.category)).forEach((item) => {
-      const div = el("div", { class: "gallery-item", "data-category": item.category });
-      div.appendChild(
-        el("img", {
-          src: resolveSrc(item.image, basePath),
-          ...attributsTailles(item.image, basePath, "(max-width: 520px) 100vw, (max-width: 860px) 50vw, 380px"),
-          alt: item.alt || "",
-          loading: "lazy",
-          decoding: "async",
-        })
-      );
-      gallery.appendChild(div);
-    });
-  } catch (e) {
-    console.error(e);
-  }
-
-  container.appendChild(filters);
-  container.appendChild(gallery);
-  section.appendChild(container);
-
-  requestAnimationFrame(() => {
-    if (typeof window.initPortfolioFilters === "function") window.initPortfolioFilters();
-  });
-
-  return section;
-}
-
 function buildTarifs(data, basePath) {
   const section = el("section", { style: "padding:8px 0 64px" });
   const container = el("div", { class: "container" });
@@ -264,7 +188,8 @@ function buildTarifs(data, basePath) {
 
   (data.plans || []).forEach((plan) => {
     const card = el("div", { class: plan.highlight ? "price-card highlight" : "price-card" });
-    let html = `<div class="price-card-head"><h3>${escapeHtml(plan.title)}</h3>`;
+    let html = plan.image ? `<div class="price-card-photo">${imageHtml(plan, basePath, "(max-width: 860px) 100vw, 380px")}</div>` : "";
+    html += `<div class="price-card-head"><h3>${escapeHtml(plan.title)}</h3>`;
     if (plan.badge) html += `<span class="badge">${escapeHtml(plan.badge)}</span>`;
     html += `</div>`;
     html += `<div class="price-tag">${escapeHtml(plan.price)}`;
@@ -475,6 +400,7 @@ async function buildContact(data, basePath) {
   const left = el("div", {}, `<h3>${escapeHtml(data.coordonnees_title)}</h3>`);
   const list = el("ul", { class: "contact-info-list" });
   left.appendChild(list);
+  if (data.image) left.appendChild(el("figure", { class: "contact-photo" }, imageHtml(data, basePath, "(max-width: 860px) 100vw, 480px")));
 
   const right = el(
     "div",
@@ -619,12 +545,166 @@ function buildTexteJuridique(data) {
   return section;
 }
 
+// ---------- Les photos, partout sur le site ----------
+//
+// Le portfolio complet est sur Instagram : sur le site, les photos
+// accompagnent le texte. Jamais de légende sous une photo.
+
+// « Qui je suis » : portrait en Polaroïd (rappel de l'accueil) et texte.
+function buildPresentation(data, basePath) {
+  const titre = data.titre_page
+    ? `<h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>`
+    : data.eyebrow
+    ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>`
+    : "";
+  return el(
+    "section",
+    { class: `presentation${data.image ? "" : " sans-photo"}` },
+    `
+    <div class="container presentation-grille">
+      ${
+        data.image
+          ? `<figure class="presentation-polaroid">
+        <span class="polaroid-scotch" aria-hidden="true"></span>
+        <span class="presentation-photo">${imageHtml(data, basePath, "(max-width: 860px) 70vw, 360px")}</span>
+      </figure>`
+          : ""
+      }
+      <div class="presentation-texte">
+        ${titre}
+        <h2>${escapeHtml(data.title)}</h2>
+        ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
+        ${data.text_suite ? `<p class="presentation-suite">${escapeHtml(data.text_suite)}</p>` : ""}
+        ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
+      </div>
+    </div>
+  `
+  );
+}
+
+// Texte + deux photos qui se chevauchent, façon magazine.
+function buildTexteDuo(data, basePath) {
+  const photos = photosRemplies(data.photos).slice(0, 2);
+  const gauche = data.image_side === "gauche";
+  return el(
+    "section",
+    { class: `texte-duo${gauche ? " photos-a-gauche" : ""}` },
+    `
+    <div class="container texte-duo-grille">
+      <div class="texte-duo-texte">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${escapeHtml(data.title)}</h2>
+        ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
+        ${data.text_suite ? `<p class="texte-duo-suite">${escapeHtml(data.text_suite)}</p>` : ""}
+        ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
+      </div>
+      ${
+        photos.length
+          ? `<div class="texte-duo-photos nb-${photos.length}">
+        ${photos.map((p, i) => `<div class="duo-photo duo-photo-${i + 1}">${imageHtml(p, basePath, i === 0 ? "(max-width: 860px) 75vw, 420px" : "(max-width: 860px) 55vw, 300px")}</div>`).join("")}
+      </div>`
+          : ""
+      }
+    </div>
+  `
+  );
+}
+
+// Une grande photo sur toute la largeur, pour respirer entre deux textes.
+function buildPhotoPleine(data, basePath) {
+  if (!data.image) return null;
+  return el("section", { class: "photo-pleine" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
+}
+
+// Bande de photos qui défile lentement (s'arrête au survol). Les photos sont
+// répétées une fois pour que le défilement boucle sans à-coup ; sans
+// animation (réglage « réduire les animations »), on la fait défiler au doigt.
+function buildBandePhotos(data, basePath) {
+  const photos = photosRemplies(data.photos);
+  if (!photos.length) return null;
+  const serie = (cachee) =>
+    photos
+      .map((p) => `<div class="bande-photo"${cachee ? ' aria-hidden="true"' : ""}>${imageHtml(p, basePath, "(max-width: 860px) 60vw, 420px", cachee ? ' alt=""' : "")}</div>`)
+      .join("");
+  return el(
+    "section",
+    { class: "bande-photos" },
+    `<div class="bande-piste" style="--duree:${Math.max(30, photos.length * 7)}s">${serie(false)}${serie(true)}</div>`
+  );
+}
+
+// « Tout mon travail est sur Instagram » : quelques photos, toutes reliées au
+// compte Instagram (adresse prise dans les coordonnées).
+async function buildInstagram(data, basePath) {
+  let contact = {};
+  try {
+    contact = await fetchJson(basePath, "content/contact.json");
+  } catch (e) {
+    console.error(e);
+  }
+  const lien = contact.instagram_url || "#";
+  const photos = photosRemplies(data.photos).slice(0, 6);
+  return el(
+    "section",
+    { class: "instagram" },
+    `
+    <div class="container">
+      <div class="instagram-entete">
+        <div>
+          ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+          <h2>${escapeHtml(data.title)}</h2>
+          ${data.text ? `<p>${escapeHtml(data.text)}</p>` : ""}
+        </div>
+        <a href="${escapeHtml(lien)}" class="btn btn-primary" target="_blank" rel="noopener">${escapeHtml(data.button_label || "Voir mon Instagram")}</a>
+      </div>
+      ${
+        photos.length
+          ? `<div class="instagram-grille">
+        ${photos.map((p) => `<a href="${escapeHtml(lien)}" class="instagram-case" target="_blank" rel="noopener" tabindex="-1">${imageHtml(p, basePath, "(max-width: 860px) 33vw, 190px")}</a>`).join("")}
+      </div>`
+          : ""
+      }
+      ${contact.instagram_handle ? `<p class="instagram-compte"><a href="${escapeHtml(lien)}" target="_blank" rel="noopener">${escapeHtml(contact.instagram_handle)}</a></p>` : ""}
+    </div>
+  `
+  );
+}
+
+// « Comment ça se passe » : les étapes, chacune avec sa photo.
+function buildEtapes(data, basePath) {
+  const etapes = (data.steps || []).filter((e) => e.title || e.text);
+  return el(
+    "section",
+    { class: "etapes" },
+    `
+    <div class="container">
+      <div class="etapes-entete">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${escapeHtml(data.title)}</h2>
+        ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
+      </div>
+      <ol class="etapes-liste">
+        ${etapes
+          .map(
+            (e, i) => `
+        <li class="etape">
+          ${e.image ? `<div class="etape-photo">${imageHtml(e, basePath, "(max-width: 860px) 75vw, 280px")}</div>` : ""}
+          <span class="etape-num">${String(i + 1).padStart(2, "0")}</span>
+          <h3>${escapeHtml(e.title)}</h3>
+          <p>${escapeHtml(e.text)}</p>
+        </li>`
+          )
+          .join("")}
+      </ol>
+    </div>
+  `
+  );
+}
+
 const SECTION_BUILDERS = {
   hero: buildHero,
   texte_image: buildTexteImage,
   texte: buildTexte,
-  galerie_categories: buildGalerieCategories,
-  portfolio_galerie: buildPortfolioGalerie,
   tarifs: buildTarifs,
   cta: buildCta,
   contact: buildContact,
@@ -633,6 +713,12 @@ const SECTION_BUILDERS = {
   contact_bref: buildContactBref,
   onglets_tarifs: buildOngletsTarifs,
   faq: buildFaq,
+  presentation: buildPresentation,
+  texte_duo: buildTexteDuo,
+  photo_pleine: buildPhotoPleine,
+  bande_photos: buildBandePhotos,
+  instagram: buildInstagram,
+  etapes: buildEtapes,
 };
 
 // Met en évidence toute note du type "[À COMPLÉTER]" ou

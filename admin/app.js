@@ -8,13 +8,6 @@ const REPO = "Site-photo";
 const BRANCH = "main";
 const TOKEN_KEY = "site-photo-admin-token";
 
-const CATEGORIES = [
-  { value: "portraits", label: "Portraits" },
-  { value: "couples", label: "Couples" },
-  { value: "entreprises", label: "Entreprises & commerces" },
-  { value: "evenements", label: "Événements" },
-];
-
 const SECTION_TYPES = [
   {
     value: "hero",
@@ -36,19 +29,6 @@ const SECTION_TYPES = [
     value: "texte",
     label: "Texte (en-tête de page)",
     defaultData: () => ({ eyebrow: "", title: "", text: "" }),
-  },
-  {
-    value: "galerie_categories",
-    label: "Galerie par catégories (4 vignettes)",
-    defaultData: () => ({
-      eyebrow: "", title: "", text: "",
-      teasers: CATEGORIES.map((c) => ({ category: c.value, label: c.label, image: "", alt: "" })),
-    }),
-  },
-  {
-    value: "portfolio_galerie",
-    label: "Galerie portfolio (filtrable)",
-    defaultData: () => ({}),
   },
   {
     value: "tarifs",
@@ -95,6 +75,39 @@ const SECTION_TYPES = [
         { id: "particuliers", label: "Particuliers", image: "", alt: "", position: "50% 50%", text: "" },
         { id: "commerces", label: "Commerces", image: "", alt: "", position: "50% 50%", text: "" },
       ],
+    }),
+  },
+  {
+    value: "presentation",
+    label: "Présentation (portrait en Polaroïd + texte)",
+    defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", image: "", alt: "", position: "50% 50%", button_label: "", button_href: "" }),
+  },
+  {
+    value: "texte_duo",
+    label: "Texte + deux photos",
+    defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
+  },
+  {
+    value: "photo_pleine",
+    label: "Grande photo (toute la largeur)",
+    defaultData: () => ({ image: "", alt: "", position: "50% 50%" }),
+  },
+  {
+    value: "bande_photos",
+    label: "Bande de photos qui défile",
+    defaultData: () => ({ photos: [] }),
+  },
+  {
+    value: "instagram",
+    label: "Instagram (6 photos + bouton)",
+    defaultData: () => ({ eyebrow: "Instagram", title: "Tout mon travail est sur Instagram", text: "", button_label: "Voir mon Instagram", photos: [] }),
+  },
+  {
+    value: "etapes",
+    label: "Comment ça se passe (étapes avec photo)",
+    defaultData: () => ({
+      eyebrow: "Comment ça se passe", title: "", text: "",
+      steps: [1, 2, 3, 4].map(() => ({ title: "", text: "", image: "", alt: "" })),
     }),
   },
   {
@@ -286,12 +299,6 @@ function slugify(str) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-}
-
-function categoryOptionsHtml(selected) {
-  return CATEGORIES.map(
-    (c) => `<option value="${c.value}" ${c.value === selected ? "selected" : ""}>${c.label}</option>`
-  ).join("");
 }
 
 function swapAdjacent(array, i, j) {
@@ -739,7 +746,6 @@ const state = {
   navigation: null,
   appearance: null,
   contact: null,
-  portfolio: null, // { sha, items: [{category, image, alt, _file, _previewUrl}] }
   pages: {}, // slug -> { sha, isNew, title, data: {seo, sections} }
 };
 
@@ -967,119 +973,6 @@ document.getElementById("page-save").addEventListener("click", async (e) => {
 });
 
 // ========================================================================
-// Onglet Portfolio
-// ========================================================================
-
-const portfolioList = document.getElementById("portfolio-list");
-
-function renderPortfolioList() {
-  portfolioList.innerHTML = "";
-  state.portfolio.items.forEach((item, index) => {
-    const card = document.createElement("div");
-    card.className = "admin-section-card";
-    const previewSrc = item._previewUrl || sitePath(item.image);
-    card.innerHTML = `
-      <div class="admin-section-card-header">
-        <span class="admin-drag-handle" title="Glisser pour réordonner">⠿⠿</span>
-        <span class="admin-section-type-badge">Photo ${index + 1}</span>
-        <button type="button" class="admin-icon-btn f-up" ${index === 0 ? "disabled" : ""}>↑</button>
-        <button type="button" class="admin-icon-btn f-down" ${index === state.portfolio.items.length - 1 ? "disabled" : ""}>↓</button>
-        <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
-      </div>
-      <div class="admin-section-card-body">
-        <div class="admin-card-row">
-          <div class="admin-card-preview">${previewSrc ? `<img src="${previewSrc}" alt="" />` : ""}</div>
-          <div class="admin-card-fields">
-            <div class="admin-field">
-              <label>Catégorie</label>
-              <select class="f-category">${categoryOptionsHtml(item.category)}</select>
-            </div>
-            <div class="admin-field">
-              <label>Photo</label>
-              <input type="file" class="f-file" accept="image/*" />
-            </div>
-            <div class="admin-field">
-              <label>Description (texte alternatif)</label>
-              <input type="text" class="f-alt" value="${escapeHtml(item.alt || "")}" />
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    card.querySelector(".f-category").addEventListener("change", (e) => (item.category = e.target.value));
-    card.querySelector(".f-alt").addEventListener("input", (e) => (item.alt = e.target.value));
-    card.querySelector(".f-file").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      verifierDefinition(file);
-      item._file = file;
-      item._previewUrl = URL.createObjectURL(file);
-      renderPortfolioList();
-    });
-    card.querySelector(".f-up").addEventListener("click", () => {
-      if (index === 0) return;
-      swapAdjacent(state.portfolio.items, index, index - 1);
-      renderPortfolioList();
-    });
-    card.querySelector(".f-down").addEventListener("click", () => {
-      if (index === state.portfolio.items.length - 1) return;
-      swapAdjacent(state.portfolio.items, index, index + 1);
-      renderPortfolioList();
-    });
-    card.querySelector(".f-delete").addEventListener("click", () => {
-      if (!confirm("Supprimer cette photo du portfolio ?")) return;
-      state.portfolio.items.splice(index, 1);
-      renderPortfolioList();
-    });
-
-    portfolioList.appendChild(card);
-  });
-
-  enableDragReorder(portfolioList, state.portfolio.items, renderPortfolioList);
-}
-
-async function loadPortfolio() {
-  if (state.portfolio) return;
-  showStatus("Chargement du portfolio…", "loading");
-  const { sha, data } = await getJsonFile("content/portfolio.json");
-  state.portfolio = { sha, items: data.items };
-  renderPortfolioList();
-  statusEl.hidden = true;
-}
-
-document.getElementById("portfolio-add").addEventListener("click", () => {
-  state.portfolio.items.push({ category: "portraits", image: "", alt: "", _file: null });
-  renderPortfolioList();
-});
-
-document.getElementById("portfolio-save").addEventListener("click", async (e) => {
-  const btn = e.currentTarget;
-  if (btn.disabled) return;
-  btn.disabled = true;
-  try {
-    showStatus("Enregistrement…", "loading");
-    for (const item of state.portfolio.items) {
-      if (item._file) {
-        item.image = await uploadImage(item._file, `images/portfolio/${item.category}`);
-        item._file = null;
-        item._previewUrl = null;
-      }
-      if (!item.image) throw new Error("Une photo n'a pas d'image sélectionnée.");
-    }
-    const cleanItems = state.portfolio.items.map(({ category, image, alt }) => ({ category, image, alt }));
-    await putJsonFileWithRetry("content/portfolio.json", { items: cleanItems }, "Mise à jour du portfolio (admin)");
-    state.portfolio = null;
-    await loadPortfolio();
-    showStatus("Portfolio enregistré ✓ Le site se met à jour automatiquement (~1 min).", "success");
-  } catch (err) {
-    showStatus(`Erreur : ${err.message}`, "error");
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-// ========================================================================
 // Onglet Navigation
 // ========================================================================
 
@@ -1092,7 +985,7 @@ function renderLinksList(containerId, links, rerender) {
     card.innerHTML = `
       <div class="admin-field-row">
         <div class="admin-field"><label>Texte affiché</label><input type="text" class="f-label" value="${escapeHtml(link.label || "")}" /></div>
-        <div class="admin-field"><label>Lien (ex : portfolio.html)</label><input type="text" class="f-href" value="${escapeHtml(link.href || "")}" /></div>
+        <div class="admin-field"><label>Lien (ex : a-propos.html)</label><input type="text" class="f-href" value="${escapeHtml(link.href || "")}" /></div>
       </div>
       <div class="admin-card-toolbar">
         <div class="admin-card-toolbar-left">
@@ -1290,7 +1183,6 @@ async function initApp() {
   renderSidebarPagesList();
   renderNavigationTab();
   renderApparenceTab();
-  loadPortfolio().catch((err) => showStatus(`Erreur : ${err.message}`, "error"));
 }
 
 async function startLoginFlow() {
