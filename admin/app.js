@@ -804,6 +804,7 @@ function renderPageEditor() {
   document.getElementById("seo-title").value = page.data.seo.title || "";
   document.getElementById("seo-description").value = page.data.seo.description || "";
   document.getElementById("seo-og-image").value = page.data.seo.og_image || "";
+  majApercuPartage();
   renderEditableSections(document.getElementById("live-editor-root"), page.data.sections);
 }
 
@@ -813,8 +814,32 @@ document.getElementById("seo-title").addEventListener("input", (e) => {
 document.getElementById("seo-description").addEventListener("input", (e) => {
   if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.description = e.target.value;
 });
-document.getElementById("seo-og-image").addEventListener("input", (e) => {
-  if (currentEditingSlug) state.pages[currentEditingSlug].data.seo.og_image = e.target.value;
+// Image d'aperçu des partages : choisie dans la photothèque (photos du
+// site, galeries clients ou ordinateur), envoyée à l'enregistrement.
+function majApercuPartage() {
+  const seo = state.pages[currentEditingSlug].data.seo;
+  const img = document.getElementById("seo-og-apercu");
+  const src = seo._ogPreview || sitePath(seo.og_image);
+  img.hidden = !src;
+  if (src) img.src = src;
+}
+
+document.getElementById("seo-og-choisir").addEventListener("click", () => {
+  if (!currentEditingSlug) return;
+  const seo = state.pages[currentEditingSlug].data.seo;
+  ouvrirPhototheque({
+    surChoix: ([photo]) => {
+      seo.og_image = photo.chemin;
+      delete seo._ogFile;
+      delete seo._ogPreview;
+      majApercuPartage();
+    },
+    surFichiers: ([file]) => {
+      seo._ogFile = file;
+      seo._ogPreview = URL.createObjectURL(file);
+      majApercuPartage();
+    },
+  });
 });
 
 document.getElementById("sidebar-add-page").addEventListener("click", () => {
@@ -940,6 +965,11 @@ document.getElementById("page-save").addEventListener("click", async (e) => {
   try {
     showStatus("Enregistrement…", "loading");
 
+    if (page.data.seo._ogFile) {
+      page.data.seo.og_image = await uploadImage(page.data.seo._ogFile);
+      delete page.data.seo._ogFile;
+      delete page.data.seo._ogPreview;
+    }
     await uploadPendingImagesDeep(page.data.sections);
     const cleanData = stripPrivateDeep({ seo: page.data.seo, sections: page.data.sections });
     const jsonPath = `content/pages/${slug}.json`;
@@ -1193,7 +1223,33 @@ async function initApp() {
   renderSidebarPagesList();
   renderNavigationTab();
   renderApparenceTab();
+  document.getElementById("stats-jeton").value = state.site.data.statistiques_cloudflare || "";
 }
+
+// Statistiques de visite (Cloudflare Web Analytics) : jeton dans
+// content/site.json, lu par js/render.js.
+document.getElementById("stats-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  const jeton = document.getElementById("stats-jeton").value.trim();
+  if (jeton && !/^[0-9a-f]{32}$/i.test(jeton)) {
+    showStatus("Ce jeton ne semble pas valide : il fait 32 caractères (chiffres et lettres de a à f).", "error");
+    return;
+  }
+  btn.disabled = true;
+  try {
+    showStatus("Enregistrement…", "loading");
+    const frais = await getJsonFile("content/site.json");
+    if (jeton) frais.data.statistiques_cloudflare = jeton;
+    else delete frais.data.statistiques_cloudflare;
+    await putJsonFileWithRetry("content/site.json", frais.data, "Statistiques de visite (admin)");
+    state.site = await getJsonFile("content/site.json");
+    showStatus(jeton ? "Statistiques activées ✓ (visibles sur Cloudflare d'ici quelques minutes)." : "Statistiques désactivées.", "success");
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 async function startLoginFlow() {
   if (getToken()) {

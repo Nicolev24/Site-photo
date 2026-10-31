@@ -128,6 +128,50 @@ function applySeo(seo, slug, avecUnivers) {
   if (ogUrl) ogUrl.setAttribute("content", url);
 }
 
+// ---------- Bouton « Réserver » fixe (téléphone) ----------
+// Toujours à portée de pouce une fois qu'on a commencé à descendre dans la
+// page (caché sur la page contact, voir css/style.css).
+
+function initReserverFixe(navigation) {
+  const cta = navigation && navigation.cta_button;
+  if (!cta || document.querySelector(".reserver-fixe")) return;
+  const lien = document.createElement("a");
+  lien.className = "reserver-fixe";
+  lien.href = cta.href;
+  lien.textContent = cta.label === "Réserver" ? "Réserver une séance" : cta.label;
+  document.body.appendChild(lien);
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    lien.classList.toggle("est-visible", window.scrollY > 320);
+  };
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!prevu) {
+        prevu = true;
+        requestAnimationFrame(maj);
+      }
+    },
+    { passive: true }
+  );
+  maj();
+}
+
+// ---------- Statistiques de visite ----------
+// Cloudflare Web Analytics : anonyme, sans cookie. Actif seulement si le
+// jeton est renseigné dans l'admin (Général › Statistiques de visite).
+
+function initStatistiques(site) {
+  const jeton = site && site.statistiques_cloudflare;
+  if (!jeton || !/^[0-9a-f]{32}$/i.test(jeton)) return;
+  const script = document.createElement("script");
+  script.defer = true;
+  script.src = "https://static.cloudflareinsights.com/beacon.min.js";
+  script.setAttribute("data-cf-beacon", JSON.stringify({ token: jeton, spa: true }));
+  document.head.appendChild(script);
+}
+
 // ---------- Sélecteur d'univers (en haut des pages, sauf l'accueil) ----------
 
 function majBarreUnivers() {
@@ -335,6 +379,8 @@ async function init() {
 
   applyAppearance(appearance);
   buildFooter(navigation);
+  initReserverFixe(navigation);
+  initStatistiques(site);
   initBarreUnivers();
 
   const cible = adresseAvecUnivers(new URL(window.location.href), slug);

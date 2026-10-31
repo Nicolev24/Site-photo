@@ -1582,3 +1582,26 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+/* Image d'aperçu des partages (réglages SEO) : format des aperçus WhatsApp / Facebook */
+.admin-og {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.admin-og img {
+  width: 100%;
+  aspect-ratio: 1.91 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #eee;
+}
+
+.admin-og img[hidden] {
+  display: none;
+}
+
+.admin-avis-google {
+  margin-top: 18px;
+}

@@ -454,7 +454,31 @@ function enregistrerFichierSurOrdinateur(fichier) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
+// ---------- Avis Google ----------
+// Après un téléchargement de plusieurs photos (le moment où le client est
+// le plus content), on l'invite à laisser un avis. Le lien se règle dans
+// l'admin (page Contact) ; sans lien, rien ne s'affiche.
+let lienAvis = null;
+const ptAvis = document.getElementById("pt-avis");
+
+fetch("../content/contact.json", { cache: "no-cache" })
+  .then((r) => r.json())
+  .then((contact) => {
+    if (!/^https:\/\//.test(contact.avis_google_url || "")) return;
+    lienAvis = contact.avis_google_url;
+    ptAvis.querySelector("a").href = lienAvis;
+    const lienPage = document.getElementById("lien-avis");
+    lienPage.href = lienAvis;
+    lienPage.hidden = false;
+  })
+  .catch(() => {});
+
+function proposerAvis(n) {
+  if (lienAvis && n > 1) ptAvis.hidden = false;
+}
+
 function ouvrirPanneau(titre) {
+  ptAvis.hidden = true;
   document.getElementById("pt-titre").textContent = titre;
   ptMessage.textContent = "";
   ptAide.textContent = "";
@@ -561,6 +585,7 @@ function partagerPhotos(photos, textes) {
         .then(() => {
           bouton.textContent = textes.fait;
           bouton.classList.add("est-fait");
+          proposerAvis(photos.length);
         })
         .catch(() => {});
     });
@@ -700,6 +725,7 @@ async function enregistrerDansUnDossier(photos) {
       await flux.close();
     });
     ptMessage.textContent = `${photos.length} photos enregistrées dans le dossier « ${dossier.name} ».`;
+    proposerAvis(photos.length);
   } catch (err) {
     if (!controle.signal.aborted) ptMessage.textContent = `Le téléchargement s'est interrompu : ${err.message}. Vérifiez votre connexion et réessayez.`;
   } finally {
@@ -724,7 +750,11 @@ async function telechargerUneParUne(photos, options = {}) {
       // Petite pause : certains navigateurs ignorent les téléchargements trop rapprochés.
       await new Promise((r) => setTimeout(r, 250));
     });
-    if (options.android) return afficherGuideAndroid(photos.length);
+    if (options.android) {
+      afficherGuideAndroid(photos.length);
+      return proposerAvis(photos.length);
+    }
+    proposerAvis(photos.length);
     ptMessage.textContent = plusieurs
       ? `${photos.length} photos téléchargées dans votre dossier Téléchargements. Si votre navigateur a demandé l'autorisation de télécharger plusieurs fichiers, acceptez-la.`
       : "Photo téléchargée dans votre dossier Téléchargements.";

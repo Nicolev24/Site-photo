@@ -37,7 +37,7 @@
           },
           {
             "type": "paragraph",
-            "text": "Ce site n'utilise aucun cookie, aucun outil d'analyse d'audience ni aucun traceur."
+            "text": "Ce site n'utilise aucun cookie ni traceur publicitaire. Sa fréquentation peut être mesurée de façon anonyme avec Cloudflare Web Analytics, qui n'utilise pas de cookie et ne permet pas de vous identifier."
           },
           {
             "type": "heading",
@@ -61,7 +61,7 @@
           },
           {
             "type": "paragraph",
-            "text": "Le formulaire de contact ouvre directement votre messagerie habituelle (via un lien « mailto ») : les données que vous saisissez sont envoyées par email, et ne transitent par aucun serveur intermédiaire ni base de données de ce site."
+            "text": "Le message envoyé via le formulaire de contact est transmis par email à Nicolas Leveugle grâce au service FormSubmit (formsubmit.co), qui se charge uniquement de l'acheminer. Vous pouvez aussi écrire directement à l'adresse email indiquée sur la page contact."
           },
           {
             "type": "heading",
@@ -77,7 +77,7 @@
           },
           {
             "type": "paragraph",
-            "text": "Vos données ne sont transmises à aucun tiers. Seul Nicolas Leveugle y a accès, via sa messagerie électronique personnelle."
+            "text": "Seul Nicolas Leveugle a accès à vos données, via sa messagerie électronique. Le service FormSubmit intervient uniquement comme intermédiaire technique pour acheminer les messages du formulaire ; vos données ne sont ni vendues ni utilisées à d'autres fins."
           },
           {
             "type": "heading",

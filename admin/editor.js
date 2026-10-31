@@ -992,6 +992,12 @@ function buildEditableContact(data, rerender) {
     row("Délai de réponse", c, "response_delay");
   }
   left.appendChild(list);
+  if (state.contact) {
+    const avis = document.createElement("div");
+    avis.className = "admin-avis-google";
+    textField(avis, "Lien pour laisser un avis Google (proposé aux clients dans leur galerie, après le téléchargement)", state.contact.data, "avis_google_url");
+    left.appendChild(avis);
+  }
   // Une photo par univers (Particulier / Commerce en haut du site).
   data.photo_commerces = data.photo_commerces || { image: "", alt: "" };
   const photos = document.createElement("div");

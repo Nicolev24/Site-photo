@@ -466,7 +466,7 @@ async function buildContact(data, basePath) {
     <h3>${escapeHtml(data.formulaire_title)}</h3>
   `
   );
-  const form = el("form", { id: "contact-form", method: "post", enctype: "text/plain" });
+  const form = el("form", { id: "contact-form", method: "post", novalidate: null });
   form.innerHTML = `
     <div>
       <label for="name">Nom</label>
@@ -484,12 +484,14 @@ async function buildContact(data, basePath) {
       <label for="message">Message</label>
       <textarea id="message" name="Message" required placeholder="Dites-m'en un peu plus sur votre projet, la date envisagée, le lieu..."></textarea>
     </div>
+    <input type="text" name="_honey" class="champ-piege" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <div class="consent-row">
       <input type="checkbox" id="consent" name="Consentement" required />
       <label for="consent">J'accepte que mes données soient utilisées pour me répondre, conformément à la <a href="${resolveHref("confidentialite.html", basePath)}">politique de confidentialité</a>.</label>
     </div>
     <button type="submit" class="btn btn-primary">Envoyer</button>
-    <p class="form-note">En envoyant ce formulaire, votre client mail s'ouvre avec le message pré-rempli.</p>
+    <p class="form-note">Votre message m'arrive directement par email.</p>
+    <p class="form-erreur" role="alert" hidden></p>
   `;
   right.appendChild(form);
   await remplirFormules(form.querySelector("#type"), basePath);
@@ -502,7 +504,7 @@ async function buildContact(data, basePath) {
       <li>Zone d'intervention<br>${escapeHtml(contact.zone)}</li>
       <li>Délai de réponse<br>${escapeHtml(contact.response_delay)}</li>
     `;
-    form.action = `mailto:${contact.email}`;
+    activerEnvoi(form, contact.email);
   } catch (e) {
     console.error(e);
   }
@@ -511,6 +513,63 @@ async function buildContact(data, basePath) {
   container.appendChild(right);
   section.appendChild(container);
   return section;
+}
+
+// Envoi du formulaire de contact : le message part directement par email
+// (service FormSubmit, sans compte : la première demande reçue contient un
+// lien d'activation à cliquer une fois). En cas de souci, on propose
+// d'écrire par email avec le message déjà rempli.
+const ENVOI_FORMULAIRE = "https://formsubmit.co/ajax/";
+
+function activerEnvoi(form, email) {
+  const bouton = form.querySelector('button[type="submit"]');
+  const erreur = form.querySelector(".form-erreur");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const champ = (nom) => (form.elements[nom] ? form.elements[nom].value.trim() : "");
+    const donnees = {
+      Nom: champ("Nom"),
+      Email: champ("Email"),
+      "Formule souhaitée": champ("Formule souhaitée"),
+      Univers: universCourant() === "commerces" ? "Commerce" : "Particulier",
+      Message: champ("Message"),
+      _subject: `Nouvelle demande via le site : ${champ("Formule souhaitée") || "contact"}`,
+      _replyto: champ("Email"),
+      _template: "table",
+      _captcha: "false",
+      _honey: champ("_honey"),
+    };
+    bouton.disabled = true;
+    bouton.textContent = "Envoi…";
+    erreur.hidden = true;
+    try {
+      const res = await fetch(ENVOI_FORMULAIRE + encodeURIComponent(email), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(donnees),
+      });
+      const rep = await res.json().catch(() => ({}));
+      if (!res.ok || String(rep.success) !== "true") throw new Error(rep.message || "envoi refusé");
+      const prenom = donnees.Nom.split(" ")[0];
+      form.replaceWith(
+        el(
+          "div",
+          { class: "form-merci", role: "status" },
+          `<p class="form-merci-titre">Merci${prenom ? ` ${escapeHtml(prenom)}` : ""} !</p>
+          <p>Votre message est bien parti. Je vous réponds sous 48h, à l'adresse ${escapeHtml(donnees.Email)}.</p>`
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      const corps = `${donnees.Message}\n\n${donnees.Nom}\nFormule : ${donnees["Formule souhaitée"]}`;
+      const lien = `mailto:${email}?subject=${encodeURIComponent(donnees._subject)}&body=${encodeURIComponent(corps)}`;
+      erreur.innerHTML = `Le message n'a pas pu partir. <a href="${escapeHtml(lien)}">Envoyez-le plutôt par email</a> (il est déjà rempli).`;
+      erreur.hidden = false;
+      bouton.disabled = false;
+      bouton.textContent = "Envoyer";
+    }
+  });
 }
 
 // Liste des formules du formulaire de contact : reprise de la page tarifs
@@ -673,12 +732,53 @@ function buildTexteDuo(data, basePath) {
 // Une grande photo sur toute la largeur, pour respirer entre deux textes.
 function buildPhotoPleine(data, basePath) {
   if (!data.image) return null;
-  return el("section", { class: "photo-pleine" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
+  const section = el("section", { class: "photo-pleine" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
+  profondeur(section);
+  return section;
 }
 
-// Bande de photos qui défile lentement (s'arrête au survol). Les photos sont
-// répétées une fois pour que le défilement boucle sans à-coup ; sans
-// animation (réglage « réduire les animations »), on la fait défiler au doigt.
+// Effet de profondeur : la grande photo défile un peu moins vite que la
+// page. On déplace l'image avec la propriété `translate`, distincte du
+// `transform` qui porte le zoom du cadrage. Désactivé avec « réduire les
+// animations ».
+const PHOTOS_PROFONDEUR = new Set();
+let profondeurPrevue = false;
+
+function majProfondeur() {
+  profondeurPrevue = false;
+  const h = window.innerHeight;
+  PHOTOS_PROFONDEUR.forEach((section) => {
+    if (!section.isConnected) return PHOTOS_PROFONDEUR.delete(section);
+    const r = section.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > h) return;
+    // -1 quand la photo entre en bas de l'écran, 1 quand elle sort en haut
+    const avance = Math.max(-1, Math.min(1, (h / 2 - (r.top + r.height / 2)) / (h / 2 + r.height / 2)));
+    section.firstElementChild.style.translate = `0 ${(avance * r.height * 0.08).toFixed(1)}px`;
+  });
+}
+
+function profondeur(section) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  section.classList.add("avec-profondeur");
+  if (!PHOTOS_PROFONDEUR.size) {
+    const demander = () => {
+      if (!profondeurPrevue) {
+        profondeurPrevue = true;
+        requestAnimationFrame(majProfondeur);
+      }
+    };
+    window.addEventListener("scroll", demander, { passive: true });
+    window.addEventListener("resize", demander);
+  }
+  PHOTOS_PROFONDEUR.add(section);
+  requestAnimationFrame(majProfondeur);
+}
+
+// Bande de photos qui défile lentement toute seule, et qu'on peut aussi
+// faire défiler soi-même (doigt, souris, molette, pavé tactile) : le
+// défilement automatique s'arrête pendant ce temps et reprend après. Les
+// photos sont répétées une fois pour boucler sans à-coup. Avec le réglage
+// « réduire les animations », elle ne défile qu'à la main.
 function buildBandePhotos(data, basePath) {
   const photos = photosRemplies(data.photos);
   if (!photos.length) return null;
@@ -686,11 +786,92 @@ function buildBandePhotos(data, basePath) {
     photos
       .map((p) => `<div class="bande-photo"${cachee ? ' aria-hidden="true"' : ""}>${imageHtml(p, basePath, "(max-width: 860px) 60vw, 420px", cachee ? ' alt=""' : "")}</div>`)
       .join("");
-  return el(
-    "section",
-    { class: "bande-photos" },
-    `<div class="bande-piste" style="--duree:${Math.max(30, photos.length * 7)}s">${serie(false)}${serie(true)}</div>`
-  );
+  const section = el("section", { class: "bande-photos" }, `<div class="bande-zone"><div class="bande-piste">${serie(false)}${serie(true)}</div></div>`);
+  animerBande(section.querySelector(".bande-zone"));
+  return section;
+}
+
+const VITESSE_BANDE = 35; // pixels par seconde
+const REPRISE_BANDE = 2500; // ms sans interaction avant de repartir
+
+function animerBande(zone) {
+  const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let pause = 0; // horodatage jusqu'auquel le défilement automatique attend
+  let survol = false;
+  let visible = false;
+  let precedent = null;
+  let attendu = null; // position posée par l'animation (pour reconnaître la main du visiteur)
+  const moitie = () => zone.scrollWidth / 2;
+  const boucler = () => {
+    const m = moitie();
+    if (m <= 0) return;
+    if (zone.scrollLeft >= m) zone.scrollLeft -= m;
+    else if (zone.scrollLeft <= 0) zone.scrollLeft += m;
+  };
+  const interaction = () => (pause = performance.now() + REPRISE_BANDE);
+
+  zone.addEventListener("scroll", () => {
+    // Un défilement qui ne vient pas de l'animation : c'est le visiteur.
+    if (attendu === null || Math.abs(zone.scrollLeft - attendu) > 2) {
+      interaction();
+      attendu = null;
+    }
+    boucler();
+  });
+  zone.addEventListener("wheel", interaction, { passive: true });
+  zone.addEventListener("touchstart", interaction, { passive: true });
+  zone.addEventListener("mouseenter", () => (survol = true));
+  zone.addEventListener("mouseleave", () => (survol = false));
+
+  // Glisser à la souris (au doigt, le défilement natif suffit).
+  let glisse = null;
+  zone.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    glisse = { x: e.clientX, debut: zone.scrollLeft, bouge: false };
+    zone.setPointerCapture(e.pointerId);
+  });
+  zone.addEventListener("pointermove", (e) => {
+    if (!glisse) return;
+    const dx = e.clientX - glisse.x;
+    if (Math.abs(dx) > 3) glisse.bouge = true;
+    zone.scrollLeft = glisse.debut - dx;
+    interaction();
+  });
+  const finGlisse = () => {
+    if (glisse && glisse.bouge) zone.classList.add("vient-de-glisser");
+    glisse = null;
+    setTimeout(() => zone.classList.remove("vient-de-glisser"), 50);
+  };
+  zone.addEventListener("pointerup", finGlisse);
+  zone.addEventListener("pointercancel", finGlisse);
+  zone.addEventListener("click", (e) => {
+    if (zone.classList.contains("vient-de-glisser")) e.preventDefault();
+  });
+  zone.addEventListener("dragstart", (e) => e.preventDefault());
+
+  if (reduit) return;
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entrees) => entrees.forEach((en) => (visible = en.isIntersecting))).observe(zone);
+  } else {
+    visible = true;
+  }
+  // Position exacte gardée à part : scrollLeft est arrondi au pixel par
+  // certains navigateurs, ce qui figerait un défilement aussi lent.
+  let position = 0;
+  const pas = (t) => {
+    if (!zone.isConnected) return; // page quittée
+    if (precedent !== null && visible && !survol && !glisse && t > pause) {
+      if (attendu === null) position = zone.scrollLeft; // reprise après le visiteur
+      position += (VITESSE_BANDE * Math.min(64, t - precedent)) / 1000;
+      zone.scrollLeft = position;
+      boucler();
+      if (Math.abs(zone.scrollLeft - position) > 2) position = zone.scrollLeft; // a bouclé
+      attendu = zone.scrollLeft;
+    }
+    precedent = t;
+    requestAnimationFrame(pas);
+  };
+  requestAnimationFrame(pas);
 }
 
 // « Tout mon travail est sur Instagram » : quelques photos, toutes reliées au

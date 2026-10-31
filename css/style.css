@@ -1605,26 +1605,46 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
 
 /* Une grande photo sur toute la largeur */
 .photo-pleine {
+  position: relative;
   padding: 0;
   height: clamp(320px, 68vh, 720px);
   overflow: hidden;
 }
 
-/* Bande de photos qui défile lentement */
+/* Effet de profondeur : la photo dépasse un peu pour pouvoir glisser */
+.photo-pleine.avec-profondeur img {
+  position: absolute;
+  left: 0;
+  top: -8%;
+  height: 116%;
+  will-change: translate;
+}
+
+/* Bande de photos qui défile lentement, et qu'on peut faire défiler
+   soi-même (js : animerBande) */
 .bande-photos {
   padding: 24px 0;
-  overflow: hidden;
+}
+
+.bande-zone {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.bande-zone::-webkit-scrollbar {
+  display: none;
+}
+
+.bande-zone:active {
+  cursor: grabbing;
 }
 
 .bande-piste {
   display: flex;
   gap: 14px;
   width: max-content;
-  animation: bandeDefile var(--duree, 60s) linear infinite;
-}
-
-.bande-photos:hover .bande-piste {
-  animation-play-state: paused;
 }
 
 .bande-photo {
@@ -1645,26 +1665,9 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   margin-top: 72px;
 }
 
-@keyframes bandeDefile {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-50% - 7px)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bande-photos {
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-  }
-  .bande-piste {
-    animation: none;
-    padding: 0 24px;
-  }
-  .bande-photo {
-    scroll-snap-align: center;
-  }
-  .bande-photo[aria-hidden="true"] {
-    display: none;
-  }
+.bande-photo img {
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 /* Instagram */
@@ -2370,5 +2373,90 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   }
   .contact-photo {
     aspect-ratio: 3 / 2;
+  }
+}
+
+/* ============ Formulaire de contact : envoi direct ============ */
+.champ-piege {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.form-erreur {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 120, 100, 0.5);
+  border-radius: var(--rayon-bordure);
+  color: var(--couleur-texte);
+  font-size: 0.9rem;
+}
+
+.form-erreur a {
+  color: var(--couleur-accent);
+  text-decoration: underline;
+}
+
+.form-merci {
+  padding: 28px 26px;
+  border: 1px solid var(--couleur-accent);
+  border-radius: var(--rayon-bordure);
+}
+
+.form-merci p {
+  margin: 0;
+  color: var(--couleur-texte-attenue);
+  line-height: 1.6;
+}
+
+.form-merci .form-merci-titre {
+  margin-bottom: 8px;
+  font-family: var(--police-titres);
+  font-size: 1.8rem;
+  color: var(--couleur-texte);
+}
+
+/* ============ Bouton « Réserver » fixe en bas de l'écran (téléphone) ============ */
+.reserver-fixe {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .reserver-fixe {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    z-index: 90;
+    display: block;
+    padding: 15px 20px;
+    border-radius: var(--rayon-bouton);
+    background: var(--couleur-accent);
+    color: var(--couleur-sur-accent);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    font-family: var(--police-texte);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(140%);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reserver-fixe.est-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  html[data-page="contact"] .reserver-fixe {
+    display: none;
+  }
+  /* Le bas de page reste lisible au-dessus du bouton */
+  .site-footer {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 }

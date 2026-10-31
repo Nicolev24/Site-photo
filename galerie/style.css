@@ -565,3 +565,34 @@
 .lien-aide[hidden] {
   display: none;
 }
+
+/* Invitation à laisser un avis Google */
+.pt-avis {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--couleur-accent);
+  border-radius: var(--rayon-bordure);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.pt-avis[hidden] {
+  display: none;
+}
+
+.pt-avis a {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--couleur-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a.lien-aide {
+  margin-left: 16px;
+}
+
+a.lien-aide[hidden] {
+  display: none;
+}

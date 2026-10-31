@@ -157,6 +157,20 @@
 
         <hr class="admin-divider" />
 
+        <h3>Statistiques de visite</h3>
+        <div class="admin-card">
+          <div class="admin-field">
+            <label>Jeton Cloudflare Web Analytics</label>
+            <input type="text" id="stats-jeton" placeholder="ex : 3f2a…(32 caractères)" autocomplete="off" />
+            <p class="admin-hint">Mesure anonyme, sans cookie : nombre de visiteurs, pages vues, d'où ils viennent. Le jeton se trouve sur dash.cloudflare.com › Analytics &amp; Logs › Web Analytics › ajouter le site nicolasleveugle.be (dans le code proposé, c'est la valeur de « token »). Laisse vide pour désactiver.</p>
+          </div>
+          <div class="admin-save-row" style="margin-top:0">
+            <button id="stats-save" class="btn btn-primary btn-small" type="button">Enregistrer</button>
+          </div>
+        </div>
+
+        <hr class="admin-divider" />
+
         <h3>Couleurs</h3>
         <p class="lead" style="margin-top:-8px">Seule la police Inter (déjà installée) est disponible pour le moment.</p>
         <div class="admin-card">
@@ -222,7 +236,14 @@
             <div class="admin-popover-panel">
               <div class="admin-field"><label>Titre de la page (onglet du navigateur, Google)</label><input type="text" id="seo-title" /></div>
               <div class="admin-field"><label>Description (Google, partages)</label><textarea id="seo-description" rows="2"></textarea></div>
-              <div class="admin-field"><label>Image de partage (chemin, ex : images/hero.jpg)</label><input type="text" id="seo-og-image" /></div>
+              <div class="admin-field">
+                <label>Image d'aperçu (quand on partage la page sur WhatsApp, Facebook…)</label>
+                <div class="admin-og">
+                  <img id="seo-og-apercu" alt="" />
+                  <button type="button" id="seo-og-choisir" class="btn-outline btn-small">Choisir l'image</button>
+                </div>
+                <input type="hidden" id="seo-og-image" />
+              </div>
             </div>
           </details>
           <button id="page-preview" class="btn-outline btn-small" type="button">Aperçu plein écran</button>
