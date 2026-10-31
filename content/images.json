@@ -572,6 +572,27 @@
         1200
       ],
       "empreinte": "00482fe9933b"
+    },
+    "images/uploads/1793488133306-salon-de-massimo-dsc3533.jpg": {
+      "l": 2600,
+      "h": 1733,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "a1244bdade53"
+    },
+    "images/uploads/1793488184850-salon-de-massimo-dsc3983.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "5bd92e6475f4"
     }
   }
 }
