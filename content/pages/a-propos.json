@@ -184,8 +184,8 @@
       "type": "photo_pleine",
       "tab": "commerces",
       "data": {
-        "image": "images/portfolio/entreprises/img2.jpg",
-        "alt": "Réunion sur un chantier",
+        "image": "images/commerces/salon-vue-ensemble.jpg",
+        "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
         "position": "50% 45%"
       }
     },
@@ -203,12 +203,13 @@
         "image_side": "droite",
         "photos": [
           {
-            "image": "images/portfolio/entreprises/img1.jpg",
-            "alt": "Séance chez un barbier"
+            "image": "images/commerces/barbier-portrait-miroir.jpg",
+            "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+            "position": "50% 30%"
           },
           {
-            "image": "images/portfolio/entreprises/img3.jpg",
-            "alt": "Manutention en entrepôt"
+            "image": "images/commerces/outils-miroir.jpg",
+            "alt": "Les outils du barbier posés devant un miroir doré"
           }
         ]
       }
@@ -226,12 +227,61 @@
         "image_side": "gauche",
         "photos": [
           {
-            "image": "images/portfolio/entreprises/img4.jpg",
-            "alt": "Équipe sur un chantier"
+            "image": "images/formules/site-vitrine.jpg",
+            "alt": "Exemple de site vitrine, sur ordinateur et sur téléphone"
           }
         ]
       },
       "tab": "commerces"
+    },
+    {
+      "id": "photos-commerces",
+      "type": "bande_photos",
+      "tab": "commerces",
+      "data": {
+        "photos": [
+          {
+            "image": "images/commerces/coupe-ciseaux.jpg",
+            "alt": "Coupe aux ciseaux, en gros plan"
+          },
+          {
+            "image": "images/portfolio/entreprises/img2.jpg",
+            "alt": "Réunion sur un chantier"
+          },
+          {
+            "image": "images/commerces/salon-decor-vinyle.jpg",
+            "alt": "Détail du salon : un vinyle d'Aznavour et une platine"
+          },
+          {
+            "image": "images/commerces/coupe-client-tatoue.jpg",
+            "alt": "Le barbier prépare un client assis dans le salon"
+          },
+          {
+            "image": "images/portfolio/entreprises/img3.jpg",
+            "alt": "Manutention en entrepôt"
+          },
+          {
+            "image": "images/commerces/rasage-coupe-chou.jpg",
+            "alt": "Rasage au coupe-chou, en gros plan"
+          },
+          {
+            "image": "images/commerces/salon-trophees.jpg",
+            "alt": "Détail du salon : figurines et trophée sur une étagère"
+          },
+          {
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          },
+          {
+            "image": "images/commerces/serviette-chaude.jpg",
+            "alt": "Le barbier pose une serviette chaude sur un client"
+          },
+          {
+            "image": "images/commerces/barbier-sourire-client.jpg",
+            "alt": "Le barbier sourit en taillant la barbe d'un client"
+          }
+        ]
+      }
     },
     {
       "id": "contact-commerces",

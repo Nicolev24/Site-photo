@@ -1,5 +1,106 @@
 {
   "images": {
+    "images/commerces/barbier-portrait-miroir.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "4ed8df3308cf"
+    },
+    "images/commerces/barbier-sourire-client.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "18e16fd2330f"
+    },
+    "images/commerces/coupe-ciseaux.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "e9c8f346df71"
+    },
+    "images/commerces/coupe-client-tatoue.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "83da23a7f91a"
+    },
+    "images/commerces/outils-miroir.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "3ddd11a3ed03"
+    },
+    "images/commerces/rasage-coupe-chou.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "d67fbdf68f28"
+    },
+    "images/commerces/salon-decor-vinyle.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "fb7395624ce8"
+    },
+    "images/commerces/salon-trophees.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "5e20cccf831c"
+    },
+    "images/commerces/salon-vue-ensemble.jpg": {
+      "l": 2600,
+      "h": 1733,
+      "tailles": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "empreinte": "3673c83ebd53"
+    },
+    "images/commerces/serviette-chaude.jpg": {
+      "l": 1733,
+      "h": 2600,
+      "tailles": [
+        480,
+        800,
+        1200
+      ],
+      "empreinte": "d7cb0552c28f"
+    },
     "images/formules/pack-photo-site.jpg": {
       "l": 1800,
       "h": 1200,
@@ -9,7 +110,7 @@
         1200,
         1600
       ],
-      "empreinte": "70ad8be4dc61"
+      "empreinte": "995da23aacac"
     },
     "images/formules/site-vitrine.jpg": {
       "l": 1800,
@@ -20,7 +121,7 @@
         1200,
         1600
       ],
-      "empreinte": "dbd118fea3fb"
+      "empreinte": "66c8ede90d86"
     },
     "images/hero.jpg": {
       "l": 1333,

@@ -211,9 +211,9 @@
               "Prêtes pour Google, les réseaux et votre site"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/portfolio/entreprises/img1.jpg",
-            "alt": "Séance chez un barbier",
-            "position": "50% 35%"
+            "image": "images/commerces/barbier-sourire-client.jpg",
+            "alt": "Le barbier sourit en taillant la barbe d'un client",
+            "position": "50% 30%"
           },
           {
             "title": "Site vitrine 1 page",
@@ -284,8 +284,8 @@
             "visuel": "photo",
             "title": "La séance",
             "text": "Je viens sur place, au moment qui vous arrange, partout en Wallonie et à Bruxelles.",
-            "image": "images/portfolio/entreprises/img1.jpg",
-            "alt": "Séance chez un barbier",
+            "image": "images/commerces/serviette-chaude.jpg",
+            "alt": "Le barbier pose une serviette chaude sur un client",
             "position": "50% 35%"
           },
           {
@@ -295,20 +295,28 @@
             "galerie_titre": "Votre galerie",
             "photos": [
               {
-                "image": "images/portfolio/entreprises/img2.jpg",
-                "alt": "Réunion sur un chantier"
+                "image": "images/commerces/salon-decor-vinyle.jpg",
+                "alt": "Détail du salon : un vinyle d'Aznavour et une platine"
               },
               {
-                "image": "images/portfolio/entreprises/img1.jpg",
-                "alt": "Séance chez un barbier"
+                "image": "images/commerces/rasage-coupe-chou.jpg",
+                "alt": "Rasage au coupe-chou, en gros plan"
+              },
+              {
+                "image": "images/commerces/outils-miroir.jpg",
+                "alt": "Les outils du barbier posés devant un miroir doré"
+              },
+              {
+                "image": "images/commerces/coupe-ciseaux.jpg",
+                "alt": "Coupe aux ciseaux, en gros plan"
+              },
+              {
+                "image": "images/commerces/salon-trophees.jpg",
+                "alt": "Détail du salon : figurines et trophée sur une étagère"
               },
               {
                 "image": "images/portfolio/entreprises/img4.jpg",
                 "alt": "Équipe sur un chantier"
-              },
-              {
-                "image": "images/portfolio/entreprises/img3.jpg",
-                "alt": "Manutention en entrepôt"
               }
             ]
           }

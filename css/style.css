@@ -1587,6 +1587,11 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
 
 .texte-duo-photos.nb-1 .duo-photo-1 {
   width: 100%;
+  aspect-ratio: auto;
+}
+
+.texte-duo-photos.nb-1 .duo-photo-1 img {
+  height: auto;
 }
 
 .photos-a-gauche .duo-photo-1 {
