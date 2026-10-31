@@ -227,9 +227,26 @@
               "Vos photos intégrées"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/formules/site-vitrine.jpg",
-            "alt": "Exemple de site vitrine, sur ordinateur et sur téléphone",
-            "position": "50% 50%"
+            "visuel": "site",
+            "maquette": {
+              "nom": "Votre commerce",
+              "titre": "Bienvenue chez vous",
+              "ecran": {
+                "image": "images/commerces/salon-vue-ensemble.jpg",
+                "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
+                "position": "50% 45%"
+              },
+              "tirage1": {
+                "image": "images/commerces/barbier-portrait-miroir.jpg",
+                "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+                "position": "50% 25%"
+              },
+              "tirage2": {
+                "image": "images/commerces/salon-decor-vinyle.jpg",
+                "alt": "Détail du salon : un vinyle d'Aznavour et une platine",
+                "position": "50% 40%"
+              }
+            }
           },
           {
             "title": "Pack Photo + Site",
@@ -243,9 +260,26 @@
               "90€ d'économie"
             ],
             "cta_label": "Choisir cette formule",
-            "image": "images/formules/pack-photo-site.jpg",
-            "alt": "Des photos de commerce et le site vitrine qui les met en valeur",
-            "position": "50% 50%"
+            "visuel": "pack",
+            "maquette": {
+              "nom": "Votre commerce",
+              "titre": "Bienvenue chez vous",
+              "ecran": {
+                "image": "images/commerces/salon-vue-ensemble.jpg",
+                "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
+                "position": "50% 45%"
+              },
+              "tirage1": {
+                "image": "images/commerces/barbier-portrait-miroir.jpg",
+                "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+                "position": "50% 25%"
+              },
+              "tirage2": {
+                "image": "images/commerces/salon-decor-vinyle.jpg",
+                "alt": "Détail du salon : un vinyle d'Aznavour et une platine",
+                "position": "50% 40%"
+              }
+            }
           }
         ],
         "note": "Prix TVA comprise."

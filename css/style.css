@@ -2045,6 +2045,273 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   background: var(--couleur-fond-alt);
 }
 
+/* Exemples de site (formules commerces) : tailles en cqw, le visuel
+   s'adapte à la largeur de son cadre (format 3:2). */
+.maquette {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 40% 35%, #3a332b, #1c1916 70%);
+  font-family: var(--police-texte);
+}
+
+.price-card-photo .maquette {
+  height: 100%;
+}
+
+.texte-duo-maquette .maquette {
+  border-radius: var(--rayon-bordure);
+}
+
+.mq-site {
+  --f: 0.72cqw;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #f6f1e9;
+  color: #2a2622;
+  font-size: var(--f);
+  line-height: 1.3;
+}
+
+.mq-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 0 0 9%;
+  padding: 0 5%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mq-nav b {
+  font-family: var(--police-titres);
+  font-weight: 500;
+  font-size: calc(var(--f) * 2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.mq-nav span {
+  opacity: 0.6;
+}
+
+.mq-hero {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #3a332b;
+}
+
+.mq-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mq-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(20, 16, 12, 0.78), rgba(20, 16, 12, 0.1) 70%);
+}
+
+.mq-hero-texte {
+  position: absolute;
+  z-index: 1;
+  left: 6%;
+  top: 50%;
+  max-width: 55%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #f6f1e9;
+}
+
+.mq-hero-texte b {
+  font-family: var(--police-titres);
+  font-weight: 500;
+  font-size: calc(var(--f) * 4.6);
+  line-height: 1.05;
+  margin-bottom: 0.4em;
+}
+
+.mq-hero-texte span {
+  font-size: calc(var(--f) * 1.25);
+  opacity: 0.85;
+  margin-bottom: 1.2em;
+}
+
+.mq-hero-texte i {
+  padding: 0.9em 1.6em;
+  background: #ae8c5b;
+  color: #1c1916;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mq-infos {
+  display: flex;
+  justify-content: space-around;
+  padding: 3% 5%;
+  font-size: calc(var(--f) * 1.05);
+  text-align: center;
+}
+
+.mq-infos small {
+  display: block;
+  margin-bottom: 0.4em;
+  font-size: var(--f);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* Ordinateur */
+.mq-portable {
+  position: absolute;
+  left: 8.33cqw;
+  top: 8.33cqw;
+  width: 68.9cqw;
+}
+
+.mq-ecran {
+  height: 43.3cqw;
+  border: 1.22cqw solid #0e0c0a;
+  border-bottom-width: 1.67cqw;
+  border-radius: 1.22cqw 1.22cqw 0 0;
+  overflow: hidden;
+  box-shadow: 0 2.2cqw 4.4cqw rgba(0, 0, 0, 0.55);
+}
+
+.mq-socle {
+  height: 1.89cqw;
+  margin: 0 -3.9cqw;
+  border-radius: 0 0 1.44cqw 1.44cqw;
+  background: linear-gradient(#cfc8bd, #8f877c);
+  box-shadow: 0 1.67cqw 2.8cqw rgba(0, 0, 0, 0.5);
+}
+
+.mq-socle::before {
+  content: "";
+  display: block;
+  width: 11.1cqw;
+  height: 0.67cqw;
+  margin: 0 auto;
+  border-radius: 0 0 0.67cqw 0.67cqw;
+  background: #7d766b;
+}
+
+/* Téléphone */
+.mq-tel {
+  position: absolute;
+  left: 73.9cqw;
+  top: 18.3cqw;
+  width: 18.33cqw;
+  height: 37.8cqw;
+  border: 0.78cqw solid #0e0c0a;
+  border-radius: 2.56cqw;
+  overflow: hidden;
+  background: #0e0c0a;
+  box-shadow: 0 2.2cqw 4.4cqw rgba(0, 0, 0, 0.6);
+}
+
+.mq-tel .mq-site {
+  --f: 0.53cqw;
+}
+
+.mq-tel .mq-nav {
+  flex-basis: 10%;
+  padding-top: 4%;
+}
+
+.mq-tel .mq-hero {
+  flex: 0 0 58%;
+}
+
+.mq-tel .mq-hero-texte {
+  max-width: 72%;
+}
+
+.mq-tel .mq-infos {
+  flex-direction: column;
+  gap: 1em;
+}
+
+/* Photo + site : deux tirages, un « + », le site sur téléphone */
+.maquette-pack .mq-tel {
+  left: 63.9cqw;
+  top: 13.9cqw;
+  width: 19.4cqw;
+  height: 40cqw;
+}
+
+.mq-tirage {
+  position: absolute;
+  padding: 1.22cqw 1.22cqw 5cqw;
+  background: #f3efe7;
+  box-shadow: 0 1.67cqw 3.3cqw rgba(0, 0, 0, 0.55);
+}
+
+.mq-tirage-photo {
+  display: block;
+  overflow: hidden;
+  background: #d9d3c8;
+}
+
+.mq-tirage-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mq-t1 {
+  left: 9.44cqw;
+  top: 9.44cqw;
+  transform: rotate(-4deg);
+}
+
+.mq-t1 .mq-tirage-photo {
+  width: 28.9cqw;
+  height: 35.6cqw;
+}
+
+.mq-t2 {
+  left: 26.1cqw;
+  top: 18.3cqw;
+  transform: rotate(5deg);
+}
+
+.mq-t2 .mq-tirage-photo {
+  width: 23.3cqw;
+  height: 18.3cqw;
+}
+
+.mq-plus {
+  position: absolute;
+  left: 50.3cqw;
+  top: 30cqw;
+  width: 6.1cqw;
+  height: 6.1cqw;
+  border-radius: 50%;
+  background: #ae8c5b;
+  color: #1c1916;
+  font-size: 4.4cqw;
+  font-weight: 300;
+  line-height: 5.8cqw;
+  text-align: center;
+  box-shadow: 0 1.1cqw 2.2cqw rgba(0, 0, 0, 0.4);
+}
+
 /* Photo sous les coordonnées (page contact) */
 .contact-photo {
   margin: 8px 0 0;

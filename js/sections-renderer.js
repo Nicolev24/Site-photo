@@ -194,6 +194,46 @@ function buildTexte(data) {
   return section;
 }
 
+// ---------- Exemples de site (formules commerces) ----------
+//
+// Visuels qui montrent ce qu'on achète : un site vitrine sur ordinateur et
+// téléphone ("site"), ou deux tirages photo + le site sur téléphone ("pack").
+// Construits en HTML/CSS à partir des photos choisies dans l'admin (écran du
+// site, tirages), pour pouvoir les changer. Toutes les tailles sont en
+// unités du conteneur (cqw) : le visuel garde ses proportions partout.
+
+function miniSite(m, basePath, tel) {
+  const ecran = m.ecran || {};
+  return `
+    <div class="mq-site">
+      <div class="mq-nav"><b>${escapeHtml(m.nom || "Votre commerce")}</b><span>${tel ? "☰" : "Accueil · Services · Horaires · Contact"}</span></div>
+      <div class="mq-hero">
+        ${ecran.image ? imageHtml(ecran, basePath, "(max-width: 860px) 60vw, 300px") : ""}
+        <div class="mq-hero-texte"><b>${escapeHtml(m.titre || "Bienvenue chez vous")}</b>${tel ? "" : `<span>Un lieu, une équipe, un savoir-faire : tout ce qu'il faut savoir avant de passer la porte.</span>`}<i>Prendre rendez-vous</i></div>
+      </div>
+      <div class="mq-infos"><span><small>Horaires</small>Mardi – Samedi · 9h – 19h</span><span><small>Adresse</small>Rue du Centre, Ath</span>${tel ? "" : "<span><small>Téléphone</small>068 00 00 00</span>"}</div>
+    </div>`;
+}
+
+function maquetteHtml(type, m, basePath) {
+  m = m || {};
+  if (type === "pack") {
+    const tirage = (p, n) =>
+      `<span class="mq-tirage mq-t${n}"><span class="mq-tirage-photo">${p && p.image ? imageHtml(p, basePath, "200px") : ""}</span></span>`;
+    return `
+      <div class="maquette maquette-pack" aria-hidden="true">
+        ${tirage(m.tirage1, 1)}${tirage(m.tirage2, 2)}
+        <span class="mq-plus">+</span>
+        <div class="mq-tel">${miniSite(m, basePath, true)}</div>
+      </div>`;
+  }
+  return `
+    <div class="maquette maquette-site" aria-hidden="true">
+      <div class="mq-portable"><div class="mq-ecran">${miniSite(m, basePath, false)}</div><div class="mq-socle"></div></div>
+      <div class="mq-tel">${miniSite(m, basePath, true)}</div>
+    </div>`;
+}
+
 function buildTarifs(data, basePath) {
   const section = el("section", { style: "padding:8px 0 64px" });
   const container = el("div", { class: "container" });
@@ -201,7 +241,9 @@ function buildTarifs(data, basePath) {
 
   (data.plans || []).forEach((plan) => {
     const card = el("div", { class: plan.highlight ? "price-card highlight" : "price-card" });
-    let html = plan.image ? `<div class="price-card-photo">${imageHtml(plan, basePath, "(max-width: 860px) 100vw, 380px")}</div>` : "";
+    let html = "";
+    if (plan.visuel === "site" || plan.visuel === "pack") html = `<div class="price-card-photo">${maquetteHtml(plan.visuel, plan.maquette, basePath)}</div>`;
+    else if (plan.image) html = `<div class="price-card-photo">${imageHtml(plan, basePath, "(max-width: 860px) 100vw, 380px")}</div>`;
     html += `<div class="price-card-head"><h3>${escapeHtml(plan.title)}</h3>`;
     if (plan.badge) html += `<span class="badge">${escapeHtml(plan.badge)}</span>`;
     html += `</div>`;
@@ -600,6 +642,7 @@ function buildPresentation(data, basePath) {
 // Texte + deux photos qui se chevauchent, façon magazine.
 function buildTexteDuo(data, basePath) {
   const photos = photosRemplies(data.photos).slice(0, 2);
+  const maquette = data.visuel === "site" || data.visuel === "pack";
   const gauche = data.image_side === "gauche";
   return el(
     "section",
@@ -614,7 +657,9 @@ function buildTexteDuo(data, basePath) {
         ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
       </div>
       ${
-        photos.length
+        maquette
+          ? `<div class="texte-duo-maquette">${maquetteHtml(data.visuel, data.maquette, basePath)}</div>`
+          : photos.length
           ? `<div class="texte-duo-photos nb-${photos.length}">
         ${photos.map((p, i) => `<div class="duo-photo duo-photo-${i + 1}">${imageHtml(p, basePath, i === 0 ? "(max-width: 860px) 75vw, 420px" : "(max-width: 860px) 55vw, 300px")}</div>`).join("")}
       </div>`

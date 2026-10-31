@@ -225,12 +225,27 @@
         "button_label": "Voir les offres commerces",
         "button_href": "services.html?pour=commerces",
         "image_side": "gauche",
-        "photos": [
-          {
-            "image": "images/formules/site-vitrine.jpg",
-            "alt": "Exemple de site vitrine, sur ordinateur et sur téléphone"
+        "photos": [],
+        "visuel": "site",
+        "maquette": {
+          "nom": "Votre commerce",
+          "titre": "Bienvenue chez vous",
+          "ecran": {
+            "image": "images/commerces/salon-vue-ensemble.jpg",
+            "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
+            "position": "50% 45%"
+          },
+          "tirage1": {
+            "image": "images/commerces/barbier-portrait-miroir.jpg",
+            "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+            "position": "50% 25%"
+          },
+          "tirage2": {
+            "image": "images/commerces/salon-decor-vinyle.jpg",
+            "alt": "Détail du salon : un vinyle d'Aznavour et une platine",
+            "position": "50% 40%"
           }
-        ]
+        }
       },
       "tab": "commerces"
     },

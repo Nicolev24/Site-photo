@@ -1437,3 +1437,71 @@
 .admin-recadrage .admin-phototheque-pied .btn {
   margin: 0;
 }
+
+/* Exemples de site : aperçu + photos et textes modifiables */
+.admin-maquette {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-maquette-champs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.admin-maquette-champs label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--couleur-texte-attenue);
+}
+
+.admin-maquette-champs input {
+  padding: 6px 8px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--couleur-texte);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.admin-maquette-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.admin-maquette-photos .admin-hint {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+}
+
+.admin-maquette-photos .admin-image-upload-btn {
+  padding: 5px 9px;
+  font-size: 0.7rem;
+}
+
+.admin-maquette-photos .admin-image-alt-input {
+  display: none;
+}
+
+.admin-visuel-formule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -14px 0 10px;
+  font-size: 0.75rem;
+  color: var(--couleur-texte-attenue);
+}
+
+.admin-visuel-formule .admin-tab-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.price-card .admin-maquette {
+  margin-bottom: 20px;
+}

@@ -394,7 +394,7 @@ function ouvrirRecadrage(obj, ratio, apres) {
   });
 }
 
-function boutonRecadrer(obj, ratio, img) {
+function boutonRecadrer(obj, ratio, img, apres) {
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "admin-icon-btn admin-recadrer-btn";
@@ -403,14 +403,17 @@ function boutonRecadrer(obj, ratio, img) {
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     if (!obj.image && !obj._previewUrl) return;
-    ouvrirRecadrage(obj, ratio, () => appliquerCadrage(img, obj));
+    ouvrirRecadrage(obj, ratio, () => {
+      appliquerCadrage(img, obj);
+      if (apres) apres();
+    });
   });
   return btn;
 }
 
 // `positionedEl` doit déjà avoir position:relative (ou obtenir la classe
 // admin-image-hotspot, qui la lui donne) : la superposition se cale dessus.
-function attachImageOverlay(positionedEl, img, obj, altObj) {
+function attachImageOverlay(positionedEl, img, obj, altObj, apres) {
   positionedEl.classList.add("admin-image-hotspot");
 
   const overlay = document.createElement("div");
@@ -450,6 +453,7 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
         obj._file = file;
         obj._previewUrl = URL.createObjectURL(file);
         afficher(obj._previewUrl);
+        if (apres) apres();
       },
       surChoix: ([photo]) => {
         obj.image = photo.chemin;
@@ -459,6 +463,7 @@ function attachImageOverlay(positionedEl, img, obj, altObj) {
         altObj.alt = photo.alt || "";
         altInput.value = altObj.alt;
         afficher(sitePath(photo.chemin));
+        if (apres) apres();
       },
     });
 
@@ -657,9 +662,18 @@ function buildEditableTarifs(data, rerender) {
     });
     card.appendChild(toolbar);
 
-    const photo = editablePhoto(plan, { ratio: "3 / 2", retirer: retirerPhoto(plan, rerender) });
-    photo.classList.add("admin-price-photo");
-    card.appendChild(photo);
+    const ligneVisuel = document.createElement("div");
+    ligneVisuel.className = "admin-visuel-formule";
+    ligneVisuel.textContent = "Visuel : ";
+    ligneVisuel.appendChild(choixVisuel(plan, rerender));
+    card.appendChild(ligneVisuel);
+    if (plan.visuel === "site" || plan.visuel === "pack") {
+      card.appendChild(editeurMaquette(plan.visuel, plan));
+    } else {
+      const photo = editablePhoto(plan, { ratio: "3 / 2", retirer: retirerPhoto(plan, rerender) });
+      photo.classList.add("admin-price-photo");
+      card.appendChild(photo);
+    }
 
     const head = document.createElement("div");
     head.className = "price-card-head";
@@ -990,7 +1004,7 @@ function editablePhotoFrame(obj, legend, ratio) {
 // photo, texte alternatif, cadrage via ⚙. Avec `retirer`, un bouton enlève
 // la photo (elle est facultative à cet endroit). Un cadre vide reste
 // cliquable pour en ajouter une.
-function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } = {}) {
+function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true, apres = null } = {}) {
   const frame = document.createElement("div");
   frame.className = "admin-photo";
   frame.style.aspectRatio = ratio;
@@ -999,14 +1013,14 @@ function editablePhoto(obj, { ratio = "4 / 5", retirer = null, cadrage = true } 
   img.alt = obj.alt || "";
   appliquerCadrage(img, obj);
   frame.appendChild(img);
-  const overlay = attachImageOverlay(frame, img, obj, obj);
+  const overlay = attachImageOverlay(frame, img, obj, obj, apres);
   if (!obj.image && !obj._previewUrl) {
     frame.classList.add("admin-photo-vide");
     overlay.querySelector(".admin-image-upload-btn").firstChild.textContent = "📷 Ajouter une photo";
   }
   const outils = document.createElement("div");
   outils.className = "admin-photo-outils";
-  if (cadrage && (obj.image || obj._previewUrl)) outils.appendChild(boutonRecadrer(obj, ratio, img));
+  if (cadrage && (obj.image || obj._previewUrl)) outils.appendChild(boutonRecadrer(obj, ratio, img, apres));
   if (retirer && (obj.image || obj._previewUrl)) {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -1118,6 +1132,124 @@ function boutonEditable(data, classe = "btn-secondary") {
   return row;
 }
 
+// ---------- Exemples de site (formules commerces) ----------
+// Même rendu que maquetteHtml() dans js/sections-renderer.js : un aperçu,
+// puis les photos utilisées (écran du site, tirages) et le nom du commerce,
+// modifiables. L'aperçu se met à jour à chaque changement.
+
+const VISUELS_FORMULE = [
+  { value: "photo", label: "Photo" },
+  { value: "site", label: "Exemple de site (ordinateur + téléphone)" },
+  { value: "pack", label: "Photos + site (tirages + téléphone)" },
+];
+
+function maquetteParDefaut(m) {
+  m = m || {};
+  m.nom = m.nom == null ? "Votre commerce" : m.nom;
+  m.titre = m.titre == null ? "Bienvenue chez vous" : m.titre;
+  ["ecran", "tirage1", "tirage2"].forEach((k) => (m[k] = m[k] || { image: "", alt: "", position: "50% 50%" }));
+  return m;
+}
+
+function apercuMaquette(type, m) {
+  const img = (p) => {
+    if (!p || !(p.image || p._previewUrl)) return "";
+    const el = document.createElement("img");
+    el.src = p._previewUrl || sitePath(p.image);
+    appliquerCadrage(el, p);
+    el.style.width = "100%";
+    el.style.height = "100%";
+    el.style.objectFit = "cover";
+    return el.outerHTML;
+  };
+  const site = (tel) => `
+    <div class="mq-site">
+      <div class="mq-nav"><b>${escapeHtml(m.nom || "")}</b><span>${tel ? "☰" : "Accueil · Services · Horaires · Contact"}</span></div>
+      <div class="mq-hero">${img(m.ecran)}<div class="mq-hero-texte"><b>${escapeHtml(m.titre || "")}</b>${tel ? "" : "<span>Un lieu, une équipe, un savoir-faire : tout ce qu'il faut savoir avant de passer la porte.</span>"}<i>Prendre rendez-vous</i></div></div>
+      <div class="mq-infos"><span><small>Horaires</small>Mardi – Samedi · 9h – 19h</span><span><small>Adresse</small>Rue du Centre, Ath</span>${tel ? "" : "<span><small>Téléphone</small>068 00 00 00</span>"}</div>
+    </div>`;
+  const div = document.createElement("div");
+  div.className = `maquette maquette-${type}`;
+  div.innerHTML =
+    type === "pack"
+      ? `<span class="mq-tirage mq-t1"><span class="mq-tirage-photo">${img(m.tirage1)}</span></span>
+         <span class="mq-tirage mq-t2"><span class="mq-tirage-photo">${img(m.tirage2)}</span></span>
+         <span class="mq-plus">+</span><div class="mq-tel">${site(true)}</div>`
+      : `<div class="mq-portable"><div class="mq-ecran">${site(false)}</div><div class="mq-socle"></div></div><div class="mq-tel">${site(true)}</div>`;
+  return div;
+}
+
+function editeurMaquette(type, obj) {
+  obj.maquette = maquetteParDefaut(obj.maquette);
+  const m = obj.maquette;
+  const bloc = document.createElement("div");
+  bloc.className = "admin-maquette";
+  let apercu = apercuMaquette(type, m);
+  bloc.appendChild(apercu);
+  const rafraichir = () => {
+    const nouveau = apercuMaquette(type, m);
+    apercu.replaceWith(nouveau);
+    apercu = nouveau;
+  };
+
+  const champs = document.createElement("div");
+  champs.className = "admin-maquette-champs";
+  [
+    ["nom", "Nom affiché sur le site"],
+    ["titre", "Grand titre du site"],
+  ].forEach(([cle, libelle]) => {
+    const l = document.createElement("label");
+    l.textContent = libelle;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = m[cle] || "";
+    input.addEventListener("input", () => {
+      m[cle] = input.value;
+      rafraichir();
+    });
+    l.appendChild(input);
+    champs.appendChild(l);
+  });
+  bloc.appendChild(champs);
+
+  const photos = document.createElement("div");
+  photos.className = "admin-maquette-photos";
+  const emplacements =
+    type === "pack"
+      ? [["tirage1", "Grand tirage", "4 / 5"], ["tirage2", "Petit tirage", "5 / 4"], ["ecran", "Photo du site", "2 / 1"]]
+      : [["ecran", "Photo du site", "2 / 1"]];
+  emplacements.forEach(([cle, libelle, ratio]) => {
+    const col = document.createElement("div");
+    const titre = document.createElement("p");
+    titre.className = "admin-hint";
+    titre.textContent = libelle;
+    col.appendChild(titre);
+    col.appendChild(editablePhoto(m[cle], { ratio, apres: rafraichir }));
+    photos.appendChild(col);
+  });
+  bloc.appendChild(photos);
+  return bloc;
+}
+
+function choixVisuel(obj, rerender, options = VISUELS_FORMULE) {
+  const select = document.createElement("select");
+  select.className = "admin-tab-select";
+  select.title = "Visuel affiché";
+  options.forEach((o) => {
+    const opt = document.createElement("option");
+    opt.value = o.value;
+    opt.textContent = o.label;
+    if ((obj.visuel || options[0].value) === o.value) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.addEventListener("change", () => {
+    if (select.value === options[0].value) delete obj.visuel;
+    else obj.visuel = select.value;
+    rerender();
+  });
+  return select;
+}
+
 // ---------- Les photos, partout sur le site ----------
 
 function buildEditablePresentation(data, rerender) {
@@ -1178,12 +1310,23 @@ function buildEditableTexteDuo(data, rerender) {
   );
   texte.appendChild(bouton);
   grille.appendChild(texte);
-  grille.appendChild(
-    editablePhotoList(data.photos, rerender, {
-      max: 2,
-      aide: "Deux photos : la première en grand, la seconde plus petite, posée en décalé sur la première.",
-    })
+  const droite = document.createElement("div");
+  droite.appendChild(
+    choixVisuel(data, rerender, [
+      { value: "photos", label: "Deux photos" },
+      { value: "site", label: "Exemple de site (ordinateur + téléphone)" },
+      { value: "pack", label: "Photos + site (tirages + téléphone)" },
+    ])
   );
+  droite.appendChild(
+    data.visuel === "site" || data.visuel === "pack"
+      ? editeurMaquette(data.visuel, data)
+      : editablePhotoList(data.photos, rerender, {
+          max: 2,
+          aide: "Deux photos : la première en grand, la seconde plus petite, posée en décalé sur la première.",
+        })
+  );
+  grille.appendChild(droite);
   sectionEl.appendChild(grille);
   return sectionEl;
 }
