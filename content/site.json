@@ -1,10 +1,29 @@
 {
   "pages": [
-    { "slug": "index", "title": "Accueil" },
-    { "slug": "a-propos", "title": "À propos" },
-    { "slug": "services", "title": "Services & tarifs" },
-    { "slug": "contact", "title": "Contact" },
-    { "slug": "mentions-legales", "title": "Mentions légales" },
-    { "slug": "confidentialite", "title": "Confidentialité" }
-  ]
+    {
+      "slug": "index",
+      "title": "Accueil"
+    },
+    {
+      "slug": "a-propos",
+      "title": "À propos"
+    },
+    {
+      "slug": "services",
+      "title": "Services & tarifs"
+    },
+    {
+      "slug": "contact",
+      "title": "Contact"
+    },
+    {
+      "slug": "mentions-legales",
+      "title": "Mentions légales"
+    },
+    {
+      "slug": "confidentialite",
+      "title": "Confidentialité"
+    }
+  ],
+  "statistiques_cloudflare": "81c4d622d06f4f598343e3432601f707"
 }
