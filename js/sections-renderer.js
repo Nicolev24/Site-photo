@@ -17,6 +17,14 @@ function estDeLUnivers(univers) {
   return !u || !univers || univers === u;
 }
 
+// Lien WhatsApp réglé dans l'admin (de préférence un lien court WhatsApp
+// Business, wa.me/message/…, qui ne contient pas le numéro). On n'affiche
+// jamais que « Écrire sur WhatsApp ».
+function lienWhatsapp(contact) {
+  const url = (contact && contact.whatsapp_url) || "";
+  return /^https:\/\/(wa\.me|api\.whatsapp\.com|(www\.)?whatsapp\.com)\//.test(url) ? url : "";
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str == null ? "" : String(str);
@@ -405,6 +413,7 @@ async function buildContactBref(data, basePath) {
     dl.innerHTML = `
       <dt>Email</dt><dd><a href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.email)}</a></dd>
       <dt>Instagram</dt><dd><a href="${escapeHtml(contact.instagram_url)}" target="_blank" rel="noopener">${escapeHtml(contact.instagram_handle)}</a></dd>
+      ${lienWhatsapp(contact) ? `<dt>WhatsApp</dt><dd><a href="${escapeHtml(lienWhatsapp(contact))}" target="_blank" rel="noopener">Écrire sur WhatsApp</a></dd>` : ""}
       <dt>Zone</dt><dd>${escapeHtml(contact.zone)}</dd>
     `;
   } catch (e) {
@@ -501,10 +510,17 @@ async function buildContact(data, basePath) {
     list.innerHTML = `
       <li>Email<br><a href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.email)}</a></li>
       <li>Instagram<br><a href="${escapeHtml(contact.instagram_url)}" target="_blank" rel="noopener">${escapeHtml(contact.instagram_handle)}</a></li>
+      ${lienWhatsapp(contact) ? `<li>WhatsApp<br><a href="${escapeHtml(lienWhatsapp(contact))}" target="_blank" rel="noopener">Écrire sur WhatsApp</a></li>` : ""}
       <li>Zone d'intervention<br>${escapeHtml(contact.zone)}</li>
       <li>Délai de réponse<br>${escapeHtml(contact.response_delay)}</li>
     `;
     activerEnvoi(form, contact.email);
+    if (lienWhatsapp(contact)) {
+      form.querySelector(".form-note").insertAdjacentHTML(
+        "afterend",
+        `<p class="form-whatsapp">Plus rapide ? <a href="${escapeHtml(lienWhatsapp(contact))}" target="_blank" rel="noopener">Écrivez-moi sur WhatsApp</a></p>`
+      );
+    }
   } catch (e) {
     console.error(e);
   }

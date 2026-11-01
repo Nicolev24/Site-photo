@@ -89,6 +89,9 @@ async function buildFooter(navigation) {
     const contact = await fetchJson("", "content/contact.json");
     if (contact) {
       html += `<li><a href="${contact.instagram_url}" target="_blank" rel="noopener">${contact.instagram_handle || "Instagram"}</a></li>`;
+      if (typeof lienWhatsapp === "function" && lienWhatsapp(contact)) {
+        html += `<li><a href="${lienWhatsapp(contact)}" target="_blank" rel="noopener">WhatsApp</a></li>`;
+      }
     }
   } catch (e) {
     // silencieux : le footer reste utilisable sans ce lien

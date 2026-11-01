@@ -2466,3 +2466,15 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
     padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+.form-whatsapp {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  color: var(--couleur-texte-attenue);
+}
+
+.form-whatsapp a {
+  color: var(--couleur-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

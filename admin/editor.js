@@ -995,6 +995,7 @@ function buildEditableContact(data, rerender) {
   if (state.contact) {
     const avis = document.createElement("div");
     avis.className = "admin-avis-google";
+    textField(avis, "Lien WhatsApp (de préférence le lien court de WhatsApp Business, wa.me/message/…, qui ne montre pas ton numéro)", state.contact.data, "whatsapp_url");
     textField(avis, "Lien pour laisser un avis Google (proposé aux clients dans leur galerie, après le téléchargement)", state.contact.data, "avis_google_url");
     left.appendChild(avis);
   }
