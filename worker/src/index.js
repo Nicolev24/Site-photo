@@ -15,6 +15,12 @@
 // Secrets attendus (Settings → Variables and Secrets, "Encrypt") :
 //   - ADMIN_PASSWORD  : mot de passe de /galerie-admin/
 //   - SESSION_SECRET  : chaîne aléatoire longue, signe les sessions admin
+//   - CF_API_TOKEN    : (facultatif) jeton API Cloudflare « Account Analytics:
+//                       Read », pour afficher les statistiques de visite dans
+//                       l'admin du site
+// Variable (texte simple) :
+//   - CF_ACCOUNT_ID   : (facultatif) identifiant du compte Cloudflare, avec
+//                       CF_API_TOKEN
 
 const ALLOWED_ORIGINS = ["https://nicolasleveugle.be", "https://www.nicolasleveugle.be"];
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24h
@@ -460,6 +466,61 @@ async function handleGetPhoto(env, token, filename, searchParams, origin) {
   return new Response(obj.body, { headers });
 }
 
+// ---------- Statistiques de visite (admin du site) ----------
+// Cloudflare Web Analytics, lu avec l'API GraphQL de Cloudflare. Le
+// navigateur ne peut pas l'appeler lui-même (pas de CORS, et le jeton doit
+// rester secret) : l'admin passe par ici, avec la session admin.
+
+const GRAPHQL_CLOUDFLARE = "https://api.cloudflare.com/client/v4/graphql";
+
+async function handleStats(env, searchParams, origin) {
+  if (!env.CF_API_TOKEN || !/^[0-9a-f]{32}$/i.test(env.CF_ACCOUNT_ID || "")) {
+    return errorResponse("Statistiques non configurées sur le Worker (CF_API_TOKEN et CF_ACCOUNT_ID).", 501, origin);
+  }
+  const jours = Math.min(90, Math.max(1, parseInt(searchParams.get("jours"), 10) || 30));
+  const fin = new Date();
+  const debut = new Date(fin.getTime() - jours * 24 * 60 * 60 * 1000);
+  const filtre = `{AND: [{datetime_geq: "${debut.toISOString()}", datetime_leq: "${fin.toISOString()}"}, {bot: 0}]}`;
+  const groupe = (alias, limite, tri, champs) =>
+    `${alias}: rumPageloadEventsAdaptiveGroups(limit: ${limite}, filter: ${filtre}${tri ? `, orderBy: [${tri}]` : ""}) { count sum { visits } ${champs} }`;
+  const query = `{ viewer { accounts(filter: {accountTag: "${env.CF_ACCOUNT_ID}"}) {
+    ${groupe("total", 1, "", "")}
+    ${groupe("parJour", 100, "date_ASC", "dimensions { date }")}
+    ${groupe("pages", 12, "count_DESC", "dimensions { requestPath }")}
+    ${groupe("sources", 10, "count_DESC", "dimensions { refererHost }")}
+    ${groupe("appareils", 5, "count_DESC", "dimensions { deviceType }")}
+    ${groupe("pays", 8, "count_DESC", "dimensions { countryName }")}
+  } } }`;
+  const res = await fetch(GRAPHQL_CLOUDFLARE, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env.CF_API_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+  const corps = await res.json().catch(() => ({}));
+  if (!res.ok || (corps.errors && corps.errors.length)) {
+    const detail = (corps.errors && corps.errors[0] && corps.errors[0].message) || `HTTP ${res.status}`;
+    return errorResponse(`Cloudflare a refusé la demande de statistiques : ${detail}`, 502, origin);
+  }
+  const compte = (corps.data && corps.data.viewer && corps.data.viewer.accounts && corps.data.viewer.accounts[0]) || {};
+  const ligne = (g, cle) => ({ nom: cle ? g.dimensions[cle] : undefined, vues: g.count || 0, visites: (g.sum && g.sum.visits) || 0 });
+  const liste = (nomGroupe, cle) => (compte[nomGroupe] || []).map((g) => ligne(g, cle));
+  const total = (compte.total && compte.total[0]) || { count: 0, sum: { visits: 0 } };
+  return json(
+    {
+      jours,
+      depuis: debut.toISOString(),
+      total: { vues: total.count || 0, visites: (total.sum && total.sum.visits) || 0 },
+      parJour: liste("parJour", "date"),
+      pages: liste("pages", "requestPath"),
+      sources: liste("sources", "refererHost"),
+      appareils: liste("appareils", "deviceType"),
+      pays: liste("pays", "countryName"),
+    },
+    200,
+    origin
+  );
+}
+
 // ---------- Routeur ----------
 
 export default {
@@ -479,6 +540,10 @@ export default {
 
       if (pathname === "/api/admin/login" && request.method === "POST") {
         return handleLogin(request, env, origin);
+      }
+
+      if (pathname === "/api/admin/stats" && request.method === "GET") {
+        return requireAuth(request, env, origin, () => handleStats(env, url.searchParams, origin));
       }
 
       if (pathname === "/api/admin/galleries" && request.method === "GET") {

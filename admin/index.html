@@ -105,6 +105,7 @@
     <nav class="admin-sidebar-nav">
       <div class="admin-sidebar-group">
         <button class="admin-sidebar-item active" data-view="general" type="button">Général</button>
+        <button class="admin-sidebar-item" data-view="stats" type="button">Statistiques</button>
       </div>
 
       <div class="admin-sidebar-group">
@@ -126,6 +127,19 @@
     <div id="admin-status" class="admin-status" hidden></div>
 
     <!-- Vue Général : menu, pied de page, apparence -->
+    <!-- Vue Statistiques -->
+    <div id="view-stats" class="admin-view" hidden>
+      <div class="admin-main-inner">
+        <h2>Statistiques de visite</h2>
+        <div class="stats-periodes" role="group" aria-label="Période">
+          <button type="button" data-jours="7">7 jours</button>
+          <button type="button" data-jours="30" class="actif">30 jours</button>
+          <button type="button" data-jours="90">3 mois</button>
+        </div>
+        <div id="stats-contenu"><p class="admin-hint">Chargement…</p></div>
+      </div>
+    </div>
+
     <div id="view-general" class="admin-view">
       <div class="admin-main-inner">
         <h2>Général</h2>

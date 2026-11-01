@@ -749,6 +749,175 @@ document.querySelectorAll(".admin-sidebar-item[data-view]").forEach((btn) => {
   });
 });
 
+// ========================================================================
+// Statistiques de visite (Cloudflare Web Analytics, via le Worker des
+// galeries : /api/admin/stats, même connexion que les galeries clients)
+// ========================================================================
+
+let joursStats = 30;
+
+const NOMS_SOURCES = [
+  [/(^|\.)google\./, "Google"],
+  [/instagram\.com$/, "Instagram"],
+  [/facebook\.com$|fb\.me$/, "Facebook"],
+  [/bing\.com$/, "Bing"],
+  [/nicolasleveugle\.be$/, "Ton site (d'une page à l'autre)"],
+];
+const NOMS_APPAREILS = { mobile: "Téléphone", desktop: "Ordinateur", tablet: "Tablette" };
+
+function nomSource(hote) {
+  if (!hote) return "Accès direct (lien, favori, adresse tapée)";
+  const trouve = NOMS_SOURCES.find(([re]) => re.test(hote));
+  return trouve ? trouve[1] : hote;
+}
+
+function nomPage(chemin) {
+  const slug = (chemin || "/").replace(/^\/|\.html$/g, "") || "index";
+  const page = state.site && state.site.data.pages.find((p) => p.slug === slug);
+  if (page) return page.title;
+  if (slug.startsWith("galerie")) return "Galerie client";
+  return chemin;
+}
+
+function nomPays(code) {
+  try {
+    return new Intl.DisplayNames(["fr"], { type: "region" }).of(code) || code;
+  } catch {
+    return code;
+  }
+}
+
+function formatNombre(n) {
+  return new Intl.NumberFormat("fr-BE").format(n);
+}
+
+function formatDate(iso, court) {
+  return new Date(`${iso}T12:00:00`).toLocaleDateString("fr-BE", court ? { day: "numeric", month: "short" } : { weekday: "long", day: "numeric", month: "long" });
+}
+
+// Barres horizontales classées : une seule teinte, la plus grande en premier.
+function barresClassees(titre, lignes, nommer, mesure) {
+  if (!lignes.length) return `<section class="stats-carte"><h3>${titre}</h3><p class="admin-hint">Pas encore de données.</p></section>`;
+  const max = Math.max(...lignes.map((l) => l[mesure])) || 1;
+  return `
+    <section class="stats-carte">
+      <h3>${titre}</h3>
+      <ul class="stats-barres">
+        ${lignes
+          .map(
+            (l) => `
+          <li title="${escapeHtml(nommer(l.nom))} : ${formatNombre(l[mesure])}">
+            <span class="stats-barres-nom">${escapeHtml(nommer(l.nom))}</span>
+            <span class="stats-barres-valeur">${formatNombre(l[mesure])}</span>
+            <span class="stats-barres-piste"><span style="width:${Math.max(2, (l[mesure] / max) * 100)}%"></span></span>
+          </li>`
+          )
+          .join("")}
+      </ul>
+    </section>`;
+}
+
+// Visites par jour : colonnes sur un seul axe, infobulle au survol.
+function colonnesParJour(lignes, jours) {
+  const parDate = new Map(lignes.map((l) => [l.nom, l]));
+  const dates = [];
+  for (let i = jours - 1; i >= 0; i--) dates.push(new Date(Date.now() - i * 86400000).toISOString().slice(0, 10));
+  const valeurs = dates.map((d) => ({ date: d, visites: (parDate.get(d) || {}).visites || 0, vues: (parDate.get(d) || {}).vues || 0 }));
+  const max = Math.max(1, ...valeurs.map((v) => v.visites));
+  const graduation = Math.ceil(max / 4) || 1;
+  const haut = graduation * 4;
+  return `
+    <section class="stats-carte stats-carte-large">
+      <h3>Visites par jour</h3>
+      <div class="stats-colonnes" style="--n:${valeurs.length}">
+        <div class="stats-grille">${[4, 3, 2, 1, 0].map((k) => `<span><i>${formatNombre(graduation * k)}</i></span>`).join("")}</div>
+        <div class="stats-colonnes-zone">
+          ${valeurs
+            .map(
+              (v) => `<span class="stats-col" tabindex="0" data-info="${escapeHtml(`${formatDate(v.date)} : ${formatNombre(v.visites)} visite${v.visites > 1 ? "s" : ""}, ${formatNombre(v.vues)} page${v.vues > 1 ? "s" : ""} vue${v.vues > 1 ? "s" : ""}`)}"><span style="height:${(v.visites / haut) * 100}%"></span></span>`
+            )
+            .join("")}
+          <div class="stats-infobulle" hidden></div>
+        </div>
+      </div>
+      <div class="stats-axe-x"><span>${formatDate(dates[0], true)}</span><span>${formatDate(dates[dates.length - 1], true)}</span></div>
+      <details class="stats-tableau">
+        <summary>Voir les chiffres jour par jour</summary>
+        <table><thead><tr><th>Jour</th><th>Visites</th><th>Pages vues</th></tr></thead><tbody>
+          ${valeurs.slice().reverse().map((v) => `<tr><td>${formatDate(v.date)}</td><td>${formatNombre(v.visites)}</td><td>${formatNombre(v.vues)}</td></tr>`).join("")}
+        </tbody></table>
+      </details>
+    </section>`;
+}
+
+function brancherInfobulles(racine) {
+  const zone = racine.querySelector(".stats-colonnes-zone");
+  if (!zone) return;
+  const bulle = zone.querySelector(".stats-infobulle");
+  const montrer = (col) => {
+    bulle.textContent = col.dataset.info;
+    bulle.hidden = false;
+    const r = col.getBoundingClientRect();
+    const z = zone.getBoundingClientRect();
+    const x = Math.min(Math.max(r.left - z.left + r.width / 2, 90), z.width - 90);
+    bulle.style.left = `${x}px`;
+    zone.querySelectorAll(".stats-col.actif").forEach((c) => c.classList.remove("actif"));
+    col.classList.add("actif");
+  };
+  zone.querySelectorAll(".stats-col").forEach((col) => {
+    col.addEventListener("mouseenter", () => montrer(col));
+    col.addEventListener("focus", () => montrer(col));
+    col.addEventListener("click", () => montrer(col));
+  });
+  zone.addEventListener("mouseleave", () => {
+    bulle.hidden = true;
+    zone.querySelectorAll(".stats-col.actif").forEach((c) => c.classList.remove("actif"));
+  });
+}
+
+async function chargerStats() {
+  const contenu = document.getElementById("stats-contenu");
+  contenu.innerHTML = '<p class="admin-hint">Chargement…</p>';
+  let d;
+  try {
+    d = await appelGaleries(`/api/admin/stats?jours=${joursStats}`);
+  } catch (err) {
+    if (err.connexion) {
+      contenu.innerHTML = '<p class="admin-hint">Pour voir les statistiques, ouvre une fois la photothèque › « Galeries clients » et entre le mot de passe des galeries (ce navigateur s\'en souviendra).</p>';
+    } else if (/501/.test(err.message)) {
+      contenu.innerHTML = '<p class="admin-hint">Les statistiques ne sont pas encore branchées sur le serveur des galeries (jeton Cloudflare à ajouter). Voir les étapes données par Claude.</p>';
+    } else {
+      contenu.innerHTML = `<p class="admin-hint">Impossible de charger les statistiques : ${escapeHtml(err.message)}</p>`;
+    }
+    return;
+  }
+  const parVisite = d.total.visites ? (d.total.vues / d.total.visites).toLocaleString("fr-BE", { maximumFractionDigits: 1 }) : "–";
+  contenu.innerHTML = `
+    <div class="stats-kpi">
+      <div><span>Visites</span><b>${formatNombre(d.total.visites)}</b></div>
+      <div><span>Pages vues</span><b>${formatNombre(d.total.vues)}</b></div>
+      <div><span>Pages par visite</span><b>${parVisite}</b></div>
+    </div>
+    ${colonnesParJour(d.parJour, d.jours)}
+    <div class="stats-grille-cartes">
+      ${barresClassees("Pages les plus vues", d.pages, nomPage, "vues")}
+      ${barresClassees("D'où viennent les visiteurs", d.sources, nomSource, "visites")}
+      ${barresClassees("Appareils", d.appareils, (n) => NOMS_APPAREILS[n] || n, "visites")}
+      ${barresClassees("Pays", d.pays, nomPays, "visites")}
+    </div>
+    <p class="admin-hint">Mesure anonyme, sans cookie (Cloudflare Web Analytics). Les chiffres des dernières heures peuvent encore bouger.</p>`;
+  brancherInfobulles(contenu);
+}
+
+document.querySelector('.admin-sidebar-item[data-view="stats"]').addEventListener("click", chargerStats);
+document.querySelectorAll(".stats-periodes button").forEach((b) => {
+  b.addEventListener("click", () => {
+    joursStats = Number(b.dataset.jours);
+    document.querySelectorAll(".stats-periodes button").forEach((x) => x.classList.toggle("actif", x === b));
+    chargerStats();
+  });
+});
+
 // ---------- État ----------
 
 const state = {

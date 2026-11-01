@@ -2418,7 +2418,9 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   color: var(--couleur-texte);
 }
 
-/* ============ Bouton « Réserver » fixe en bas de l'écran (téléphone) ============ */
+/* ============ Bouton « Réserver » flottant (téléphone) ============
+   Un petit rond en bas à droite, qui ne cache ni le contenu ni les
+   animations. Il apparaît en fondu (opacité seulement : rien ne bouge). */
 .reserver-fixe {
   display: none;
 }
@@ -2426,37 +2428,41 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
 @media (max-width: 860px) {
   .reserver-fixe {
     position: fixed;
-    left: 16px;
     right: 16px;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     z-index: 90;
-    display: block;
-    padding: 15px 20px;
-    border-radius: var(--rayon-bouton);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
     background: var(--couleur-accent);
     color: var(--couleur-sur-accent);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-    font-family: var(--police-texte);
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-align: center;
-    text-transform: uppercase;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
     opacity: 0;
-    transform: translateY(140%);
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+  }
+  .reserver-fixe svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .reserver-fixe.est-visible {
     opacity: 1;
-    transform: none;
-    pointer-events: auto;
+    visibility: visible;
+    transition: opacity 0.3s ease;
   }
   html[data-page="contact"] .reserver-fixe {
     display: none;
   }
-  /* Le bas de page reste lisible au-dessus du bouton */
+  /* Le bas de page reste lisible à côté du bouton */
   .site-footer {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 }

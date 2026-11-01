@@ -1605,3 +1605,241 @@
 .admin-avis-google {
   margin-top: 18px;
 }
+
+/* ============ Statistiques de visite ============ */
+#view-stats {
+  --stats-barre: #a8772f; /* or soutenu, validé (contraste et chroma) sur fond clair */
+}
+
+.stats-periodes {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  background: #f1ede6;
+}
+
+.stats-periodes button {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: #555;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.stats-periodes button.actif {
+  background: #1c1916;
+  color: #fff;
+}
+
+.stats-kpi {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-kpi div,
+.stats-carte {
+  padding: 18px 20px;
+  border: 1px solid #ece7df;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.stats-kpi span {
+  display: block;
+  color: #6e6e6e;
+  font-size: 0.85rem;
+}
+
+.stats-kpi b {
+  display: block;
+  margin-top: 4px;
+  color: #1a1a1a;
+  font-size: 2.2rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-carte h3 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.stats-carte-large {
+  margin-bottom: 16px;
+}
+
+.stats-grille-cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Colonnes par jour */
+.stats-colonnes {
+  position: relative;
+  height: 180px;
+  padding-left: 34px;
+}
+
+.stats-grille {
+  position: absolute;
+  inset: 0 0 0 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.stats-grille span {
+  position: relative;
+  border-top: 1px solid #f0ece5;
+}
+
+.stats-grille i {
+  position: absolute;
+  right: calc(100% + 6px);
+  top: -0.6em;
+  color: #8a8a8a;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-colonnes-zone {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+  gap: 2px;
+  align-items: end;
+}
+
+.stats-col {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+  outline: none;
+}
+
+.stats-col > span {
+  width: 100%;
+  min-height: 1px;
+  border-radius: 4px 4px 0 0;
+  background: var(--stats-barre);
+}
+
+.stats-col.actif > span,
+.stats-col:focus-visible > span {
+  background: #7d5820;
+}
+
+.stats-infobulle {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #1c1916;
+  color: #fff;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stats-infobulle[hidden] {
+  display: none;
+}
+
+.stats-axe-x {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0 0 34px;
+  color: #8a8a8a;
+  font-size: 0.72rem;
+}
+
+.stats-tableau {
+  margin-top: 12px;
+  font-size: 0.85rem;
+}
+
+.stats-tableau summary {
+  color: #6e6e6e;
+  cursor: pointer;
+}
+
+.stats-tableau table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+}
+
+.stats-tableau th,
+.stats-tableau td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #f0ece5;
+  text-align: left;
+}
+
+.stats-tableau td + td,
+.stats-tableau th + th {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barres classées */
+.stats-barres {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.stats-barres li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  font-size: 0.85rem;
+}
+
+.stats-barres-nom {
+  overflow: hidden;
+  color: #1a1a1a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-barres-valeur {
+  color: #555;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-barres-piste {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 3px;
+  background: #f1ede6;
+}
+
+.stats-barres-piste span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--stats-barre);
+}
+
+@media (max-width: 700px) {
+  .stats-kpi {
+    grid-template-columns: 1fr;
+  }
+}

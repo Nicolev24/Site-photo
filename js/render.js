@@ -128,9 +128,10 @@ function applySeo(seo, slug, avecUnivers) {
   if (ogUrl) ogUrl.setAttribute("content", url);
 }
 
-// ---------- Bouton « Réserver » fixe (téléphone) ----------
-// Toujours à portée de pouce une fois qu'on a commencé à descendre dans la
-// page (caché sur la page contact, voir css/style.css).
+// ---------- Bouton « Réserver » flottant (téléphone) ----------
+// Petit rond en bas à droite, toujours à portée de pouce une fois qu'on a
+// commencé à descendre dans la page (caché sur la page contact, voir
+// css/style.css).
 
 function initReserverFixe(navigation) {
   const cta = navigation && navigation.cta_button;
@@ -138,7 +139,10 @@ function initReserverFixe(navigation) {
   const lien = document.createElement("a");
   lien.className = "reserver-fixe";
   lien.href = cta.href;
-  lien.textContent = cta.label === "Réserver" ? "Réserver une séance" : cta.label;
+  lien.title = cta.label === "Réserver" ? "Réserver une séance" : cta.label;
+  lien.setAttribute("aria-label", lien.title);
+  // Petit calendrier
+  lien.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9.5 14.5l2 2 3.5-3.5"/></svg>';
   document.body.appendChild(lien);
   let prevu = false;
   const maj = () => {
