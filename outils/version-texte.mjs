@@ -35,6 +35,7 @@ const UNIVERS = { particuliers: "Particuliers", commerces: "Commerces" };
 
 const echapper = (v) =>
   String(v == null ? "" : v)
+    .replace(/\*([^*]+)\*/g, "$1")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -126,6 +127,9 @@ function versionTexte(page, donnees) {
         if (d.button_label) morceaux.push(`<p><a href="${echapper(d.button_href)}">${echapper(d.button_label)}</a></p>`);
         if (d.image) morceaux.push(img(d.image, d.alt));
         for (const p of d.photos || []) morceaux.push(img(p.image, p.alt));
+        break;
+      case "reassurance":
+        morceaux.push(`<ul>${(d.items || []).filter((i) => i && i.text).map((i) => `<li>${echapper(i.text)}</li>`).join("")}</ul>`);
         break;
       case "ouverture":
         if (d.eyebrow) morceaux.push(d.titre_page ? titre(d.eyebrow, 1) : `<p>${echapper(d.eyebrow)}</p>`);

@@ -10,7 +10,7 @@
       "type": "onglets_tarifs",
       "data": {
         "eyebrow": "Tarifs · Photographe à Ath",
-        "title": "Des formules simples et claires",
+        "title": "Des formules *simples* et claires",
         "tabs": [
           {
             "id": "particuliers",
@@ -27,6 +27,23 @@
             "alt": "Le barbier coupe les cheveux d'un client dans son salon",
             "position": "50% 45%",
             "text": "Des photos pro et un site simple pour les petits commerces de la région."
+          }
+        ]
+      }
+    },
+    {
+      "id": "confiance",
+      "type": "reassurance",
+      "data": {
+        "items": [
+          {
+            "text": "Réponse sous 48 h"
+          },
+          {
+            "text": "Galerie privée en ligne"
+          },
+          {
+            "text": "Aucune limite de photos livrées"
           }
         ]
       }

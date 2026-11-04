@@ -12,7 +12,7 @@
       "data": {
         "titre_page": true,
         "eyebrow": "À propos · Photographe à Ath",
-        "title": "Des moments vrais, rien de forcé.",
+        "title": "Des moments *vrais*, rien de forcé.",
         "text": "Mariages, couples, portraits, événements : je photographie les gens tels qu'ils sont, avec une lumière soignée et des couleurs fidèles.",
         "button_label": "Voir les formules et tarifs",
         "button_href": "services.html?pour=particuliers",
@@ -176,7 +176,7 @@
       "data": {
         "titre_page": true,
         "eyebrow": "À propos · Photographe à Ath",
-        "title": "Des photos qui donnent envie de pousser la porte.",
+        "title": "Des photos qui donnent envie de *pousser la porte*.",
         "text": "Commerces et entreprises : votre lieu, votre équipe et votre savoir-faire, tels qu'ils sont, prêts pour votre fiche Google et vos réseaux.",
         "button_label": "Voir les formules et tarifs",
         "button_href": "services.html?pour=commerces",

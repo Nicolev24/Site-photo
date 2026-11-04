@@ -80,28 +80,49 @@ function buildNav(navigation, slug) {
 }
 
 async function buildFooter(navigation) {
-  const footerLinks = document.getElementById("footer-links");
-  if (!footerLinks) return;
+  const pied = document.querySelector(".site-footer");
+  if (!pied) return;
 
-  let html = navigation.footer_links.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
-
+  let contact = null;
   try {
-    const contact = await fetchJson("", "content/contact.json");
-    if (contact) {
-      html += `<li><a href="${contact.instagram_url}" target="_blank" rel="noopener">${contact.instagram_handle || "Instagram"}</a></li>`;
-      if (typeof lienWhatsapp === "function" && lienWhatsapp(contact)) {
-        html += `<li><a href="${lienWhatsapp(contact)}" target="_blank" rel="noopener">WhatsApp</a></li>`;
-      }
-    }
+    contact = await fetchJson("", "content/contact.json");
   } catch (e) {
-    // silencieux : le footer reste utilisable sans ce lien
+    // silencieux : le pied de page reste utilisable sans les coordonnées
   }
+  const lien = (href, label, externe) =>
+    `<li><a href="${href}"${externe ? ' target="_blank" rel="noopener"' : ""}>${label}</a></li>`;
+  const pages = (navigation.footer_links || []).map((l) => lien(l.href, l.label)).join("") + lien("galerie/index.html", "Espace client");
+  let coordonnees = "";
+  if (contact) {
+    if (contact.email) coordonnees += lien(`mailto:${contact.email}`, contact.email);
+    if (typeof lienWhatsapp === "function" && lienWhatsapp(contact)) coordonnees += lien(lienWhatsapp(contact), "WhatsApp", true);
+    if (contact.instagram_url) coordonnees += lien(contact.instagram_url, contact.instagram_handle || "Instagram", true);
+  }
+  const legal = (navigation.footer_legal_links || []).map((l) => lien(l.href, l.label)).join("");
+  const zone = (contact && contact.zone) || "Ath · Wallonie et Bruxelles";
 
-  (navigation.footer_legal_links || []).forEach((l) => {
-    html += `<li><a href="${l.href}">${l.label}</a></li>`;
-  });
-
-  footerLinks.innerHTML = html;
+  pied.classList.add("pied-riche");
+  pied.innerHTML = `
+    <div class="container pied-grille">
+      <div class="pied-marque">
+        <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
+        <p>Photographe à Ath<br>${zone.replace(/^Ath\s*·\s*/, "")}</p>
+      </div>
+      <nav class="pied-colonne" aria-label="Pages du site">
+        <h3>Le site</h3>
+        <ul>${pages}</ul>
+      </nav>
+      <div class="pied-colonne">
+        <h3>Contact</h3>
+        <ul>${coordonnees}</ul>
+      </div>
+    </div>
+    <div class="container">
+      <div class="pied-bas">
+        <p class="footer-copy" id="footer-copy"></p>
+        <ul class="pied-legal">${legal}</ul>
+      </div>
+    </div>`;
 
   const copy = document.getElementById("footer-copy");
   if (copy) {
@@ -135,6 +156,29 @@ function applySeo(seo, slug, avecUnivers) {
 // Petit rond en bas à droite, toujours à portée de pouce une fois qu'on a
 // commencé à descendre dans la page (caché sur la page contact, voir
 // css/style.css).
+
+// ---------- En-tête : verre dépoli au défilement + ligne de progression ----------
+function initEntete() {
+  const entete = document.querySelector(".site-header");
+  if (!entete) return;
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    const y = window.scrollY;
+    const haut = document.documentElement.scrollHeight - window.innerHeight;
+    entete.classList.toggle("est-defile", y > 24);
+    entete.style.setProperty("--progres", haut > 0 ? Math.min(1, y / haut).toFixed(4) : 0);
+  };
+  const demander = () => {
+    if (prevu) return;
+    prevu = true;
+    window.requestAnimationFrame(maj);
+  };
+  window.addEventListener("scroll", demander, { passive: true });
+  window.addEventListener("resize", demander);
+  if (window.ResizeObserver) new ResizeObserver(demander).observe(document.body);
+  maj();
+}
 
 function initReserverFixe(navigation) {
   const cta = navigation && navigation.cta_button;
@@ -386,6 +430,7 @@ async function init() {
 
   applyAppearance(appearance);
   buildFooter(navigation);
+  initEntete();
   initReserverFixe(navigation);
   initStatistiques(site);
   initBarreUnivers();

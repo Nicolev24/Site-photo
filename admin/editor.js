@@ -1532,6 +1532,47 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableReassurance(data, rerender) {
+  data.items = data.items || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "reassurance";
+  const container = document.createElement("div");
+  container.className = "container";
+  const liste = document.createElement("ul");
+  data.items.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.appendChild(editableSpan(item, "text", { tag: "span", placeholder: "Un fait court (ex : Réponse sous 48 h)" }));
+    const retirer = document.createElement("button");
+    retirer.type = "button";
+    retirer.className = "admin-retirer-mini";
+    retirer.title = "Retirer";
+    retirer.textContent = "×";
+    retirer.addEventListener("click", () => {
+      data.items.splice(i, 1);
+      rerender();
+    });
+    li.appendChild(retirer);
+    liste.appendChild(li);
+  });
+  container.appendChild(liste);
+  const ajout = document.createElement("button");
+  ajout.type = "button";
+  ajout.className = "btn-secondary";
+  ajout.style.margin = "0 0 16px";
+  ajout.textContent = "+ Ajouter une ligne";
+  ajout.addEventListener("click", () => {
+    data.items.push({ text: "" });
+    rerender();
+  });
+  container.appendChild(ajout);
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Trois ou quatre faits courts et vrais, affichés sur une ligne sous l'en-tête. Mieux vaut peu que beaucoup.";
+  container.appendChild(hint);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
 function buildEditableOuverture(data, rerender) {
   const sectionEl = document.createElement("section");
   sectionEl.className = `ouverture${data.image_side === "droite" ? " photo-a-droite" : ""}`;
@@ -1553,7 +1594,7 @@ function buildEditableOuverture(data, rerender) {
   const hint = document.createElement("p");
   hint.className = "admin-hint";
   hint.style.padding = "0 24px 16px";
-  hint.textContent = "Quand on clique sur un Polaroïd de l'accueil, c'est cette photo qui vient s'ouvrir : mets-y la même photo que dans le Polaroïd pour une transition parfaite. Cadrage : ⚙.";
+  hint.textContent = "Quand on clique sur un Polaroïd de l'accueil, c'est cette photo qui vient s'ouvrir : mets-y la même photo que dans le Polaroïd pour une transition parfaite. Cadrage : ⚙. Astuce : entoure un mot de *étoiles* pour l'afficher en italique doré.";
   sectionEl.appendChild(hint);
   return sectionEl;
 }
@@ -1986,6 +2027,7 @@ const EDITABLE_BUILDERS = {
   texte_duo: buildEditableTexteDuo,
   photo_pleine: buildEditablePhotoPleine,
   ouverture: buildEditableOuverture,
+  reassurance: buildEditableReassurance,
   bande_photos: buildEditableBandePhotos,
   instagram: buildEditableInstagram,
   etapes: buildEditableEtapes,

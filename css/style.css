@@ -14,6 +14,13 @@
   font-display: swap;
 }
 @font-face {
+  font-family: "Cormorant Garamond";
+  src: url("../fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
   font-family: "Jost";
   src: url("../fonts/jost-latin-400-normal.woff2") format("woff2");
   font-weight: 400;
@@ -1422,7 +1429,9 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
    - univers  : changement Particulier / Commerce, fondu enchaîné.
    L'image qui voyage est toujours la photo nette de la page d'arrivée. */
 @media (prefers-reduced-motion: no-preference) {
-  .site-header { view-transition-name: entete; }
+  /* L'en-tête reste en place pendant les transitions de page ; le nom n'est posé
+     que pendant la transition, sinon il empêcherait le verre dépoli de flouter. */
+  html[data-transition] .site-header { view-transition-name: entete; }
   .univers-barre { view-transition-name: univers-barre; }
   .photo-univers { view-transition-name: photo-univers; }
   /* D'une page à l'autre (par exemple « À propos » → tarifs), la grande photo ne
@@ -2712,4 +2721,284 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   color: var(--couleur-accent);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+
+/* ============ Finitions : en-tête en verre, grain, titres, pied de page ============ */
+
+/* En-tête : devient du verre dépoli quand on descend, avec une fine ligne
+   dorée qui montre l'avancée dans la page. Le verre est sur un pseudo-élément
+   (un filtre sur l'en-tête lui-même casserait le menu du téléphone). */
+.site-header {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(28, 25, 22, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  backdrop-filter: blur(16px) saturate(1.15);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.site-header.est-defile {
+  background: transparent;
+  border-bottom-color: rgba(174, 140, 91, 0.22);
+}
+.site-header.est-defile::before {
+  opacity: 1;
+}
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--couleur-accent);
+  transform-origin: left center;
+  transform: scaleX(var(--progres, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.site-header.est-defile::after {
+  opacity: 0.9;
+}
+
+/* Grain de pellicule, à peine visible (pages du site seulement) */
+html[data-page] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Les photos s'approchent très lentement au survol */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .duo-photo img,
+  .bande-photo img,
+  .etape-photo img,
+  .price-card-photo img {
+    transition: scale 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .duo-photo:hover img,
+  .bande-photo:hover img,
+  .etape-photo:hover img,
+  .price-card:hover .price-card-photo img {
+    scale: 1.035;
+  }
+}
+
+/* Bandeau de confiance */
+.reassurance {
+  padding: 0;
+  border-top: 1px solid var(--couleur-bordure);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.reassurance ul {
+  list-style: none;
+  margin: 0;
+  padding: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 0;
+}
+.reassurance li {
+  position: relative;
+  padding: 0 28px;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-attenue);
+}
+.reassurance li + li::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  width: 1px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: rgba(174, 140, 91, 0.6);
+}
+
+/* Titres : un mot en italique doré (écrit *ainsi* dans le texte) */
+h1 em,
+h2 em,
+.univers-entete-titre em,
+.polaroids-accroche em {
+  font-family: var(--police-titres);
+  font-style: italic;
+  font-weight: inherit;
+  color: var(--couleur-accent);
+}
+
+/* Fin filet doré en haut des grandes sections */
+.presentation,
+.texte-duo,
+.instagram,
+.etapes,
+.faq {
+  position: relative;
+}
+.presentation::before,
+.texte-duo::before,
+.instagram::before,
+.etapes::before,
+.faq::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(140px, 30%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(174, 140, 91, 0.75), transparent);
+  pointer-events: none;
+}
+
+/* Boutons à contour et champs : même esprit translucide */
+.btn-contour {
+  background: rgba(245, 241, 234, 0.04);
+  border-color: rgba(245, 241, 234, 0.22);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.btn-contour:hover {
+  background: rgba(174, 140, 91, 0.16);
+  border-color: var(--couleur-accent);
+}
+html[data-page] input,
+html[data-page] select,
+html[data-page] textarea {
+  background: rgba(245, 241, 234, 0.04);
+  border-color: rgba(245, 241, 234, 0.16);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+html[data-page] input:focus,
+html[data-page] select:focus,
+html[data-page] textarea:focus {
+  background: rgba(245, 241, 234, 0.06);
+  box-shadow: 0 0 0 3px rgba(174, 140, 91, 0.16);
+}
+html[data-page] select option {
+  background: #24201c;
+  color: #f5f1ea;
+}
+
+/* Pied de page : signature, pages, contact, mentions */
+.site-footer.pied-riche {
+  display: block;
+  padding: 72px 0 28px;
+  font-size: 0.9rem;
+}
+.site-footer.pied-riche > .container {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.pied-grille {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 48px;
+}
+.site-footer.pied-riche .pied-marque .logo {
+  display: inline-block;
+  font-size: 1.6rem;
+  color: var(--couleur-texte);
+}
+.pied-marque p {
+  margin: 14px 0 0;
+  line-height: 1.75;
+  color: var(--couleur-texte-attenue);
+}
+.pied-colonne h3 {
+  margin: 0 0 18px;
+  font-family: var(--police-texte);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--couleur-accent-texte);
+}
+.pied-colonne ul,
+.pied-legal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pied-colonne ul {
+  display: grid;
+  gap: 10px;
+}
+.pied-riche a {
+  transition: color 0.2s ease;
+}
+.pied-colonne a,
+.pied-legal a {
+  color: var(--couleur-texte-attenue);
+}
+.pied-colonne a:hover,
+.pied-legal a:hover {
+  color: var(--couleur-texte);
+}
+.pied-bas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 52px;
+  padding-top: 22px;
+  border-top: 1px solid var(--couleur-bordure);
+  font-size: 0.8rem;
+}
+.pied-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+@media (max-width: 860px) {
+  .nav-links {
+    background: rgba(28, 25, 22, 0.88);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .reassurance ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 0;
+  }
+  .reassurance li {
+    padding: 0 16px;
+    text-align: center;
+  }
+  .reassurance li + li::before {
+    display: none;
+  }
+  .site-footer.pied-riche {
+    padding: 52px 0 calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .pied-grille {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 24px;
+  }
+  .pied-marque {
+    grid-column: 1 / -1;
+  }
+  .pied-bas {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 40px;
+  }
 }

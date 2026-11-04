@@ -88,6 +88,11 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "reassurance",
+    label: "Bandeau de confiance (quelques faits courts)",
+    defaultData: () => ({ items: [{ text: "Réponse sous 48 h" }, { text: "Galerie privée en ligne" }] }),
+  },
+  {
     value: "ouverture",
     label: "Ouverture de page (grande photo + titre + bouton)",
     defaultData: () => ({ eyebrow: "", title: "", text: "", button_label: "", button_href: "", image: "", alt: "", position: "50% 50%", image_side: "gauche", titre_page: true }),

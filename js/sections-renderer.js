@@ -31,6 +31,11 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// Titre avec un mot mis en valeur : « Des moments *vrais* » → mot en italique doré.
+function titreHtml(str) {
+  return escapeHtml(str).replace(/\*([^*]+)\*/g, "<em>$1</em>");
+}
+
 function resolveHref(href, basePath) {
   if (!href) return "#";
   if (/^([a-z]+:)?\/\//i.test(href) || href.startsWith("mailto:") || href.startsWith("#")) {
@@ -166,7 +171,7 @@ function buildTexteImage(data, basePath) {
   const textHtml = `
     <div style="order:${imgSide === "gauche" ? 2 : 1}">
       <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
-      <h2>${escapeHtml(data.title)}</h2>
+      <h2>${titreHtml(data.title)}</h2>
       <p class="lead">${escapeHtml(data.text)}</p>
       ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
       ${data.secondary_label ? `<a href="${resolveHref(data.secondary_href, basePath)}" style="margin-left:18px;font-size:0.9rem">${escapeHtml(data.secondary_label)}</a>` : ""}
@@ -286,7 +291,7 @@ function buildCta(data, basePath) {
     `
     <div class="cta-band-inner">
       <div>
-        <h2>${escapeHtml(data.title)}</h2>
+        <h2>${titreHtml(data.title)}</h2>
         <p>${escapeHtml(data.text)}</p>
       </div>
       <a href="${resolveHref(data.button_href, basePath)}" class="btn btn-primary">${escapeHtml(data.button_label)}</a>
@@ -318,7 +323,7 @@ function buildPolaroids(data, basePath) {
     <div class="container polaroids-grille">
       <div class="polaroids-texte">
         <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
-        <p class="polaroids-accroche">${escapeHtml(data.title)}</p>
+        <p class="polaroids-accroche">${titreHtml(data.title)}</p>
         ${data.text ? `<p class="polaroids-intro">${escapeHtml(data.text)}</p>` : ""}
       </div>
       <div class="polaroids-table">
@@ -398,7 +403,7 @@ async function buildContactBref(data, basePath) {
     `
     <div>
       <span class="eyebrow">${escapeHtml(data.eyebrow)}</span>
-      <h2>${escapeHtml(data.title)}</h2>
+      <h2>${titreHtml(data.title)}</h2>
       <p>${escapeHtml(data.text)}</p>
       <a href="${resolveHref(data.button_href, basePath)}" class="btn btn-primary">${escapeHtml(data.button_label)}</a>
     </div>
@@ -441,7 +446,7 @@ function buildOngletsTarifs(data, basePath) {
     <div class="container univers-entete-grid">
       <div class="univers-entete-texte">
         <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>
-        <p class="univers-entete-titre">${escapeHtml(data.title)}</p>
+        <p class="univers-entete-titre">${titreHtml(data.title)}</p>
         <p class="univers-entete-intro">${escapeHtml(t.text || "")}</p>
       </div>
       ${
@@ -638,7 +643,7 @@ function buildFaq(data) {
   const container = el("div", { class: "container faq-inner" });
   let entete = "";
   if (data.eyebrow) entete += `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>`;
-  if (data.title) entete += `<h2>${escapeHtml(data.title)}</h2>`;
+  if (data.title) entete += `<h2>${titreHtml(data.title)}</h2>`;
   container.appendChild(el("div", { class: "faq-entete" }, entete));
 
   const liste = el("div", { class: "faq-liste" });
@@ -703,7 +708,7 @@ function buildPresentation(data, basePath) {
       }
       <div class="presentation-texte">
         ${titre}
-        <h2>${escapeHtml(data.title)}</h2>
+        <h2>${titreHtml(data.title)}</h2>
         ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
         ${data.text_suite ? `<p class="presentation-suite">${escapeHtml(data.text_suite)}</p>` : ""}
         ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
@@ -732,12 +737,23 @@ function buildOuverture(data, basePath) {
       ${data.image ? `<figure class="ouverture-photo photo-univers">${imageHtml(data, basePath, "(max-width: 860px) 100vw, 50vw", ' fetchpriority="high"')}</figure>` : ""}
       <div class="ouverture-texte">
         ${titre}
-        <h2>${escapeHtml(data.title)}</h2>
+        <h2>${titreHtml(data.title)}</h2>
         ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
         ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn btn-fantome">${escapeHtml(data.button_label)}</a>` : ""}
       </div>
     </div>
   `
+  );
+}
+
+// Bandeau de confiance : quelques faits courts, sobres, sur une ligne.
+function buildReassurance(data) {
+  const items = (data.items || []).map((i) => (i && i.text) || "").filter(Boolean);
+  if (!items.length) return null;
+  return el(
+    "section",
+    { class: "reassurance" },
+    `<div class="container"><ul>${items.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul></div>`
   );
 }
 
@@ -753,7 +769,7 @@ function buildTexteDuo(data, basePath) {
     <div class="container texte-duo-grille">
       <div class="texte-duo-texte">
         ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
-        <h2>${escapeHtml(data.title)}</h2>
+        <h2>${titreHtml(data.title)}</h2>
         ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
         ${data.text_suite ? `<p class="texte-duo-suite">${escapeHtml(data.text_suite)}</p>` : ""}
         ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn-secondary">${escapeHtml(data.button_label)}</a>` : ""}
@@ -942,7 +958,7 @@ async function buildInstagram(data, basePath) {
       <div class="instagram-entete">
         <div>
           ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
-          <h2>${escapeHtml(data.title)}</h2>
+          <h2>${titreHtml(data.title)}</h2>
           ${data.text ? `<p>${escapeHtml(data.text)}</p>` : ""}
         </div>
         <a href="${escapeHtml(lien)}" class="btn btn-primary" target="_blank" rel="noopener">${escapeHtml(data.button_label || "Voir mon Instagram")}</a>
@@ -1022,7 +1038,7 @@ function buildEtapes(data, basePath) {
     <div class="container">
       <div class="etapes-entete">
         ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
-        <h2>${escapeHtml(data.title)}</h2>
+        <h2>${titreHtml(data.title)}</h2>
         ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
       </div>
       <ol class="etapes-liste">
@@ -1075,6 +1091,7 @@ const SECTION_BUILDERS = {
   texte_duo: buildTexteDuo,
   photo_pleine: buildPhotoPleine,
   ouverture: buildOuverture,
+  reassurance: buildReassurance,
   bande_photos: buildBandePhotos,
   instagram: buildInstagram,
   etapes: buildEtapes,
