@@ -3103,20 +3103,20 @@ html[data-page] select option {
     position: absolute;
     left: 0;
     top: 0;
-    height: 74%;
+    height: 100%;
     object-position: var(--pos-tel, var(--pos, 50% 50%));
     filter: brightness(1);
   }
   .avec-fond .polaroids-fond::after {
-    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 22%, rgba(28, 25, 22, 0) 52%, var(--couleur-fond) 76%);
+    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 22%, rgba(28, 25, 22, 0) 60%, rgba(28, 25, 22, 0.55) 86%, var(--couleur-fond) 100%);
   }
   .avec-fond .polaroids-grille {
     min-height: inherit;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 28px;
     row-gap: 0;
   }
   .avec-fond .polaroids-texte {
@@ -3136,7 +3136,7 @@ html[data-page] select option {
     height: calc(var(--w) + 122px);
     width: 100%;
     max-width: 440px;
-    margin: 0 auto;
+    margin: auto;
   }
   .avec-fond .polaroid-1 { left: 3%; top: 0; }
   .avec-fond .polaroid-2 { left: auto; right: 3%; top: 20px; }
