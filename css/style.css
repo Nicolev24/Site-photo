@@ -2500,19 +2500,61 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   .photo-pleine {
     height: 56vh;
   }
+  /* Téléphone : la photo prend tout l'écran, et le titre et le bouton
+     (en verre dépoli) sont posés dans l'image, sur un dégradé sombre. */
   .ouverture-grille {
-    grid-template-columns: 1fr;
-    min-height: 0;
+    position: relative;
+    display: block;
+    height: calc(100svh - 128px);
+    min-height: 480px;
+    max-height: 860px;
   }
   .ouverture-photo,
   .photo-a-droite .ouverture-photo {
-    order: 0;
-    height: 62vh;
-    min-height: 340px;
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+  .ouverture-grille::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62%;
+    background: linear-gradient(to top, rgba(14, 12, 10, 0.82), rgba(14, 12, 10, 0.4) 55%, rgba(14, 12, 10, 0));
+    pointer-events: none;
   }
   .ouverture-texte {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
     max-width: none;
-    padding: 44px 24px 56px;
+    padding: 24px 24px 32px;
+  }
+  .ouverture-texte h2 {
+    font-size: clamp(2rem, 9vw, 2.6rem);
+    margin: 8px 0 22px;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+  }
+  .ouverture-texte .lead {
+    display: none;
+  }
+  .ouverture-texte .btn-fantome {
+    background: rgba(28, 25, 22, 0.34);
+    border-color: rgba(245, 241, 234, 0.45);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    justify-content: center;
+  }
+  .ouverture.sans-photo .ouverture-grille {
+    position: static;
+    height: auto;
+    min-height: 0;
+  }
+  .ouverture.sans-photo .ouverture-texte {
+    position: static;
   }
   .photo-pleine-bas {
     bottom: 20px;
