@@ -3133,7 +3133,7 @@ html[data-page] select option {
   }
   .avec-fond .polaroids-table {
     --w: min(42vw, 23svh, 180px);
-    height: calc(var(--w) + 100px);
+    height: calc(var(--w) + 122px);
     width: 100%;
     max-width: 440px;
     margin: auto auto 0;
@@ -3143,7 +3143,16 @@ html[data-page] select option {
   .avec-fond .polaroid-1 .polaroid-legende { padding-right: 4px; }
   .avec-fond .polaroid-main { font-size: 1.35rem; }
   .avec-fond .polaroid-sous { font-size: 0.52rem; letter-spacing: 0.07em; }
-  .avec-fond .polaroids-indice { left: 0; right: 0; bottom: 0; text-align: center; font-size: 1.35rem; color: rgba(245, 241, 234, 0.82); }
+  .avec-fond .polaroids-indice {
+    left: 0;
+    right: 0;
+    bottom: 4px;
+    text-align: center;
+    font-size: 1.45rem;
+    color: rgba(245, 241, 234, 0.9);
+    transform: rotate(-1.5deg);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+  }
   .avec-fond .polaroids-indice.indice-pc { display: none; }
   .avec-fond .polaroids-indice.indice-tel { display: block; }
   .avec-fond .polaroids-table::after { display: none; }
@@ -3468,4 +3477,104 @@ html[data-page] select option {
 .price-card.highlight {
   background: linear-gradient(160deg, rgba(174, 140, 91, 0.18), rgba(174, 140, 91, 0.04) 72%);
   border-color: var(--couleur-accent);
+}
+
+
+/* Plan du site : lignes numérotées vers les pages */
+.liens-site {
+  padding: 24px 0 112px;
+}
+.liens-entete {
+  text-align: center;
+  margin-bottom: 44px;
+}
+.liens-entete h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  text-wrap: balance;
+}
+.liens-entete h2 em {
+  font-style: italic;
+  color: var(--couleur-accent);
+}
+.liens-liste {
+  max-width: 960px;
+  margin: 0 auto;
+  border: 1px solid rgba(174, 140, 91, 0.28);
+  border-radius: var(--rayon-bordure);
+  background: linear-gradient(160deg, rgba(174, 140, 91, 0.08), rgba(174, 140, 91, 0.015) 70%);
+  overflow: hidden;
+}
+.lien-ligne {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.3fr) 44px;
+  align-items: center;
+  gap: 0 20px;
+  padding: 30px 36px;
+  border-top: 1px solid var(--couleur-bordure);
+  color: var(--couleur-texte);
+  transition: background 0.3s ease;
+}
+.lien-ligne:first-child {
+  border-top: none;
+}
+a.lien-ligne:hover {
+  background: rgba(174, 140, 91, 0.13);
+}
+.lien-num {
+  font-family: var(--police-titres);
+  font-size: 1.5rem;
+  color: var(--couleur-accent);
+}
+.lien-titre {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.1;
+}
+.lien-texte {
+  color: var(--couleur-texte-attenue);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.lien-fleche {
+  justify-self: end;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(174, 140, 91, 0.55);
+  border-radius: 50%;
+  position: relative;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.lien-fleche::after {
+  content: "→";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--couleur-accent);
+  font-size: 1.05rem;
+  transition: color 0.3s ease;
+}
+a.lien-ligne:hover .lien-fleche {
+  background: var(--couleur-accent);
+  border-color: var(--couleur-accent);
+  transform: translateX(4px);
+}
+a.lien-ligne:hover .lien-fleche::after {
+  color: var(--couleur-sur-accent);
+}
+@media (max-width: 860px) {
+  .liens-site { padding: 8px 0 72px; }
+  .liens-entete { margin-bottom: 28px; }
+  .lien-ligne {
+    grid-template-columns: 36px minmax(0, 1fr) 40px;
+    grid-template-areas: "num titre fleche" ". texte fleche";
+    gap: 4px 12px;
+    padding: 22px 20px;
+  }
+  .lien-num { grid-area: num; font-size: 1.2rem; align-self: start; padding-top: 3px; }
+  .lien-titre { grid-area: titre; font-size: 1.5rem; }
+  .lien-texte { grid-area: texte; font-size: 0.88rem; }
+  .lien-fleche { grid-area: fleche; align-self: center; }
 }

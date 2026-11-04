@@ -868,6 +868,37 @@ async function buildContactCanaux(data, basePath) {
   );
 }
 
+// Plan du site : des liens en lignes numérotées, sans contenu, pour orienter le visiteur.
+function buildLiensSite(data, basePath) {
+  const liens = (data.items || []).filter((i) => i && i.title && i.href);
+  if (!liens.length) return null;
+  return el(
+    "section",
+    { class: "liens-site" },
+    `
+    <div class="container">
+      <div class="liens-entete">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${titreHtml(data.title)}</h2>
+      </div>
+      <nav class="liens-liste" aria-label="${escapeHtml(data.title || "Plan du site")}">
+        ${liens
+          .map(
+            (l, n) => `
+        <a class="lien-ligne" href="${resolveHref(l.href, basePath)}">
+          <span class="lien-num">0${n + 1}</span>
+          <span class="lien-titre">${escapeHtml(l.title)}</span>
+          <span class="lien-texte">${escapeHtml(l.text || "")}</span>
+          <span class="lien-fleche" aria-hidden="true"></span>
+        </a>`
+          )
+          .join("")}
+      </nav>
+    </div>
+  `
+  );
+}
+
 // Conseils en colonnes numérotées (contenu utile qui n'est pas ailleurs sur le site).
 function buildConseils(data) {
   const colonnes = (data.colonnes || []).filter((c) => c && (c.items || []).some((i) => i && i.titre));
@@ -1237,6 +1268,7 @@ const SECTION_BUILDERS = {
   reassurance: buildReassurance,
   citation: buildCitation,
   conseils: buildConseils,
+  liens_site: buildLiensSite,
   apercu_formules: buildApercuFormules,
   contact_canaux: buildContactCanaux,
   bande_photos: buildBandePhotos,

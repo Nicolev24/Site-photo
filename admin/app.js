@@ -88,6 +88,14 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "liens_site",
+    label: "Plan du site (liens vers les pages)",
+    defaultData: () => ({
+      eyebrow: "Explorer", title: "Par où commencer ?",
+      items: [{ title: "À propos", text: "", href: "a-propos.html" }, { title: "Services & tarifs", text: "", href: "services.html" }],
+    }),
+  },
+  {
     value: "conseils",
     label: "Conseils en colonnes (2 colonnes de 3 conseils numérotés)",
     defaultData: () => ({

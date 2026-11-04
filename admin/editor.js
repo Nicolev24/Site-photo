@@ -1532,6 +1532,64 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableLiensSite(data, rerender) {
+  data.items = data.items || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "liens-site";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "liens-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre (entoure un mot de *étoiles* pour l'afficher en doré)" }));
+  container.appendChild(entete);
+  const liste = document.createElement("div");
+  liste.className = "liens-liste";
+  data.items.forEach((item, n) => {
+    const ligne = document.createElement("div");
+    ligne.className = "lien-ligne";
+    const num = document.createElement("span");
+    num.className = "lien-num";
+    num.textContent = `0${n + 1}`;
+    ligne.appendChild(num);
+    const titre = editableSpan(item, "title", { tag: "span", className: "lien-titre", placeholder: "Nom de la page" });
+    ligne.appendChild(titre);
+    ligne.appendChild(editableSpan(item, "text", { tag: "span", className: "lien-texte", placeholder: "Courte phrase" }));
+    const outils = document.createElement("span");
+    outils.className = "lien-outils";
+    outils.appendChild(buildSettingsPopover([{ label: "Page ouverte au clic (ex : services.html)", obj: item, key: "href" }]));
+    const retirer = document.createElement("button");
+    retirer.type = "button";
+    retirer.className = "admin-retirer-mini";
+    retirer.title = "Retirer cette ligne";
+    retirer.textContent = "×";
+    retirer.addEventListener("click", () => {
+      data.items.splice(n, 1);
+      rerender();
+    });
+    outils.appendChild(retirer);
+    ligne.appendChild(outils);
+    liste.appendChild(ligne);
+  });
+  container.appendChild(liste);
+  const ajout = document.createElement("button");
+  ajout.type = "button";
+  ajout.className = "btn-secondary";
+  ajout.style.marginTop = "16px";
+  ajout.textContent = "+ Ajouter une ligne";
+  ajout.addEventListener("click", () => {
+    data.items.push({ title: "", text: "", href: "" });
+    rerender();
+  });
+  container.appendChild(ajout);
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Des lignes cliquables qui mènent aux pages du site. Le lien se règle avec ⚙ ; l'ordre est celui de la liste.";
+  container.appendChild(hint);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
 function buildEditableConseils(data, rerender) {
   data.colonnes = data.colonnes || [];
   const sectionEl = document.createElement("section");
@@ -2162,6 +2220,7 @@ const EDITABLE_BUILDERS = {
   reassurance: buildEditableReassurance,
   citation: buildEditableCitation,
   conseils: buildEditableConseils,
+  liens_site: buildEditableLiensSite,
   apercu_formules: buildEditableApercuFormules,
   contact_canaux: buildEditableContactCanaux,
   bande_photos: buildEditableBandePhotos,

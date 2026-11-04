@@ -128,6 +128,10 @@ function versionTexte(page, donnees) {
         if (d.image) morceaux.push(img(d.image, d.alt));
         for (const p of d.photos || []) morceaux.push(img(p.image, p.alt));
         break;
+      case "liens_site":
+        morceaux.push(titre(d.title));
+        morceaux.push(`<ul>${(d.items || []).filter((i) => i && i.title).map((i) => `<li><a href="${echapper(i.href)}">${echapper(i.title)}</a> : ${echapper(i.text)}</li>`).join("")}</ul>`);
+        break;
       case "conseils":
         morceaux.push(titre(d.title));
         for (const c of d.colonnes || []) {

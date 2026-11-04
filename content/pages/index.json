@@ -55,57 +55,33 @@
       }
     },
     {
-      "id": "conseils",
-      "type": "conseils",
+      "id": "liens",
+      "type": "liens_site",
       "data": {
-        "eyebrow": "Avant de se rencontrer",
-        "title": "Quelques *conseils* pour de belles photos",
-        "colonnes": [
+        "eyebrow": "Explorer le site",
+        "title": "Par où *commencer* ?",
+        "items": [
           {
-            "titre": "Particuliers",
-            "items": [
-              {
-                "titre": "Choisir la bonne lumière",
-                "texte": "La fin d'après-midi offre la lumière la plus douce pour les portraits et les couples. Pour un mariage, pensez-y en construisant le déroulé de la journée."
-              },
-              {
-                "titre": "Porter ce qui vous ressemble",
-                "texte": "Des vêtements dans lesquels vous êtes à l'aise, aux couleurs sobres ou assorties. Évitez les grands logos et les motifs très serrés."
-              },
-              {
-                "titre": "Oublier l'objectif",
-                "texte": "Parlez, riez, bougez : les plus belles photos arrivent quand on ne pose pas."
-              }
-            ]
+            "title": "À propos",
+            "text": "Mon univers et ma façon de travailler",
+            "href": "a-propos.html"
           },
           {
-            "titre": "Commerces",
-            "items": [
-              {
-                "titre": "Préparer le lieu",
-                "texte": "Comptoir dégagé, lumières allumées, vitrine propre : tout ce qui se voit sera sur les photos."
-              },
-              {
-                "titre": "Lister les photos utiles",
-                "texte": "Vitrine, équipe, produits, ambiance : une courte liste suffit pour partir sur de bonnes bases."
-              },
-              {
-                "titre": "Choisir un moment calme",
-                "texte": "En dehors des heures de pointe, on photographie sans gêner vos clients."
-              }
-            ]
+            "title": "Services & tarifs",
+            "text": "Les formules, les prix, les questions fréquentes",
+            "href": "services.html"
+          },
+          {
+            "title": "Espace client",
+            "text": "Retrouver et télécharger vos photos",
+            "href": "galerie/index.html"
+          },
+          {
+            "title": "Contact",
+            "text": "Réserver une séance, poser une question",
+            "href": "contact.html"
           }
         ]
-      }
-    },
-    {
-      "id": "cta",
-      "type": "cta",
-      "data": {
-        "title": "Envie d'en savoir plus ?",
-        "text": "Découvrez les formules et les tarifs, ou écrivez-moi directement.",
-        "button_label": "Voir les formules et tarifs",
-        "button_href": "services.html"
       }
     }
   ]
