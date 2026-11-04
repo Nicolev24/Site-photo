@@ -37,7 +37,12 @@
           "image": "images/mariages/gateau-lumiere.jpg",
           "alt": "",
           "position": "50% 38%",
-          "position_mobile": "52% 50%"
+          "position_mobile": "74% 50%"
+        },
+        "hint_tel": "↑ touchez une photo pour entrer",
+        "cta_tel": {
+          "button_label": "Voir les formules et tarifs",
+          "button_href": "services.html"
         }
       }
     },
@@ -50,21 +55,57 @@
       }
     },
     {
-      "id": "formules",
-      "type": "apercu_formules",
+      "id": "conseils",
+      "type": "conseils",
       "data": {
-        "eyebrow": "Les formules",
-        "title": "Des tarifs *clairs*, dès le départ",
-        "button_label": "Voir le détail"
+        "eyebrow": "Avant de se rencontrer",
+        "title": "Quelques *conseils* pour de belles photos",
+        "colonnes": [
+          {
+            "titre": "Particuliers",
+            "items": [
+              {
+                "titre": "Choisir la bonne lumière",
+                "texte": "La fin d'après-midi offre la lumière la plus douce pour les portraits et les couples. Pour un mariage, pensez-y en construisant le déroulé de la journée."
+              },
+              {
+                "titre": "Porter ce qui vous ressemble",
+                "texte": "Des vêtements dans lesquels vous êtes à l'aise, aux couleurs sobres ou assorties. Évitez les grands logos et les motifs très serrés."
+              },
+              {
+                "titre": "Oublier l'objectif",
+                "texte": "Parlez, riez, bougez : les plus belles photos arrivent quand on ne pose pas."
+              }
+            ]
+          },
+          {
+            "titre": "Commerces",
+            "items": [
+              {
+                "titre": "Préparer le lieu",
+                "texte": "Comptoir dégagé, lumières allumées, vitrine propre : tout ce qui se voit sera sur les photos."
+              },
+              {
+                "titre": "Lister les photos utiles",
+                "texte": "Vitrine, équipe, produits, ambiance : une courte liste suffit pour partir sur de bonnes bases."
+              },
+              {
+                "titre": "Choisir un moment calme",
+                "texte": "En dehors des heures de pointe, on photographie sans gêner vos clients."
+              }
+            ]
+          }
+        ]
       }
     },
     {
-      "id": "canaux",
-      "type": "contact_canaux",
+      "id": "cta",
+      "type": "cta",
       "data": {
-        "eyebrow": "Contact",
-        "title": "Une envie de *séance* ?",
-        "text": "Choisissez le canal qui vous arrange : je réponds sous 48 h."
+        "title": "Envie d'en savoir plus ?",
+        "text": "Découvrez les formules et les tarifs, ou écrivez-moi directement.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html"
       }
     }
   ]

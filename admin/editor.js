@@ -1532,6 +1532,69 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableConseils(data, rerender) {
+  data.colonnes = data.colonnes || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "conseils";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "conseils-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre (entoure un mot de *étoiles* pour l'afficher en doré)" }));
+  container.appendChild(entete);
+  const grille = document.createElement("div");
+  grille.className = "conseils-grille";
+  data.colonnes.forEach((col) => {
+    col.items = col.items || [];
+    const colEl = document.createElement("div");
+    colEl.className = "conseils-col";
+    const h3 = document.createElement("h3");
+    h3.appendChild(editableSpan(col, "titre", { tag: "span", placeholder: "Titre de la colonne" }));
+    colEl.appendChild(h3);
+    const ol = document.createElement("ol");
+    col.items.forEach((item, n) => {
+      const li = document.createElement("li");
+      const num = document.createElement("span");
+      num.className = "conseils-num";
+      num.textContent = `0${n + 1}`;
+      li.appendChild(num);
+      const corps = document.createElement("div");
+      const st = document.createElement("strong");
+      st.appendChild(editableSpan(item, "titre", { tag: "span", placeholder: "Conseil" }));
+      corps.appendChild(st);
+      const pp = editableSpan(item, "texte", { tag: "p", placeholder: "Une ou deux phrases" });
+      corps.appendChild(pp);
+      const retirer = document.createElement("button");
+      retirer.type = "button";
+      retirer.className = "admin-retirer-mini";
+      retirer.title = "Retirer ce conseil";
+      retirer.textContent = "×";
+      retirer.addEventListener("click", () => {
+        col.items.splice(n, 1);
+        rerender();
+      });
+      corps.appendChild(retirer);
+      li.appendChild(corps);
+      ol.appendChild(li);
+    });
+    colEl.appendChild(ol);
+    const ajout = document.createElement("button");
+    ajout.type = "button";
+    ajout.className = "btn-secondary";
+    ajout.textContent = "+ Ajouter un conseil";
+    ajout.addEventListener("click", () => {
+      col.items.push({ titre: "", texte: "" });
+      rerender();
+    });
+    colEl.appendChild(ajout);
+    grille.appendChild(colEl);
+  });
+  container.appendChild(grille);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
 function buildEditableCitation(data) {
   const sectionEl = document.createElement("section");
   sectionEl.className = "citation";
@@ -1928,6 +1991,9 @@ function buildEditablePolaroids(data) {
   const colonne = document.createElement("div");
   colonne.appendChild(table);
   colonne.appendChild(editableSpan(data, "hint", { tag: "p", className: "polaroids-indice-admin", placeholder: "Petite phrase manuscrite (ex. ↑ choisissez votre photo)" }));
+  colonne.appendChild(editableSpan(data, "hint_tel", { tag: "p", className: "polaroids-indice-admin", placeholder: "Même phrase, version téléphone (ex. ↑ touchez une photo pour entrer)" }));
+  data.cta_tel = data.cta_tel || { button_label: "", button_href: "services.html" };
+  colonne.appendChild(boutonEditable(data.cta_tel, "btn btn-verre"));
   grille.appendChild(colonne);
   sectionEl.appendChild(grille);
 
@@ -2095,6 +2161,7 @@ const EDITABLE_BUILDERS = {
   ouverture: buildEditableOuverture,
   reassurance: buildEditableReassurance,
   citation: buildEditableCitation,
+  conseils: buildEditableConseils,
   apercu_formules: buildEditableApercuFormules,
   contact_canaux: buildEditableContactCanaux,
   bande_photos: buildEditableBandePhotos,

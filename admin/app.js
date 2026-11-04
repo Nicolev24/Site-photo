@@ -88,6 +88,17 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "conseils",
+    label: "Conseils en colonnes (2 colonnes de 3 conseils numérotés)",
+    defaultData: () => ({
+      eyebrow: "Avant de se rencontrer", title: "Quelques conseils pour de belles photos",
+      colonnes: [
+        { titre: "Particuliers", items: [{ titre: "", texte: "" }, { titre: "", texte: "" }, { titre: "", texte: "" }] },
+        { titre: "Commerces", items: [{ titre: "", texte: "" }, { titre: "", texte: "" }, { titre: "", texte: "" }] },
+      ],
+    }),
+  },
+  {
     value: "citation",
     label: "Phrase forte (grande citation + signature)",
     defaultData: () => ({ text: "", signature: "Nicolas" }),

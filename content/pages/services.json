@@ -418,6 +418,15 @@
         "button_label": "Me contacter",
         "button_href": "contact.html?formule=Maquette%20de%20site%20gratuite"
       }
+    },
+    {
+      "id": "canaux",
+      "type": "contact_canaux",
+      "data": {
+        "eyebrow": "Contact",
+        "title": "Une question avant de *réserver* ?",
+        "text": "Choisissez le canal qui vous arrange : je réponds sous 48 h."
+      }
     }
   ]
 }

@@ -319,7 +319,7 @@ function buildPolaroids(data, basePath) {
   // Photo de fond plein écran (facultative) : cadrage ordinateur et cadrage téléphone.
   const f = data.fond && data.fond.image ? data.fond : null;
   const fond = f
-    ? `<div class="polaroids-fond" aria-hidden="true"><img src="${resolveSrc(f.image, basePath)}"${attributsTaillesHtml(f.image, basePath, "100vw")} alt="" style="--pos:${escapeHtml(f.position || "50% 50%")};--pos-tel:${escapeHtml(f.position_mobile || f.position || "50% 50%")}" fetchpriority="high" decoding="async" /></div>`
+    ? `<div class="polaroids-fond" aria-hidden="true"><img src="${resolveSrc(f.image, basePath)}"${attributsTaillesHtml(f.image, basePath, "(max-width: 860px) 300vw, 100vw")} alt="" style="--pos:${escapeHtml(f.position || "50% 50%")};--pos-tel:${escapeHtml(f.position_mobile || f.position || "50% 50%")}" fetchpriority="high" decoding="async" /></div>`
     : "";
   const section = el(
     "section",
@@ -348,8 +348,10 @@ function buildPolaroids(data, basePath) {
         </a>`
           )
           .join("")}
-        ${data.hint ? `<span class="polaroids-indice">${escapeHtml(data.hint)}</span>` : ""}
+        ${data.hint ? `<span class="polaroids-indice${data.hint_tel ? " indice-pc" : ""}">${escapeHtml(data.hint)}</span>` : ""}
+        ${data.hint_tel ? `<span class="polaroids-indice indice-tel">${escapeHtml(data.hint_tel)}</span>` : ""}
       </div>
+      ${data.cta_tel && data.cta_tel.button_label ? `<a href="${resolveHref(data.cta_tel.button_href, basePath)}" class="btn btn-verre polaroids-cta-tel">${escapeHtml(data.cta_tel.button_label)}</a>` : ""}
     </div>
   `
   );
@@ -866,6 +868,38 @@ async function buildContactCanaux(data, basePath) {
   );
 }
 
+// Conseils en colonnes numérotées (contenu utile qui n'est pas ailleurs sur le site).
+function buildConseils(data) {
+  const colonnes = (data.colonnes || []).filter((c) => c && (c.items || []).some((i) => i && i.titre));
+  if (!colonnes.length) return null;
+  return el(
+    "section",
+    { class: "conseils" },
+    `
+    <div class="container">
+      <div class="conseils-entete">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${titreHtml(data.title)}</h2>
+      </div>
+      <div class="conseils-grille">
+        ${colonnes
+          .map(
+            (c) => `
+        <div class="conseils-col">
+          <h3>${escapeHtml(c.titre)}</h3>
+          <ol>${(c.items || [])
+            .filter((i) => i && i.titre)
+            .map((i, n) => `<li><span class="conseils-num">0${n + 1}</span><div><strong>${escapeHtml(i.titre)}</strong><p>${escapeHtml(i.texte || "")}</p></div></li>`)
+            .join("")}</ol>
+        </div>`
+          )
+          .join("")}
+      </div>
+    </div>
+  `
+  );
+}
+
 // Texte + deux photos qui se chevauchent, façon magazine.
 function buildTexteDuo(data, basePath) {
   const photos = photosRemplies(data.photos).slice(0, 2);
@@ -1202,6 +1236,7 @@ const SECTION_BUILDERS = {
   ouverture: buildOuverture,
   reassurance: buildReassurance,
   citation: buildCitation,
+  conseils: buildConseils,
   apercu_formules: buildApercuFormules,
   contact_canaux: buildContactCanaux,
   bande_photos: buildBandePhotos,

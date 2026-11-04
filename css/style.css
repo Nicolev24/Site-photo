@@ -3083,33 +3083,39 @@ html[data-page] select option {
   mix-blend-mode: screen;
 }
 
+.indice-tel,
+.polaroids-cta-tel {
+  display: none;
+}
 @media (max-width: 860px) {
-  /* Téléphone : tout tient dans l'écran, en trois étages.
-     1. le texte en haut ; 2. la photo (le gâteau et les mariés) au milieu,
-     fondue dans le fond de la page ; 3. les deux Polaroïds, plus petits,
-     posés en bas avec « choisissez votre photo » dessous. */
+  /* Téléphone : la photo du gâteau couvre tout le haut, comme sur ordinateur, avec le
+     titre en haut, les deux Polaroïds plus petits en bas, une phrase qui dit quoi
+     toucher et un bouton direct vers les formules. */
   .polaroids.avec-fond {
     min-height: calc(100vh - 86px);
     min-height: calc(100svh - 86px);
   }
   .avec-fond .polaroids-fond {
-    top: 23%;
-    bottom: 22%;
-    inset-inline: 0;
+    inset: 0;
+    overflow: hidden;
   }
   .avec-fond .polaroids-fond img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: min(118vw, 620px);
     object-position: var(--pos-tel, var(--pos, 50% 50%));
-    filter: brightness(0.95);
+    filter: brightness(1);
   }
   .avec-fond .polaroids-fond::after {
-    background: linear-gradient(to bottom, var(--couleur-fond) 0%, rgba(28, 25, 22, 0) 24%, rgba(28, 25, 22, 0) 70%, var(--couleur-fond) 100%);
+    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 16%, rgba(28, 25, 22, 0) 40%, var(--couleur-fond) calc(min(118vw, 620px) + 24px));
   }
   .avec-fond .polaroids-grille {
     min-height: inherit;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding-top: 22px;
+    justify-content: flex-start;
+    padding-top: 20px;
     padding-bottom: 20px;
     row-gap: 0;
   }
@@ -3118,38 +3124,44 @@ html[data-page] select option {
     padding-top: 0;
   }
   .avec-fond .polaroids-accroche {
-    font-size: clamp(1.7rem, 7.4vw, 2.5rem);
+    font-size: clamp(1.8rem, 8vw, 2.7rem);
     max-width: none;
     margin: 8px 0 0;
   }
   .avec-fond .polaroids-intro {
-    display: block;
-    margin: 12px 0 0;
-    font-size: 0.86rem;
-    line-height: 1.55;
-    max-width: 34ch;
+    display: none;
   }
   .avec-fond .polaroids-table {
-    --w: min(43vw, 25svh, 190px);
-    height: calc(var(--w) + 114px);
+    --w: min(42vw, 23svh, 180px);
+    height: calc(var(--w) + 100px);
     width: 100%;
     max-width: 440px;
-    margin: 0 auto;
+    margin: auto auto 0;
   }
   .avec-fond .polaroid-1 { left: 3%; top: 0; }
   .avec-fond .polaroid-2 { left: auto; right: 3%; top: 20px; }
   .avec-fond .polaroid-1 .polaroid-legende { padding-right: 4px; }
-  .avec-fond .polaroid-main { font-size: 1.4rem; }
-  .avec-fond .polaroid-sous { font-size: 0.54rem; letter-spacing: 0.07em; }
-  .avec-fond .polaroids-indice { left: 0; right: 0; bottom: 0; text-align: center; }
+  .avec-fond .polaroid-main { font-size: 1.35rem; }
+  .avec-fond .polaroid-sous { font-size: 0.52rem; letter-spacing: 0.07em; }
+  .avec-fond .polaroids-indice { left: 0; right: 0; bottom: 0; text-align: center; font-size: 1.35rem; color: rgba(245, 241, 234, 0.82); }
+  .avec-fond .polaroids-indice.indice-pc { display: none; }
+  .avec-fond .polaroids-indice.indice-tel { display: block; }
   .avec-fond .polaroids-table::after { display: none; }
+  .polaroids-cta-tel {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 0;
+  }
+  .polaroids-cta-tel::after { content: "→"; }
 }
 @media (max-width: 860px) and (max-height: 700px) {
-  .avec-fond .polaroids-intro { display: none; }
+  .avec-fond .polaroids-table { --w: min(36vw, 20svh, 150px); }
+  .polaroids-cta-tel { margin-top: 8px; padding: 12px 20px; }
 }
 @media (min-width: 600px) and (max-width: 860px) {
-  .avec-fond .polaroids-table { --w: min(30vw, 250px); }
-  .avec-fond .polaroids-intro { font-size: 1rem; max-width: 46ch; }
+  .avec-fond .polaroids-table { --w: min(28vw, 240px); }
 }
 
 
@@ -3362,4 +3374,98 @@ html[data-page] select option {
 .apercu-entete h2,
 .canaux-entete h2 {
   text-wrap: balance;
+}
+
+
+/* Conseils en colonnes numérotées */
+.conseils {
+  padding: 24px 0 112px;
+}
+.conseils-entete {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.conseils-entete h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  text-wrap: balance;
+}
+.conseils-entete h2 em {
+  font-style: italic;
+  color: var(--couleur-accent);
+}
+.conseils-grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.conseils-col {
+  padding: 36px 36px 28px;
+  border: 1px solid rgba(174, 140, 91, 0.28);
+  border-radius: var(--rayon-bordure);
+  background: linear-gradient(160deg, rgba(174, 140, 91, 0.1), rgba(174, 140, 91, 0.02) 70%);
+}
+.conseils-col h3 {
+  margin: 0 0 24px;
+  font-family: var(--police-texte);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--couleur-accent-texte);
+}
+.conseils-col ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.conseils-col li {
+  display: flex;
+  gap: 18px;
+  padding: 20px 0;
+  border-top: 1px solid var(--couleur-bordure);
+}
+.conseils-col li:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+.conseils-num {
+  flex: none;
+  width: 34px;
+  font-family: var(--police-titres);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--couleur-accent);
+}
+.conseils-col strong {
+  display: block;
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: 1.3rem;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.conseils-col p {
+  margin: 0;
+  color: var(--couleur-texte-attenue);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+@media (max-width: 860px) {
+  .conseils { padding: 8px 0 72px; }
+  .conseils-entete { margin-bottom: 30px; }
+  .conseils-grille { grid-template-columns: 1fr; gap: 16px; }
+  .conseils-col { padding: 26px 22px 20px; }
+}
+
+/* Cartes de formules : même verre doré que les blocs de l'accueil */
+.price-card {
+  background: linear-gradient(160deg, rgba(174, 140, 91, 0.09), rgba(174, 140, 91, 0.02) 70%);
+  border-color: rgba(174, 140, 91, 0.26);
+}
+.price-card.highlight {
+  background: linear-gradient(160deg, rgba(174, 140, 91, 0.18), rgba(174, 140, 91, 0.04) 72%);
+  border-color: var(--couleur-accent);
 }
