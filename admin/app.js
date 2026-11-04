@@ -88,6 +88,17 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "liens_photos",
+    label: "Photos qui servent de liens vers les pages (accueil photographe)",
+    defaultData: () => ({
+      invitation: "Entrez, faites un tour…",
+      items: [
+        { title: "À propos", text: "", href: "a-propos.html", image: "", alt: "", position: "50% 50%" },
+        { title: "Services & tarifs", text: "", href: "services.html", image: "", alt: "", position: "50% 50%" },
+      ],
+    }),
+  },
+  {
     value: "liens_site",
     label: "Plan du site (liens vers les pages)",
     defaultData: () => ({

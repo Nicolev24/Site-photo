@@ -868,6 +868,36 @@ async function buildContactCanaux(data, basePath) {
   );
 }
 
+// Photos qui servent de liens vers les pages du site, avec une courte invitation écrite à la main.
+function buildLiensPhotos(data, basePath) {
+  const tuiles = (data.items || []).filter((i) => i && i.title && i.href && i.image);
+  if (!tuiles.length) return null;
+  const section = el("div", { class: "liens-photos-bloc" });
+  if (data.invitation) section.appendChild(el("section", { class: "invitation" }, `<div class="container"><p>${escapeHtml(data.invitation)}</p></div>`));
+  section.appendChild(
+    el(
+      "section",
+      { class: "liens-photos" },
+      `<nav class="liens-photos-grille" aria-label="Explorer le site">
+        ${tuiles
+          .map(
+            (t, n) => `
+        <a class="tuile" href="${resolveHref(t.href, basePath)}">
+          ${imageHtml(t, basePath, "(max-width: 860px) 100vw, 55vw")}
+          <span class="tuile-texte">
+            <span class="tuile-num">0${n + 1}</span>
+            <span class="tuile-titre">${escapeHtml(t.title)}</span>
+            ${t.text ? `<span class="tuile-sous">${escapeHtml(t.text)}</span>` : ""}
+          </span>
+        </a>`
+          )
+          .join("")}
+      </nav>`
+    )
+  );
+  return section;
+}
+
 // Plan du site : des liens en lignes numérotées, sans contenu, pour orienter le visiteur.
 function buildLiensSite(data, basePath) {
   const liens = (data.items || []).filter((i) => i && i.title && i.href);
@@ -1269,6 +1299,7 @@ const SECTION_BUILDERS = {
   citation: buildCitation,
   conseils: buildConseils,
   liens_site: buildLiensSite,
+  liens_photos: buildLiensPhotos,
   apercu_formules: buildApercuFormules,
   contact_canaux: buildContactCanaux,
   bande_photos: buildBandePhotos,

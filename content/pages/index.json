@@ -37,7 +37,7 @@
           "image": "images/mariages/gateau-lumiere.jpg",
           "alt": "",
           "position": "50% 38%",
-          "position_mobile": "74% 50%"
+          "position_mobile": "56% 50%"
         },
         "hint_tel": "↑ touchez une photo pour entrer",
         "cta_tel": {
@@ -56,30 +56,41 @@
     },
     {
       "id": "liens",
-      "type": "liens_site",
+      "type": "liens_photos",
       "data": {
-        "eyebrow": "Explorer le site",
-        "title": "Par où *commencer* ?",
+        "invitation": "Entrez, faites un tour…",
         "items": [
           {
             "title": "À propos",
-            "text": "Mon univers et ma façon de travailler",
-            "href": "a-propos.html"
+            "text": "Mon univers",
+            "href": "a-propos.html",
+            "image": "images/mariages/premiere-danse-etincelles.jpg",
+            "alt": "Première danse des mariés entre deux fontaines d'étincelles",
+            "position": "50% 45%"
           },
           {
             "title": "Services & tarifs",
-            "text": "Les formules, les prix, les questions fréquentes",
-            "href": "services.html"
+            "text": "Les formules",
+            "href": "services.html",
+            "image": "images/mariages/baiser-pont-chateau.jpg",
+            "alt": "Les mariés s'embrassent sur le pont d'un château",
+            "position": "50% 55%"
           },
           {
             "title": "Espace client",
-            "text": "Retrouver et télécharger vos photos",
-            "href": "galerie/index.html"
+            "text": "Retrouver vos photos",
+            "href": "galerie/index.html",
+            "image": "images/mariages/photo-instantanee.jpg",
+            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes",
+            "position": "50% 40%"
           },
           {
             "title": "Contact",
-            "text": "Réserver une séance, poser une question",
-            "href": "contact.html"
+            "text": "Écrivez-moi",
+            "href": "contact.html",
+            "image": "images/mariages/maries-chien.jpg",
+            "alt": "Les mariés assis dans l'herbe avec leur chien",
+            "position": "50% 50%"
           }
         ]
       }

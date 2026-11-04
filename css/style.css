@@ -3103,18 +3103,18 @@ html[data-page] select option {
     position: absolute;
     left: 0;
     top: 0;
-    height: min(118vw, 620px);
+    height: 74%;
     object-position: var(--pos-tel, var(--pos, 50% 50%));
     filter: brightness(1);
   }
   .avec-fond .polaroids-fond::after {
-    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 16%, rgba(28, 25, 22, 0) 40%, var(--couleur-fond) calc(min(118vw, 620px) + 24px));
+    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 22%, rgba(28, 25, 22, 0) 52%, var(--couleur-fond) 76%);
   }
   .avec-fond .polaroids-grille {
     min-height: inherit;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding-top: 20px;
     padding-bottom: 20px;
     row-gap: 0;
@@ -3132,11 +3132,11 @@ html[data-page] select option {
     display: none;
   }
   .avec-fond .polaroids-table {
-    --w: min(42vw, 23svh, 180px);
+    --w: min(40vw, 22svh, 170px);
     height: calc(var(--w) + 122px);
     width: 100%;
     max-width: 440px;
-    margin: auto auto 0;
+    margin: 0 auto;
   }
   .avec-fond .polaroid-1 { left: 3%; top: 0; }
   .avec-fond .polaroid-2 { left: auto; right: 3%; top: 20px; }
@@ -3577,4 +3577,122 @@ a.lien-ligne:hover .lien-fleche::after {
   .lien-titre { grid-area: titre; font-size: 1.5rem; }
   .lien-texte { grid-area: texte; font-size: 0.88rem; }
   .lien-fleche { grid-area: fleche; align-self: center; }
+}
+
+
+/* Accueil photographe : invitation + photos qui servent de liens, sans cadres */
+.invitation {
+  padding: 8px 0 28px;
+  text-align: center;
+}
+.invitation p {
+  margin: 0;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  color: rgba(245, 241, 234, 0.88);
+  transform: rotate(-1.5deg);
+}
+.liens-photos {
+  padding: 0 0 100px;
+}
+.liens-photos-grille {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: clamp(300px, 36vw, 520px);
+  gap: 14px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.tuile {
+  position: relative;
+  display: block;
+  grid-column: span 6;
+  overflow: hidden;
+  background: #24201c;
+  color: #f5f1ea;
+}
+.tuile:nth-child(4n + 1),
+.tuile:nth-child(4n + 4) {
+  grid-column: span 7;
+}
+.tuile:nth-child(4n + 2),
+.tuile:nth-child(4n + 3) {
+  grid-column: span 5;
+}
+.tuile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.86);
+  transition: scale 1.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s ease;
+}
+.tuile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14, 12, 10, 0.78), rgba(14, 12, 10, 0.12) 52%, transparent);
+  pointer-events: none;
+}
+.tuile-texte {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  gap: 4px;
+  padding: 32px 34px;
+}
+.tuile-num {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: rgba(245, 241, 234, 0.7);
+}
+.tuile-titre {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: clamp(1.9rem, 3.2vw, 2.9rem);
+  line-height: 1.05;
+}
+.tuile-sous {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(245, 241, 234, 0.82);
+  font-size: 0.95rem;
+}
+.tuile-sous::after {
+  content: "→";
+  color: var(--couleur-accent);
+  transition: transform 0.4s ease;
+}
+@media (hover: hover) {
+  .tuile:hover img {
+    scale: 1.05;
+    filter: brightness(1);
+  }
+  .tuile:hover .tuile-sous::after {
+    transform: translateX(8px);
+  }
+}
+@media (max-width: 860px) {
+  .invitation { padding: 0 0 20px; }
+  .liens-photos { padding-bottom: 64px; }
+  .liens-photos-grille {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 10px;
+    padding: 0 12px;
+  }
+  .tuile,
+  .tuile:nth-child(n) {
+    grid-column: auto;
+    aspect-ratio: 4 / 3.3;
+  }
+  .tuile-texte { padding: 22px 22px; }
+  .tuile-titre { font-size: 1.9rem; }
 }

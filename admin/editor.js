@@ -1532,6 +1532,57 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableLiensPhotos(data, rerender) {
+  data.items = data.items || [];
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "container";
+  sectionEl.style.padding = "24px";
+  const inv = editableSpan(data, "invitation", { tag: "p", placeholder: "Petite phrase d'invitation, écrite à la main (ex : Entrez, faites un tour…)" });
+  inv.style.cssText = "font-family:Caveat,cursive;font-size:2rem;text-align:center;margin:0 0 20px";
+  sectionEl.appendChild(inv);
+  const grille = document.createElement("div");
+  grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px";
+  data.items.forEach((item, n) => {
+    const carte = document.createElement("div");
+    carte.appendChild(editablePhoto(item, { ratio: "4 / 3", retirer: null }));
+    const titre = editableSpan(item, "title", { tag: "p", placeholder: "Nom de la page" });
+    titre.style.cssText = "font-family:var(--police-titres);font-size:1.6rem;margin:10px 0 2px";
+    carte.appendChild(titre);
+    const ligne = document.createElement("div");
+    ligne.style.cssText = "display:flex;align-items:center;gap:6px";
+    ligne.appendChild(editableSpan(item, "text", { tag: "span", placeholder: "Courte phrase" }));
+    ligne.appendChild(buildSettingsPopover([{ label: "Page ouverte au clic (ex : services.html)", obj: item, key: "href" }]));
+    const retirer = document.createElement("button");
+    retirer.type = "button";
+    retirer.className = "admin-retirer-mini";
+    retirer.title = "Retirer cette photo";
+    retirer.textContent = "×";
+    retirer.addEventListener("click", () => {
+      data.items.splice(n, 1);
+      rerender();
+    });
+    ligne.appendChild(retirer);
+    carte.appendChild(ligne);
+    grille.appendChild(carte);
+  });
+  sectionEl.appendChild(grille);
+  const ajout = document.createElement("button");
+  ajout.type = "button";
+  ajout.className = "btn-secondary";
+  ajout.style.marginTop = "16px";
+  ajout.textContent = "+ Ajouter une photo";
+  ajout.addEventListener("click", () => {
+    data.items.push({ title: "", text: "", href: "", image: "", alt: "", position: "50% 50%" });
+    rerender();
+  });
+  sectionEl.appendChild(ajout);
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Sur le site, ces photos sont présentées en grand, alternées (une grande, une plus étroite), et mènent chacune à une page. Cadrage : ⚙ sur la photo.";
+  sectionEl.appendChild(hint);
+  return sectionEl;
+}
+
 function buildEditableLiensSite(data, rerender) {
   data.items = data.items || [];
   const sectionEl = document.createElement("section");
@@ -2221,6 +2272,7 @@ const EDITABLE_BUILDERS = {
   citation: buildEditableCitation,
   conseils: buildEditableConseils,
   liens_site: buildEditableLiensSite,
+  liens_photos: buildEditableLiensPhotos,
   apercu_formules: buildEditableApercuFormules,
   contact_canaux: buildEditableContactCanaux,
   bande_photos: buildEditableBandePhotos,
