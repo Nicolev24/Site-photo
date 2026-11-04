@@ -127,6 +127,13 @@ function versionTexte(page, donnees) {
         if (d.image) morceaux.push(img(d.image, d.alt));
         for (const p of d.photos || []) morceaux.push(img(p.image, p.alt));
         break;
+      case "ouverture":
+        if (d.eyebrow) morceaux.push(d.titre_page ? titre(d.eyebrow, 1) : `<p>${echapper(d.eyebrow)}</p>`);
+        morceaux.push(titre(d.title));
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        if (d.button_label) morceaux.push(`<p><a href="${echapper(d.button_href)}">${echapper(d.button_label)}</a></p>`);
+        if (d.image) morceaux.push(img(d.image, d.alt));
+        break;
       case "photo_pleine":
         morceaux.push(img(d.image, d.alt));
         if (d.button_label) morceaux.push(`<p><a href="${echapper(d.button_href)}">${echapper(d.button_label)}</a></p>`);

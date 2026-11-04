@@ -88,6 +88,11 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "ouverture",
+    label: "Ouverture de page (grande photo + titre + bouton)",
+    defaultData: () => ({ eyebrow: "", title: "", text: "", button_label: "", button_href: "", image: "", alt: "", position: "50% 50%", image_side: "gauche", titre_page: true }),
+  },
+  {
     value: "photo_pleine",
     label: "Grande photo (toute la largeur)",
     defaultData: () => ({ image: "", alt: "", position: "50% 50%" }),

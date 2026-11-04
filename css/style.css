@@ -1698,6 +1698,56 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   overflow: hidden;
 }
 
+/* Ouverture de page : grande photo en portrait + titre + bouton */
+.ouverture {
+  padding: 0;
+}
+.ouverture-grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: clamp(480px, 82vh, 800px);
+}
+.ouverture-photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background: #24201c;
+}
+.ouverture-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-a-droite .ouverture-photo {
+  order: 2;
+}
+.ouverture-texte {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  padding: 72px clamp(32px, 6vw, 96px);
+  max-width: calc(var(--largeur-max) / 2 + 24px + clamp(32px, 6vw, 96px));
+}
+.ouverture-texte h2 {
+  font-size: clamp(2.2rem, 3.8vw, 3.3rem);
+  line-height: 1.08;
+  margin: 10px 0 18px;
+}
+.ouverture-texte .lead {
+  color: var(--couleur-texte-attenue);
+  line-height: 1.75;
+  max-width: 44ch;
+  margin: 0 0 26px;
+}
+.ouverture.sans-photo .ouverture-grille {
+  grid-template-columns: 1fr;
+  min-height: 0;
+}
+
 /* Bouton posé sur la photo, en bas à gauche, sur un léger dégradé sombre */
 .photo-pleine.avec-bouton::after {
   content: "";
@@ -2449,6 +2499,20 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   }
   .photo-pleine {
     height: 56vh;
+  }
+  .ouverture-grille {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .ouverture-photo,
+  .photo-a-droite .ouverture-photo {
+    order: 0;
+    height: 62vh;
+    min-height: 340px;
+  }
+  .ouverture-texte {
+    max-width: none;
+    padding: 44px 24px 56px;
   }
   .photo-pleine-bas {
     bottom: 20px;

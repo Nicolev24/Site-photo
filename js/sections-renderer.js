@@ -714,6 +714,34 @@ function buildPresentation(data, basePath) {
   );
 }
 
+// Ouverture de page : une grande photo en portrait d'un côté (sur toute la
+// hauteur, jusqu'au bord de l'écran), le titre, une phrase et un bouton de
+// l'autre. C'est la photo choisie sur l'accueil qui vient s'y poser (transition
+// « ouverture ») : on y met donc la même photo que dans le Polaroïd.
+function buildOuverture(data, basePath) {
+  const droite = data.image_side === "droite";
+  const titre = data.titre_page
+    ? `<h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>`
+    : data.eyebrow
+    ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>`
+    : "";
+  return el(
+    "section",
+    { class: `ouverture${droite ? " photo-a-droite" : ""}${data.image ? "" : " sans-photo"}` },
+    `
+    <div class="ouverture-grille">
+      ${data.image ? `<figure class="ouverture-photo photo-univers">${imageHtml(data, basePath, "(max-width: 860px) 100vw, 50vw", ' fetchpriority="high"')}</figure>` : ""}
+      <div class="ouverture-texte">
+        ${titre}
+        <h2>${escapeHtml(data.title)}</h2>
+        ${data.text ? `<p class="lead">${escapeHtml(data.text)}</p>` : ""}
+        ${data.button_label ? `<a href="${resolveHref(data.button_href, basePath)}" class="btn btn-fantome">${escapeHtml(data.button_label)}</a>` : ""}
+      </div>
+    </div>
+  `
+  );
+}
+
 // Texte + deux photos qui se chevauchent, façon magazine.
 function buildTexteDuo(data, basePath) {
   const photos = photosRemplies(data.photos).slice(0, 2);
@@ -1047,6 +1075,7 @@ const SECTION_BUILDERS = {
   presentation: buildPresentation,
   texte_duo: buildTexteDuo,
   photo_pleine: buildPhotoPleine,
+  ouverture: buildOuverture,
   bande_photos: buildBandePhotos,
   instagram: buildInstagram,
   etapes: buildEtapes,

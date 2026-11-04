@@ -1532,6 +1532,32 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableOuverture(data, rerender) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = `ouverture${data.image_side === "droite" ? " photo-a-droite" : ""}`;
+  const grille = document.createElement("div");
+  grille.className = "ouverture-grille";
+  const photo = document.createElement("div");
+  photo.className = "ouverture-photo";
+  photo.style.padding = "24px";
+  photo.appendChild(editablePhoto(data, { ratio: "4 / 5", retirer: retirerPhoto(data, rerender) }));
+  grille.appendChild(photo);
+  const texte = document.createElement("div");
+  texte.className = "ouverture-texte";
+  texte.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  texte.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  texte.appendChild(editableSpan(data, "text", { tag: "p", className: "lead", placeholder: "Phrase d'introduction" }));
+  texte.appendChild(boutonEditable(data, "btn btn-fantome"));
+  grille.appendChild(texte);
+  sectionEl.appendChild(grille);
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.style.padding = "0 24px 16px";
+  hint.textContent = "Quand on clique sur un Polaroïd de l'accueil, c'est cette photo qui vient s'ouvrir : mets-y la même photo que dans le Polaroïd pour une transition parfaite. Cadrage : ⚙.";
+  sectionEl.appendChild(hint);
+  return sectionEl;
+}
+
 function buildEditableBandePhotos(data, rerender) {
   data.photos = data.photos || [];
   const sectionEl = document.createElement("section");
@@ -1959,6 +1985,7 @@ const EDITABLE_BUILDERS = {
   presentation: buildEditablePresentation,
   texte_duo: buildEditableTexteDuo,
   photo_pleine: buildEditablePhotoPleine,
+  ouverture: buildEditableOuverture,
   bande_photos: buildEditableBandePhotos,
   instagram: buildEditableInstagram,
   etapes: buildEditableEtapes,

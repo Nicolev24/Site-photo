@@ -6,23 +6,28 @@
   },
   "sections": [
     {
-      "id": "photo-particuliers",
-      "type": "photo_pleine",
+      "id": "ouverture-particuliers",
+      "type": "ouverture",
+      "tab": "particuliers",
       "data": {
-        "image": "images/mariages/gateau-lumiere.jpg",
-        "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
-        "position": "50% 62%",
+        "titre_page": true,
+        "eyebrow": "À propos · Photographe à Ath",
+        "title": "Des moments vrais, rien de forcé.",
+        "text": "Mariages, couples, portraits, événements : je photographie les gens tels qu'ils sont, avec une lumière soignée et des couleurs fidèles.",
         "button_label": "Voir les formules et tarifs",
-        "button_href": "services.html?pour=particuliers"
-      },
-      "tab": "particuliers"
+        "button_href": "services.html?pour=particuliers",
+        "image": "images/teaser-evenements.jpg",
+        "alt": "Mariés entourés de leurs témoins, bouquets en l'air",
+        "position": "50% 45%",
+        "image_side": "gauche"
+      }
     },
     {
       "id": "qui-je-suis-particuliers",
       "type": "presentation",
       "data": {
-        "titre_page": true,
-        "eyebrow": "À propos · Photographe à Ath",
+        "titre_page": false,
+        "eyebrow": "Qui je suis",
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements : j'aime photographier les gens tels qu'ils sont.",
         "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
@@ -165,15 +170,20 @@
       "tab": "particuliers"
     },
     {
-      "id": "photo-commerces",
-      "type": "photo_pleine",
+      "id": "ouverture-commerces",
+      "type": "ouverture",
       "tab": "commerces",
       "data": {
-        "image": "images/commerces/salon-vue-ensemble.jpg",
-        "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
-        "position": "50% 45%",
+        "titre_page": true,
+        "eyebrow": "À propos · Photographe à Ath",
+        "title": "Des photos qui donnent envie de pousser la porte.",
+        "text": "Commerces et entreprises : votre lieu, votre équipe et votre savoir-faire, tels qu'ils sont, prêts pour votre fiche Google et vos réseaux.",
         "button_label": "Voir les formules et tarifs",
-        "button_href": "services.html?pour=commerces"
+        "button_href": "services.html?pour=commerces",
+        "image": "images/teaser-entreprises.jpg",
+        "alt": "Séance photo chez un barbier",
+        "position": "50% 30%",
+        "image_side": "gauche"
       }
     },
     {
@@ -181,8 +191,8 @@
       "type": "presentation",
       "tab": "commerces",
       "data": {
-        "titre_page": true,
-        "eyebrow": "À propos · Photographe à Ath",
+        "titre_page": false,
+        "eyebrow": "Qui je suis",
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Pour les commerces et les entreprises, je réalise des photos qui montrent votre lieu, votre équipe et votre savoir-faire.",
         "text_suite": "Des photos prêtes pour votre fiche Google, vos réseaux et votre site — et si vous n'avez pas encore de site, je peux aussi vous en créer un.",
