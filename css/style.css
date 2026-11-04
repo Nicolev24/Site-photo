@@ -701,8 +701,9 @@ textarea {
 }
 
 /* ============ Footer ============
-   Une seule ligne : copyright à gauche, liens à droite. (Le logo du pied de
-   page reste dans le HTML pour le thème clair, mais n'est plus affiché.) */
+   Version de base (galerie client, pages sans JavaScript) : une seule ligne,
+   copyright à gauche, liens à droite. Sur le site, js/render.js le remplace par
+   le pied de page complet (voir « Pied de page » en fin de fichier). */
 .site-footer {
   border-top: 1px solid var(--couleur-bordure);
   padding: 34px max(24px, calc((100% - var(--largeur-max)) / 2 + 24px));
