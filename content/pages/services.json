@@ -15,17 +15,17 @@
           {
             "id": "particuliers",
             "label": "Particuliers",
-            "image": "images/teaser-evenements.jpg",
-            "alt": "Mariés entourés de leurs témoins",
-            "position": "50% 40%",
+            "image": "images/mariages/baiser-cortege.jpg",
+            "alt": "Les mariés s'embrassent pendant que le cortège passe devant eux",
+            "position": "50% 50%",
             "text": "Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète."
           },
           {
             "id": "commerces",
             "label": "Commerces",
-            "image": "images/teaser-entreprises.jpg",
-            "alt": "Séance chez un barbier",
-            "position": "50% 32%",
+            "image": "images/uploads/1793488133306-salon-de-massimo-dsc3533.jpg",
+            "alt": "Le barbier coupe les cheveux d'un client dans son salon",
+            "position": "50% 45%",
             "text": "Des photos pro et un site simple pour les petits commerces de la région."
           }
         ]

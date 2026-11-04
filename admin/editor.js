@@ -1880,7 +1880,7 @@ function buildEditableOngletsTarifs(data) {
 
   const hint = document.createElement("p");
   hint.className = "admin-hint";
-  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Pour une transition parfaite depuis l'accueil, mets la même photo et le même cadrage que sur l'accueil.";
+  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Choisis des photos différentes de celles de l'accueil et de « À propos », pour varier d'une page à l'autre.";
   container.appendChild(hint);
 
   const NOMS = { particuliers: "Particuliers", commerces: "Commerces" };

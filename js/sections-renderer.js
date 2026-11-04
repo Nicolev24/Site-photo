@@ -426,8 +426,7 @@ async function buildContactBref(data, basePath) {
 //
 // Titre de la page et photo de l'univers affiché (particuliers ou
 // commerces). La photo est encadrée à une taille où elle reste parfaitement
-// nette, et c'est elle que la photo choisie sur l'accueil
-// vient remplacer pendant la transition (view-transition-name, voir le CSS).
+// nette ; elle se pose en douceur à l'arrivée sur la page (voir le CSS).
 // Les sections de la page qui portent un champ "tab" ne s'affichent que
 // dans leur univers.
 
@@ -447,7 +446,7 @@ function buildOngletsTarifs(data, basePath) {
       </div>
       ${
         t.image
-          ? `<figure class="univers-entete-photo photo-univers">
+          ? `<figure class="univers-entete-photo">
         <img src="${resolveSrc(t.image, basePath)}"${attributsTaillesHtml(t.image, basePath, "(max-width: 860px) 100vw, 600px")} alt="${escapeHtml(t.alt || "")}" style="${escapeHtml(styleCadrage(t))}" fetchpriority="high" decoding="async" />
       </figure>`
           : ""

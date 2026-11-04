@@ -489,6 +489,18 @@ h1.eyebrow {
   padding: 88px 24px;
 }
 
+/* Photo de l'en-tête des tarifs : elle se pose en douceur (sobre, sans mouvement
+   de page) */
+@media (prefers-reduced-motion: no-preference) {
+  .univers-entete-photo img {
+    animation: photoPose 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+  }
+}
+@keyframes photoPose {
+  from { opacity: 0; scale: 1.05; }
+  to { opacity: 1; scale: 1; }
+}
+
 /* ============ Pricing ============ */
 .pricing-grid {
   display: grid;
@@ -1413,6 +1425,9 @@ html[data-univers="commerces"] .univers-switch [data-univers="commerces"]::after
   .site-header { view-transition-name: entete; }
   .univers-barre { view-transition-name: univers-barre; }
   .photo-univers { view-transition-name: photo-univers; }
+  /* D'une page à l'autre (par exemple « À propos » → tarifs), la grande photo ne
+     voyage pas : seule l'accueil et « À propos » partagent une photo. */
+  html[data-transition="page"] .photo-univers { view-transition-name: none; }
   .photo-pleine-bas .btn { view-transition-name: bouton-photo; }
 
   ::view-transition-group(*) {
