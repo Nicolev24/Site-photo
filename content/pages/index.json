@@ -20,7 +20,7 @@
             "image": "images/teaser-evenements.jpg",
             "alt": "Mariés entourés de leurs témoins",
             "position": "50% 45%",
-            "href": "services.html?pour=particuliers"
+            "href": "a-propos.html?pour=particuliers"
           },
           {
             "univers": "commerces",
@@ -29,7 +29,7 @@
             "image": "images/teaser-entreprises.jpg",
             "alt": "Séance chez un barbier",
             "position": "50% 30%",
-            "href": "services.html?pour=commerces"
+            "href": "a-propos.html?pour=commerces"
           }
         ],
         "hint": "↑ choisissez votre photo"

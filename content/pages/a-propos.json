@@ -6,6 +6,16 @@
   },
   "sections": [
     {
+      "id": "photo-particuliers",
+      "type": "photo_pleine",
+      "data": {
+        "image": "images/mariages/gateau-lumiere.jpg",
+        "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
+        "position": "50% 62%"
+      },
+      "tab": "particuliers"
+    },
+    {
       "id": "qui-je-suis-particuliers",
       "type": "presentation",
       "data": {
@@ -14,21 +24,11 @@
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements : j'aime photographier les gens tels qu'ils sont.",
         "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
-        "button_label": "",
-        "button_href": "",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=particuliers",
         "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
         "position": "50% 50%"
-      },
-      "tab": "particuliers"
-    },
-    {
-      "id": "photo-particuliers",
-      "type": "photo_pleine",
-      "data": {
-        "image": "images/mariages/gateau-lumiere.jpg",
-        "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
-        "position": "50% 62%"
       },
       "tab": "particuliers"
     },
@@ -155,12 +155,22 @@
       "id": "contact-particuliers",
       "type": "cta",
       "data": {
-        "title": "Envie qu'on travaille ensemble ?",
-        "text": "Parlez-moi de votre projet : je vous réponds sous 48h.",
-        "button_label": "Me contacter",
-        "button_href": "contact.html"
+        "title": "Ce style vous plaît ?",
+        "text": "Découvrez les formules et les tarifs, simples et clairs.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=particuliers"
       },
       "tab": "particuliers"
+    },
+    {
+      "id": "photo-commerces",
+      "type": "photo_pleine",
+      "tab": "commerces",
+      "data": {
+        "image": "images/commerces/salon-vue-ensemble.jpg",
+        "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
+        "position": "50% 45%"
+      }
     },
     {
       "id": "qui-je-suis-commerces",
@@ -172,21 +182,11 @@
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Pour les commerces et les entreprises, je réalise des photos qui montrent votre lieu, votre équipe et votre savoir-faire.",
         "text_suite": "Des photos prêtes pour votre fiche Google, vos réseaux et votre site — et si vous n'avez pas encore de site, je peux aussi vous en créer un.",
-        "button_label": "",
-        "button_href": "",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=commerces",
         "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
         "position": "50% 50%"
-      }
-    },
-    {
-      "id": "photo-commerces",
-      "type": "photo_pleine",
-      "tab": "commerces",
-      "data": {
-        "image": "images/commerces/salon-vue-ensemble.jpg",
-        "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
-        "position": "50% 45%"
       }
     },
     {
@@ -303,10 +303,10 @@
       "type": "cta",
       "tab": "commerces",
       "data": {
-        "title": "Parlons de votre commerce",
-        "text": "Dites-moi ce dont vous avez besoin : je vous réponds sous 48h.",
-        "button_label": "Me contacter",
-        "button_href": "contact.html"
+        "title": "Ce style vous plaît ?",
+        "text": "Découvrez les formules et les tarifs, simples et clairs.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=commerces"
       }
     }
   ]

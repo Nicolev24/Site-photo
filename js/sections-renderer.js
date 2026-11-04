@@ -748,7 +748,9 @@ function buildTexteDuo(data, basePath) {
 // Une grande photo sur toute la largeur, pour respirer entre deux textes.
 function buildPhotoPleine(data, basePath) {
   if (!data.image) return null;
-  const section = el("section", { class: "photo-pleine" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
+  // Une seule grande photo est visible à la fois (une par univers) : c'est elle
+  // que la photo choisie sur l'accueil vient ouvrir (transition « ouverture »).
+  const section = el("section", { class: "photo-pleine photo-univers" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
   profondeur(section);
   return section;
 }
