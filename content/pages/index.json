@@ -37,13 +37,9 @@
           "image": "images/mariages/gateau-lumiere.jpg",
           "alt": "",
           "position": "50% 38%",
-          "position_mobile": "56% 50%"
+          "position_mobile": "60% 50%"
         },
-        "hint_tel": "↑ touchez une photo pour entrer",
-        "cta_tel": {
-          "button_label": "Voir les formules et tarifs",
-          "button_href": "services.html"
-        }
+        "hint_tel": "↑ touchez une photo pour entrer"
       }
     },
     {
