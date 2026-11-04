@@ -3084,38 +3084,282 @@ html[data-page] select option {
 }
 
 @media (max-width: 860px) {
-  /* Téléphone : la photo occupe le haut (cadrée sur le gâteau, les mariés et les
-     projecteurs), le titre est posé dessus, les deux Polaroïds la chevauchent
-     par le bas, et la photo se fond dans le fond de la page. */
+  /* Téléphone : tout tient dans l'écran, en trois étages.
+     1. le texte en haut ; 2. la photo (le gâteau et les mariés) au milieu,
+     fondue dans le fond de la page ; 3. les deux Polaroïds, plus petits,
+     posés en bas avec « choisissez votre photo » dessous. */
   .polaroids.avec-fond {
-    --fh: min(110vw, 600px);
+    min-height: calc(100vh - 86px);
+    min-height: calc(100svh - 86px);
   }
   .avec-fond .polaroids-fond {
-    inset: 0 0 auto 0;
-    height: var(--fh);
+    top: 23%;
+    bottom: 22%;
+    inset-inline: 0;
   }
   .avec-fond .polaroids-fond img {
     object-position: var(--pos-tel, var(--pos, 50% 50%));
-    filter: brightness(0.9);
+    filter: brightness(0.95);
   }
   .avec-fond .polaroids-fond::after {
-    background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 34%, rgba(28, 25, 22, 0) 52%, var(--couleur-fond) 98%);
+    background: linear-gradient(to bottom, var(--couleur-fond) 0%, rgba(28, 25, 22, 0) 24%, rgba(28, 25, 22, 0) 70%, var(--couleur-fond) 100%);
   }
   .avec-fond .polaroids-grille {
+    min-height: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 22px;
+    padding-bottom: 20px;
     row-gap: 0;
-    padding-top: 0;
-    padding-bottom: 36px;
   }
   .avec-fond .polaroids-texte {
-    min-height: calc(var(--fh) * 0.72 - 8px);
-    padding-top: 22px;
+    min-height: 0;
+    padding-top: 0;
   }
   .avec-fond .polaroids-accroche {
-    font-size: clamp(1.75rem, 7.6vw, 2.6rem);
+    font-size: clamp(1.7rem, 7.4vw, 2.5rem);
     max-width: none;
-    margin: 6px 0 0;
+    margin: 8px 0 0;
   }
   .avec-fond .polaroids-intro {
-    display: none;
+    display: block;
+    margin: 12px 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    max-width: 34ch;
   }
+  .avec-fond .polaroids-table {
+    --w: min(43vw, 25svh, 190px);
+    height: calc(var(--w) + 114px);
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .avec-fond .polaroid-1 { left: 3%; top: 0; }
+  .avec-fond .polaroid-2 { left: auto; right: 3%; top: 20px; }
+  .avec-fond .polaroid-1 .polaroid-legende { padding-right: 4px; }
+  .avec-fond .polaroid-main { font-size: 1.4rem; }
+  .avec-fond .polaroid-sous { font-size: 0.54rem; letter-spacing: 0.07em; }
+  .avec-fond .polaroids-indice { left: 0; right: 0; bottom: 0; text-align: center; }
+  .avec-fond .polaroids-table::after { display: none; }
+}
+@media (max-width: 860px) and (max-height: 700px) {
+  .avec-fond .polaroids-intro { display: none; }
+}
+@media (min-width: 600px) and (max-width: 860px) {
+  .avec-fond .polaroids-table { --w: min(30vw, 250px); }
+  .avec-fond .polaroids-intro { font-size: 1rem; max-width: 46ch; }
+}
+
+
+/* ============ Accueil : bas de page (citation, formules, canaux de contact) ============ */
+.citation {
+  padding: 120px 0 112px;
+  text-align: center;
+  position: relative;
+}
+.citation::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(140px, 30%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(174, 140, 91, 0.75), transparent);
+}
+.citation blockquote {
+  margin: 0 auto;
+  max-width: 20ch;
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: clamp(2.2rem, 4.8vw, 4rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.citation blockquote em {
+  font-style: italic;
+  color: var(--couleur-accent);
+}
+.citation-signature {
+  margin: 28px 0 0;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: 2rem;
+  color: var(--couleur-texte-attenue);
+  transform: rotate(-2deg);
+}
+
+.apercu {
+  padding: 24px 0 112px;
+}
+.apercu-entete {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.apercu-entete h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+}
+.apercu-entete h2 em {
+  font-style: italic;
+  color: var(--couleur-accent);
+}
+.apercu-grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.apercu-col {
+  padding: 36px 36px 32px;
+  border: 1px solid rgba(174, 140, 91, 0.28);
+  border-radius: var(--rayon-bordure);
+  background: linear-gradient(160deg, rgba(174, 140, 91, 0.1), rgba(174, 140, 91, 0.02) 70%);
+  display: flex;
+  flex-direction: column;
+}
+.apercu-col h3 {
+  margin: 0 0 22px;
+  font-family: var(--police-texte);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--couleur-accent-texte);
+}
+.apercu-col ul {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.apercu-col li {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.apercu-col li:first-child {
+  padding-top: 0;
+}
+.apercu-nom {
+  flex: 1;
+  font-size: 1.02rem;
+}
+.apercu-prix {
+  font-family: var(--police-titres);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.apercu-prix small {
+  font-family: var(--police-texte);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--couleur-texte-attenue);
+  margin-left: 8px;
+}
+.apercu-col .btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.canaux {
+  padding: 24px 0 120px;
+}
+.canaux-entete {
+  text-align: center;
+  margin-bottom: 44px;
+}
+.canaux-entete h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+}
+.canaux-entete h2 em {
+  font-style: italic;
+  color: var(--couleur-accent);
+}
+.canaux-entete p {
+  margin: 0;
+  color: var(--couleur-texte-attenue);
+}
+.canaux-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.canal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 28px 28px 26px;
+  border: 1px solid rgba(174, 140, 91, 0.28);
+  border-radius: var(--rayon-bordure);
+  background: rgba(245, 241, 234, 0.03);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.canal:hover {
+  background: rgba(174, 140, 91, 0.14);
+  border-color: var(--couleur-accent);
+  transform: translateY(-3px);
+}
+.canal svg {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 14px;
+  fill: none;
+  stroke: var(--couleur-accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.canal strong {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: 1.5rem;
+}
+.canal span {
+  color: var(--couleur-texte-attenue);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.canaux-bas {
+  margin: 30px 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--couleur-texte-attenue);
+}
+.canaux-bas a {
+  color: var(--couleur-texte);
+  border-bottom: 1px solid rgba(174, 140, 91, 0.7);
+  padding-bottom: 2px;
+}
+
+@media (max-width: 860px) {
+  .citation { padding: 72px 0 64px; }
+  .citation-signature { font-size: 1.7rem; margin-top: 20px; }
+  .apercu { padding: 8px 0 72px; }
+  .apercu-entete { margin-bottom: 32px; }
+  .apercu-grille { grid-template-columns: 1fr; gap: 16px; }
+  .apercu-col { padding: 26px 22px 24px; }
+  .canaux { padding: 8px 0 80px; }
+  .canaux-entete { margin-bottom: 30px; }
+  .canaux-grille { grid-template-columns: 1fr; gap: 12px; }
+  .canal { padding: 22px 22px 20px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0 16px; }
+  .canal svg { margin: 0; grid-row: span 2; }
+  .canal strong { font-size: 1.35rem; }
+  .canal span { flex-basis: 100%; padding-left: 44px; margin-top: -2px; }
+}
+
+.apercu-entete h2,
+.canaux-entete h2 {
+  text-wrap: balance;
 }

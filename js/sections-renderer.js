@@ -763,6 +763,109 @@ function buildReassurance(data) {
   );
 }
 
+// ---------- Accueil : phrase forte, aperçu des formules, canaux de contact ----------
+
+function buildCitation(data) {
+  if (!data.text) return null;
+  return el(
+    "section",
+    { class: "citation" },
+    `<div class="container"><blockquote>${titreHtml(data.text)}</blockquote>${data.signature ? `<p class="citation-signature">${escapeHtml(data.signature)}</p>` : ""}</div>`
+  );
+}
+
+// Les formules en un coup d'œil : lues dans la page tarifs (noms et prix), donc
+// toujours à jour quand les tarifs changent.
+async function buildApercuFormules(data, basePath) {
+  let colonnes = [];
+  try {
+    const page = await fetchJson(basePath, "content/pages/services.json");
+    const sections = page.sections || [];
+    const onglets = sections.find((s) => s.type === "onglets_tarifs")?.data?.tabs || [];
+    colonnes = sections
+      .filter((s) => s.type === "tarifs" && s.tab)
+      .map((s) => ({
+        univers: s.tab,
+        nom: onglets.find((t) => t.id === s.tab)?.label || s.tab,
+        plans: (s.data?.plans || []).filter((p) => p.title),
+      }))
+      .filter((c) => c.plans.length);
+  } catch (e) {
+    console.error(e);
+  }
+  if (!colonnes.length) return null;
+  const prix = (p) => {
+    const v = String(p.price || "").trim();
+    if (/^devis$/i.test(v)) return /devis/i.test(p.title) ? "" : `<span class="apercu-prix"><small>sur devis</small></span>`;
+    return `<span class="apercu-prix">${escapeHtml(v)}${p.price_suffix ? `<small>${escapeHtml(p.price_suffix)}</small>` : ""}</span>`;
+  };
+  return el(
+    "section",
+    { class: "apercu" },
+    `
+    <div class="container">
+      <div class="apercu-entete">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${titreHtml(data.title)}</h2>
+      </div>
+      <div class="apercu-grille">
+        ${colonnes
+          .map(
+            (c) => `
+        <div class="apercu-col">
+          <h3>${escapeHtml(c.nom)}</h3>
+          <ul>${c.plans.map((p) => `<li><span class="apercu-nom">${escapeHtml(p.title)}</span>${prix(p)}</li>`).join("")}</ul>
+          <a href="${resolveHref(`services.html?pour=${c.univers}`, basePath)}" class="btn btn-fantome">${escapeHtml(data.button_label || "Voir le détail")}</a>
+        </div>`
+          )
+          .join("")}
+      </div>
+    </div>
+  `
+  );
+}
+
+const ICONES_CANAUX = {
+  whatsapp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c.3 2.6 2.9 5.2 5.5 5.5l1.4-1.3-2-1-.9.7c-.9-.4-1.7-1.2-2.1-2.1l.7-.9-1-2z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r=".6"/></svg>',
+  email: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/></svg>',
+};
+
+async function buildContactCanaux(data, basePath) {
+  let contact = {};
+  try {
+    contact = await fetchJson(basePath, "content/contact.json");
+  } catch (e) {
+    console.error(e);
+  }
+  const canaux = [];
+  const wa = lienWhatsapp(contact);
+  if (wa) canaux.push({ icone: "whatsapp", nom: "WhatsApp", detail: "Un message direct", href: wa, externe: true });
+  if (contact.instagram_url) canaux.push({ icone: "instagram", nom: "Instagram", detail: contact.instagram_handle || "Écrire en message privé", href: contact.instagram_url, externe: true });
+  if (contact.email) canaux.push({ icone: "email", nom: "Email", detail: contact.email, href: `mailto:${contact.email}` });
+  return el(
+    "section",
+    { class: "canaux" },
+    `
+    <div class="container">
+      <div class="canaux-entete">
+        ${data.eyebrow ? `<span class="eyebrow">${escapeHtml(data.eyebrow)}</span>` : ""}
+        <h2>${titreHtml(data.title)}</h2>
+        ${data.text ? `<p>${escapeHtml(data.text)}</p>` : ""}
+      </div>
+      <div class="canaux-grille">
+        ${canaux
+          .map(
+            (c) => `<a class="canal" href="${escapeHtml(c.href)}"${c.externe ? ' target="_blank" rel="noopener"' : ""}>${ICONES_CANAUX[c.icone]}<strong>${c.nom}</strong><span>${escapeHtml(c.detail)}</span></a>`
+          )
+          .join("")}
+      </div>
+      <p class="canaux-bas">Ou par le <a href="${resolveHref("contact.html", basePath)}">formulaire de contact</a>${contact.zone ? ` · ${escapeHtml(contact.zone)}` : ""}</p>
+    </div>
+  `
+  );
+}
+
 // Texte + deux photos qui se chevauchent, façon magazine.
 function buildTexteDuo(data, basePath) {
   const photos = photosRemplies(data.photos).slice(0, 2);
@@ -1098,6 +1201,9 @@ const SECTION_BUILDERS = {
   photo_pleine: buildPhotoPleine,
   ouverture: buildOuverture,
   reassurance: buildReassurance,
+  citation: buildCitation,
+  apercu_formules: buildApercuFormules,
+  contact_canaux: buildContactCanaux,
   bande_photos: buildBandePhotos,
   instagram: buildInstagram,
   etapes: buildEtapes,

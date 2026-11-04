@@ -37,19 +37,34 @@
           "image": "images/mariages/gateau-lumiere.jpg",
           "alt": "",
           "position": "50% 38%",
-          "position_mobile": "97% 30%"
+          "position_mobile": "52% 50%"
         }
       }
     },
     {
-      "id": "contact",
-      "type": "contact_bref",
+      "id": "citation",
+      "type": "citation",
+      "data": {
+        "text": "Pas de pose figée : juste *vous*, et la lumière du moment.",
+        "signature": "Nicolas"
+      }
+    },
+    {
+      "id": "formules",
+      "type": "apercu_formules",
+      "data": {
+        "eyebrow": "Les formules",
+        "title": "Des tarifs *clairs*, dès le départ",
+        "button_label": "Voir le détail"
+      }
+    },
+    {
+      "id": "canaux",
+      "type": "contact_canaux",
       "data": {
         "eyebrow": "Contact",
-        "title": "Une envie de séance ?",
-        "text": "Parlons de votre projet — réponse sous 48h.",
-        "button_label": "Me contacter",
-        "button_href": "contact.html"
+        "title": "Une envie de *séance* ?",
+        "text": "Choisissez le canal qui vous arrange : je réponds sous 48 h."
       }
     }
   ]

@@ -88,6 +88,21 @@ const SECTION_TYPES = [
     defaultData: () => ({ eyebrow: "", title: "", text: "", text_suite: "", button_label: "", button_href: "", image_side: "droite", photos: [] }),
   },
   {
+    value: "citation",
+    label: "Phrase forte (grande citation + signature)",
+    defaultData: () => ({ text: "", signature: "Nicolas" }),
+  },
+  {
+    value: "apercu_formules",
+    label: "Aperçu des formules et prix (lu depuis la page Services)",
+    defaultData: () => ({ eyebrow: "Les formules", title: "Des tarifs clairs, dès le départ", button_label: "Voir le détail" }),
+  },
+  {
+    value: "contact_canaux",
+    label: "Contact : WhatsApp, Instagram, email",
+    defaultData: () => ({ eyebrow: "Contact", title: "Une envie de séance ?", text: "Écrivez-moi : je réponds sous 48 h." }),
+  },
+  {
     value: "reassurance",
     label: "Bandeau de confiance (quelques faits courts)",
     defaultData: () => ({ items: [{ text: "Réponse sous 48 h" }, { text: "Galerie privée en ligne" }] }),

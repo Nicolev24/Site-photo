@@ -128,6 +128,18 @@ function versionTexte(page, donnees) {
         if (d.image) morceaux.push(img(d.image, d.alt));
         for (const p of d.photos || []) morceaux.push(img(p.image, p.alt));
         break;
+      case "citation":
+        morceaux.push(`<blockquote><p>${echapper(d.text)}</p></blockquote>`);
+        break;
+      case "apercu_formules":
+        morceaux.push(titre(d.title));
+        morceaux.push(`<p><a href="services.html?pour=particuliers">${echapper(d.button_label || "Voir le détail")} (particuliers)</a> · <a href="services.html?pour=commerces">${echapper(d.button_label || "Voir le détail")} (commerces)</a></p>`);
+        break;
+      case "contact_canaux":
+        morceaux.push(titre(d.title));
+        if (d.text) morceaux.push(`<p>${echapper(d.text)}</p>`);
+        morceaux.push(`<ul><li><a href="mailto:${echapper(contact.email)}">${echapper(contact.email)}</a></li><li><a href="${echapper(contact.instagram_url)}">${echapper(contact.instagram_handle)}</a></li></ul>`);
+        break;
       case "reassurance":
         morceaux.push(`<ul>${(d.items || []).filter((i) => i && i.text).map((i) => `<li>${echapper(i.text)}</li>`).join("")}</ul>`);
         break;

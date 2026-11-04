@@ -1532,6 +1532,58 @@ function buildEditablePhotoPleine(data, rerender) {
   return sectionEl;
 }
 
+function buildEditableCitation(data) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "citation";
+  const container = document.createElement("div");
+  container.className = "container";
+  const bq = document.createElement("blockquote");
+  bq.appendChild(editableSpan(data, "text", { tag: "span", placeholder: "Une phrase forte, courte (entoure un mot de *étoiles* pour l'afficher en doré)" }));
+  container.appendChild(bq);
+  const sig = editableSpan(data, "signature", { tag: "p", className: "citation-signature", placeholder: "Signature (ex : Nicolas)" });
+  container.appendChild(sig);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
+function buildEditableApercuFormules(data) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "apercu";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "apercu-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  container.appendChild(entete);
+  container.appendChild(boutonEditable(data, "btn btn-fantome"));
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Les noms des formules et leurs prix sont lus automatiquement depuis la page Services & tarifs : ils se mettent à jour tout seuls. Ici tu règles seulement le titre et le texte du bouton.";
+  container.appendChild(hint);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
+function buildEditableContactCanaux(data) {
+  const sectionEl = document.createElement("section");
+  sectionEl.className = "canaux";
+  const container = document.createElement("div");
+  container.className = "container";
+  const entete = document.createElement("div");
+  entete.className = "canaux-entete";
+  entete.appendChild(editableSpan(data, "eyebrow", { tag: "span", className: "eyebrow", placeholder: "Petite ligne au-dessus du titre" }));
+  entete.appendChild(editableSpan(data, "title", { tag: "h2", placeholder: "Titre" }));
+  entete.appendChild(editableSpan(data, "text", { tag: "p", placeholder: "Phrase d'accroche" }));
+  container.appendChild(entete);
+  const hint = document.createElement("p");
+  hint.className = "admin-hint";
+  hint.textContent = "Les trois cartes (WhatsApp, Instagram, email) sont lues depuis la page Contact : change les liens là-bas. La carte WhatsApp n'apparaît que si un lien WhatsApp est renseigné.";
+  container.appendChild(hint);
+  sectionEl.appendChild(container);
+  return sectionEl;
+}
+
 function buildEditableReassurance(data, rerender) {
   data.items = data.items || [];
   const sectionEl = document.createElement("section");
@@ -2042,6 +2094,9 @@ const EDITABLE_BUILDERS = {
   photo_pleine: buildEditablePhotoPleine,
   ouverture: buildEditableOuverture,
   reassurance: buildEditableReassurance,
+  citation: buildEditableCitation,
+  apercu_formules: buildEditableApercuFormules,
+  contact_canaux: buildEditableContactCanaux,
   bande_photos: buildEditableBandePhotos,
   instagram: buildEditableInstagram,
   etapes: buildEditableEtapes,
