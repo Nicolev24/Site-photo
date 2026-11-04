@@ -155,6 +155,7 @@ async function loadGallery(token) {
     document.getElementById("gallery-heading").textContent = gallery.name;
     document.getElementById("gallery-subheading").textContent = gallery.title || "";
     document.getElementById("forget-gallery-btn").hidden = false;
+    afficherCouverture(gallery);
     renderGrid();
   } catch {
     // Jeton mémorisé périmé (galerie supprimée depuis) : on l'oublie pour
@@ -164,6 +165,34 @@ async function loadGallery(token) {
     }
     showEmptyState();
   }
+}
+
+// Couverture plein écran : la première photo, avec le nom de la galerie. La
+// version légère s'affiche tout de suite, la photo nette la remplace en fondu.
+function afficherCouverture(gallery) {
+  const couverture = document.getElementById("galerie-couverture");
+  const premiere = allPhotos[0];
+  if (!couverture || !premiere) return;
+  document.getElementById("couverture-nom").textContent = gallery.name || "Vos photos";
+  document.getElementById("couverture-titre").textContent = gallery.title || "";
+  document.getElementById("couverture-compte").textContent = `${allPhotos.length} photo${allPhotos.length > 1 ? "s" : ""}`;
+  document.getElementById("couverture-flou").src = photoUrl(currentToken, premiere.filename, "thumb");
+  const nette = document.getElementById("couverture-nette");
+  const chargement = new Image();
+  chargement.onload = () => {
+    nette.src = chargement.src;
+    nette.classList.add("est-chargee");
+  };
+  chargement.src = photoUrl(currentToken, premiere.filename, "original");
+  couverture.hidden = false;
+  const entete = document.querySelector(".page-header");
+  if (entete) entete.hidden = true;
+  document.getElementById("couverture-voir").addEventListener("click", (e) => {
+    e.preventDefault();
+    const cible = document.getElementById("favoris-barre") || document.getElementById("gallery-grid");
+    cible.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+  document.getElementById("couverture-oublier").addEventListener("click", () => document.getElementById("forget-gallery-btn").click());
 }
 
 function showEmptyState() {

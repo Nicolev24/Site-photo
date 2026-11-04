@@ -46,3 +46,29 @@ function initScrollReveal() {
 }
 
 window.initScrollReveal = initScrollReveal;
+
+// ---------- En-tête : verre dépoli au défilement + ligne de progression ----------
+// (partagé par le site et l'espace client)
+function initEntete() {
+  const entete = document.querySelector(".site-header");
+  if (!entete) return;
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    const y = window.scrollY;
+    const haut = document.documentElement.scrollHeight - window.innerHeight;
+    entete.classList.toggle("est-defile", y > 24);
+    entete.style.setProperty("--progres", haut > 0 ? Math.min(1, y / haut).toFixed(4) : 0);
+  };
+  const demander = () => {
+    if (prevu) return;
+    prevu = true;
+    window.requestAnimationFrame(maj);
+  };
+  window.addEventListener("scroll", demander, { passive: true });
+  window.addEventListener("resize", demander);
+  if (window.ResizeObserver) new ResizeObserver(demander).observe(document.body);
+  maj();
+}
+
+initEntete();

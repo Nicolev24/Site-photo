@@ -596,3 +596,120 @@ a.lien-aide {
 a.lien-aide[hidden] {
   display: none;
 }
+
+
+/* ============ Couverture plein écran ============ */
+.galerie-couverture {
+  position: relative;
+  height: calc(100svh - 76px);
+  min-height: 460px;
+  max-height: 940px;
+  overflow: hidden;
+  background: #24201c;
+}
+.couverture-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+}
+.couverture-nette {
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+.couverture-nette.est-chargee {
+  opacity: 1;
+}
+.galerie-couverture::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 68%;
+  background: linear-gradient(to top, rgba(14, 12, 10, 0.86), rgba(14, 12, 10, 0.45) 50%, rgba(14, 12, 10, 0));
+  pointer-events: none;
+}
+.couverture-texte {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(32px, 8vh, 84px);
+  z-index: 2;
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+}
+.couverture-texte h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 1.02;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+}
+.couverture-sous {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: rgba(245, 241, 234, 0.85);
+}
+.couverture-meta {
+  margin: 0 0 28px;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 234, 0.6);
+}
+.couverture-oublier {
+  display: block;
+  margin: 22px 0 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(245, 241, 234, 0.55);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.couverture-oublier:hover {
+  color: rgba(245, 241, 234, 0.9);
+}
+.galerie-couverture .btn-verre::after {
+  content: "↓";
+}
+.galerie-couverture .btn-verre:hover::after {
+  transform: translateY(3px);
+}
+#favoris-barre {
+  scroll-margin-top: 96px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .couverture-img {
+    animation: couvertureZoom 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .couverture-texte > * {
+    animation: couvertureMonte 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
+  }
+}
+@keyframes couvertureZoom {
+  from { scale: 1.06; }
+  to { scale: 1; }
+}
+@keyframes couvertureMonte {
+  from { opacity: 0; translate: 0 14px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@media (max-width: 860px) {
+  .galerie-couverture {
+    height: calc(100svh - 76px);
+  }
+  .couverture-texte {
+    bottom: 28px;
+  }
+  .galerie-couverture .btn-verre {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+}
