@@ -1540,6 +1540,15 @@ function buildEditableLiensPhotos(data, rerender) {
   const inv = editableSpan(data, "invitation", { tag: "p", placeholder: "Petite phrase d'invitation, écrite à la main (ex : Entrez, faites un tour…)" });
   inv.style.cssText = "font-family:Caveat,cursive;font-size:2rem;text-align:center;margin:0 0 20px";
   sectionEl.appendChild(inv);
+  const choix = document.createElement("div");
+  choix.className = "admin-hint";
+  choix.style.cssText = "margin:0 0 20px;display:grid;gap:6px";
+  const choixTitre = document.createElement("p");
+  choixTitre.textContent = "Fenêtre « particulier ou professionnel ? » (affichée une seule fois, quand un visiteur touche une photo sans avoir choisi) :";
+  choix.appendChild(choixTitre);
+  choix.appendChild(editableSpan(data, "choix_intro", { tag: "span", placeholder: "Petite ligne au-dessus (défaut : Pour vous montrer ce qui vous concerne)" }));
+  choix.appendChild(editableSpan(data, "choix_titre", { tag: "span", placeholder: "Question (défaut : Vous êtes plutôt…)" }));
+  sectionEl.appendChild(choix);
   const grille = document.createElement("div");
   grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px";
   data.items.forEach((item, n) => {

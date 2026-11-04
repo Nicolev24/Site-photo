@@ -218,7 +218,9 @@ function initBarreUnivers() {
 }
 
 function changerUnivers(id) {
-  if (!window.Univers || id === window.Univers.courant()) return;
+  if (!window.Univers) return;
+  window.Univers.confirmer();
+  if (id === window.Univers.courant()) return;
   window.Univers.definir(id);
   const url = new URL(window.location.href);
   url.searchParams.set("pour", id);
@@ -230,6 +232,102 @@ function changerUnivers(id) {
     .then(() => transition(() => rendrePage(pageCourante), "univers"))
     .catch((err) => console.error(err));
 }
+
+// ---------- Fenêtre « Vous êtes un particulier ou un professionnel ? » ----------
+//
+// Affichée quand un visiteur qui n'a pas encore choisi touche une des photos du
+// bas de l'accueil. Son choix est retenu : on ne lui demande plus ensuite.
+
+let choixOuvert = false;
+
+async function ouvrirChoixUnivers(href, textes = {}) {
+  if (choixOuvert) return;
+  choixOuvert = true;
+  const precedent = document.activeElement;
+  let panneaux = [];
+  try {
+    const accueil = await fetchJson("", "content/pages/index.json");
+    const section = (accueil.sections || []).find((s) => s.type === "polaroids");
+    panneaux = (section && section.data && section.data.panels) || [];
+  } catch (e) {
+    // sans les photos, les deux choix restent utilisables
+  }
+  const photo = (u) => panneaux.find((p) => p.univers === u) || {};
+  const choix = [
+    { id: "particuliers", titre: "Particulier", texte: "Mariage, couple, portrait, événement", p: photo("particuliers") },
+    { id: "commerces", titre: "Professionnel", texte: "Commerce, entreprise, site vitrine", p: photo("commerces") },
+  ];
+  const fenetre = document.createElement("div");
+  fenetre.className = "choix-univers";
+  fenetre.setAttribute("role", "dialog");
+  fenetre.setAttribute("aria-modal", "true");
+  fenetre.setAttribute("aria-labelledby", "choix-titre");
+  fenetre.innerHTML = `
+    <div class="choix-boite">
+      <button type="button" class="choix-fermer" aria-label="Fermer">×</button>
+      <p class="choix-intro">${escapeHtml(textes.intro || "Pour vous montrer ce qui vous concerne")}</p>
+      <h2 id="choix-titre">${escapeHtml(textes.titre || "Vous êtes plutôt…")}</h2>
+      <div class="choix-cartes">
+        ${choix
+          .map(
+            (c) => `
+        <button type="button" class="choix-carte" data-univers="${c.id}">
+          ${c.p.image ? `<img src="${escapeHtml(resolveSrc(c.p.image, ""))}"${attributsTaillesHtml(c.p.image, "", "(max-width: 700px) 90vw, 340px")} alt="" style="${escapeHtml(styleCadrage(c.p))}" />` : ""}
+          <span class="choix-texte">
+            <span class="choix-nom">${c.titre}</span>
+            <span class="choix-detail">${c.texte}</span>
+          </span>
+        </button>`
+          )
+          .join("")}
+      </div>
+      <button type="button" class="choix-passer">Je regarde d'abord, je choisirai plus tard</button>
+    </div>`;
+  document.body.appendChild(fenetre);
+  document.documentElement.classList.add("choix-ouvert");
+  requestAnimationFrame(() => fenetre.classList.add("est-visible"));
+
+  const fermer = (aller) => {
+    document.removeEventListener("keydown", surTouche);
+    fenetre.classList.remove("est-visible");
+    document.documentElement.classList.remove("choix-ouvert");
+    setTimeout(() => fenetre.remove(), 260);
+    choixOuvert = false;
+    if (aller) naviguerVers(href, { transition: "page" });
+    else if (precedent && precedent.focus) precedent.focus();
+  };
+  const surTouche = (e) => {
+    if (e.key === "Escape") fermer(false);
+    if (e.key === "Tab") {
+      const focusables = Array.from(fenetre.querySelectorAll("button"));
+      const premier = focusables[0];
+      const dernier = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === premier) {
+        e.preventDefault();
+        dernier.focus();
+      } else if (!e.shiftKey && document.activeElement === dernier) {
+        e.preventDefault();
+        premier.focus();
+      }
+    }
+  };
+  document.addEventListener("keydown", surTouche);
+  fenetre.addEventListener("click", (e) => {
+    if (e.target === fenetre) fermer(false);
+  });
+  fenetre.querySelector(".choix-fermer").addEventListener("click", () => fermer(false));
+  fenetre.querySelector(".choix-passer").addEventListener("click", () => fermer(true));
+  fenetre.querySelectorAll(".choix-carte").forEach((b) =>
+    b.addEventListener("click", () => {
+      window.Univers.definir(b.dataset.univers);
+      window.Univers.confirmer();
+      fermer(true);
+    })
+  );
+  fenetre.querySelector(".choix-carte").focus();
+}
+
+window.ouvrirChoixUnivers = ouvrirChoixUnivers;
 
 // ---------- Rendu d'une page ----------
 

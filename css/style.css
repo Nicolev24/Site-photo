@@ -3700,3 +3700,158 @@ a.lien-ligne:hover .lien-fleche::after {
   .tuile-texte { padding: 22px 22px; }
   .tuile-titre { font-size: 1.9rem; }
 }
+
+
+/* ============ Fenêtre de choix : particulier ou professionnel ============ */
+.choix-univers {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(14, 12, 10, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  overflow-y: auto;
+}
+.choix-univers.est-visible {
+  opacity: 1;
+}
+html.choix-ouvert {
+  overflow: hidden;
+}
+.choix-boite {
+  position: relative;
+  width: min(760px, 100%);
+  padding: 44px 40px 30px;
+  text-align: center;
+  background: linear-gradient(160deg, rgba(44, 38, 32, 0.96), rgba(28, 25, 22, 0.98));
+  border: 1px solid rgba(174, 140, 91, 0.38);
+  border-radius: var(--rayon-bordure);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  transform: translateY(14px) scale(0.985);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.choix-univers.est-visible .choix-boite {
+  transform: none;
+}
+.choix-fermer {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  color: var(--couleur-texte-attenue);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.choix-fermer:hover {
+  color: var(--couleur-texte);
+}
+.choix-intro {
+  margin: 0 0 6px;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: 1.6rem;
+  color: var(--couleur-texte-attenue);
+}
+.choix-boite h2 {
+  margin: 0 0 26px;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.1;
+}
+.choix-cartes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.choix-carte {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: none;
+  border-radius: var(--rayon-bordure);
+  overflow: hidden;
+  aspect-ratio: 4 / 4.6;
+  background: #24201c;
+  color: #f5f1ea;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.choix-carte img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.82);
+  transition: scale 1.2s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.4s ease;
+}
+.choix-carte::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14, 12, 10, 0.88), rgba(14, 12, 10, 0.1) 62%, transparent);
+}
+.choix-texte {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  gap: 4px;
+  padding: 20px 20px 18px;
+}
+.choix-nom {
+  font-family: var(--police-titres);
+  font-weight: var(--poids-titres);
+  font-size: 1.7rem;
+  line-height: 1.05;
+}
+.choix-detail {
+  font-size: 0.82rem;
+  color: rgba(245, 241, 234, 0.78);
+}
+.choix-carte:hover img,
+.choix-carte:focus-visible img {
+  scale: 1.05;
+  filter: brightness(1);
+}
+.choix-carte:focus-visible {
+  outline: 2px solid var(--couleur-accent);
+  outline-offset: 3px;
+}
+.choix-passer {
+  margin: 22px 0 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--couleur-texte-attenue);
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.choix-passer:hover {
+  color: var(--couleur-texte);
+}
+@media (max-width: 700px) {
+  .choix-boite { padding: 38px 18px 22px; }
+  .choix-cartes { gap: 10px; }
+  .choix-carte { aspect-ratio: 4 / 5.4; }
+  .choix-texte { padding: 14px 12px 12px; }
+  .choix-nom { font-size: 1.2rem; }
+  .choix-detail { font-size: 0.72rem; }
+  .choix-intro { font-size: 1.35rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .choix-univers, .choix-boite, .choix-carte img { transition: none; }
+}

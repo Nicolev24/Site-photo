@@ -60,8 +60,31 @@
     return v;
   }
 
+  // Le visiteur a-t-il réellement choisi son univers (Polaroïd, sélecteur ou
+  // fenêtre de choix) ? Sert à ne lui poser la question qu'une fois.
+  const CLE_CHOIX = "site-photo-univers-choisi";
+  function aChoisi() {
+    try {
+      return window.localStorage.getItem(CLE_CHOIX) === "1";
+    } catch (e) {
+      return choisiCetteVisite;
+    }
+  }
+  let choisiCetteVisite = false;
+  function confirmer() {
+    choisiCetteVisite = true;
+    try {
+      window.localStorage.setItem(CLE_CHOIX, "1");
+    } catch (e) {
+      // navigation privée : valable pour cette page seulement
+    }
+  }
+
   const initial = depuisAdresse();
-  if (initial) definir(initial);
+  if (initial) {
+    definir(initial);
+    confirmer(); // adresse partagée avec ?pour=… : le choix est déjà fait
+  }
   else {
     courant = memorise() || PAR_DEFAUT;
     document.documentElement.dataset.univers = courant;
@@ -72,6 +95,8 @@
     liste: LISTE,
     courant: () => courant,
     definir,
+    aChoisi,
+    confirmer,
     normaliser,
     depuisAdresse,
     pageDepuisAdresse,

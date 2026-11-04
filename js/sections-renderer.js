@@ -376,7 +376,10 @@ function initPolaroids(section) {
       e.preventDefault();
       if (enCours) return;
       enCours = true;
-      if (window.Univers) window.Univers.definir(polaroid.dataset.univers);
+      if (window.Univers) {
+        window.Univers.definir(polaroid.dataset.univers);
+        window.Univers.confirmer();
+      }
       // Seule la photo choisie voyage jusqu'à la page tarifs.
       section.querySelectorAll(".photo-univers").forEach((f) => f.classList.remove("photo-univers"));
       polaroid.querySelector(".polaroid-photo").classList.add("photo-univers");
@@ -895,6 +898,18 @@ function buildLiensPhotos(data, basePath) {
       </nav>`
     )
   );
+  // Visiteur qui n'a pas encore choisi (particulier / professionnel) : on lui demande
+  // avant d'ouvrir la page, une seule fois.
+  section.querySelectorAll(".tuile").forEach((tuile) => {
+    tuile.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (!window.Univers || window.Univers.aChoisi() || typeof window.ouvrirChoixUnivers !== "function") return;
+      // seules les pages qui changent selon l'univers posent la question
+      if (!/^(a-propos|services|contact)\.html/.test((tuile.getAttribute("href") || "").replace(/^.*\//, ""))) return;
+      e.preventDefault();
+      window.ouvrirChoixUnivers(tuile.getAttribute("href"), { titre: data.choix_titre, intro: data.choix_intro });
+    });
+  });
   return section;
 }
 
