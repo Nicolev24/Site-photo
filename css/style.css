@@ -3621,6 +3621,10 @@ a.lien-ligne:hover .lien-fleche::after {
 .tuile:nth-child(4n + 3) {
   grid-column: span 5;
 }
+/* Nombre impair : la dernière photo prend toute la largeur */
+.tuile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 .tuile img {
   position: absolute;
   inset: 0;

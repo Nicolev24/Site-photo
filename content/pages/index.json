@@ -77,14 +77,6 @@
             "position": "50% 55%"
           },
           {
-            "title": "Espace client",
-            "text": "Retrouver vos photos",
-            "href": "galerie/index.html",
-            "image": "images/mariages/photo-instantanee.jpg",
-            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes",
-            "position": "50% 40%"
-          },
-          {
             "title": "Contact",
             "text": "Écrivez-moi",
             "href": "contact.html",
