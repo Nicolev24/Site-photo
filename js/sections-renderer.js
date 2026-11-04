@@ -316,10 +316,16 @@ function buildPolaroids(data, basePath) {
   // Pas de « développement » quand on revient d'une autre page du site : la
   // photo arrive déjà développée par la transition.
   const arrivee = !document.documentElement.dataset.transition;
+  // Photo de fond plein écran (facultative) : cadrage ordinateur et cadrage téléphone.
+  const f = data.fond && data.fond.image ? data.fond : null;
+  const fond = f
+    ? `<div class="polaroids-fond" aria-hidden="true"><img src="${resolveSrc(f.image, basePath)}"${attributsTaillesHtml(f.image, basePath, "100vw")} alt="" style="--pos:${escapeHtml(f.position || "50% 50%")};--pos-tel:${escapeHtml(f.position_mobile || f.position || "50% 50%")}" fetchpriority="high" decoding="async" /></div>`
+    : "";
   const section = el(
     "section",
-    { class: `polaroids${arrivee ? " polaroids-arrivee" : ""}` },
+    { class: `polaroids${f ? " avec-fond" : ""}${arrivee ? " polaroids-arrivee" : ""}` },
     `
+    ${fond}
     <div class="container polaroids-grille">
       <div class="polaroids-texte">
         <h1 class="eyebrow">${escapeHtml(data.eyebrow)}</h1>

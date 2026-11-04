@@ -1833,6 +1833,20 @@ function buildEditablePolaroids(data) {
 
   const sectionEl = document.createElement("section");
   sectionEl.className = "polaroids";
+  data.fond = data.fond || { image: "", alt: "", position: "50% 50%" };
+  const fondBloc = document.createElement("div");
+  fondBloc.className = "container";
+  fondBloc.style.cssText = "padding-top:24px";
+  const fondTitre = document.createElement("p");
+  fondTitre.className = "eyebrow";
+  fondTitre.textContent = "Photo de fond de l'accueil";
+  fondBloc.appendChild(fondTitre);
+  fondBloc.appendChild(editablePhoto(data.fond, { ratio: "21 / 9", retirer: retirerPhoto(data.fond, () => {}) }));
+  const fondAide = document.createElement("p");
+  fondAide.className = "admin-hint";
+  fondAide.textContent = "Photo plein écran derrière le titre et les Polaroïds (elle est assombrie automatiquement). Une photo sombre ou nocturne rend le mieux. Cadrage ordinateur : ⚙. Sur téléphone, le cadrage est réglé à part (côté droit de la photo).";
+  fondBloc.appendChild(fondAide);
+  sectionEl.appendChild(fondBloc);
   const grille = document.createElement("div");
   grille.className = "container";
   grille.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:40px;align-items:center;padding-top:40px;padding-bottom:40px";

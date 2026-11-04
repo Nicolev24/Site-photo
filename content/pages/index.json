@@ -32,7 +32,13 @@
             "href": "a-propos.html?pour=commerces"
           }
         ],
-        "hint": "↑ choisissez votre photo"
+        "hint": "↑ choisissez votre photo",
+        "fond": {
+          "image": "images/mariages/gateau-lumiere.jpg",
+          "alt": "",
+          "position": "50% 38%",
+          "position_mobile": "97% 30%"
+        }
       }
     },
     {
