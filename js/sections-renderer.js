@@ -750,7 +750,11 @@ function buildPhotoPleine(data, basePath) {
   if (!data.image) return null;
   // Une seule grande photo est visible à la fois (une par univers) : c'est elle
   // que la photo choisie sur l'accueil vient ouvrir (transition « ouverture »).
-  const section = el("section", { class: "photo-pleine photo-univers" }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR));
+  // Bouton facultatif posé sur la photo (en verre dépoli) : par exemple vers les tarifs.
+  const bouton = data.button_label
+    ? `<div class="photo-pleine-bas container"><a href="${resolveHref(data.button_href, basePath)}" class="btn btn-verre">${escapeHtml(data.button_label)}</a></div>`
+    : "";
+  const section = el("section", { class: `photo-pleine photo-univers${bouton ? " avec-bouton" : ""}` }, imageHtml(data, basePath, TAILLES_PLEINE_LARGEUR) + bouton);
   profondeur(section);
   return section;
 }

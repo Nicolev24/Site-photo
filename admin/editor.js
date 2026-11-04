@@ -1521,6 +1521,14 @@ function buildEditablePhotoPleine(data, rerender) {
   hint.className = "admin-hint";
   hint.textContent = "Sur le site, cette photo occupe toute la largeur de l'écran. Une photo à l'horizontale rend le mieux ; règle le cadrage avec ⚙.";
   sectionEl.appendChild(hint);
+  const bouton = document.createElement("div");
+  bouton.className = "admin-bouton-photo";
+  const aide = document.createElement("p");
+  aide.className = "admin-hint";
+  aide.textContent = "Bouton posé sur la photo, en bas à gauche (vide = pas de bouton). Le lien se règle avec ⚙.";
+  bouton.appendChild(aide);
+  bouton.appendChild(boutonEditable(data, "btn btn-verre"));
+  sectionEl.appendChild(bouton);
   return sectionEl;
 }
 

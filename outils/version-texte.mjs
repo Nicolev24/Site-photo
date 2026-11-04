@@ -129,6 +129,7 @@ function versionTexte(page, donnees) {
         break;
       case "photo_pleine":
         morceaux.push(img(d.image, d.alt));
+        if (d.button_label) morceaux.push(`<p><a href="${echapper(d.button_href)}">${echapper(d.button_label)}</a></p>`);
         break;
       case "bande_photos":
         morceaux.push((d.photos || []).map((p) => img(p.image, p.alt)).join(""));

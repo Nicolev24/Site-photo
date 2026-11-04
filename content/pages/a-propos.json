@@ -11,7 +11,9 @@
       "data": {
         "image": "images/mariages/gateau-lumiere.jpg",
         "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière",
-        "position": "50% 62%"
+        "position": "50% 62%",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=particuliers"
       },
       "tab": "particuliers"
     },
@@ -24,8 +26,8 @@
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements : j'aime photographier les gens tels qu'ils sont.",
         "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
-        "button_label": "Voir les formules et tarifs",
-        "button_href": "services.html?pour=particuliers",
+        "button_label": "",
+        "button_href": "",
         "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
         "position": "50% 50%"
@@ -169,7 +171,9 @@
       "data": {
         "image": "images/commerces/salon-vue-ensemble.jpg",
         "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
-        "position": "50% 45%"
+        "position": "50% 45%",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=commerces"
       }
     },
     {
@@ -182,8 +186,8 @@
         "title": "Derrière l'objectif",
         "text": "Je suis Nicolas, photographe indépendant basé à Ath. Pour les commerces et les entreprises, je réalise des photos qui montrent votre lieu, votre équipe et votre savoir-faire.",
         "text_suite": "Des photos prêtes pour votre fiche Google, vos réseaux et votre site — et si vous n'avez pas encore de site, je peux aussi vous en créer un.",
-        "button_label": "Voir les formules et tarifs",
-        "button_href": "services.html?pour=commerces",
+        "button_label": "",
+        "button_href": "",
         "image": "images/nicolas-leveugle-portrait.jpg",
         "alt": "Nicolas Leveugle, photographe à Ath",
         "position": "50% 50%"
