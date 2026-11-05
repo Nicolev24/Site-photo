@@ -82,11 +82,41 @@
       <p class="admin-hint" style="margin-top:8px">Ouvre ton client email habituel, message pré-rempli — il ne reste qu'à cliquer sur Envoyer.</p>
     </div>
 
+    <div class="admin-card envoi-options">
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="envoi-qualite">Qualité d'envoi</label>
+          <select id="envoi-qualite">
+            <option value="allegee">Allégée (2400 px) : choix des photos</option>
+            <option value="pleine">Pleine qualité : livraison finale</option>
+          </select>
+        </div>
+        <div class="admin-field">
+          <label for="envoi-debit">Débit</label>
+          <select id="envoi-debit">
+            <option value="normal">Normal (2 à la fois)</option>
+            <option value="discret">Discret (1 à la fois, avec pauses)</option>
+          </select>
+        </div>
+      </div>
+      <p class="admin-hint" style="margin:8px 0 0"><strong>Allégée</strong> = rapide et légère (parfait pour que la cliente choisisse). <strong>Discret</strong> = laisse de la place à ta connexion. <strong>Pas de fichiers RAW :</strong> un navigateur ne peut pas les lire. Exporte d'abord tes photos en JPEG (Lightroom : Exporter → JPEG, qualité 80, côté long 2400 px, sRGB), en gardant les noms de fichiers : c'est ce qui permet de retrouver ses favoris dans Lightroom. 500 photos ainsi font environ 1 Go.</p>
+    </div>
+
     <div id="drop-zone" class="galerie-dropzone" tabindex="0" role="button">
       <p><strong>Glisse des photos ici</strong><br />ou clique pour les choisir</p>
       <input type="file" id="file-input" accept="image/*" multiple hidden />
     </div>
 
+    <div id="envoi-resume" class="envoi-resume" hidden>
+      <div class="envoi-resume-ligne">
+        <span id="envoi-texte"></span>
+        <span class="envoi-resume-actions">
+          <button type="button" id="envoi-pause" class="btn-outline btn-small">⏸ Pause</button>
+          <button type="button" id="envoi-relancer" class="btn-outline btn-small" hidden>Relancer les échecs</button>
+        </span>
+      </div>
+      <div class="envoi-barre"><span id="envoi-barre"></span></div>
+    </div>
     <div id="upload-progress-list" class="galerie-upload-list"></div>
 
     <div id="favoris-resume" class="favoris-resume"></div>

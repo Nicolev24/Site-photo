@@ -231,6 +231,7 @@ async function deleteGallery(id, name) {
 let currentGalleryId = null;
 let currentGalleryToken = null;
 let currentGalleryName = null;
+let currentPhotoNames = [];
 
 async function openGallery(id, token, name, title) {
   currentGalleryId = id;
@@ -239,6 +240,7 @@ async function openGallery(id, token, name, title) {
   document.getElementById("detail-name").textContent = name;
   document.getElementById("detail-title").textContent = title || "";
   document.getElementById("upload-progress-list").innerHTML = "";
+  currentPhotoNames = [];
   document.getElementById("client-email-input").value = "";
   showDetailView();
   await loadGalleryPhotos();
@@ -281,6 +283,7 @@ async function loadGalleryPhotos() {
   try {
     const gallery = await apiFetch(`/api/admin/galleries/${currentGalleryId}`);
     currentFavoris = new Set(gallery.favoris || []);
+    currentPhotoNames = (gallery.photos || []).map((p) => p.filename);
     renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
   } catch (e) {
@@ -361,29 +364,74 @@ async function deletePhoto(filename) {
   }
 }
 
-// ---------- Génération de miniature (dans le navigateur) ----------
+// ---------- Envoi des photos : léger, patient, reprenable ----------
+//
+// Les photos sont réduites dans le navigateur avant l'envoi (mode « allégé »),
+// envoyées 1 ou 2 à la fois, réessayées en cas d'échec, et on peut mettre
+// l'envoi en pause. Les fichiers RAW ne peuvent pas être lus par un navigateur :
+// ils sont refusés avec un message clair plutôt qu'envoyés en pleine taille.
 
-async function generateThumbnail(file) {
+const EXT_RAW = /\.(nef|nrw|arw|srf|sr2|cr2|cr3|crw|raf|orf|rw2|rwl|dng|pef|srw|3fr|iiq|erf|kdc|mrw|x3f|raw)$/i;
+const DIMENSION_ALLEGEE = 2400;
+const QUALITE_ALLEGEE = 0.85;
+const CLE_OPTIONS_ENVOI = "galerie-admin-envoi";
+
+function lireOptionsEnvoi() {
   try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, THUMB_MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
-    const w = Math.max(1, Math.round(bitmap.width * scale));
-    const h = Math.max(1, Math.round(bitmap.height * scale));
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(bitmap, 0, 0, w, h);
+    return { qualite: "allegee", debit: "normal", ...JSON.parse(localStorage.getItem(CLE_OPTIONS_ENVOI) || "{}") };
+  } catch {
+    return { qualite: "allegee", debit: "normal" };
+  }
+}
+function ecrireOptionsEnvoi() {
+  const o = { qualite: document.getElementById("envoi-qualite").value, debit: document.getElementById("envoi-debit").value };
+  try {
+    localStorage.setItem(CLE_OPTIONS_ENVOI, JSON.stringify(o));
+  } catch {}
+  return o;
+}
+
+function canvasVersBlob(canvas, qualite) {
+  return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", qualite));
+}
+
+function redimensionner(bitmap, maxDim) {
+  const echelle = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+  const w = Math.max(1, Math.round(bitmap.width * echelle));
+  const h = Math.max(1, Math.round(bitmap.height * echelle));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(bitmap, 0, 0, w, h);
+  return canvas;
+}
+
+/** Prépare ce qui sera envoyé : l'image (allégée ou d'origine) et sa miniature. La photo n'est lue qu'une fois. */
+async function preparer(file, qualite) {
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("Format illisible par le navigateur : exporte la photo en JPEG.");
+  }
+  try {
+    const miniature = await canvasVersBlob(redimensionner(bitmap, THUMB_MAX_DIMENSION), THUMB_QUALITY);
+    if (!miniature) throw new Error("Miniature impossible.");
+    const nom = file.name;
+    if (qualite === "pleine") return { original: file, nom, thumb: miniature };
+    const grand = Math.max(bitmap.width, bitmap.height);
+    const dejaLegere = grand <= DIMENSION_ALLEGEE && file.size <= 1.6 * 1024 * 1024 && /jpe?g$/i.test(file.name);
+    if (dejaLegere) return { original: file, nom, thumb: miniature };
+    const allegee = await canvasVersBlob(redimensionner(bitmap, DIMENSION_ALLEGEE), QUALITE_ALLEGEE);
+    if (!allegee) throw new Error("Réduction impossible.");
+    // On garde le nom d'origine (DSC4139) : c'est lui qui sert à retrouver la photo dans Lightroom.
+    return { original: allegee, nom: nom.replace(/\.[^.]+$/, "") + ".jpg", thumb: miniature };
+  } finally {
     if (typeof bitmap.close === "function") bitmap.close();
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", THUMB_QUALITY));
-    return blob || file;
-  } catch (err) {
-    console.warn("Miniature impossible à générer, envoi de l'original comme miniature.", err);
-    return file;
   }
 }
 
-// ---------- Envoi (drag-and-drop + barre de progression) ----------
+// ---------- Envoi (glisser-déposer, file d'attente, progression) ----------
 
 function createProgressRow(filename) {
   const list = document.getElementById("upload-progress-list");
@@ -392,7 +440,7 @@ function createProgressRow(filename) {
   row.innerHTML = `
     <span class="name">${escapeHtml(filename)}</span>
     <span class="bar-track"><span class="bar-fill"></span></span>
-    <span class="status-label">0 %</span>
+    <span class="status-label">En attente</span>
   `;
   list.appendChild(row);
   return row;
@@ -403,24 +451,39 @@ function updateProgressRow(row, fraction) {
   row.querySelector(".status-label").textContent = `${Math.round(fraction * 100)} %`;
 }
 
+function setRowLabel(row, texte) {
+  row.querySelector(".status-label").textContent = texte;
+}
+
 function markProgressRowDone(row) {
   row.classList.add("done");
   row.querySelector(".bar-fill").style.width = "100%";
-  row.querySelector(".status-label").textContent = "Envoyée";
+  setRowLabel(row, "Envoyée");
+  // La liste reste courte : seules les photos à vérifier restent affichées.
+  setTimeout(() => row.remove(), 2500);
 }
 
 function markProgressRowError(row, message) {
   row.classList.add("error");
-  row.querySelector(".status-label").textContent = "Échec";
+  setRowLabel(row, "Échec");
   row.title = message;
+  const detail = document.createElement("span");
+  detail.className = "upload-detail";
+  detail.textContent = message;
+  row.appendChild(detail);
 }
 
-function uploadPhotoRequest(id, file, thumbBlob, onProgress) {
+function markProgressRowSkipped(row, message) {
+  row.classList.add("skipped");
+  setRowLabel(row, message);
+}
+
+function uploadPhotoRequest(id, prepare, onProgress) {
   return new Promise((resolve, reject) => {
     const form = new FormData();
-    form.append("filename", file.name);
-    form.append("original", file, file.name);
-    form.append("thumb", thumbBlob, file.name);
+    form.append("filename", prepare.nom);
+    form.append("original", prepare.original, prepare.nom);
+    form.append("thumb", prepare.thumb, prepare.nom);
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${API_BASE}/api/admin/galleries/${id}/photos`);
@@ -434,7 +497,9 @@ function uploadPhotoRequest(id, file, thumbBlob, onProgress) {
       } else if (xhr.status === 401) {
         clearSession();
         showLoginScreen("Session expirée, reconnecte-toi.");
-        reject(new Error("Session expirée."));
+        const err = new Error("Session expirée.");
+        err.fatal = true;
+        reject(err);
       } else {
         let message = `Erreur serveur (${xhr.status})`;
         try {
@@ -448,28 +513,174 @@ function uploadPhotoRequest(id, file, thumbBlob, onProgress) {
   });
 }
 
-async function uploadFiles(files) {
-  const queue = Array.from(files);
-  let index = 0;
+/** Nom sans préfixe, sans extension, en minuscules : sert à reconnaître une photo déjà envoyée. */
+function cleDoublon(nom) {
+  return String(nom || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9.\-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^\d+-/, "")
+    .replace(/^-+/, "")
+    .replace(/\.[^.]+$/, "");
+}
 
-  async function worker() {
-    while (index < queue.length) {
-      const file = queue[index++];
-      const row = createProgressRow(file.name);
-      try {
-        const thumb = await generateThumbnail(file);
-        await uploadPhotoRequest(currentGalleryId, file, thumb, (p) => updateProgressRow(row, p));
-        markProgressRowDone(row);
-      } catch (err) {
-        markProgressRowError(row, err.message);
-      }
+const envoi = {
+  actif: false,
+  pause: false,
+  file: [],
+  total: 0,
+  envoyees: 0,
+  echecs: [],
+  debuts: [],
+  premier: 0,
+  octets: 0,
+};
+
+function attendre(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+function formaterDuree(ms) {
+  const min = Math.max(1, Math.round(ms / 60000));
+  if (min < 60) return `${min} min`;
+  return `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, "0")}`;
+}
+
+function majResumeEnvoi(fin) {
+  const bloc = document.getElementById("envoi-resume");
+  if (!bloc) return;
+  const traitees = envoi.envoyees + envoi.echecs.length;
+  bloc.hidden = envoi.total === 0;
+  const pct = envoi.total ? Math.round((traitees / envoi.total) * 100) : 0;
+  document.getElementById("envoi-barre").style.width = `${pct}%`;
+  let texte = `${envoi.envoyees} / ${envoi.total} photos envoyées`;
+  if (envoi.echecs.length) texte += ` · ${envoi.echecs.length} à relancer`;
+  if (!fin && envoi.envoyees >= 3) {
+    const ecoule = Date.now() - envoi.premier;
+    const reste = (ecoule / envoi.envoyees) * (envoi.total - traitees);
+    if (!envoi.pause) texte += ` · il reste environ ${formaterDuree(reste)}`;
+  }
+  if (envoi.pause && !fin) texte += " · en pause";
+  if (fin) texte += envoi.echecs.length ? " · terminé, quelques photos n'ont pas pu partir" : " · terminé ✓";
+  document.getElementById("envoi-texte").textContent = texte;
+  document.getElementById("envoi-pause").hidden = fin || !envoi.actif;
+  document.getElementById("envoi-pause").textContent = envoi.pause ? "▶ Reprendre" : "⏸ Pause";
+  document.getElementById("envoi-relancer").hidden = !(fin && envoi.echecs.length);
+}
+
+async function envoyerUne(item, options) {
+  const { file, row } = item;
+  let essais = 0;
+  for (;;) {
+    while (envoi.pause) await attendre(400);
+    try {
+      setRowLabel(row, essais ? `Nouvel essai ${essais}…` : "Préparation…");
+      const prepare = await preparer(file, options.qualite);
+      const debut = Date.now();
+      await uploadPhotoRequest(currentGalleryId, prepare, (p) => updateProgressRow(row, p));
+      envoi.octets += prepare.original.size || 0;
+      return Date.now() - debut;
+    } catch (err) {
+      if (err.fatal || /Format illisible|Miniature|Réduction/.test(err.message) || essais >= 2) throw err;
+      essais++;
+      row.querySelector(".bar-fill").style.width = "0%";
+      await attendre(2000 * essais);
     }
   }
+}
 
-  const workerCount = Math.min(UPLOAD_CONCURRENCY, queue.length);
-  await Promise.all(Array.from({ length: workerCount }, worker));
+async function demarrerEnvoi(items, options) {
+  envoi.file.push(...items);
+  if (envoi.actif) {
+    envoi.total += items.length;
+    majResumeEnvoi(false);
+    return;
+  }
+  envoi.actif = true;
+  envoi.pause = false;
+  envoi.total = items.length;
+  envoi.envoyees = 0;
+  envoi.echecs = [];
+  envoi.premier = Date.now();
+  majResumeEnvoi(false);
+  window.addEventListener("beforeunload", avantFermeture);
+
+  const simultanees = options.debit === "discret" ? 1 : 2;
+  async function ouvrier() {
+    while (envoi.file.length) {
+      const item = envoi.file.shift();
+      try {
+        const duree = await envoyerUne(item, options);
+        envoi.envoyees++;
+        markProgressRowDone(item.row);
+        // Débit discret : on laisse autant de temps de repos que d'envoi pour ne pas saturer la connexion.
+        if (options.debit === "discret") await attendre(Math.min(8000, Math.max(500, duree)));
+      } catch (err) {
+        envoi.echecs.push(item);
+        markProgressRowError(item.row, err.message);
+      }
+      majResumeEnvoi(false);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(simultanees, items.length) }, ouvrier));
+  envoi.actif = false;
+  window.removeEventListener("beforeunload", avantFermeture);
+  majResumeEnvoi(true);
   loadGalleryPhotos();
 }
+
+function avantFermeture(e) {
+  e.preventDefault();
+  e.returnValue = "";
+}
+
+async function uploadFiles(files) {
+  const options = ecrireOptionsEnvoi();
+  const dejaEnvoyees = new Set((currentPhotoNames || []).map(cleDoublon));
+  const items = [];
+  let ignorees = 0;
+  Array.from(files).forEach((file) => {
+    if (EXT_RAW.test(file.name)) {
+      const row = createProgressRow(file.name);
+      markProgressRowSkipped(row, "RAW : à exporter en JPEG");
+      row.title = "Un navigateur ne peut pas lire les fichiers RAW. Exporte la photo en JPEG depuis Lightroom (voir l'aide ci-dessus).";
+      ignorees++;
+      return;
+    }
+    if (file.type && !file.type.startsWith("image/")) return;
+    if (dejaEnvoyees.has(cleDoublon(file.name))) {
+      ignorees++;
+      return;
+    }
+    dejaEnvoyees.add(cleDoublon(file.name));
+    items.push({ file, row: createProgressRow(file.name) });
+  });
+  if (ignorees) showStatus(`${ignorees} fichier${ignorees > 1 ? "s" : ""} ignoré${ignorees > 1 ? "s" : ""} (RAW ou déjà envoyé${ignorees > 1 ? "s" : ""}).`, "info");
+  if (items.length) await demarrerEnvoi(items, options);
+}
+
+document.getElementById("envoi-pause").addEventListener("click", () => {
+  envoi.pause = !envoi.pause;
+  majResumeEnvoi(false);
+});
+
+document.getElementById("envoi-relancer").addEventListener("click", () => {
+  const reprises = envoi.echecs.splice(0);
+  reprises.forEach((item) => {
+    item.row.classList.remove("error");
+    item.row.querySelectorAll(".upload-detail").forEach((e) => e.remove());
+    item.row.querySelector(".bar-fill").style.width = "0%";
+    setRowLabel(item.row, "En attente");
+  });
+  if (reprises.length) demarrerEnvoi(reprises, ecrireOptionsEnvoi());
+});
+
+(() => {
+  const o = lireOptionsEnvoi();
+  document.getElementById("envoi-qualite").value = o.qualite;
+  document.getElementById("envoi-debit").value = o.debit;
+  ["envoi-qualite", "envoi-debit"].forEach((id) => document.getElementById(id).addEventListener("change", ecrireOptionsEnvoi));
+})();
 
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("file-input");
