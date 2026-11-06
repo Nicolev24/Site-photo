@@ -3037,6 +3037,13 @@ html[data-page] select option {
 /* ============ Accueil « cinéma » : photo de fond + Polaroïds ============ */
 .polaroids.avec-fond {
   position: relative;
+  /* La photo remonte sous le menu : il se pose dessus, transparent (voir js/main.js). */
+  margin-top: calc(-1 * var(--h-entete, 77px));
+  padding-top: var(--h-entete, 77px);
+}
+.site-header.sur-photo {
+  background: transparent;
+  border-bottom-color: transparent;
 }
 .polaroids-fond {
   position: absolute;
@@ -3055,7 +3062,8 @@ html[data-page] select option {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(14, 12, 10, 0.8), rgba(14, 12, 10, 0.28) 62%, rgba(14, 12, 10, 0.1)),
+  background: linear-gradient(to bottom, rgba(14, 12, 10, 0.55), rgba(14, 12, 10, 0) 150px),
+    linear-gradient(to right, rgba(14, 12, 10, 0.8), rgba(14, 12, 10, 0.28) 62%, rgba(14, 12, 10, 0.1)),
     linear-gradient(to top, rgba(14, 12, 10, 0.7), transparent 45%);
 }
 .avec-fond .polaroids-grille {
@@ -3092,8 +3100,8 @@ html[data-page] select option {
      titre en haut, les deux Polaroïds plus petits en bas, une phrase qui dit quoi
      toucher et un bouton direct vers les formules. */
   .polaroids.avec-fond {
-    min-height: calc(100vh - 86px);
-    min-height: calc(100svh - 86px);
+    min-height: calc(100vh - 86px + var(--h-entete, 77px));
+    min-height: calc(100svh - 86px + var(--h-entete, 77px));
   }
   .avec-fond .polaroids-fond {
     inset: 0;
@@ -3111,7 +3119,8 @@ html[data-page] select option {
     background: linear-gradient(to bottom, rgba(14, 12, 10, 0.6), rgba(14, 12, 10, 0) 22%, rgba(28, 25, 22, 0) 60%, rgba(28, 25, 22, 0.55) 86%, var(--couleur-fond) 100%);
   }
   .avec-fond .polaroids-grille {
-    min-height: inherit;
+    min-height: calc(100vh - 86px);
+    min-height: calc(100svh - 86px);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

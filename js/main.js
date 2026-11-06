@@ -57,7 +57,14 @@ function initEntete() {
     prevu = false;
     const y = window.scrollY;
     const haut = document.documentElement.scrollHeight - window.innerHeight;
-    entete.classList.toggle("est-defile", y > 24);
+    // Sur l'accueil, la grande photo passe sous le menu : il reste transparent tant que
+    // la photo est derrière lui, puis reprend son fond (verre) une fois la photo passée.
+    const hauteur = entete.offsetHeight;
+    document.documentElement.style.setProperty("--h-entete", `${hauteur}px`);
+    const photo = document.querySelector(".polaroids.avec-fond");
+    const surPhoto = !!photo && photo.getBoundingClientRect().bottom > hauteur + 2;
+    entete.classList.toggle("sur-photo", surPhoto);
+    entete.classList.toggle("est-defile", y > 24 && !surPhoto);
     entete.style.setProperty("--progres", haut > 0 ? Math.min(1, y / haut).toFixed(4) : 0);
   };
   const demander = () => {
@@ -67,7 +74,11 @@ function initEntete() {
   };
   window.addEventListener("scroll", demander, { passive: true });
   window.addEventListener("resize", demander);
-  if (window.ResizeObserver) new ResizeObserver(demander).observe(document.body);
+  if (window.ResizeObserver) {
+    const obs = new ResizeObserver(demander);
+    obs.observe(document.body);
+    obs.observe(entete);
+  }
   maj();
 }
 
