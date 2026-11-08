@@ -190,34 +190,35 @@ function renderGalleriesList(galleries) {
     list.innerHTML = `<p class="admin-hint">Aucune galerie pour l'instant.</p>`;
     return;
   }
+  const table = document.createElement("div");
+  table.className = "admin-card galerie-table";
+  table.setAttribute("role", "table");
+  table.innerHTML = `
+    <div class="g-tete" role="row">
+      <span>Client</span><span>Photos</span><span>Favoris</span><span>Accès client</span><span>Créée le</span><span></span>
+    </div>`;
   galleries.forEach((g) => {
-    const card = document.createElement("div");
-    card.className = "admin-card";
-    const dateLabel = new Date(g.createdAt).toLocaleDateString("fr-BE", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    card.innerHTML = `
-      <div class="galerie-admin-card-row">
-        <div>
-          <strong>${escapeHtml(g.name)}</strong>
-          ${g.title ? `<div class="admin-hint">${escapeHtml(g.title)}</div>` : ""}
-          <div class="admin-hint">${g.photoCount} photo${g.photoCount > 1 ? "s" : ""} · créée le ${dateLabel}${g.favoriteCount ? ` · <strong>♥ ${g.favoriteCount} favori${g.favoriteCount > 1 ? "s" : ""}</strong>` : ""}</div>
-          <div class="admin-hint">${g.motdepasse ? `Mot de passe client : <strong>${escapeHtml(g.motdepasse)}</strong>` : "Pas de mot de passe (ouverte directement avec le lien)"}</div>
-        </div>
-        <div class="galerie-admin-card-actions">
-          <button type="button" class="btn-outline btn-small f-open">Ouvrir</button>
-          <button type="button" class="btn-outline btn-small f-copy">Copier le lien</button>
-          <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
-        </div>
-      </div>
-    `;
-    card.querySelector(".f-open").addEventListener("click", () => openGallery(g.id, g.token, g.name, g.title));
-    card.querySelector(".f-copy").addEventListener("click", () => copyClientLink(g.token));
-    card.querySelector(".f-delete").addEventListener("click", () => deleteGallery(g.id, g.name));
-    list.appendChild(card);
+    const dateLabel = new Date(g.createdAt).toLocaleDateString("fr-BE", { day: "numeric", month: "short", year: "numeric" });
+    const ligne = document.createElement("div");
+    ligne.className = "g-ligne";
+    ligne.setAttribute("role", "row");
+    ligne.innerHTML = `
+      <span class="g-client"><strong>${escapeHtml(g.name)}</strong>${g.title ? `<small>${escapeHtml(g.title)}</small>` : ""}</span>
+      <span class="g-nombre">${g.photoCount}</span>
+      <span class="${g.favoriteCount ? "g-favoris" : "g-faible"}">${g.favoriteCount ? `♥ ${g.favoriteCount}` : "–"}</span>
+      <span class="g-acces">${g.motdepasse ? `<code>${escapeHtml(g.motdepasse)}</code>` : `<span class="g-lien">Lien seul</span>`}</span>
+      <span class="g-date">${dateLabel}</span>
+      <span class="g-actions">
+        <button type="button" class="btn-outline btn-small f-open">Ouvrir</button>
+        <button type="button" class="btn-outline btn-small f-copy">Copier le lien</button>
+        <button type="button" class="admin-icon-btn danger f-delete">Supprimer</button>
+      </span>`;
+    ligne.querySelector(".f-open").addEventListener("click", () => openGallery(g.id, g.token, g.name, g.title));
+    ligne.querySelector(".f-copy").addEventListener("click", () => copyClientLink(g.token));
+    ligne.querySelector(".f-delete").addEventListener("click", () => deleteGallery(g.id, g.name));
+    table.appendChild(ligne);
   });
+  list.appendChild(table);
 }
 
 async function copyClientLink(token) {
