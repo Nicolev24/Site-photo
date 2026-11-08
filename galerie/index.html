@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="galerie-claire">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +11,7 @@
 <link rel="icon" href="../icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="../icones/apple-touch-icon.png" />
 <link rel="manifest" href="../site.webmanifest" />
-<meta name="theme-color" content="#1c1916" />
+<meta name="theme-color" content="#f6f2ea" />
 </head>
 <body>
 
@@ -56,7 +56,7 @@
       <a href="../contact.html" class="btn-secondary">Me contacter</a>
     </div>
 
-    <div id="favoris-barre" class="favoris-barre" hidden>
+    <div id="favoris-barre" class="favoris-barre galerie-barre" hidden>
       <div class="favoris-filtres" role="group" aria-label="Photos affichées">
         <button type="button" id="filtre-tout" class="actif">Toutes les photos</button>
         <button type="button" id="filtre-favoris">♥ Mes favoris (<span id="favoris-compte">0</span>)</button>
@@ -65,11 +65,14 @@
         <button type="button" id="btn-selection" class="galerie-action">Sélectionner</button>
         <button type="button" id="btn-tout-telecharger" class="btn btn-primary btn-small">Tout télécharger</button>
       </div>
-      <p class="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
-      <button type="button" id="btn-ou-photos" class="lien-aide" hidden>Où sont mes photos téléchargées ?</button>
-      <a id="lien-avis" class="lien-aide" href="#" target="_blank" rel="noopener" hidden>⭐ Laisser un avis sur Google</a>
     </div>
-
+    <div id="galerie-notes" class="galerie-notes" hidden>
+      <p class="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
+      <span class="galerie-liens">
+        <button type="button" id="btn-ou-photos" class="lien-aide" hidden>Où sont mes photos téléchargées ?</button>
+        <a id="lien-avis" class="lien-aide" href="#" target="_blank" rel="noopener" hidden>Laisser un avis sur Google</a>
+      </span>
+    </div>
     <div id="gallery-grid" class="galerie-client-grid"></div>
   </div>
 </main>
@@ -86,6 +89,7 @@
 
 <!-- Visionneuse plein écran -->
 <div id="lightbox" class="galerie-lightbox" hidden>
+  <span id="lightbox-compteur" class="lightbox-compteur" aria-live="polite"></span>
   <button type="button" class="lightbox-close" aria-label="Fermer">×</button>
   <button type="button" class="lightbox-prev" aria-label="Photo précédente">‹</button>
   <img id="lightbox-img" src="" alt="" />

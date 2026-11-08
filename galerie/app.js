@@ -126,6 +126,8 @@ function majBarreFavoris() {
   const barre = document.getElementById("favoris-barre");
   if (!barre) return;
   barre.hidden = allPhotos.length === 0;
+  const notes = document.getElementById("galerie-notes");
+  if (notes) notes.hidden = barre.hidden;
   document.getElementById("filtre-tout").classList.toggle("actif", !filtreFavoris);
   document.getElementById("filtre-favoris").classList.toggle("actif", filtreFavoris);
   document.getElementById("favoris-compte").textContent = String(favoris.size);
@@ -219,6 +221,16 @@ function renderGrid() {
     return;
   }
 
+  // Mise en page « maçonnerie » : les photos gardent leurs proportions et se répartissent
+  // en colonnes, de gauche à droite (la 1re en haut à gauche, la 2e à côté, etc.).
+  const n = nbColonnes();
+  colonnesAffichees = n;
+  const colonnes = Array.from({ length: n }, () => {
+    const c = document.createElement("div");
+    c.className = "g-col";
+    grid.appendChild(c);
+    return c;
+  });
   currentPhotos.forEach((photo, index) => {
     const tile = document.createElement("div");
     tile.className = `galerie-client-tile${selection.has(photo.filename) ? " est-selectionnee" : ""}`;
@@ -230,16 +242,33 @@ function renderGrid() {
       <button type="button" class="tile-favori${actif ? " actif" : ""}" data-favori="${escapeHtml(photo.filename)}" aria-pressed="${actif}" title="Ajouter à mes favoris">${coeur}</button>
       <button type="button" class="tile-download" title="Télécharger cette photo" aria-label="Télécharger cette photo">${fleche}</button>
     `;
-    tile.querySelector("img").addEventListener("click", () => {
+    const img = tile.querySelector("img");
+    const charge = () => tile.classList.add("charge");
+    if (img.complete && img.naturalWidth) charge();
+    else img.addEventListener("load", charge, { once: true });
+    img.addEventListener("click", () => {
       if (modeSelection) basculerSelection(photo.filename);
       else openLightbox(index);
     });
     tile.querySelector(".tile-coche").addEventListener("click", () => basculerSelection(photo.filename));
     tile.querySelector(".tile-favori").addEventListener("click", () => basculerFavori(photo.filename));
     tile.querySelector(".tile-download").addEventListener("click", () => telechargerPhotos([photo]));
-    grid.appendChild(tile);
+    colonnes[index % n].appendChild(tile);
   });
 }
+
+let colonnesAffichees = 0;
+function nbColonnes() {
+  const w = window.innerWidth;
+  return w >= 1100 ? 4 : w >= 760 ? 3 : 2;
+}
+let minuterieRedim = null;
+window.addEventListener("resize", () => {
+  clearTimeout(minuterieRedim);
+  minuterieRedim = setTimeout(() => {
+    if (allPhotos.length && nbColonnes() !== colonnesAffichees) renderGrid();
+  }, 200);
+});
 
 // ---------- Visionneuse plein écran ----------
 
@@ -264,6 +293,7 @@ const lightboxFavori = document.getElementById("lightbox-favori");
 function updateLightbox() {
   const photo = currentPhotos[currentIndex];
   lightboxImg.src = photoUrl(currentToken, photo.filename, "original");
+  document.getElementById("lightbox-compteur").textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
   preparerEnAvance(photo);
   lightboxFavori.dataset.favori = photo.filename;
   lightboxFavori.classList.toggle("actif", estFavori(photo.filename));

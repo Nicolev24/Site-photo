@@ -61,7 +61,7 @@ function initEntete() {
     // la photo est derrière lui, puis reprend son fond (verre) une fois la photo passée.
     const hauteur = entete.offsetHeight;
     document.documentElement.style.setProperty("--h-entete", `${hauteur}px`);
-    const photo = document.querySelector(".polaroids.avec-fond");
+    const photo = document.querySelector(".polaroids.avec-fond, .galerie-couverture:not([hidden])");
     const surPhoto = !!photo && photo.getBoundingClientRect().bottom > hauteur + 2;
     entete.classList.toggle("sur-photo", surPhoto);
     entete.classList.toggle("est-defile", y > 24 && !surPhoto);
