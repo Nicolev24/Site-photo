@@ -1116,3 +1116,64 @@ a.lien-aide[hidden] {
     text-align: center;
   }
 }
+
+
+/* ============================================================
+   Barre d'icônes flottante (style retenu)
+   Le haut de la page reste dégagé : filtre, sélection et téléchargement
+   se font depuis une petite barre posée en bas de l'écran.
+   ============================================================ */
+:root{ --ico-dl:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23231e19' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11m0 0l-4-4m4 4l4-4M5 20h14'/%3E%3C/svg%3E");
+ --ico-sel:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23231e19' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M8.3 12.3l2.6 2.6 4.8-5.2'/%3E%3C/svg%3E");
+ --ico-dl-b:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5f1ea' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11m0 0l-4-4m4 4l4-4M5 20h14'/%3E%3C/svg%3E"); }
+
+html.galerie-claire #favoris-barre { position: fixed; top:auto; bottom: 22px; left:50%; transform: translateX(-50%); width:auto; max-width: calc(100% - 24px); flex-wrap: nowrap; gap: 4px; padding: 6px 8px; z-index: 60; border-radius: 22px; background: rgba(251,249,244,.84); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border:1px solid rgba(35,30,25,.1); box-shadow: 0 18px 54px rgba(35,30,25,.2); }
+html.galerie-claire #favoris-barre::before { display:none; }
+html.galerie-claire .favoris-filtres { border:none; background:none; box-shadow:none; padding:0; gap:2px; }
+html.galerie-claire .favoris-filtres button { border-radius: 15px; padding: 10px 14px; font-size:.9rem; }
+html.galerie-claire .favoris-filtres button.actif { background: rgba(35,30,25,.08); color:#231e19; font-weight:500; }
+html.galerie-claire .galerie-actions { gap:2px; padding-left: 8px; margin-left: 4px; border-left: 1px solid rgba(35,30,25,.14); }
+html.galerie-claire .galerie-action, html.galerie-claire .galerie-actions .btn { background:none; border:none; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; border-radius: 15px; padding: 10px 14px; font-size:.9rem; letter-spacing:0; text-transform:none; font-weight:500; color:#231e19; min-height:0; }
+html.galerie-claire .galerie-action:hover, html.galerie-claire .galerie-actions .btn:hover { background: rgba(35,30,25,.07); border:none; color:#231e19; }
+html.galerie-claire #btn-selection::before, html.galerie-claire #btn-tout-telecharger::before { content:""; display:inline-block; width:18px; height:18px; margin-right:8px; vertical-align:-4px; background-size: contain; background-repeat:no-repeat; }
+html.galerie-claire #btn-selection::before { background-image: var(--ico-sel); }
+html.galerie-claire #btn-tout-telecharger::before { background-image: var(--ico-dl); }
+html.galerie-claire .galerie-actions .btn-primary { color:#7a5b2e; }
+html.galerie-claire .galerie-en-selection #favoris-barre { opacity:0; pointer-events:none; }
+html.galerie-claire .barre-selection { border-radius: 22px; background: rgba(251,249,244,.86); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border:1px solid rgba(35,30,25,.1); box-shadow: 0 18px 54px rgba(35,30,25,.2); padding: 8px 10px 8px 22px; width:min(640px, calc(100% - 24px)); }
+html.galerie-claire .barre-selection .galerie-action, html.galerie-claire .barre-selection .btn { background:none; border:none; box-shadow:none; border-radius: 15px; padding: 10px 14px; font-size:.9rem; letter-spacing:0; text-transform:none; font-weight:500; color:#231e19; }
+html.galerie-claire .barre-selection .btn-primary { background:#231e19; color:#f6f2ea; }
+html.galerie-claire .galerie-client-grid { margin-bottom: 140px; }
+html.galerie-claire .tile-favori, html.galerie-claire .tile-download { border:none; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+html.galerie-claire .panneau-boite { border-radius: 26px; background:#fbf9f4; -webkit-backdrop-filter:none; backdrop-filter:none; border:none; box-shadow: 0 30px 90px rgba(35,30,25,.25); }
+html.galerie-claire .pt-lots { gap: 8px; }
+html.galerie-claire .pt-lot { border:none; border-radius: 16px; background: rgba(35,30,25,.06); box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; font-size:.9rem; letter-spacing:0; text-transform:none; font-weight:500; justify-content:flex-start; padding:16px 20px; }
+html.galerie-claire .pt-lot::before { content:""; width:18px; height:18px; margin-right:12px; background: var(--ico-dl) center/contain no-repeat; }
+html.galerie-claire .lightbox-actions { gap: 10px; padding: 8px; border-radius: 22px; background: rgba(255,255,255,.1); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border:1px solid rgba(255,255,255,.16); }
+html.galerie-claire .lightbox-favori, html.galerie-claire .lightbox-download { border:none; background:none; box-shadow:none; border-radius:16px; padding: 10px 16px; font-size:.9rem; letter-spacing:0; text-transform:none; color:#f5f1ea; }
+html.galerie-claire .lightbox-download::before { content:""; width:18px; height:18px; margin-right:8px; background: var(--ico-dl-b) center/contain no-repeat; display:inline-block; }
+html.galerie-claire .lightbox-close, html.galerie-claire .lightbox-prev, html.galerie-claire .lightbox-next { background: rgba(255,255,255,.12); border:none; }
+html.galerie-claire .galerie-couverture .btn-verre { border-radius: 16px; letter-spacing:0; text-transform:none; font-size:.95rem; }
+
+/* D sur téléphone : seules les icônes restent dans la barre, pour tenir sur une ligne */
+@media (max-width: 600px) {
+  html.galerie-claire #favoris-barre { bottom: max(14px, env(safe-area-inset-bottom,0px)); padding: 5px 6px; }
+  html.galerie-claire .favoris-filtres button { padding: 9px 11px; font-size: .84rem; white-space: nowrap; }
+  html.galerie-claire .galerie-actions { width:auto; padding-left:4px; margin-left:2px; }
+  html.galerie-claire .galerie-action, html.galerie-claire .galerie-actions .btn { flex:none; font-size:0; padding: 10px 12px; letter-spacing:0; }
+  html.galerie-claire #btn-selection::before, html.galerie-claire #btn-tout-telecharger::before { margin:0; width:22px; height:22px; vertical-align:-6px; }
+  html.galerie-claire .barre-selection .galerie-action, html.galerie-claire .barre-selection .btn { font-size:.84rem; flex:1; white-space:nowrap; }
+}
+
+/* La barre n'apparaît qu'une fois la couverture passée */
+.galerie-claire #favoris-barre {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.galerie-claire.sur-couverture #favoris-barre {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 18px);
+}
+.galerie-claire #favoris-barre:focus-within {
+  opacity: 1;
+}

@@ -187,12 +187,22 @@ function afficherCouverture(gallery) {
   };
   chargement.src = photoUrl(currentToken, premiere.filename, "original");
   couverture.hidden = false;
+  // La barre d'outils flottante reste cachée tant que la couverture occupe l'écran.
+  document.documentElement.classList.add("sur-couverture");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(
+      ([e]) => document.documentElement.classList.toggle("sur-couverture", e.intersectionRatio > 0.55),
+      { threshold: [0, 0.3, 0.55, 0.8, 1] }
+    ).observe(couverture);
+  } else {
+    document.documentElement.classList.remove("sur-couverture");
+  }
   const entete = document.querySelector(".page-header");
   if (entete) entete.hidden = true;
   document.getElementById("couverture-voir").addEventListener("click", (e) => {
     e.preventDefault();
     const mot = document.getElementById("galerie-mot");
-    const cible = (mot && !mot.hidden ? mot : null) || document.getElementById("favoris-barre") || document.getElementById("gallery-grid");
+    const cible = (mot && !mot.hidden ? mot : null) || document.getElementById("gallery-grid");
     cible.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
 }
@@ -451,6 +461,8 @@ function majBoutonToutTelecharger() {
   const n = filtreFavoris ? allPhotos.filter((p) => favoris.has(p.filename)).length : allPhotos.length;
   bouton.textContent = filtreFavoris ? `Télécharger mes favoris (${n})` : `Tout télécharger (${n})`;
   bouton.disabled = n === 0;
+  bouton.setAttribute("aria-label", bouton.textContent);
+  bouton.title = bouton.textContent;
 }
 
 document.getElementById("btn-selection").addEventListener("click", () => (modeSelection ? quitterSelection() : entrerSelection()));
