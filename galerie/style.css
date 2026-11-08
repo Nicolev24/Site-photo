@@ -905,3 +905,214 @@ a.lien-aide[hidden] {
 .galerie-claire .page-header {
   padding-top: 72px;
 }
+
+/* ============================================================
+   Arrondis : boutons en pilule, fenêtres et photos aux coins doux
+   ============================================================ */
+.galerie-action,
+.galerie-actions .btn,
+.barre-selection .btn,
+.panneau-boite .btn,
+.pt-lot,
+.lightbox-favori,
+.lightbox-download,
+.galerie-couverture .btn-verre {
+  border-radius: 999px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.galerie-action,
+.galerie-actions .btn,
+.barre-selection .btn,
+.panneau-boite .btn {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* Photos : coins doux */
+.galerie-client-tile {
+  border-radius: 16px;
+}
+.galerie-client-tile.est-selectionnee {
+  outline-offset: -2px;
+}
+.galerie-lightbox img {
+  border-radius: 16px;
+}
+
+/* Couverture : le bas se termine par un arrondi */
+.galerie-couverture {
+  border-radius: 0 0 36px 36px;
+}
+
+/* Barre d'outils : les deux groupes en pilules ; la barre elle-même reste une bande discrète */
+.favoris-filtres {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+/* Barre du mode sélection : une pilule flottante au lieu d'une bande carrée */
+.barre-selection {
+  left: 50%;
+  right: auto;
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  width: min(780px, calc(100% - 28px));
+  transform: translateX(-50%);
+  padding: 12px 14px 12px 24px;
+  border: 1px solid rgba(35, 30, 25, 0.12);
+  border-radius: 999px;
+  background: rgba(251, 249, 244, 0.86);
+  box-shadow: 0 18px 44px rgba(35, 30, 25, 0.2);
+}
+.selection-compte {
+  white-space: nowrap;
+}
+
+/* Fenêtres (téléchargement, guide) */
+.panneau-boite {
+  border-radius: 30px;
+  padding: 32px 30px 26px;
+  background: rgba(251, 249, 244, 0.94);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 30px 80px rgba(35, 30, 25, 0.3);
+}
+.pt-barre {
+  height: 6px;
+  border-radius: 999px;
+}
+.pt-barre span {
+  border-radius: 999px;
+}
+.pt-etapes li {
+  border-radius: 20px;
+}
+.pt-avis {
+  border-radius: 20px;
+}
+
+/* Boutons ronds de la visionneuse et petite pilule d'astuce */
+.lightbox-compteur {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  top: 20px;
+  left: 22px;
+}
+.lightbox-astuce {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: rgba(245, 241, 234, 0.9);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  animation: astuceVie 4.2s ease both;
+}
+.lightbox-astuce[hidden] {
+  display: none;
+}
+@keyframes astuceVie {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  10%, 85% { opacity: 1; transform: translateX(-50%); }
+  100% { opacity: 0; }
+}
+/* Petit cœur qui apparaît quand on double-touche une photo */
+.lightbox-coeur-pop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110px;
+  height: 110px;
+  margin: -55px 0 0 -55px;
+  pointer-events: none;
+  animation: coeurPop 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.lightbox-coeur-pop svg {
+  width: 100%;
+  height: 100%;
+  fill: #e0506a;
+  stroke: #e0506a;
+  stroke-width: 1;
+  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.45));
+}
+@keyframes coeurPop {
+  0% { opacity: 0; transform: scale(0.4); }
+  25% { opacity: 1; transform: scale(1.1); }
+  60% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2) translateY(-20px); }
+}
+
+/* ---------- Un mot de Nicolas ---------- */
+.galerie-mot {
+  padding: 64px 0 8px;
+}
+.galerie-mot[hidden] {
+  display: none;
+}
+.mot-carte {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 44px 48px 38px;
+  text-align: center;
+  border: 1px solid rgba(176, 138, 85, 0.35);
+  border-radius: 32px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(35, 30, 25, 0.08);
+}
+.mot-texte {
+  margin: 18px 0 20px;
+  font-family: var(--police-titres);
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  line-height: 1.45;
+  font-style: italic;
+  white-space: pre-line;
+  text-wrap: balance;
+}
+.mot-signature {
+  margin: 0;
+  font-family: "Caveat", "Segoe Print", cursive;
+  font-size: 2.1rem;
+  color: var(--couleur-accent-texte);
+  transform: rotate(-2deg);
+}
+
+@media (max-width: 860px) {
+  .galerie-couverture {
+    border-radius: 0 0 28px 28px;
+  }
+}
+@media (max-width: 600px) {
+  .galerie-client-tile {
+    border-radius: 12px;
+  }
+  .barre-selection {
+    border-radius: 28px;
+    padding: 14px 14px 14px 18px;
+  }
+  .panneau-boite {
+    border-radius: 26px;
+    padding: 26px 20px 20px;
+  }
+  .mot-carte {
+    padding: 32px 24px 28px;
+    border-radius: 26px;
+  }
+  .galerie-mot {
+    padding-top: 44px;
+  }
+  .lightbox-astuce {
+    top: 70px;
+    max-width: calc(100% - 32px);
+    white-space: normal;
+    text-align: center;
+  }
+}

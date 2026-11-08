@@ -31,7 +31,7 @@ const TOKEN_BYTES = 24; // 192 bits — jeton de galerie impossible à deviner
 
 function corsHeaders(origin) {
   const headers = {
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
@@ -331,6 +331,32 @@ async function handleCreateGallery(request, env, origin) {
   return json(gallery, 201, origin);
 }
 
+// Modifie le nom, le titre ou le mot de bienvenue d'une galerie (champs facultatifs).
+async function handleUpdateGallery(request, env, id, origin) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse("Requête invalide.", 400, origin);
+  }
+  const champs = {};
+  if (typeof body?.name === "string") {
+    const name = body.name.trim();
+    if (!name) return errorResponse("Le nom du client est requis.", 400, origin);
+    champs.name = name.slice(0, 120);
+  }
+  if (typeof body?.title === "string") champs.title = body.title.trim().slice(0, 200);
+  if (typeof body?.message === "string") champs.message = body.message.trim().slice(0, 1500);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  if (!data.galleries.some((g) => g.id === id)) return errorResponse("Galerie introuvable.", 404, origin);
+  const maj = await writeIndexWithRetry(env.PHOTOS_BUCKET, (d) => {
+    const g = d.galleries.find((x) => x.id === id);
+    if (g) Object.assign(g, champs);
+    return d;
+  });
+  return json(maj.galleries.find((g) => g.id === id), 200, origin);
+}
+
 async function handleDeleteGallery(env, id, origin) {
   const prefix = galleryPrefix(id);
   let cursor;
@@ -421,7 +447,7 @@ async function handleGetClientGallery(env, token, origin) {
   const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
   const favoris = await readFavoris(env.PHOTOS_BUCKET, gallery.id);
   const existantes = new Set(photos.map((p) => p.filename));
-  return json({ name: gallery.name, title: gallery.title, photos, favoris: favoris.photos.filter((f) => existantes.has(f)) }, 200, origin);
+  return json({ name: gallery.name, title: gallery.title, message: gallery.message || "", photos, favoris: favoris.photos.filter((f) => existantes.has(f)) }, 200, origin);
 }
 
 // Le client enregistre ses favoris (le jeton privé de la galerie fait office d'accès,
@@ -556,6 +582,9 @@ export default {
       let m = pathname.match(/^\/api\/admin\/galleries\/([^/]+)$/);
       if (m && request.method === "GET") {
         return requireAuth(request, env, origin, () => handleGetGalleryAdmin(env, m[1], origin));
+      }
+      if (m && request.method === "PUT") {
+        return requireAuth(request, env, origin, () => handleUpdateGallery(request, env, m[1], origin));
       }
       if (m && request.method === "DELETE") {
         return requireAuth(request, env, origin, () => handleDeleteGallery(env, m[1], origin));

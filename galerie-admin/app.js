@@ -242,6 +242,7 @@ async function openGallery(id, token, name, title) {
   document.getElementById("upload-progress-list").innerHTML = "";
   currentPhotoNames = [];
   document.getElementById("client-email-input").value = "";
+  document.getElementById("gallery-message").value = "";
   showDetailView();
   await loadGalleryPhotos();
 }
@@ -260,6 +261,24 @@ document.getElementById("regenerate-link-btn").addEventListener("click", async (
     showStatus("Nouveau lien généré ✓", "success");
   } catch (e) {
     showStatus(`Erreur : ${e.message}`, "error");
+  }
+});
+
+document.getElementById("save-message-btn").addEventListener("click", async () => {
+  if (!currentGalleryId) return;
+  const message = document.getElementById("gallery-message").value.trim();
+  try {
+    showStatus("Enregistrement…", "loading");
+    await apiFetch(`/api/admin/galleries/${currentGalleryId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+    showStatus(message ? "Mot enregistré ✓ : il s'affiche sous la couverture." : "Mot retiré ✓", "success");
+  } catch (e) {
+    // Worker pas encore mis à jour : la route n'existe pas
+    const ancien = /Introuvable|404/.test(e.message);
+    showStatus(ancien ? "Pour activer cette fonction, il faut mettre à jour le Worker Cloudflare (colle la dernière version du code, comme pour les statistiques)." : `Erreur : ${e.message}`, "error");
   }
 });
 
@@ -284,6 +303,7 @@ async function loadGalleryPhotos() {
     const gallery = await apiFetch(`/api/admin/galleries/${currentGalleryId}`);
     currentFavoris = new Set(gallery.favoris || []);
     currentPhotoNames = (gallery.photos || []).map((p) => p.filename);
+    document.getElementById("gallery-message").value = gallery.message || "";
     renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
   } catch (e) {

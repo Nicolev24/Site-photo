@@ -156,7 +156,7 @@ async function loadGallery(token) {
     localStorage.setItem(LAST_GALLERY_KEY, token);
     document.getElementById("gallery-heading").textContent = gallery.name;
     document.getElementById("gallery-subheading").textContent = gallery.title || "";
-    document.getElementById("forget-gallery-btn").hidden = false;
+    afficherMot(gallery);
     afficherCouverture(gallery);
     renderGrid();
   } catch {
@@ -191,20 +191,26 @@ function afficherCouverture(gallery) {
   if (entete) entete.hidden = true;
   document.getElementById("couverture-voir").addEventListener("click", (e) => {
     e.preventDefault();
-    const cible = document.getElementById("favoris-barre") || document.getElementById("gallery-grid");
+    const mot = document.getElementById("galerie-mot");
+    const cible = (mot && !mot.hidden ? mot : null) || document.getElementById("favoris-barre") || document.getElementById("gallery-grid");
     cible.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
-  document.getElementById("couverture-oublier").addEventListener("click", () => document.getElementById("forget-gallery-btn").click());
+}
+
+// Un mot personnel de Nicolas, sous la couverture (facultatif, écrit dans l'admin).
+function afficherMot(gallery) {
+  const mot = document.getElementById("galerie-mot");
+  const texte = (gallery.message || "").trim();
+  if (!mot || !texte) return;
+  // Typographie française : espace insécable avant « ! ? : ; » pour que la ponctuation ne passe jamais seule à la ligne.
+  document.getElementById("mot-texte").textContent = texte.replace(/ ([!?:;»])/g, "\u00a0$1").replace(/(«) /g, "$1\u00a0");
+  mot.hidden = false;
 }
 
 function showEmptyState() {
   document.getElementById("gallery-empty-state").hidden = false;
 }
 
-document.getElementById("forget-gallery-btn").addEventListener("click", () => {
-  localStorage.removeItem(LAST_GALLERY_KEY);
-  window.location.href = window.location.pathname;
-});
 
 function renderGrid() {
   const grid = document.getElementById("gallery-grid");
@@ -281,6 +287,20 @@ function openLightbox(index) {
   updateLightbox();
   lightbox.hidden = false;
   document.body.style.overflow = "hidden";
+  montrerAstuceDoubleTouche();
+}
+
+function montrerAstuceDoubleTouche() {
+  const astuce = document.getElementById("lightbox-astuce");
+  if (!astuce) return;
+  try {
+    if (localStorage.getItem("galerie-astuce-cœur")) return;
+    localStorage.setItem("galerie-astuce-cœur", "1");
+  } catch {
+    return;
+  }
+  astuce.hidden = false;
+  setTimeout(() => (astuce.hidden = true), 4200);
 }
 
 function closeLightbox() {
@@ -299,6 +319,25 @@ function updateLightbox() {
   lightboxFavori.classList.toggle("actif", estFavori(photo.filename));
   lightboxFavori.setAttribute("aria-pressed", String(estFavori(photo.filename)));
 }
+
+// Double-touche (ou double-clic) sur la photo : elle rejoint les favoris, avec un petit cœur.
+let dernierClicPhoto = 0;
+lightboxImg.addEventListener("click", () => {
+  const maintenant = Date.now();
+  const double = maintenant - dernierClicPhoto < 330;
+  dernierClicPhoto = double ? 0 : maintenant;
+  if (!double) return;
+  const photo = currentPhotos[currentIndex];
+  if (!photo) return;
+  if (!estFavori(photo.filename)) basculerFavori(photo.filename);
+  const pop = document.createElement("span");
+  pop.className = "lightbox-coeur-pop";
+  pop.innerHTML = coeur;
+  lightbox.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+  lightboxFavori.classList.add("actif");
+  lightboxFavori.setAttribute("aria-pressed", "true");
+});
 
 lightboxDownload.addEventListener("click", () => {
   const photo = currentPhotos[currentIndex];
