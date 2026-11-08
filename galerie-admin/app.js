@@ -129,6 +129,7 @@ function showListView() {
   viewList.hidden = false;
   viewDetail.hidden = true;
   loadGalleries();
+  if (!document.getElementById("new-gallery-password").value) proposerMotDePasseCreation();
 }
 
 function showDetailView() {
@@ -203,6 +204,7 @@ function renderGalleriesList(galleries) {
           <strong>${escapeHtml(g.name)}</strong>
           ${g.title ? `<div class="admin-hint">${escapeHtml(g.title)}</div>` : ""}
           <div class="admin-hint">${g.photoCount} photo${g.photoCount > 1 ? "s" : ""} · créée le ${dateLabel}${g.favoriteCount ? ` · <strong>♥ ${g.favoriteCount} favori${g.favoriteCount > 1 ? "s" : ""}</strong>` : ""}</div>
+          <div class="admin-hint">${g.motdepasse ? `Mot de passe client : <strong>${escapeHtml(g.motdepasse)}</strong>` : "Pas de mot de passe (ouverte directement avec le lien)"}</div>
         </div>
         <div class="galerie-admin-card-actions">
           <button type="button" class="btn-outline btn-small f-open">Ouvrir</button>
@@ -228,6 +230,26 @@ async function copyClientLink(token) {
   }
 }
 
+// ---------- Mot de passe client ----------
+
+// Demande au Worker un mot de passe facile à dicter (ex : Pivoine-Sable-48).
+// Si le Worker n'est pas à jour, le champ reste vide (rien ne casse).
+async function motDePasseSuggere() {
+  try {
+    const { motdepasse } = await apiFetch("/api/admin/mot-de-passe");
+    return motdepasse || "";
+  } catch {
+    return "";
+  }
+}
+
+async function proposerMotDePasseCreation() {
+  const champ = document.getElementById("new-gallery-password");
+  champ.value = await motDePasseSuggere();
+}
+
+document.getElementById("new-password-btn").addEventListener("click", proposerMotDePasseCreation);
+
 document.getElementById("create-gallery-btn").addEventListener("click", async () => {
   const nameInput = document.getElementById("new-gallery-name");
   const titleInput = document.getElementById("new-gallery-title");
@@ -239,14 +261,17 @@ document.getElementById("create-gallery-btn").addEventListener("click", async ()
   }
   try {
     showStatus("Création…", "loading");
+    const motdepasse = document.getElementById("new-gallery-password").value.trim();
     await apiFetch("/api/admin/galleries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, title }),
+      body: JSON.stringify({ name, title, motdepasse }),
     });
     nameInput.value = "";
     titleInput.value = "";
-    showStatus("Galerie créée ✓", "success");
+    document.getElementById("new-gallery-password").value = "";
+    showStatus("Galerie créée ✓", "success"); // son mot de passe client apparaît sur sa carte
+    proposerMotDePasseCreation();
     loadGalleries();
   } catch (e) {
     showStatus(`Erreur : ${e.message}`, "error");
@@ -271,6 +296,7 @@ let currentGalleryId = null;
 let currentGalleryToken = null;
 let currentGalleryName = null;
 let currentPhotoNames = [];
+let currentMotDePasse = "";
 
 async function openGallery(id, token, name, title) {
   currentGalleryId = id;
@@ -282,6 +308,11 @@ async function openGallery(id, token, name, title) {
   currentPhotoNames = [];
   document.getElementById("client-email-input").value = "";
   document.getElementById("gallery-message").value = "";
+  currentMotDePasse = "";
+  const champMdp = document.getElementById("gallery-password");
+  champMdp.value = "";
+  champMdp.dataset.modifie = "";
+  majAideMotDePasse();
   showDetailView();
   await loadGalleryPhotos();
 }
@@ -321,6 +352,63 @@ document.getElementById("save-message-btn").addEventListener("click", async () =
   }
 });
 
+function majAideMotDePasse() {
+  const aide = document.getElementById("gallery-password-hint");
+  if (!aide) return;
+  aide.textContent = currentMotDePasse
+    ? "Changer le mot de passe déconnecte les clients déjà connectés : ils devront taper le nouveau. « Régénérer le lien » coupe l'ancien lien aux invités, mais pas aux clients."
+    : "Sans mot de passe, la galerie s'ouvre directement avec le lien : pas de choix client/invité, pas d'espace client. Enregistre un mot de passe pour les activer.";
+}
+
+document.getElementById("gallery-password").addEventListener("input", (e) => {
+  e.target.dataset.modifie = "1";
+});
+
+document.getElementById("gallery-password-propose").addEventListener("click", async () => {
+  const mdp = await motDePasseSuggere();
+  if (!mdp) {
+    showStatus("Pour proposer un mot de passe, il faut mettre à jour le Worker Cloudflare (colle la dernière version du code).", "error");
+    return;
+  }
+  const champ = document.getElementById("gallery-password");
+  champ.value = mdp;
+  champ.dataset.modifie = "1";
+});
+
+document.getElementById("gallery-password-copy").addEventListener("click", async () => {
+  const valeur = document.getElementById("gallery-password").value.trim();
+  if (!valeur) return;
+  try {
+    await navigator.clipboard.writeText(valeur);
+    showStatus("Mot de passe copié ✓", "success");
+  } catch {
+    window.prompt("Copie le mot de passe :", valeur);
+  }
+});
+
+document.getElementById("gallery-password-save").addEventListener("click", async () => {
+  if (!currentGalleryId) return;
+  const champ = document.getElementById("gallery-password");
+  const motdepasse = champ.value.trim();
+  if (!motdepasse && currentMotDePasse && !confirm("Retirer le mot de passe ? La galerie s'ouvrira directement avec le lien, sans espace client, et les clients connectés perdent leur accès.")) return;
+  if (motdepasse && currentMotDePasse && motdepasse !== currentMotDePasse && !confirm("Changer le mot de passe ? Les clients déjà connectés devront taper le nouveau.")) return;
+  try {
+    showStatus("Enregistrement…", "loading");
+    const maj = await apiFetch(`/api/admin/galleries/${currentGalleryId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ motdepasse }),
+    });
+    currentMotDePasse = maj.motdepasse || "";
+    champ.value = currentMotDePasse;
+    champ.dataset.modifie = "";
+    majAideMotDePasse();
+    showStatus(currentMotDePasse ? `Mot de passe enregistré ✓ ${currentMotDePasse}` : "Mot de passe retiré ✓", "success");
+  } catch (e) {
+    showStatus(`Erreur : ${e.message}`, "error");
+  }
+});
+
 document.getElementById("send-email-btn").addEventListener("click", () => {
   const emailInput = document.getElementById("client-email-input");
   const email = emailInput.value.trim();
@@ -329,12 +417,18 @@ document.getElementById("send-email-btn").addEventListener("click", () => {
     return;
   }
   if (!currentGalleryToken) return;
+  window.location.href = lienEmailClient(email);
+});
+
+// Message pré-rempli pour le client (avec le mot de passe s'il y en a un).
+function lienEmailClient(email) {
   const link = clientLinkFor(currentGalleryToken);
   const subject = `Vos photos${currentGalleryName ? ` — ${currentGalleryName}` : ""}`;
-  const body = `Bonjour,\n\nVos photos sont en ligne. Vous pouvez les consulter et les télécharger ici :\n${link}\n\nBien à vous,\nNicolas Leveugle`;
-  const mailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
-});
+  const body = currentMotDePasse
+    ? `Bonjour,\n\nVos photos sont en ligne. Vous pouvez les consulter et les télécharger ici :\n${link}\n\nSur cette page, choisissez « Je suis le client » et tapez le mot de passe ci-dessous. Vous pourrez ensuite retrouver ce shooting à tout moment dans l'espace client de mon site (sur cet appareil), et mettre des cœurs sur vos photos préférées : je reçois votre sélection.\n\nMot de passe : ${currentMotDePasse}\n\nPour vos invités, transmettez uniquement le lien (sans le mot de passe) : ils pourront voir et télécharger les photos.\n\nBien à vous,\nNicolas Leveugle`
+    : `Bonjour,\n\nVos photos sont en ligne. Vous pouvez les consulter et les télécharger ici :\n${link}\n\nBien à vous,\nNicolas Leveugle`;
+  return `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 async function loadGalleryPhotos() {
   const grid = document.getElementById("photos-grid");
@@ -343,6 +437,10 @@ async function loadGalleryPhotos() {
     currentFavoris = new Set(gallery.favoris || []);
     currentPhotoNames = (gallery.photos || []).map((p) => p.filename);
     document.getElementById("gallery-message").value = gallery.message || "";
+    currentMotDePasse = gallery.motdepasse || "";
+    const champMdp = document.getElementById("gallery-password");
+    if (!champMdp.dataset.modifie) champMdp.value = currentMotDePasse;
+    majAideMotDePasse();
     renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
   } catch (e) {

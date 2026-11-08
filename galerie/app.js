@@ -8,6 +8,37 @@
 
 const API_BASE = "https://galerie-api.nicoleveugle.workers.dev";
 const LAST_GALLERY_KEY = "galerie-last-token";
+// Shootings ouverts « en client » (mot de passe tapé) sur ce navigateur : [{ cle, token, name }].
+// L'espace client n'affiche que ceux-là. Un invité n'y laisse aucune trace.
+const CLIENTS_KEY = "galerie-clients";
+
+function lireClients() {
+  try {
+    const liste = JSON.parse(localStorage.getItem(CLIENTS_KEY) || "[]");
+    return Array.isArray(liste) ? liste.filter((e) => e && typeof e.cle === "string" && typeof e.token === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function ecrireClients(liste) {
+  try {
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(liste));
+  } catch {
+    // stockage indisponible (navigation privée…) : l'accès marche, mais ne sera pas retrouvé plus tard
+  }
+}
+
+const idDeCle = (cle) => String(cle).split(".")[0];
+
+function memoriserClient(cle, token, name) {
+  const autres = lireClients().filter((e) => idDeCle(e.cle) !== idDeCle(cle));
+  ecrireClients([{ cle, token, name: name || "" }, ...autres]);
+}
+
+function oublierClient(cle) {
+  ecrireClients(lireClients().filter((e) => e.cle !== cle));
+}
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -77,6 +108,8 @@ let allPhotos = [];
 let currentPhotos = [];
 let currentIndex = -1;
 let currentToken = null;
+let cleClient = null; // clé « client » (mot de passe tapé), absente pour un invité
+let peutFavoris = true; // faux pour un invité sur une galerie protégée
 
 // ---------- Favoris (le cœur sur chaque photo) ----------
 
@@ -89,6 +122,7 @@ function estFavori(filename) {
 }
 
 function basculerFavori(filename) {
+  if (!peutFavoris) return; // l'invité n'a pas les cœurs : la sélection est celle du client
   if (favoris.has(filename)) favoris.delete(filename);
   else favoris.add(filename);
   document.querySelectorAll(`[data-favori="${CSS.escape(filename)}"]`).forEach((el) => {
@@ -107,7 +141,7 @@ async function enregistrerFavoris() {
   try {
     const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(currentToken)}/favoris`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(cleClient ? { "X-Cle-Client": cleClient } : {}) },
       body: JSON.stringify({ photos: [...favoris] }),
     });
     if (!res.ok) throw new Error();
@@ -143,30 +177,236 @@ function changerFiltre(seulementFavoris) {
 
 const coeur = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg>`;
 
-async function loadGallery(token) {
+async function fetchGallery(token, cle) {
   try {
-    const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(token)}`);
-    if (!res.ok) throw new Error("Galerie introuvable");
-    const gallery = await res.json();
-    currentToken = token;
-    allPhotos = gallery.photos || [];
-    currentPhotos = allPhotos;
-    favoris = new Set(gallery.favoris || []);
-    majBarreFavoris();
-    localStorage.setItem(LAST_GALLERY_KEY, token);
-    document.getElementById("gallery-heading").textContent = gallery.name;
-    document.getElementById("gallery-subheading").textContent = gallery.title || "";
-    afficherMot(gallery);
-    afficherCouverture(gallery);
-    renderGrid();
+    const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(token)}`, {
+      headers: cle ? { "X-Cle-Client": cle } : {},
+    });
+    if (!res.ok) return null;
+    return await res.json();
   } catch {
-    // Jeton mémorisé périmé (galerie supprimée depuis) : on l'oublie pour
-    // ne pas re-rediriger dessus indéfiniment.
-    if (localStorage.getItem(LAST_GALLERY_KEY) === token) {
-      localStorage.removeItem(LAST_GALLERY_KEY);
-    }
-    showEmptyState();
+    return null;
   }
+}
+
+function afficherGalerie(token, gallery, cle) {
+  quitterChoix();
+  currentToken = token;
+  cleClient = cle || null;
+  peutFavoris = gallery.peutFavoris !== false;
+  document.documentElement.classList.toggle("sans-coeurs", !peutFavoris);
+  const aide = document.getElementById("favoris-aide");
+  if (aide && !peutFavoris) {
+    aide.textContent = "Vous consultez cette galerie en tant qu'invité : vous pouvez voir et télécharger toutes les photos. Pour la retrouver plus tard, gardez le lien reçu.";
+  }
+  allPhotos = gallery.photos || [];
+  currentPhotos = allPhotos;
+  favoris = new Set(peutFavoris ? gallery.favoris || [] : []);
+  majBarreFavoris();
+  if (!gallery.protegee) {
+    // Galerie sans mot de passe (ancien fonctionnement) : le navigateur s'en souvient comme avant.
+    try {
+      localStorage.setItem(LAST_GALLERY_KEY, token);
+    } catch {}
+  }
+  if (gallery.client && cle) {
+    memoriserClient(cle, token, gallery.name);
+    ["couverture-retour", "lien-mes-shootings"].forEach((id) => (document.getElementById(id).hidden = false));
+  }
+  document.getElementById("gallery-heading").textContent = gallery.name;
+  document.getElementById("gallery-subheading").textContent = gallery.title || "";
+  afficherMot(gallery);
+  afficherCouverture(gallery);
+  renderGrid();
+}
+
+// ---------- Accès : « client » (mot de passe) ou « invité » (lien seul) ----------
+
+async function fetchAccueil(token) {
+  try {
+    const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(token)}/accueil`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+function poserImageCouverture(token, filename) {
+  document.getElementById("couverture-flou").src = photoUrl(token, filename, "thumb");
+  const nette = document.getElementById("couverture-nette");
+  const chargement = new Image();
+  chargement.onload = () => {
+    nette.src = chargement.src;
+    nette.classList.add("est-chargee");
+  };
+  chargement.src = photoUrl(token, filename, "original");
+}
+
+let choixToken = null;
+
+// L'écran de choix reprend la couverture : nom du shooting sur la photo, deux boutons.
+function afficherChoix(token, accueil) {
+  choixToken = token;
+  const racine = document.documentElement;
+  racine.classList.add("acces-en-cours", "sur-couverture");
+  document.getElementById("couverture-nom").textContent = accueil.name || "Vos photos";
+  document.getElementById("couverture-titre").textContent = accueil.title || "";
+  document.getElementById("couverture-compte").textContent = "";
+  document.getElementById("couverture-voir").hidden = true;
+  if (accueil.couverture) poserImageCouverture(token, accueil.couverture);
+  document.getElementById("acces-choix").hidden = false;
+  document.getElementById("acces-aide").hidden = false;
+  document.getElementById("acces-form").hidden = true;
+  document.getElementById("couverture-acces").hidden = false;
+  document.getElementById("galerie-couverture").hidden = false;
+}
+
+function quitterChoix() {
+  document.documentElement.classList.remove("acces-en-cours");
+  document.getElementById("couverture-acces").hidden = true;
+  document.getElementById("couverture-voir").hidden = false;
+  document.getElementById("galerie-couverture").hidden = true; // afficherCouverture la remontre s'il y a des photos
+  document.documentElement.classList.remove("sur-couverture");
+}
+
+document.getElementById("acces-invite").addEventListener("click", async () => {
+  const token = choixToken;
+  const gallery = await fetchGallery(token, null);
+  if (!gallery) {
+    quitterChoix();
+    showEmptyState();
+    return;
+  }
+  afficherGalerie(token, gallery, null);
+});
+
+document.getElementById("acces-client").addEventListener("click", () => {
+  document.getElementById("acces-choix").hidden = true;
+  document.getElementById("acces-aide").hidden = true;
+  document.getElementById("acces-form").hidden = false;
+  document.getElementById("acces-erreur").hidden = true;
+  document.getElementById("acces-mdp").focus();
+});
+
+document.getElementById("acces-retour").addEventListener("click", () => {
+  document.getElementById("acces-form").hidden = true;
+  document.getElementById("acces-choix").hidden = false;
+  document.getElementById("acces-aide").hidden = false;
+});
+
+document.getElementById("acces-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const champ = document.getElementById("acces-mdp");
+  const erreur = document.getElementById("acces-erreur");
+  const bouton = document.getElementById("acces-entrer");
+  const motdepasse = champ.value.trim();
+  if (!motdepasse) return;
+  erreur.hidden = true;
+  bouton.disabled = true;
+  try {
+    const res = await fetch(`${API_BASE}/api/gallery/${encodeURIComponent(choixToken)}/client`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ motdepasse }),
+    });
+    const corps = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      erreur.textContent = res.status === 429 ? "Trop d'essais. Patientez quelques minutes, puis réessayez." : "Mot de passe incorrect. Vérifiez l'e-mail reçu.";
+      erreur.hidden = false;
+      champ.select();
+      return;
+    }
+    const gallery = await fetchGallery(choixToken, corps.cle);
+    if (!gallery) throw new Error();
+    afficherGalerie(choixToken, gallery, corps.cle);
+  } catch {
+    erreur.textContent = "Connexion impossible pour le moment. Réessayez dans un instant.";
+    erreur.hidden = false;
+  } finally {
+    bouton.disabled = false;
+  }
+});
+
+// Ouverture par le lien : déjà client sur ce navigateur → on entre directement ;
+// sinon écran de choix (si la galerie a un mot de passe) ; sinon comme avant.
+async function ouvrirAvecLien(token) {
+  const connu = lireClients().find((e) => e.token === token);
+  if (connu) {
+    const gallery = await fetchGallery(token, connu.cle);
+    if (gallery && gallery.client) return afficherGalerie(token, gallery, connu.cle);
+    if (gallery) oublierClient(connu.cle); // mot de passe changé depuis : il faudra le retaper
+  }
+  const accueil = await fetchAccueil(token);
+  if (accueil && accueil.protegee) return afficherChoix(token, accueil);
+  const gallery = await fetchGallery(token, null);
+  if (!gallery) {
+    if (localStorage.getItem(LAST_GALLERY_KEY) === token) localStorage.removeItem(LAST_GALLERY_KEY);
+    return showEmptyState();
+  }
+  afficherGalerie(token, gallery, null);
+}
+
+// ---------- Espace client : la liste des shootings ouverts en client ----------
+
+async function afficherEspace() {
+  document.documentElement.classList.add("espace-actif");
+  document.getElementById("espace-liste").hidden = false;
+  const cartes = document.getElementById("espace-cartes");
+  cartes.innerHTML = `<p class="espace-chargement">Chargement…</p>`;
+
+  let galeries = [];
+  const entrees = lireClients();
+  if (entrees.length) {
+    try {
+      const res = await fetch(`${API_BASE}/api/espace`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cles: entrees.map((e) => e.cle) }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      galeries = data.galeries || [];
+      ecrireClients(galeries.map((g) => ({ cle: g.cle, token: g.token, name: g.name })));
+    } catch {
+      // Hors connexion : on affiche ce que ce navigateur connaît, sans photo de couverture.
+      galeries = entrees.map((e) => ({ cle: e.cle, token: e.token, name: e.name, title: "", photoCount: null, couverture: null }));
+    }
+  }
+
+  // Ancien fonctionnement : une galerie sans mot de passe ouverte sur ce navigateur.
+  const ancien = localStorage.getItem(LAST_GALLERY_KEY);
+  if (ancien && !galeries.some((g) => g.token === ancien)) {
+    const accueil = await fetchAccueil(ancien);
+    if (accueil && !accueil.protegee) {
+      galeries.push({ token: ancien, name: accueil.name, title: accueil.title, photoCount: null, couverture: accueil.couverture });
+    }
+  }
+
+  cartes.innerHTML = "";
+  document.getElementById("espace-vide").hidden = galeries.length > 0;
+  document.getElementById("espace-note").hidden = galeries.length === 0;
+  document.getElementById("espace-intro").hidden = galeries.length === 0;
+  galeries.forEach((g) => {
+    const lien = document.createElement("a");
+    lien.className = "espace-carte";
+    lien.href = `?g=${encodeURIComponent(g.token)}`;
+    const nb = g.photoCount ? `${g.photoCount} photo${g.photoCount > 1 ? "s" : ""}` : "";
+    lien.innerHTML = `
+      <span class="espace-photo">${g.couverture ? `<img src="${photoUrl(g.token, g.couverture, "thumb")}" alt="" loading="lazy" decoding="async" />` : ""}</span>
+      <span class="espace-texte">
+        <strong class="espace-nom">${escapeHtml(g.name)}</strong>
+        ${g.title ? `<span class="espace-titre">${escapeHtml(g.title)}</span>` : ""}
+        <span class="espace-pied"><span>${escapeHtml(nb)}</span><span class="espace-ouvrir">Ouvrir →</span></span>
+      </span>`;
+    const img = lien.querySelector("img");
+    if (img) {
+      const charge = () => img.classList.add("charge");
+      if (img.complete && img.naturalWidth) charge();
+      else img.addEventListener("load", charge, { once: true });
+    }
+    cartes.appendChild(lien);
+  });
 }
 
 // Couverture plein écran : la première photo, avec le nom de la galerie. La
@@ -178,14 +418,7 @@ function afficherCouverture(gallery) {
   document.getElementById("couverture-nom").textContent = gallery.name || "Vos photos";
   document.getElementById("couverture-titre").textContent = gallery.title || "";
   document.getElementById("couverture-compte").textContent = `${allPhotos.length} photo${allPhotos.length > 1 ? "s" : ""}`;
-  document.getElementById("couverture-flou").src = photoUrl(currentToken, premiere.filename, "thumb");
-  const nette = document.getElementById("couverture-nette");
-  const chargement = new Image();
-  chargement.onload = () => {
-    nette.src = chargement.src;
-    nette.classList.add("est-chargee");
-  };
-  chargement.src = photoUrl(currentToken, premiere.filename, "original");
+  poserImageCouverture(currentToken, premiere.filename);
   couverture.hidden = false;
   // La barre d'outils flottante reste cachée tant que la couverture occupe l'écran.
   document.documentElement.classList.add("sur-couverture");
@@ -302,7 +535,7 @@ function openLightbox(index) {
 
 function montrerAstuceDoubleTouche() {
   const astuce = document.getElementById("lightbox-astuce");
-  if (!astuce) return;
+  if (!astuce || !peutFavoris) return;
   try {
     if (localStorage.getItem("galerie-astuce-cœur")) return;
     localStorage.setItem("galerie-astuce-cœur", "1");
@@ -338,7 +571,7 @@ lightboxImg.addEventListener("click", () => {
   dernierClicPhoto = double ? 0 : maintenant;
   if (!double) return;
   const photo = currentPhotos[currentIndex];
-  if (!photo) return;
+  if (!photo || !peutFavoris) return;
   if (!estFavori(photo.filename)) basculerFavori(photo.filename);
   const pop = document.createElement("span");
   pop.className = "lightbox-coeur-pop";
@@ -392,7 +625,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && modeSelection && lightbox.hidden) return quitterSelection();
   if (lightbox.hidden) return;
   if (e.key === "Escape") closeLightbox();
-  if (e.key === "f" || e.key === "F") lightboxFavori.click();
+  if ((e.key === "f" || e.key === "F") && peutFavoris) lightboxFavori.click();
   if (e.key === "ArrowLeft") showPrev();
   if (e.key === "ArrowRight") showNext();
 });
@@ -887,23 +1120,11 @@ async function init() {
   buildNav(navigation);
   await buildFooter(navigation);
 
-  let token = new URLSearchParams(window.location.search).get("g");
-
-  // Pas de jeton dans l'URL (ex : clic sur "Espace client" dans le menu) :
-  // si ce navigateur a déjà ouvert une galerie, on y retourne directement.
-  if (!token) {
-    const remembered = localStorage.getItem(LAST_GALLERY_KEY);
-    if (remembered) {
-      window.location.replace(`${window.location.pathname}?g=${encodeURIComponent(remembered)}`);
-      return; // la page se recharge avec le jeton dans l'URL
-    }
-  }
-
-  if (token) {
-    await loadGallery(token);
-  } else {
-    showEmptyState();
-  }
+  const token = new URLSearchParams(window.location.search).get("g");
+  // Sans lien (clic sur « Espace client » dans le menu) : la liste des shootings,
+  // jamais une galerie ouverte d'office.
+  if (!token) return afficherEspace();
+  await ouvrirAvecLien(token);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -54,6 +54,14 @@
         <div class="admin-field"><label>Nom du client</label><input type="text" id="new-gallery-name" placeholder="Sophie &amp; Marc" /></div>
         <div class="admin-field"><label>Titre (optionnel)</label><input type="text" id="new-gallery-title" placeholder="Mariage — 12 juillet 2026" /></div>
       </div>
+      <div class="admin-field">
+        <label for="new-gallery-password">Mot de passe client</label>
+        <div class="mdp-ligne">
+          <input type="text" id="new-gallery-password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Proposé automatiquement" />
+          <button id="new-password-btn" class="btn-outline btn-small" type="button">Un autre</button>
+        </div>
+        <p class="admin-hint">Le client le tape pour retrouver ce shooting dans l'espace client. Tu peux le changer ; sinon celui-ci est utilisé.</p>
+      </div>
       <button id="create-gallery-btn" class="btn btn-primary btn-small" type="button">+ Créer la galerie</button>
     </div>
 
@@ -74,13 +82,28 @@
       </div>
     </div>
 
+    <div class="admin-card" id="acces-client-card">
+      <h3 style="margin-top:0">Accès client et invités</h3>
+      <p class="admin-hint" style="margin:0 0 10px">Un seul lien. Qui l'ouvre choisit « client » (avec le mot de passe : il retrouve le shooting dans l'espace client et peut mettre des cœurs) ou « invité » (il voit et télécharge, sans les cœurs, et doit repasser par le lien).</p>
+      <div class="admin-field">
+        <label for="gallery-password">Mot de passe client</label>
+        <div class="mdp-ligne">
+          <input type="text" id="gallery-password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Aucun mot de passe" />
+          <button id="gallery-password-propose" class="btn-outline btn-small" type="button">Proposer</button>
+          <button id="gallery-password-copy" class="btn-outline btn-small" type="button">Copier</button>
+        </div>
+      </div>
+      <button id="gallery-password-save" class="btn btn-primary btn-small" type="button">Enregistrer le mot de passe</button>
+      <p class="admin-hint" id="gallery-password-hint" style="margin-top:8px"></p>
+    </div>
+
     <div class="admin-card">
       <h3 style="margin-top:0">Envoyer le lien par email</h3>
       <div class="admin-field-row">
         <div class="admin-field"><label>Email du client</label><input type="email" id="client-email-input" placeholder="client@exemple.be" /></div>
       </div>
       <button id="send-email-btn" class="btn btn-primary btn-small" type="button">Envoyer par email</button>
-      <p class="admin-hint" style="margin-top:8px">Ouvre ton client email habituel, message pré-rempli — il ne reste qu'à cliquer sur Envoyer.</p>
+      <p class="admin-hint" style="margin-top:8px">Ouvre ton client email habituel, message pré-rempli (le mot de passe client y est ajouté) — il ne reste qu'à cliquer sur Envoyer.</p>
     </div>
 
     <div class="admin-card">

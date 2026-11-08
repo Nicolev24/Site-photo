@@ -243,3 +243,15 @@
 .envoi-options select {
   width: 100%;
 }
+
+/* Mot de passe client : champ + petits boutons sur une ligne */
+.mdp-ligne {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mdp-ligne input {
+  flex: 1 1 220px;
+  min-width: 0;
+}

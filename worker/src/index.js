@@ -9,6 +9,11 @@
 // depuis ce dossier (voir wrangler.toml) si tu préfères la ligne de
 // commande plus tard.
 //
+// Accès aux galeries : un seul lien par galerie, « invité » (lien seul : voir et
+// télécharger, sans les cœurs) ou « client » (mot de passe de la galerie : cœurs
+// + retrouver le shooting dans l'espace client). Une galerie sans mot de passe
+// (anciennes galeries) s'ouvre directement, comme avant.
+//
 // Bindings attendus (configurés sur le dashboard, jamais ici) :
 //   - PHOTOS_BUCKET   : bucket R2 "galerie-photos"
 //   - RATE_LIMIT_KV   : namespace KV "galerie-rate-limit"
@@ -32,7 +37,7 @@ const TOKEN_BYTES = 24; // 192 bits — jeton de galerie impossible à deviner
 function corsHeaders(origin) {
   const headers = {
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Cle-Client",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
@@ -121,6 +126,64 @@ async function requireAuth(request, env, origin, handler) {
   const valid = await verifySessionToken(token, env.SESSION_SECRET);
   if (!valid) return errorResponse("Non autorisé — reconnecte-toi.", 401, origin);
   return handler();
+}
+
+// ---------- Accès « client » et « invité » ----------
+// Un seul lien par galerie. Qui a le lien est « invité » : il voit et
+// télécharge les photos, sans les cœurs (la sélection appartient au client).
+// Qui tape le mot de passe de la galerie devient « client » : il reçoit une
+// clé (HMAC, liée à l'id de la galerie ET au mot de passe, donc changer le mot
+// de passe annule toutes les clés déjà distribuées) que son navigateur
+// mémorise pour retrouver le shooting dans l'espace client. Une galerie sans
+// mot de passe (anciennes galeries) reste ouverte directement, comme avant.
+
+const CLIENT_LOGIN_RATE_LIMIT = { max: 8, windowSeconds: 15 * 60 };
+const MAX_CLES_ESPACE = 50;
+const MOTS_DEBUT = [
+  "pivoine", "lavande", "olivier", "cerise", "amande", "noisette", "citron", "abricot", "jasmin", "tilleul",
+  "bleuet", "mimosa", "figuier", "coquelicot", "muguet", "glycine", "myrtille", "pommier", "romarin", "violette",
+];
+const MOTS_FIN = [
+  "sable", "ocre", "soleil", "brume", "rosee", "nacre", "lagon", "falaise", "prairie", "aurore",
+  "horizon", "lumiere", "dune", "criquet", "ruisseau", "colline", "marais", "plage", "bruyere", "etoile",
+];
+
+function entierAleatoire(max) {
+  return crypto.getRandomValues(new Uint32Array(1))[0] % max;
+}
+
+// Ex : « Pivoine-Sable-48 » : facile à lire, à dicter et à taper sur un téléphone.
+function genererMotDePasse() {
+  const mot = (liste) => liste[entierAleatoire(liste.length)];
+  const debut = mot(MOTS_DEBUT);
+  return `${debut[0].toUpperCase()}${debut.slice(1)}-${mot(MOTS_FIN).replace(/^./, (c) => c.toUpperCase())}-${10 + entierAleatoire(90)}`;
+}
+
+// Majuscules, espaces autour : sans importance (les claviers de téléphone corrigent tout seuls).
+function normaliserMotDePasse(s) {
+  return String(s || "").trim().toLowerCase();
+}
+
+async function signerAccesClient(env, gallery) {
+  const key = await hmacKey(env.SESSION_SECRET);
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(`client:${gallery.id}:${normaliserMotDePasse(gallery.motdepasse)}`)
+  );
+  return `${gallery.id}.${base64url(new Uint8Array(sig))}`;
+}
+
+async function cleClientValide(env, gallery, cle) {
+  if (!gallery || !gallery.motdepasse || typeof cle !== "string" || cle.length > 200) return false;
+  return timingSafeEqual(cle, await signerAccesClient(env, gallery));
+}
+
+// Valide un mot de passe saisi par Nicolas (4 à 64 caractères).
+function motDePasseSaisi(valeur) {
+  const v = String(valeur || "").trim();
+  if (v.length < 4 || v.length > 64) return null;
+  return v;
 }
 
 // ---------- Limitation des tentatives de connexion (KV) ----------
@@ -318,10 +381,19 @@ async function handleCreateGallery(request, env, origin) {
   const title = typeof body?.title === "string" ? body.title.trim() : "";
   if (!name) return errorResponse("Le nom du client est requis.", 400, origin);
 
+  // Mot de passe client : choisi par Nicolas, sinon proposé au hasard.
+  let motdepasse;
+  if (typeof body?.motdepasse === "string" && body.motdepasse.trim()) {
+    motdepasse = motDePasseSaisi(body.motdepasse);
+    if (!motdepasse) return errorResponse("Le mot de passe doit faire entre 4 et 64 caractères.", 400, origin);
+  } else {
+    motdepasse = genererMotDePasse();
+  }
+
   const id = randomToken(TOKEN_BYTES);
   const token = randomToken(TOKEN_BYTES);
   const createdAt = new Date().toISOString();
-  const gallery = { id, token, name, title, createdAt };
+  const gallery = { id, token, name, title, createdAt, motdepasse };
 
   await writeIndexWithRetry(env.PHOTOS_BUCKET, (data) => {
     data.galleries.push(gallery);
@@ -331,7 +403,7 @@ async function handleCreateGallery(request, env, origin) {
   return json(gallery, 201, origin);
 }
 
-// Modifie le nom, le titre ou le mot de bienvenue d'une galerie (champs facultatifs).
+// Modifie le nom, le titre, le mot de bienvenue ou le mot de passe client d'une galerie (champs facultatifs).
 async function handleUpdateGallery(request, env, id, origin) {
   let body;
   try {
@@ -347,6 +419,15 @@ async function handleUpdateGallery(request, env, id, origin) {
   }
   if (typeof body?.title === "string") champs.title = body.title.trim().slice(0, 200);
   if (typeof body?.message === "string") champs.message = body.message.trim().slice(0, 1500);
+  // Mot de passe client : vide = galerie ouverte à tous ceux qui ont le lien (sans espace client).
+  if (typeof body?.motdepasse === "string") {
+    if (!body.motdepasse.trim()) champs.motdepasse = undefined;
+    else {
+      const mdp = motDePasseSaisi(body.motdepasse);
+      if (!mdp) return errorResponse("Le mot de passe doit faire entre 4 et 64 caractères.", 400, origin);
+      champs.motdepasse = mdp;
+    }
+  }
   const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   if (!data.galleries.some((g) => g.id === id)) return errorResponse("Galerie introuvable.", 404, origin);
   const maj = await writeIndexWithRetry(env.PHOTOS_BUCKET, (d) => {
@@ -439,15 +520,105 @@ async function handleDeletePhoto(env, id, filename, origin) {
 // ---------- Handlers : client (galerie privée, pas d'auth — le jeton
 // dans l'URL en tient lieu, cf. checklist sécurité) ----------
 
-async function handleGetClientGallery(env, token, origin) {
+async function handleGetClientGallery(request, env, token, origin) {
+  if (!isValidToken(token)) return errorResponse("Galerie introuvable.", 404, origin);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.token === token);
+  if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
+  const protegee = Boolean(gallery.motdepasse);
+  const client = await cleClientValide(env, gallery, request.headers.get("X-Cle-Client"));
+  // Galerie protégée : seul le client (mot de passe tapé) a les cœurs. L'invité voit et télécharge.
+  const peutFavoris = !protegee || client;
+  const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
+  const favoris = peutFavoris ? await readFavoris(env.PHOTOS_BUCKET, gallery.id) : { photos: [] };
+  const existantes = new Set(photos.map((p) => p.filename));
+  return json(
+    { name: gallery.name, title: gallery.title, message: gallery.message || "", photos, favoris: favoris.photos.filter((f) => existantes.has(f)), protegee, client, peutFavoris },
+    200,
+    origin
+  );
+}
+
+// Écran de choix « client / invité » : le nom, le titre et la photo de couverture
+// seulement (pas la liste des photos). Le lien privé suffit à les voir.
+async function handleGalleryAccueil(env, token, origin) {
   if (!isValidToken(token)) return errorResponse("Galerie introuvable.", 404, origin);
   const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
-  const favoris = await readFavoris(env.PHOTOS_BUCKET, gallery.id);
-  const existantes = new Set(photos.map((p) => p.filename));
-  return json({ name: gallery.name, title: gallery.title, message: gallery.message || "", photos, favoris: favoris.photos.filter((f) => existantes.has(f)) }, 200, origin);
+  return json(
+    { name: gallery.name, title: gallery.title || "", protegee: Boolean(gallery.motdepasse), couverture: photos[0] ? photos[0].filename : null },
+    200,
+    origin
+  );
+}
+
+// « Je suis le client » : le mot de passe donne une clé que le navigateur mémorise.
+async function handleClientLogin(request, env, token, origin) {
+  if (!isValidToken(token)) return errorResponse("Galerie introuvable.", 404, origin);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.token === token);
+  if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
+  if (!gallery.motdepasse) return errorResponse("Cette galerie n'a pas de mot de passe.", 400, origin);
+
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const autorise = await checkRateLimit(
+    env.RATE_LIMIT_KV,
+    `ratelimit:client:${ip}:${gallery.id}`,
+    CLIENT_LOGIN_RATE_LIMIT.max,
+    CLIENT_LOGIN_RATE_LIMIT.windowSeconds
+  );
+  if (!autorise) return errorResponse("Trop de tentatives. Réessayez dans quelques minutes.", 429, origin);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse("Requête invalide.", 400, origin);
+  }
+  const saisi = normaliserMotDePasse(body?.motdepasse);
+  if (!saisi || !timingSafeEqual(saisi, normaliserMotDePasse(gallery.motdepasse))) {
+    return errorResponse("Mot de passe incorrect.", 401, origin);
+  }
+  return json({ cle: await signerAccesClient(env, gallery) }, 200, origin);
+}
+
+// Espace client : le navigateur envoie les clés qu'il a mémorisées, on renvoie
+// les shootings correspondants. Une clé dont le mot de passe a changé, ou dont
+// la galerie n'existe plus, est renvoyée dans « perimees » pour être oubliée.
+async function handleEspaceClient(request, env, origin) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse("Requête invalide.", 400, origin);
+  }
+  const cles = Array.isArray(body?.cles) ? body.cles.filter((c) => typeof c === "string").slice(0, MAX_CLES_ESPACE) : [];
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const perimees = [];
+  const trouvees = [];
+  for (const cle of cles) {
+    const gallery = data.galleries.find((g) => g.id === cle.split(".")[0]);
+    if (gallery && (await cleClientValide(env, gallery, cle))) trouvees.push({ cle, gallery });
+    else perimees.push(cle);
+  }
+  const galeries = await Promise.all(
+    trouvees.map(async ({ cle, gallery }) => {
+      const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
+      return {
+        cle,
+        token: gallery.token,
+        name: gallery.name,
+        title: gallery.title || "",
+        createdAt: gallery.createdAt,
+        photoCount: photos.length,
+        couverture: photos[0] ? photos[0].filename : null,
+      };
+    })
+  );
+  galeries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return json({ galeries, perimees }, 200, origin);
 }
 
 // Le client enregistre ses favoris (le jeton privé de la galerie fait office d'accès,
@@ -457,6 +628,9 @@ async function handleSaveFavoris(request, env, token, origin) {
   const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
   const gallery = data.galleries.find((g) => g.token === token);
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
+  if (gallery.motdepasse && !(await cleClientValide(env, gallery, request.headers.get("X-Cle-Client")))) {
+    return errorResponse("Les favoris sont réservés au client de la galerie.", 403, origin);
+  }
   let body;
   try {
     body = await request.json();
@@ -605,9 +779,27 @@ export default {
         return requireAuth(request, env, origin, () => handleDeletePhoto(env, m[1], m[2], origin));
       }
 
+      if (pathname === "/api/admin/mot-de-passe" && request.method === "GET") {
+        return requireAuth(request, env, origin, () => json({ motdepasse: genererMotDePasse() }, 200, origin));
+      }
+
+      if (pathname === "/api/espace" && request.method === "POST") {
+        return handleEspaceClient(request, env, origin);
+      }
+
       m = pathname.match(/^\/api\/gallery\/([^/]+)$/);
       if (m && request.method === "GET") {
-        return handleGetClientGallery(env, m[1], origin);
+        return handleGetClientGallery(request, env, m[1], origin);
+      }
+
+      m = pathname.match(/^\/api\/gallery\/([^/]+)\/accueil$/);
+      if (m && request.method === "GET") {
+        return handleGalleryAccueil(env, m[1], origin);
+      }
+
+      m = pathname.match(/^\/api\/gallery\/([^/]+)\/client$/);
+      if (m && request.method === "POST") {
+        return handleClientLogin(request, env, m[1], origin);
       }
 
       m = pathname.match(/^\/api\/gallery\/([^/]+)\/favoris$/);

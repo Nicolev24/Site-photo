@@ -33,11 +33,42 @@
     <img id="couverture-flou" class="couverture-img" alt="" />
     <img id="couverture-nette" class="couverture-img couverture-nette" alt="" />
     <div class="container couverture-texte">
+      <a href="./" id="couverture-retour" class="couverture-retour" hidden>← Mes shootings</a>
       <span class="eyebrow">Votre galerie</span>
       <h1 id="couverture-nom"></h1>
       <p class="couverture-sous" id="couverture-titre"></p>
       <p class="couverture-meta" id="couverture-compte"></p>
       <a href="#favoris-barre" id="couverture-voir" class="btn btn-verre">Voir les photos</a>
+      <div class="couverture-acces" id="couverture-acces" hidden>
+        <div class="acces-choix" id="acces-choix">
+          <button type="button" id="acces-client" class="btn btn-verre">Je suis le client</button>
+          <button type="button" id="acces-invite" class="btn btn-verre">Je suis invité</button>
+        </div>
+        <p class="acces-aide" id="acces-aide">Client : avec le mot de passe reçu par e-mail, vous retrouvez ce shooting dans l'espace client et choisissez vos favoris. Invité : vous voyez et téléchargez les photos.</p>
+        <form class="acces-form" id="acces-form" autocomplete="off" hidden>
+          <label for="acces-mdp" class="acces-label">Mot de passe reçu par e-mail</label>
+          <div class="acces-ligne">
+            <input id="acces-mdp" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Pivoine-Sable-48" />
+            <button type="submit" id="acces-entrer" class="btn btn-verre">Entrer</button>
+          </div>
+          <p class="acces-erreur" id="acces-erreur" role="alert" hidden></p>
+          <button type="button" id="acces-retour" class="couverture-oublier">← Retour</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <section class="espace-liste" id="espace-liste" hidden>
+    <div class="container">
+      <span class="eyebrow">Espace client</span>
+      <h1>Vos shootings</h1>
+      <p class="lead" id="espace-intro">Touchez un shooting pour retrouver vos photos.</p>
+      <div class="espace-cartes" id="espace-cartes"></div>
+      <div class="espace-vide" id="espace-vide" hidden>
+        <p class="lead">Aucun shooting pour l'instant sur cet appareil.</p>
+        <p>Ouvrez d'abord le lien reçu par e-mail, choisissez « Je suis le client » et tapez votre mot de passe : votre shooting apparaîtra ici.</p>
+        <a href="../contact.html" class="btn-secondary">Me contacter</a>
+      </div>
+      <p class="espace-note" id="espace-note" hidden>Vous ne voyez pas un shooting ? Rouvrez le lien reçu par e-mail et choisissez « Je suis le client ».</p>
     </div>
   </section>
   <section class="galerie-mot" id="galerie-mot" hidden>
@@ -74,8 +105,9 @@
       </div>
     </div>
     <div id="galerie-notes" class="galerie-notes" hidden>
-      <p class="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
+      <p class="favoris-aide" id="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
       <span class="galerie-liens">
+        <a id="lien-mes-shootings" class="lien-aide" href="./" hidden>← Mes shootings</a>
         <button type="button" id="btn-ou-photos" class="lien-aide" hidden>Où sont mes photos téléchargées ?</button>
         <a id="lien-avis" class="lien-aide" href="#" target="_blank" rel="noopener" hidden>Laisser un avis sur Google</a>
       </span>

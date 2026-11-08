@@ -1177,3 +1177,245 @@ html.galerie-claire .galerie-couverture .btn-verre { border-radius: 16px; letter
 .galerie-claire #favoris-barre:focus-within {
   opacity: 1;
 }
+
+/* ============================================================
+   Accès client / invité (écran de choix) et liste « Espace client »
+   ============================================================ */
+
+/* L'invité n'a pas les cœurs : la sélection reste celle du client. */
+html.sans-coeurs .tile-favori,
+html.sans-coeurs #lightbox-favori,
+html.sans-coeurs #filtre-favoris,
+html.sans-coeurs #lightbox-astuce,
+html.sans-coeurs .lightbox-coeur-pop {
+  display: none !important;
+}
+
+/* Pendant le choix : seule la couverture est visible. */
+html.acces-en-cours .page-header,
+html.acces-en-cours #gallery-empty-state,
+html.acces-en-cours #favoris-barre,
+html.acces-en-cours .galerie-mot {
+  display: none !important;
+}
+
+.couverture-retour {
+  display: inline-block;
+  margin: 0 0 14px;
+  color: rgba(245, 241, 234, 0.8);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(245, 241, 234, 0.35);
+  padding-bottom: 1px;
+}
+.couverture-retour:hover {
+  color: #fff;
+  border-color: #fff;
+}
+.couverture-retour[hidden] {
+  display: none;
+}
+
+.couverture-acces[hidden],
+.acces-choix[hidden],
+.acces-aide[hidden],
+.acces-form[hidden],
+.acces-erreur[hidden] {
+  display: none;
+}
+.acces-choix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.galerie-couverture .acces-choix .btn-verre::after,
+.galerie-couverture .acces-ligne .btn-verre::after {
+  content: none;
+}
+.acces-aide {
+  max-width: 520px;
+  margin: 18px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(245, 241, 234, 0.72);
+}
+.acces-label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 234, 0.78);
+}
+.acces-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 520px;
+}
+.acces-ligne input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #f5f1ea;
+  font: inherit;
+  font-size: 1rem;
+}
+.acces-ligne input::placeholder {
+  color: rgba(245, 241, 234, 0.5);
+}
+.acces-ligne input:focus {
+  outline: none;
+  border-color: var(--couleur-accent);
+  background: rgba(255, 255, 255, 0.2);
+}
+.acces-erreur {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: #ffd9cf;
+}
+.acces-form .couverture-oublier {
+  margin-top: 16px;
+}
+@media (max-width: 520px) {
+  .acces-choix .btn,
+  .acces-ligne .btn {
+    width: 100%;
+  }
+}
+
+/* Liste des shootings (clic sur « Espace client » dans le menu) */
+.espace-liste[hidden] {
+  display: none;
+}
+html.espace-actif .page-header,
+html.espace-actif #gallery-empty-state {
+  display: none;
+}
+.espace-liste {
+  padding: 72px 0 110px;
+  text-align: center;
+}
+.espace-liste h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+}
+.espace-liste .lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+.espace-cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+  justify-content: center;
+  gap: 24px;
+  margin-top: 40px;
+  text-align: left;
+}
+.espace-chargement {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--couleur-texte-attenue);
+}
+.espace-carte {
+  display: block;
+  border-radius: 24px;
+  background: #fbf9f4;
+  border: 1px solid rgba(35, 30, 25, 0.08);
+  box-shadow: 0 14px 40px rgba(35, 30, 25, 0.1);
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.espace-carte:hover,
+.espace-carte:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(35, 30, 25, 0.16);
+}
+.espace-photo {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: #e6dfd2;
+  overflow: hidden;
+}
+.espace-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.8s ease;
+}
+.espace-photo img.charge {
+  opacity: 1;
+}
+.espace-carte:hover .espace-photo img {
+  transform: scale(1.04);
+}
+.espace-texte {
+  display: block;
+  padding: 18px 22px 22px;
+}
+.espace-nom {
+  display: block;
+  font-family: var(--police-titres);
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.15;
+}
+.espace-titre {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  color: var(--couleur-texte-attenue);
+}
+.espace-pied {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 16px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-attenue);
+}
+.espace-ouvrir {
+  color: var(--couleur-accent-texte);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 0.95rem;
+}
+.espace-note {
+  margin: 36px auto 0;
+  max-width: 460px;
+  font-size: 0.85rem;
+  color: var(--couleur-texte-attenue);
+}
+.espace-vide {
+  margin: 36px auto 0;
+  max-width: 520px;
+}
+.espace-vide[hidden],
+.espace-note[hidden],
+.espace-liste .lead[hidden] {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .espace-carte,
+  .espace-photo img {
+    transition: none;
+  }
+}
+.galerie-couverture #couverture-voir[hidden] {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  .espace-photo {
+    aspect-ratio: 16 / 10;
+  }
+}
