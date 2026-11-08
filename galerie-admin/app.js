@@ -1,7 +1,8 @@
 // Espace galeries clients — interface d'administration du Worker
 // "galerie-api" (R2 + KV). Aucun secret ici : le mot de passe est vérifié
 // par le Worker, qui renvoie une session temporaire (24h) stockée dans ce
-// navigateur (localStorage), jamais dans le dépôt.
+// navigateur (localStorage), jamais dans le dépôt. Le mot de passe est retenu
+// dans ce navigateur pour se reconnecter sans rien demander quand elle expire.
 
 const API_BASE = "https://galerie-api.nicoleveugle.workers.dev";
 const SESSION_KEY = "galerie-admin-session";
@@ -27,15 +28,60 @@ function clearSession() {
   localStorage.removeItem(SESSION_KEY);
 }
 
+// Le mot de passe est retenu dans ce navigateur (même clé que l'administration du
+// site) : quand la session expire, on se reconnecte sans rien demander.
+const MDP_KEY = "galerie-admin-mdp";
+
+async function loginAvecMotDePasse(password) {
+  const res = await fetch(`${API_BASE}/api/admin/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    const err = new Error(body.error || "Connexion impossible.");
+    err.refuse = res.status === 401 || res.status === 403;
+    throw err;
+  }
+  const { token } = await res.json();
+  setSession(token);
+  try {
+    localStorage.setItem(MDP_KEY, password);
+  } catch {}
+  return token;
+}
+
+let reconnexionEnCours = null;
+/** Tente de rouvrir la session avec le mot de passe retenu. Renvoie true si c'est réussi. */
+function reconnecterSilencieusement() {
+  const mdp = localStorage.getItem(MDP_KEY);
+  if (!mdp) return Promise.resolve(false);
+  if (!reconnexionEnCours) {
+    reconnexionEnCours = loginAvecMotDePasse(mdp)
+      .then(() => true)
+      .catch((e) => {
+        // Mot de passe changé : on l'oublie. Simple panne réseau : on le garde.
+        if (e.refuse) localStorage.removeItem(MDP_KEY);
+        return false;
+      })
+      .finally(() => {
+        reconnexionEnCours = null;
+      });
+  }
+  return reconnexionEnCours;
+}
+
 // ---------- Appels API ----------
 
-async function apiFetch(path, options = {}) {
+async function apiFetch(path, options = {}, dejaReessaye = false) {
   const headers = { ...(options.headers || {}) };
   const token = getSession();
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
   if (res.status === 401) {
+    if (!dejaReessaye && (await reconnecterSilencieusement())) return apiFetch(path, options, true);
     clearSession();
     showLoginScreen("Session expirée, reconnecte-toi.");
     throw new Error("Session expirée.");
@@ -98,17 +144,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   const err = document.getElementById("login-error");
   err.hidden = true;
   try {
-    const res = await fetch(`${API_BASE}/api/admin/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(body.error || "Connexion impossible.");
-    }
-    const { token } = await res.json();
-    setSession(token);
+    await loginAvecMotDePasse(password);
     showApp();
     showListView();
   } catch (e) {
@@ -119,6 +155,9 @@ document.getElementById("login-btn").addEventListener("click", async () => {
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   clearSession();
+  try {
+    localStorage.removeItem(MDP_KEY);
+  } catch {}
   showLoginScreen();
 });
 
@@ -515,10 +554,8 @@ function uploadPhotoRequest(id, prepare, onProgress) {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(JSON.parse(xhr.responseText));
       } else if (xhr.status === 401) {
-        clearSession();
-        showLoginScreen("Session expirée, reconnecte-toi.");
         const err = new Error("Session expirée.");
-        err.fatal = true;
+        err.session = true;
         reject(err);
       } else {
         let message = `Erreur serveur (${xhr.status})`;
@@ -601,6 +638,17 @@ async function envoyerUne(item, options) {
       envoi.octets += prepare.original.size || 0;
       return Date.now() - debut;
     } catch (err) {
+      if (err.session) {
+        // Session expirée pendant l'envoi : on se reconnecte tout seul, sans perdre la file.
+        if (essais < 3 && (await reconnecterSilencieusement())) {
+          essais++;
+          continue;
+        }
+        clearSession();
+        showLoginScreen("Session expirée, reconnecte-toi.");
+        err.fatal = true;
+        throw err;
+      }
       if (err.fatal || /Format illisible|Miniature|Réduction/.test(err.message) || essais >= 2) throw err;
       essais++;
       row.querySelector(".bar-fill").style.width = "0%";
@@ -736,7 +784,10 @@ dropZone.addEventListener("drop", (e) => {
 
 // ---------- Démarrage ----------
 
-if (getSession()) {
-  showApp();
-  showListView();
-}
+(async function demarrer() {
+  if (!getSession()) await reconnecterSilencieusement();
+  if (getSession()) {
+    showApp();
+    showListView();
+  }
+})();
