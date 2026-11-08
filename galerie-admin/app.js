@@ -326,6 +326,8 @@ let currentGalleryToken = null;
 let currentGalleryName = null;
 let currentPhotoNames = [];
 let currentMotDePasse = "";
+let currentCouverture = null; // nom de la photo de couverture actuelle
+let currentCouvertureVersion = null; // version haute qualité envoyée à part (ou null)
 
 async function openGallery(id, token, name, title) {
   currentGalleryId = id;
@@ -338,6 +340,9 @@ async function openGallery(id, token, name, title) {
   document.getElementById("client-email-input").value = "";
   document.getElementById("gallery-message").value = "";
   currentMotDePasse = "";
+  currentCouverture = null;
+  currentCouvertureVersion = null;
+  renderCouverture();
   const champMdp = document.getElementById("gallery-password");
   champMdp.value = "";
   champMdp.dataset.modifie = "";
@@ -491,6 +496,8 @@ async function loadGalleryPhotos() {
     currentFavoris = new Set(gallery.favoris || []);
     currentPhotoNames = (gallery.photos || []).map((p) => p.filename);
     document.getElementById("gallery-message").value = gallery.message || "";
+    currentCouverture = gallery.couverture || null;
+    currentCouvertureVersion = gallery.couvertureHd ? gallery.couvertureVersion || "1" : null;
     currentMotDePasse = gallery.motdepasse || "";
     const champMdp = document.getElementById("gallery-password");
     if (!champMdp.dataset.modifie) {
@@ -501,6 +508,7 @@ async function loadGalleryPhotos() {
     majAideMotDePasse();
     renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
+    renderCouverture();
   } catch (e) {
     grid.innerHTML = "";
     showStatus(`Erreur : ${e.message}`, "error");
@@ -549,6 +557,134 @@ function photoUrl(token, filename, variant) {
   return `${API_BASE}/api/gallery/${token}/photo/${encodeURIComponent(filename)}?variant=${variant}`;
 }
 
+// ---------- Photo de couverture ----------
+
+let suiviCouverture = 0;
+
+// Une couverture plein écran sur téléphone (≈ 1170 × 2530 px d'écran) recadre la photo :
+// plus l'agrandissement nécessaire est fort, plus elle paraît molle ou pixellisée.
+function evaluerNettete(largeur, hauteur) {
+  const agrandissement = Math.max(1170 / largeur, 2532 / hauteur);
+  if (agrandissement <= 1.15) return { niveau: "ok", texte: "✓ Nette sur téléphone comme sur ordinateur." };
+  if (agrandissement <= 1.7) {
+    return { niveau: "attention", texte: `⚠ Un peu juste en plein écran sur téléphone (photo agrandie ×${agrandissement.toFixed(1).replace(".", ",")}). Envoie une version haute qualité pour être sûr qu'elle soit nette.` };
+  }
+  return { niveau: "mauvais", texte: "✗ Trop petite pour un écran de téléphone : elle apparaîtra pixellisée. Envoie une version plus grande." };
+}
+
+function renderCouverture() {
+  const img = document.getElementById("couv-img");
+  const vide = document.getElementById("couv-vide");
+  const etat = document.getElementById("couv-etat");
+  const qualite = document.getElementById("couv-qualite");
+  const retirer = document.getElementById("couv-hd-retirer");
+  const envoyer = document.getElementById("couv-hd-btn");
+  const suivi = ++suiviCouverture;
+  if (!currentCouverture) {
+    img.hidden = true;
+    vide.hidden = false;
+    qualite.hidden = true;
+    retirer.hidden = true;
+    envoyer.disabled = true;
+    etat.textContent = "Ajoute des photos : la première sert de couverture.";
+    return;
+  }
+  envoyer.disabled = false;
+  vide.hidden = true;
+  img.hidden = false;
+  img.src = photoUrl(currentGalleryToken, currentCouverture, "thumb");
+  retirer.hidden = !currentCouvertureVersion;
+  envoyer.textContent = currentCouvertureVersion ? "Remplacer la version haute qualité" : "Envoyer une version haute qualité";
+  etat.textContent = currentCouvertureVersion ? "Version haute qualité en place pour cette couverture." : `Couverture : ${currentCouverture}`;
+  qualite.hidden = false;
+  qualite.className = "couv-qualite";
+  qualite.textContent = "Vérification de la netteté…";
+  // On mesure ce que le client reçoit vraiment : la version haute qualité, sinon la photo d'origine.
+  const mesure = new Image();
+  mesure.onload = () => {
+    if (suivi !== suiviCouverture) return;
+    const r = evaluerNettete(mesure.naturalWidth, mesure.naturalHeight);
+    qualite.className = `couv-qualite ${r.niveau}`;
+    qualite.textContent = `${mesure.naturalWidth} × ${mesure.naturalHeight} px. ${r.texte}`;
+  };
+  mesure.onerror = () => {
+    if (suivi === suiviCouverture) qualite.hidden = true;
+  };
+  mesure.src = currentCouvertureVersion
+    ? `${API_BASE}/api/gallery/${currentGalleryToken}/cover?v=${encodeURIComponent(currentCouvertureVersion)}`
+    : photoUrl(currentGalleryToken, currentCouverture, "original");
+}
+
+async function definirCouverture(filename) {
+  if (!currentGalleryId || filename === currentCouverture) return;
+  try {
+    showStatus("Changement de la couverture…", "loading");
+    await apiFetch(`/api/admin/galleries/${currentGalleryId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ couverture: filename }),
+    });
+    showStatus("Couverture changée ✓", "success");
+    await loadGalleryPhotos();
+  } catch (e) {
+    const ancien = /Introuvable|404|Requête invalide/.test(e.message);
+    showStatus(ancien ? "Pour activer cette fonction, il faut mettre à jour le Worker Cloudflare (colle la dernière version du code)." : `Erreur : ${e.message}`, "error");
+  }
+}
+
+const COUVERTURE_HD_MAX = 4096;
+
+// Version nette de la couverture : jusqu'à 4096 px sur le grand côté (JPEG), sans jamais agrandir.
+async function preparerCouvertureHd(file) {
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("Format illisible par le navigateur : exporte la photo en JPEG.");
+  }
+  try {
+    const grand = Math.max(bitmap.width, bitmap.height);
+    if (grand <= COUVERTURE_HD_MAX && /^image\/jpeg$/.test(file.type) && file.size <= 20 * 1024 * 1024) return file;
+    const blob = await canvasVersBlob(redimensionner(bitmap, COUVERTURE_HD_MAX), 0.92);
+    if (!blob) throw new Error("Préparation de l'image impossible.");
+    return blob;
+  } finally {
+    if (typeof bitmap.close === "function") bitmap.close();
+  }
+}
+
+document.getElementById("couv-hd-btn").addEventListener("click", () => document.getElementById("couv-hd-input").click());
+
+document.getElementById("couv-hd-input").addEventListener("change", async (e) => {
+  const fichier = e.target.files && e.target.files[0];
+  e.target.value = "";
+  if (!fichier || !currentGalleryId) return;
+  try {
+    showStatus("Préparation de la couverture…", "loading");
+    const image = await preparerCouvertureHd(fichier);
+    const form = new FormData();
+    form.append("cover", image, "cover.jpg");
+    showStatus("Envoi de la couverture haute qualité…", "loading");
+    await apiFetch(`/api/admin/galleries/${currentGalleryId}/cover-hd`, { method: "POST", body: form });
+    showStatus("Version haute qualité en place ✓", "success");
+    await loadGalleryPhotos();
+  } catch (err) {
+    const ancien = /Introuvable|404/.test(err.message);
+    showStatus(ancien ? "Pour activer cette fonction, il faut mettre à jour le Worker Cloudflare (colle la dernière version du code)." : `Erreur : ${err.message}`, "error");
+  }
+});
+
+document.getElementById("couv-hd-retirer").addEventListener("click", async () => {
+  if (!currentGalleryId || !confirm("Retirer la version haute qualité ? La couverture reprendra la photo de la galerie.")) return;
+  try {
+    await apiFetch(`/api/admin/galleries/${currentGalleryId}/cover-hd`, { method: "DELETE" });
+    showStatus("Version haute qualité retirée ✓", "success");
+    await loadGalleryPhotos();
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+  }
+});
+
 function renderPhotosGrid(photos) {
   const grid = document.getElementById("photos-grid");
   grid.innerHTML = "";
@@ -560,8 +696,11 @@ function renderPhotosGrid(photos) {
     tile.innerHTML = `
       <img src="${photoUrl(currentGalleryToken, photo.filename, "thumb")}" alt="" loading="lazy" />
       ${favori ? `<span class="favori-badge" title="Favori du client">♥</span>` : ""}
+      <button type="button" class="cover-btn${photo.filename === currentCouverture ? " est-couverture" : ""}" title="${photo.filename === currentCouverture ? "Photo de couverture actuelle" : "Choisir comme photo de couverture"}" aria-label="Choisir comme photo de couverture">★</button>
+      ${photo.filename === currentCouverture ? `<span class="cover-badge">Couverture</span>` : ""}
       <button type="button" class="delete-btn" title="Supprimer cette photo">×</button>
     `;
+    tile.querySelector(".cover-btn").addEventListener("click", () => definirCouverture(photo.filename));
     tile.querySelector(".delete-btn").addEventListener("click", () => deletePhoto(photo.filename));
     grid.appendChild(tile);
   });

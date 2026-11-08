@@ -283,3 +283,66 @@ html body .mdp-sans input[type="checkbox"] {
 html body .mdp-sans {
   color: #231e19;
 }
+
+/* ---------- Photo de couverture ---------- */
+.couv-corps { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.couv-apercu {
+  flex: 0 0 200px;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(127, 127, 127, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: #8b929c;
+}
+.couv-apercu img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.couv-apercu img[hidden], .couv-apercu span[hidden] { display: none; }
+.couv-infos { flex: 1 1 220px; min-width: 0; }
+.couv-etat { margin: 0 0 6px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; }
+.couv-qualite { margin: 0 0 12px; font-size: 0.85rem; line-height: 1.45; }
+.couv-qualite[hidden] { display: none; }
+.couv-qualite.ok { color: #2b8a4b; }
+.couv-qualite.attention { color: #b5731a; }
+.couv-qualite.mauvais { color: #c0392b; }
+.couv-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+/* Étoile « choisir comme couverture » sur chaque photo */
+.galerie-photo-tile .cover-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+.galerie-photo-tile:hover .cover-btn,
+.galerie-photo-tile .cover-btn:focus-visible,
+.galerie-photo-tile .cover-btn.est-couverture { opacity: 1; }
+.galerie-photo-tile .cover-btn:hover { background: #b08a55; }
+.galerie-photo-tile .cover-btn.est-couverture { background: #b08a55; cursor: default; }
+.galerie-photo-tile .cover-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #b08a55;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.galerie-photo-tile.favori .cover-badge { left: 40px; }
+@media (hover: none) { .galerie-photo-tile .cover-btn { opacity: 1; } }

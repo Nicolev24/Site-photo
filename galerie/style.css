@@ -1419,3 +1419,11 @@ html.espace-actif #gallery-empty-state {
     aspect-ratio: 16 / 10;
   }
 }
+
+/* Couverture : tant que la photo nette charge, la version légère est floutée (jamais agrandie en pixels visibles) */
+.galerie-couverture #couverture-flou {
+  filter: blur(18px);
+  inset: -36px;
+  width: calc(100% + 72px);
+  height: calc(100% + 72px);
+}

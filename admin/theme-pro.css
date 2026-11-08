@@ -138,10 +138,10 @@ html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *) {display:
   font-size: 0.875rem; font-weight: 550; letter-spacing: 0; text-transform: none; line-height: 1.25;
   box-shadow: none; cursor: pointer; -webkit-backdrop-filter: none; backdrop-filter: none;
   transition: background .15s ease, border-color .15s ease, color .15s ease;}
-html body.admin-pro.theme-clair .btn-primary:not(.admin-live-editor *) {background: var(--ap-primary-bg); border-color: var(--ap-primary-bg); color: var(--ap-primary-text);}
-html body.admin-pro.theme-clair .btn-primary:not(.admin-live-editor *):hover {background: var(--ap-primary-hover); border-color: var(--ap-primary-hover); color: var(--ap-primary-text);}
-html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *) {background: var(--ap-surface); border: 1px solid var(--ap-border-strong); color: var(--ap-text);}
-html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *):hover {background: var(--ap-surface-2); border-color: var(--ap-muted); color: var(--ap-text);}
+html body.admin-pro.theme-clair .btn-primary:not(.admin-live-editor *):not(.rc-coin) {background: var(--ap-primary-bg); border-color: var(--ap-primary-bg); color: var(--ap-primary-text);}
+html body.admin-pro.theme-clair .btn-primary:not(.admin-live-editor *):not(.rc-coin):hover {background: var(--ap-primary-hover); border-color: var(--ap-primary-hover); color: var(--ap-primary-text);}
+html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *):not(.rc-coin) {background: var(--ap-surface); border: 1px solid var(--ap-border-strong); color: var(--ap-text);}
+html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *):not(.rc-coin):hover {background: var(--ap-surface-2); border-color: var(--ap-muted); color: var(--ap-text);}
 html body.admin-pro.theme-clair .btn-small:not(.admin-live-editor *) {padding: 7px 13px; font-size: 0.84rem;}
 html body.admin-pro.theme-clair .btn:not(.admin-live-editor *):disabled,
 html body.admin-pro.theme-clair .btn-outline:not(.admin-live-editor *):disabled {opacity: .45; cursor: default;}
@@ -339,3 +339,16 @@ html body.admin-pro.theme-clair .admin-card,
 html body.admin-pro.theme-clair .stats-kpi div,
 html body.admin-pro.theme-clair .stats-carte {padding: 18px;}
 }
+html body.admin-pro.theme-clair #view-detail > #couverture-card,
+html body.admin-pro.theme-clair #view-detail > .carte-moitie {grid-column: span 2;}
+@media (max-width: 1280px) {
+html body.admin-pro.theme-clair #view-detail > #couverture-card,
+html body.admin-pro.theme-clair #view-detail > .carte-moitie {grid-column: span 1;}
+}
+@media (max-width: 860px) {
+html body.admin-pro.theme-clair #view-detail > #couverture-card,
+html body.admin-pro.theme-clair #view-detail > .carte-moitie {grid-column: 1 / -1;}
+}
+html body.admin-pro.theme-clair .couv-qualite.ok {color: var(--ap-ok-text);}
+html body.admin-pro.theme-clair .couv-qualite.mauvais {color: var(--ap-err-text);}
+html body.admin-pro.theme-clair .couv-apercu {background: var(--ap-surface-2); border: 1px solid var(--ap-border);}

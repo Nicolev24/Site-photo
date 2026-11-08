@@ -100,7 +100,24 @@
       <p class="admin-hint" id="gallery-password-hint" style="margin-top:8px"></p>
     </div>
 
-    <div class="admin-card">
+    <div class="admin-card" id="couverture-card">
+      <h3 style="margin-top:0">Photo de couverture</h3>
+      <div class="couv-corps">
+        <div class="couv-apercu"><img id="couv-img" alt="" hidden /><span id="couv-vide">Aucune photo</span></div>
+        <div class="couv-infos">
+          <p class="couv-etat" id="couv-etat">Ajoute des photos : la première sert de couverture.</p>
+          <p class="couv-qualite" id="couv-qualite" hidden></p>
+          <div class="couv-actions">
+            <button type="button" id="couv-hd-btn" class="btn btn-outline btn-small">Envoyer une version haute qualité</button>
+            <button type="button" id="couv-hd-retirer" class="btn btn-outline btn-small" hidden>Retirer</button>
+            <input type="file" id="couv-hd-input" accept="image/*" hidden />
+          </div>
+          <p class="admin-hint">Pour changer de couverture, passe sur une photo ci-dessous et clique sur l'étoile ★.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card carte-moitie">
       <h3 style="margin-top:0">Envoyer le lien par email</h3>
       <div class="admin-field-row">
         <div class="admin-field"><label>Email du client</label><input type="email" id="client-email-input" placeholder="client@exemple.be" /></div>
@@ -109,7 +126,7 @@
       <p class="admin-hint" style="margin-top:8px">Ouvre ton client email habituel, message pré-rempli (le mot de passe client y est ajouté) — il ne reste qu'à cliquer sur Envoyer.</p>
     </div>
 
-    <div class="admin-card">
+    <div class="admin-card carte-moitie">
       <h3 style="margin-top:0">Un mot pour tes clients</h3>
       <p class="admin-hint" style="margin:0 0 10px">S'affiche sous la couverture de la galerie, signé « Nicolas ». Facultatif : laisse vide pour ne rien afficher.</p>
       <div class="admin-field">

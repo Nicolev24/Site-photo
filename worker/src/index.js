@@ -214,6 +214,23 @@ function thumbKey(id, filename) {
   return `${thumbsPrefix(id)}${filename}`;
 }
 
+// Couverture haute qualité facultative : une version nette de la photo de couverture,
+// envoyée à part (la photo d'origine peut être « allégée » à 2400 px, juste pour un
+// téléphone en plein écran). Elle n'est pas comptée parmi les photos de la galerie.
+function coverHdKey(id) {
+  return `${galleryPrefix(id)}cover.jpg`;
+}
+const MAX_COVER_HD_BYTES = 25 * 1024 * 1024;
+
+// La couverture : la photo choisie par Nicolas si elle existe encore, sinon la première.
+function infosCouverture(gallery, photos) {
+  const noms = photos.map((p) => p.filename);
+  const choisie = gallery.couverture && noms.includes(gallery.couverture) ? gallery.couverture : null;
+  const couverture = choisie || noms[0] || null;
+  const hd = Boolean(choisie && gallery.couvertureHd);
+  return { couverture, couvertureHd: hd, couvertureVersion: hd ? gallery.couvertureHdAt || "1" : null };
+}
+
 function sanitizeFilename(name) {
   const cleaned = String(name || "photo")
     .toLowerCase()
@@ -367,7 +384,7 @@ async function handleGetGalleryAdmin(env, id, origin) {
   const photos = await listPhotos(env.PHOTOS_BUCKET, id);
   const favoris = await readFavoris(env.PHOTOS_BUCKET, id);
   const existantes = new Set(photos.map((p) => p.filename));
-  return json({ ...gallery, photos, favoris: favoris.photos.filter((f) => existantes.has(f)), favorisUpdatedAt: favoris.updatedAt }, 200, origin);
+  return json({ ...gallery, ...infosCouverture(gallery, photos), photos, favoris: favoris.photos.filter((f) => existantes.has(f)), favorisUpdatedAt: favoris.updatedAt }, 200, origin);
 }
 
 async function handleCreateGallery(request, env, origin) {
@@ -419,6 +436,13 @@ async function handleUpdateGallery(request, env, id, origin) {
   }
   if (typeof body?.title === "string") champs.title = body.title.trim().slice(0, 200);
   if (typeof body?.message === "string") champs.message = body.message.trim().slice(0, 1500);
+  let changeCouverture = false;
+  if (typeof body?.couverture === "string") {
+    const nom = body.couverture.trim();
+    if (nom && !(await env.PHOTOS_BUCKET.head(originalKey(id, nom)))) return errorResponse("Cette photo n'existe pas dans la galerie.", 400, origin);
+    champs.couverture = nom || undefined;
+    changeCouverture = true;
+  }
   // Mot de passe client : vide = galerie ouverte à tous ceux qui ont le lien (sans espace client).
   if (typeof body?.motdepasse === "string") {
     if (!body.motdepasse.trim()) champs.motdepasse = undefined;
@@ -429,7 +453,14 @@ async function handleUpdateGallery(request, env, id, origin) {
     }
   }
   const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
-  if (!data.galleries.some((g) => g.id === id)) return errorResponse("Galerie introuvable.", 404, origin);
+  const avant = data.galleries.find((g) => g.id === id);
+  if (!avant) return errorResponse("Galerie introuvable.", 404, origin);
+  // Autre photo de couverture : l'ancienne version haute qualité ne correspond plus.
+  if (changeCouverture && champs.couverture !== avant.couverture) {
+    champs.couvertureHd = undefined;
+    champs.couvertureHdAt = undefined;
+    await env.PHOTOS_BUCKET.delete(coverHdKey(id));
+  }
   const maj = await writeIndexWithRetry(env.PHOTOS_BUCKET, (d) => {
     const g = d.galleries.find((x) => x.id === id);
     if (g) Object.assign(g, champs);
@@ -503,6 +534,53 @@ async function handleUploadPhoto(request, env, id, origin) {
   return json({ filename }, 201, origin);
 }
 
+// Envoie la version haute qualité de la photo de couverture actuelle.
+async function handleUploadCoverHd(request, env, id, origin) {
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.id === id);
+  if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
+  let form;
+  try {
+    form = await request.formData();
+  } catch {
+    return errorResponse("Formulaire invalide.", 400, origin);
+  }
+  const fichier = form.get("cover");
+  if (!(fichier instanceof File) || !/^image\//.test(fichier.type || "")) return errorResponse("Une image est requise.", 400, origin);
+  if (fichier.size === 0) return errorResponse("Fichier vide.", 400, origin);
+  if (fichier.size > MAX_COVER_HD_BYTES) return errorResponse("Image trop lourde (25 Mo maximum).", 413, origin);
+  const photos = await listPhotos(env.PHOTOS_BUCKET, id);
+  const { couverture } = infosCouverture(gallery, photos);
+  if (!couverture) return errorResponse("Ajoute d'abord des photos à la galerie.", 400, origin);
+  await env.PHOTOS_BUCKET.put(coverHdKey(id), fichier, { httpMetadata: { contentType: fichier.type || "image/jpeg" } });
+  const version = String(Date.now());
+  await writeIndexWithRetry(env.PHOTOS_BUCKET, (d) => {
+    const g = d.galleries.find((x) => x.id === id);
+    if (g) {
+      g.couverture = couverture; // on fixe la couverture à laquelle cette version correspond
+      g.couvertureHd = true;
+      g.couvertureHdAt = version;
+    }
+    return d;
+  });
+  return json({ couverture, couvertureHd: true, couvertureVersion: version }, 200, origin);
+}
+
+async function handleDeleteCoverHd(env, id, origin) {
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  if (!data.galleries.some((g) => g.id === id)) return errorResponse("Galerie introuvable.", 404, origin);
+  await env.PHOTOS_BUCKET.delete(coverHdKey(id));
+  await writeIndexWithRetry(env.PHOTOS_BUCKET, (d) => {
+    const g = d.galleries.find((x) => x.id === id);
+    if (g) {
+      g.couvertureHd = undefined;
+      g.couvertureHdAt = undefined;
+    }
+    return d;
+  });
+  return json({ ok: true }, 200, origin);
+}
+
 async function handleDeletePhoto(env, id, filename, origin) {
   await env.PHOTOS_BUCKET.delete([originalKey(id, filename), thumbKey(id, filename)]);
   // La photo n'existe plus : elle sort aussi des favoris du client.
@@ -533,7 +611,7 @@ async function handleGetClientGallery(request, env, token, origin) {
   const favoris = peutFavoris ? await readFavoris(env.PHOTOS_BUCKET, gallery.id) : { photos: [] };
   const existantes = new Set(photos.map((p) => p.filename));
   return json(
-    { name: gallery.name, title: gallery.title, message: gallery.message || "", photos, favoris: favoris.photos.filter((f) => existantes.has(f)), protegee, client, peutFavoris },
+    { name: gallery.name, title: gallery.title, message: gallery.message || "", photos, favoris: favoris.photos.filter((f) => existantes.has(f)), protegee, client, peutFavoris, ...infosCouverture(gallery, photos) },
     200,
     origin
   );
@@ -548,7 +626,7 @@ async function handleGalleryAccueil(env, token, origin) {
   if (!gallery) return errorResponse("Galerie introuvable.", 404, origin);
   const photos = await listPhotos(env.PHOTOS_BUCKET, gallery.id);
   return json(
-    { name: gallery.name, title: gallery.title || "", protegee: Boolean(gallery.motdepasse), couverture: photos[0] ? photos[0].filename : null },
+    { name: gallery.name, title: gallery.title || "", protegee: Boolean(gallery.motdepasse), ...infosCouverture(gallery, photos) },
     200,
     origin
   );
@@ -613,7 +691,7 @@ async function handleEspaceClient(request, env, origin) {
         title: gallery.title || "",
         createdAt: gallery.createdAt,
         photoCount: photos.length,
-        couverture: photos[0] ? photos[0].filename : null,
+        ...infosCouverture(gallery, photos),
       };
     })
   );
@@ -645,6 +723,19 @@ async function handleSaveFavoris(request, env, token, origin) {
     httpMetadata: { contentType: "application/json" },
   });
   return json({ photos, updatedAt }, 200, origin);
+}
+
+async function handleGetCoverHd(env, token, origin) {
+  if (!isValidToken(token)) return errorResponse("Photo introuvable.", 404, origin);
+  const data = await ensureMigratedIndex(env.PHOTOS_BUCKET);
+  const gallery = data.galleries.find((g) => g.token === token);
+  if (!gallery || !gallery.couvertureHd) return errorResponse("Photo introuvable.", 404, origin);
+  const obj = await env.PHOTOS_BUCKET.get(coverHdKey(gallery.id));
+  if (!obj) return errorResponse("Photo introuvable.", 404, origin);
+  const headers = new Headers(corsHeaders(origin));
+  headers.set("Content-Type", obj.httpMetadata?.contentType || "image/jpeg");
+  headers.set("Cache-Control", "private, max-age=3600");
+  return new Response(obj.body, { headers });
 }
 
 async function handleGetPhoto(env, token, filename, searchParams, origin) {
@@ -769,6 +860,14 @@ export default {
         return requireAuth(request, env, origin, () => handleRegenerateLink(env, m[1], origin));
       }
 
+      m = pathname.match(/^\/api\/admin\/galleries\/([^/]+)\/cover-hd$/);
+      if (m && request.method === "POST") {
+        return requireAuth(request, env, origin, () => handleUploadCoverHd(request, env, m[1], origin));
+      }
+      if (m && request.method === "DELETE") {
+        return requireAuth(request, env, origin, () => handleDeleteCoverHd(env, m[1], origin));
+      }
+
       m = pathname.match(/^\/api\/admin\/galleries\/([^/]+)\/photos$/);
       if (m && request.method === "POST") {
         return requireAuth(request, env, origin, () => handleUploadPhoto(request, env, m[1], origin));
@@ -790,6 +889,11 @@ export default {
       m = pathname.match(/^\/api\/gallery\/([^/]+)$/);
       if (m && request.method === "GET") {
         return handleGetClientGallery(request, env, m[1], origin);
+      }
+
+      m = pathname.match(/^\/api\/gallery\/([^/]+)\/cover$/);
+      if (m && request.method === "GET") {
+        return handleGetCoverHd(env, m[1], origin);
       }
 
       m = pathname.match(/^\/api\/gallery\/([^/]+)\/accueil$/);

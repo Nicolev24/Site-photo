@@ -232,15 +232,32 @@ async function fetchAccueil(token) {
   }
 }
 
-function poserImageCouverture(token, filename) {
+// La couverture : d'abord la version légère, floutée (jamais une image agrandie et
+// pixellisée), puis la photo nette qui la remplace en fondu. Si Nicolas a envoyé une
+// version haute qualité de sa couverture, c'est elle qui est affichée.
+function poserImageCouverture(token, filename, versionHd) {
   document.getElementById("couverture-flou").src = photoUrl(token, filename, "thumb");
   const nette = document.getElementById("couverture-nette");
-  const chargement = new Image();
-  chargement.onload = () => {
-    nette.src = chargement.src;
+  nette.classList.remove("est-chargee");
+  const afficher = (src) => {
+    nette.src = src;
     nette.classList.add("est-chargee");
   };
-  chargement.src = photoUrl(token, filename, "original");
+  const normale = photoUrl(token, filename, "original");
+  const chargement = new Image();
+  chargement.decoding = "async";
+  chargement.onload = () => afficher(chargement.src);
+  if (versionHd) {
+    chargement.onerror = () => {
+      // version haute qualité indisponible : on retombe sur la photo d'origine
+      const secours = new Image();
+      secours.onload = () => afficher(secours.src);
+      secours.src = normale;
+    };
+    chargement.src = `${API_BASE}/api/gallery/${encodeURIComponent(token)}/cover?v=${encodeURIComponent(versionHd)}`;
+  } else {
+    chargement.src = normale;
+  }
 }
 
 let choixToken = null;
@@ -254,7 +271,7 @@ function afficherChoix(token, accueil) {
   document.getElementById("couverture-titre").textContent = accueil.title || "";
   document.getElementById("couverture-compte").textContent = "";
   document.getElementById("couverture-voir").hidden = true;
-  if (accueil.couverture) poserImageCouverture(token, accueil.couverture);
+  if (accueil.couverture) poserImageCouverture(token, accueil.couverture, accueil.couvertureVersion);
   document.getElementById("acces-choix").hidden = false;
   document.getElementById("acces-aide").hidden = false;
   document.getElementById("acces-form").hidden = true;
@@ -404,6 +421,23 @@ async function afficherEspace() {
       const charge = () => img.classList.add("charge");
       if (img.complete && img.naturalWidth) charge();
       else img.addEventListener("load", charge, { once: true });
+      // Miniature d'abord, puis la photo nette dès que la carte est à l'écran (pas de vignette agrandie)
+      const passerEnNet = () => {
+        const net = new Image();
+        net.onload = () => (img.src = net.src);
+        net.src = photoUrl(g.token, g.couverture, "original");
+      };
+      if ("IntersectionObserver" in window) {
+        const obs = new IntersectionObserver((entrees) => {
+          if (entrees.some((e) => e.isIntersecting)) {
+            obs.disconnect();
+            passerEnNet();
+          }
+        });
+        obs.observe(lien);
+      } else {
+        passerEnNet();
+      }
     }
     cartes.appendChild(lien);
   });
@@ -413,12 +447,12 @@ async function afficherEspace() {
 // version légère s'affiche tout de suite, la photo nette la remplace en fondu.
 function afficherCouverture(gallery) {
   const couverture = document.getElementById("galerie-couverture");
-  const premiere = allPhotos[0];
+  const premiere = allPhotos.find((p) => p.filename === gallery.couverture) || allPhotos[0];
   if (!couverture || !premiere) return;
   document.getElementById("couverture-nom").textContent = gallery.name || "Vos photos";
   document.getElementById("couverture-titre").textContent = gallery.title || "";
   document.getElementById("couverture-compte").textContent = `${allPhotos.length} photo${allPhotos.length > 1 ? "s" : ""}`;
-  poserImageCouverture(currentToken, premiere.filename);
+  poserImageCouverture(currentToken, premiere.filename, premiere.filename === gallery.couverture ? gallery.couvertureVersion : null);
   couverture.hidden = false;
   // La barre d'outils flottante reste cachée tant que la couverture occupe l'écran.
   document.documentElement.classList.add("sur-couverture");
