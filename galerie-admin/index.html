@@ -59,8 +59,9 @@
         <div class="mdp-ligne">
           <input type="text" id="new-gallery-password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Proposé automatiquement" />
           <button id="new-password-btn" class="btn-outline btn-small" type="button">Un autre</button>
+          <label class="mdp-sans"><input type="checkbox" id="new-gallery-nopass" /> Sans mot de passe</label>
         </div>
-        <p class="admin-hint">Le client le tape pour retrouver ce shooting dans l'espace client. Tu peux le changer ; sinon celui-ci est utilisé.</p>
+        <p class="admin-hint" id="new-password-hint">Le client le tape pour retrouver ce shooting dans l'espace client. Tu peux le changer ; sinon celui-ci est utilisé.</p>
       </div>
       <button id="create-gallery-btn" class="btn btn-primary btn-small" type="button">+ Créer la galerie</button>
     </div>
@@ -91,6 +92,7 @@
           <input type="text" id="gallery-password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Aucun mot de passe" />
           <button id="gallery-password-propose" class="btn-outline btn-small" type="button">Proposer</button>
           <button id="gallery-password-copy" class="btn-outline btn-small" type="button">Copier</button>
+          <label class="mdp-sans"><input type="checkbox" id="gallery-nopass" /> Sans mot de passe</label>
         </div>
       </div>
       <button id="gallery-password-save" class="btn btn-primary btn-small" type="button">Enregistrer le mot de passe</button>

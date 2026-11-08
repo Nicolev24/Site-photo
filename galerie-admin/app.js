@@ -248,6 +248,23 @@ async function proposerMotDePasseCreation() {
   champ.value = await motDePasseSuggere();
 }
 
+// Case « Sans mot de passe » à la création : le lien ouvre directement la galerie.
+function majCreationSansMotDePasse() {
+  const sans = document.getElementById("new-gallery-nopass").checked;
+  document.getElementById("new-gallery-password").disabled = sans;
+  document.getElementById("new-password-btn").disabled = sans;
+  document.getElementById("new-password-hint").textContent = sans
+    ? "Sans mot de passe : le lien ouvre directement la galerie, sans choix client/invité ni espace client. Tu pourras en ajouter un plus tard."
+    : "Le client le tape pour retrouver ce shooting dans l'espace client. Tu peux le changer ; sinon celui-ci est utilisé.";
+}
+
+document.getElementById("new-gallery-nopass").addEventListener("change", async () => {
+  majCreationSansMotDePasse();
+  const champ = document.getElementById("new-gallery-password");
+  if (document.getElementById("new-gallery-nopass").checked) champ.value = "";
+  else if (!champ.value) await proposerMotDePasseCreation();
+});
+
 document.getElementById("new-password-btn").addEventListener("click", proposerMotDePasseCreation);
 
 document.getElementById("create-gallery-btn").addEventListener("click", async () => {
@@ -261,15 +278,26 @@ document.getElementById("create-gallery-btn").addEventListener("click", async ()
   }
   try {
     showStatus("Création…", "loading");
+    const sansMdp = document.getElementById("new-gallery-nopass").checked;
     const motdepasse = document.getElementById("new-gallery-password").value.trim();
-    await apiFetch("/api/admin/galleries", {
+    const creee = await apiFetch("/api/admin/galleries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, title, motdepasse }),
     });
+    // Le Worker en génère un si on n'en envoie pas : pour « sans mot de passe », on le retire aussitôt.
+    if (sansMdp) {
+      await apiFetch(`/api/admin/galleries/${creee.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ motdepasse: "" }),
+      });
+    }
     nameInput.value = "";
     titleInput.value = "";
     document.getElementById("new-gallery-password").value = "";
+    document.getElementById("new-gallery-nopass").checked = false;
+    majCreationSansMotDePasse();
     showStatus("Galerie créée ✓", "success"); // son mot de passe client apparaît sur sa carte
     proposerMotDePasseCreation();
     loadGalleries();
@@ -312,6 +340,8 @@ async function openGallery(id, token, name, title) {
   const champMdp = document.getElementById("gallery-password");
   champMdp.value = "";
   champMdp.dataset.modifie = "";
+  document.getElementById("gallery-nopass").checked = true;
+  majCaseSansMotDePasse();
   majAideMotDePasse();
   showDetailView();
   await loadGalleryPhotos();
@@ -352,6 +382,14 @@ document.getElementById("save-message-btn").addEventListener("click", async () =
   }
 });
 
+// Case « Sans mot de passe » du détail : désactive le champ (le mot de passe sera retiré à l'enregistrement).
+function majCaseSansMotDePasse() {
+  const sans = document.getElementById("gallery-nopass").checked;
+  document.getElementById("gallery-password").disabled = sans;
+  document.getElementById("gallery-password-propose").disabled = sans;
+  document.getElementById("gallery-password-copy").disabled = sans;
+}
+
 function majAideMotDePasse() {
   const aide = document.getElementById("gallery-password-hint");
   if (!aide) return;
@@ -362,6 +400,14 @@ function majAideMotDePasse() {
 
 document.getElementById("gallery-password").addEventListener("input", (e) => {
   e.target.dataset.modifie = "1";
+});
+
+document.getElementById("gallery-nopass").addEventListener("change", async (e) => {
+  const champ = document.getElementById("gallery-password");
+  champ.dataset.modifie = "1";
+  if (e.target.checked) champ.value = "";
+  else if (!champ.value) champ.value = (await motDePasseSuggere()) || "";
+  majCaseSansMotDePasse();
 });
 
 document.getElementById("gallery-password-propose").addEventListener("click", async () => {
@@ -389,7 +435,12 @@ document.getElementById("gallery-password-copy").addEventListener("click", async
 document.getElementById("gallery-password-save").addEventListener("click", async () => {
   if (!currentGalleryId) return;
   const champ = document.getElementById("gallery-password");
-  const motdepasse = champ.value.trim();
+  const sans = document.getElementById("gallery-nopass").checked;
+  const motdepasse = sans ? "" : champ.value.trim();
+  if (!sans && !motdepasse) {
+    showStatus("Saisis un mot de passe, ou coche « Sans mot de passe ».", "error");
+    return;
+  }
   if (!motdepasse && currentMotDePasse && !confirm("Retirer le mot de passe ? La galerie s'ouvrira directement avec le lien, sans espace client, et les clients connectés perdent leur accès.")) return;
   if (motdepasse && currentMotDePasse && motdepasse !== currentMotDePasse && !confirm("Changer le mot de passe ? Les clients déjà connectés devront taper le nouveau.")) return;
   try {
@@ -402,6 +453,8 @@ document.getElementById("gallery-password-save").addEventListener("click", async
     currentMotDePasse = maj.motdepasse || "";
     champ.value = currentMotDePasse;
     champ.dataset.modifie = "";
+    document.getElementById("gallery-nopass").checked = !currentMotDePasse;
+    majCaseSansMotDePasse();
     majAideMotDePasse();
     showStatus(currentMotDePasse ? `Mot de passe enregistré ✓ ${currentMotDePasse}` : "Mot de passe retiré ✓", "success");
   } catch (e) {
@@ -439,7 +492,11 @@ async function loadGalleryPhotos() {
     document.getElementById("gallery-message").value = gallery.message || "";
     currentMotDePasse = gallery.motdepasse || "";
     const champMdp = document.getElementById("gallery-password");
-    if (!champMdp.dataset.modifie) champMdp.value = currentMotDePasse;
+    if (!champMdp.dataset.modifie) {
+      champMdp.value = currentMotDePasse;
+      document.getElementById("gallery-nopass").checked = !currentMotDePasse;
+      majCaseSansMotDePasse();
+    }
     majAideMotDePasse();
     renderFavorisResume(gallery.favorisUpdatedAt);
     renderPhotosGrid(gallery.photos);
