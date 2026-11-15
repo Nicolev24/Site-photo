@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- Maquette privée : jamais indexée, absente du plan du site, aucun lien vers elle. -->
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<title>Labo · Accueil appareil photo — Nicolas Leveugle Photographie</title>
+<meta name="description" content="Maquette de travail (non publiée) de la nouvelle page d'accueil." />
+<meta name="theme-color" content="#1c1916" />
+<link rel="icon" href="../../favicon.ico" sizes="48x48" />
+<link rel="icon" href="../../icones/favicon.svg" type="image/svg+xml" />
+
+<!-- La photo du viseur s'affiche tout de suite : c'est la vraie image de la page. -->
+<link rel="preload" as="image" fetchpriority="high"
+  href="../../images/tailles/mariages/gateau-lumiere-1200.webp"
+  imagesrcset="../../images/tailles/mariages/gateau-lumiere-480.webp 480w, ../../images/tailles/mariages/gateau-lumiere-800.webp 800w, ../../images/tailles/mariages/gateau-lumiere-1200.webp 1200w, ../../images/tailles/mariages/gateau-lumiere-1600.webp 1600w, ../../images/mariages/gateau-lumiere.jpg 2134w"
+  imagesizes="100vw" />
+<link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
+
+<!-- Univers Particuliers / Commerces : même système que le site (lu, jamais modifié). -->
+<script src="../../js/univers.js"></script>
+<script>
+  // Préférences du visiteur, connues avant l'affichage.
+  (function () {
+    var r = document.documentElement;
+    try {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("calme");
+    } catch (e) {}
+    r.classList.add("js");
+  })();
+</script>
+<link rel="stylesheet" href="labo.css" />
+</head>
+<body>
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<header class="entete" id="entete">
+  <a class="entete-logo" href="../../index.html">Nicolas Leveugle</a>
+  <nav class="entete-nav" aria-label="Menu principal">
+    <a href="../../a-propos.html" data-lien-univers>À propos</a>
+    <a href="../../services.html" data-lien-univers>Services &amp; tarifs</a>
+    <a href="../../contact.html" data-lien-univers>Contact</a>
+  </nav>
+  <a class="entete-reserver" href="../../contact.html" data-lien-univers>Réserver</a>
+</header>
+
+<!-- Couches fixes : flou d'arrière-plan, halo, appareil 3D, grain. -->
+<div class="fond" aria-hidden="true">
+  <img class="fond-photo" id="fond-photo" src="../../images/tailles/mariages/gateau-lumiere-480.webp" alt="" decoding="async" />
+  <div class="fond-halo" id="fond-halo"></div>
+</div>
+<canvas class="toile" id="toile" aria-hidden="true"></canvas>
+<img class="appareil-fixe" id="appareil-fixe" data-src="appareil-fixe.webp" alt="" aria-hidden="true" hidden />
+<div class="eclair" id="eclair" aria-hidden="true"></div>
+
+<main>
+  <!-- 1. Le viseur -->
+  <section class="intro" id="intro" aria-label="Accueil">
+    <div class="scene" id="scene">
+      <div class="cadre" id="cadre">
+        <img class="cadre-photo" id="photo"
+          src="../../images/tailles/mariages/gateau-lumiere-1200.webp"
+          srcset="../../images/tailles/mariages/gateau-lumiere-480.webp 480w, ../../images/tailles/mariages/gateau-lumiere-800.webp 800w, ../../images/tailles/mariages/gateau-lumiere-1200.webp 1200w, ../../images/tailles/mariages/gateau-lumiere-1600.webp 1600w, ../../images/mariages/gateau-lumiere.jpg 2134w"
+          sizes="100vw" width="2134" height="1421" fetchpriority="high" decoding="sync"
+          alt="Les mariés coupent leur gâteau dans un faisceau de lumière" />
+      </div>
+
+      <div class="viseur" id="viseur">
+        <!-- Interface du viseur (décor) -->
+        <div class="hud" aria-hidden="true">
+          <svg class="hud-grille" viewBox="0 0 300 300" preserveAspectRatio="none">
+            <line x1="100" y1="0" x2="100" y2="300" /><line x1="200" y1="0" x2="200" y2="300" />
+            <line x1="0" y1="100" x2="300" y2="100" /><line x1="0" y1="200" x2="300" y2="200" />
+          </svg>
+          <span class="hud-coin hud-coin-hg"></span><span class="hud-coin hud-coin-hd"></span>
+          <span class="hud-coin hud-coin-bg"></span><span class="hud-coin hud-coin-bd"></span>
+          <div class="hud-haut">
+            <span class="hud-mode">M</span><span>AF-S</span><span class="hud-masque">RAW</span>
+            <span class="hud-espace"></span>
+            <span class="hud-vues" id="vues">998</span>
+            <span class="hud-batterie"><i></i></span>
+          </div>
+          <div class="hud-bas">
+            <span class="hud-ok" id="hud-ok"></span>
+            <span>1/250</span><span>F1.8</span><span class="hud-expo">±0.0</span><span>ISO 100</span>
+          </div>
+        </div>
+
+        <!-- Collimateur (zone de mise au point) -->
+        <div class="collimateur" id="collimateur" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+        <!-- Titre et choix d'univers : vrais textes, intégrés au viseur -->
+        <div class="viseur-texte">
+          <h1 class="titre" data-zone>
+            <span class="titre-ligne">Photographe à Ath</span>
+            <span class="titre-ligne titre-or">Wallonie &amp; Bruxelles</span>
+          </h1>
+          <p class="sous-titre">Des photos naturelles, qui vous ressemblent.</p>
+          <div class="zones" role="group" aria-label="Pour qui sont les photos ?">
+            <button type="button" class="zone" data-univers="particuliers">
+              <span class="zone-nom">Particulier</span>
+              <span class="zone-detail">Mariages · portraits · couples</span>
+            </button>
+            <button type="button" class="zone" data-univers="commerces">
+              <span class="zone-nom">Commerce</span>
+              <span class="zone-detail">Photos &amp; site vitrine</span>
+            </button>
+          </div>
+          <p class="indice" id="indice">Choisissez une zone de mise au point — ou faites défiler</p>
+        </div>
+      </div>
+
+      <canvas class="obturateur" id="obturateur" aria-hidden="true"></canvas>
+    </div>
+  </section>
+
+  <!-- 2. Le contenu, à côté de l'appareil -->
+  <div class="contenu" id="contenu" tabindex="-1">
+    <section class="bloc accroche" id="accroche" aria-labelledby="accroche-titre">
+      <div class="bascule" role="group" aria-label="Votre univers">
+        <button type="button" class="bascule-btn" data-univers="particuliers" aria-pressed="false">Particulier</button>
+        <button type="button" class="bascule-btn" data-univers="commerces" aria-pressed="false">Commerce</button>
+      </div>
+      <h2 class="accroche-titre" id="accroche-titre" data-texte="titre"></h2>
+      <p class="accroche-texte" data-texte="texte"></p>
+      <div class="accroche-actions">
+        <a class="bouton bouton-plein" href="#formules">Voir les formules</a>
+        <a class="bouton bouton-verre" href="../../contact.html" data-lien-univers data-flash>Me contacter</a>
+      </div>
+    </section>
+
+    <section class="bloc formules" id="formules" aria-labelledby="formules-titre">
+      <p class="surtitre">Formules</p>
+      <h2 class="bloc-titre" id="formules-titre">À partir de</h2>
+      <p class="bloc-intro" data-texte="formules"></p>
+      <ol class="formules-liste" id="formules-liste"></ol>
+      <a class="lien-fleche" href="../../services.html" data-lien-univers>Tous les détails et la FAQ</a>
+    </section>
+
+    <section class="bloc photos" id="photos" aria-labelledby="photos-titre">
+      <p class="surtitre">Quelques photos</p>
+      <h2 class="bloc-titre" id="photos-titre" data-texte="photos-titre"></h2>
+      <div class="photos-grille" id="photos-grille"></div>
+    </section>
+
+    <section class="bloc liens" id="liens" aria-labelledby="liens-titre">
+      <p class="surtitre">Entrez, faites un tour</p>
+      <h2 class="bloc-titre" id="liens-titre">La suite</h2>
+      <ul class="liens-liste">
+        <li><a href="../../a-propos.html" data-lien-univers><span class="liens-nom">À propos</span><span class="liens-detail">Mon univers</span></a></li>
+        <li><a href="../../services.html" data-lien-univers><span class="liens-nom">Services &amp; tarifs</span><span class="liens-detail">Les formules</span></a></li>
+        <li><a href="../../contact.html" data-lien-univers data-flash><span class="liens-nom">Contact</span><span class="liens-detail">Écrivez-moi</span></a></li>
+      </ul>
+      <p class="canaux" id="canaux"></p>
+    </section>
+
+    <footer class="pied">
+      <p>© <span id="annee">2026</span> Nicolas Leveugle Photographie · Ath · Wallonie &amp; Bruxelles</p>
+      <p class="pied-labo">Maquette de travail — page non publiée</p>
+    </footer>
+  </div>
+</main>
+
+<noscript>
+  <style>.intro{height:auto}.scene{position:relative}.contenu{margin-top:0}</style>
+</noscript>
+
+<script src="../vendor/gsap.min.js" defer></script>
+<script src="../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../vendor/lenis.min.js" defer></script>
+<script src="appareil.js" defer></script>
+</body>
+</html>
