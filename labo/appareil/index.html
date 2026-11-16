@@ -29,9 +29,14 @@
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("calme");
     } catch (e) {}
     r.classList.add("js");
+    var t = "jour";
+    try {
+      t = localStorage.getItem("labo-theme") === "nuit" ? "nuit" : "jour";
+    } catch (e) {}
+    r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="labo.css?v=9" />
+<link rel="stylesheet" href="labo.css?v=10" />
 </head>
 <body>
 
@@ -44,6 +49,10 @@
     <a href="../../services.html" data-lien-univers>Services &amp; tarifs</a>
     <a href="../../contact.html" data-lien-univers>Contact</a>
   </nav>
+  <button type="button" class="theme-btn" id="theme-btn" aria-label="Passer en mode nuit">
+    <svg class="ic-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 1 1 9.4 4a6.6 6.6 0 0 0 10.6 10.6z" /></svg>
+    <svg class="ic-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4 7 7M17 17l1.6 1.6M5.4 18.6 7 17M17 7l1.6-1.6" /></svg>
+  </button>
   <a class="entete-reserver" href="../../contact.html" data-lien-univers>Réserver</a>
 </header>
 
@@ -52,6 +61,7 @@
   <img class="fond-photo" id="fond-photo" src="../../images/tailles/mariages/gateau-lumiere-480.webp" alt="" decoding="async" />
   <div class="fond-halo" id="fond-halo"></div>
 </div>
+<div class="ombre" id="ombre" aria-hidden="true"></div>
 <canvas class="toile" id="toile" aria-hidden="true"></canvas>
 <img class="appareil-fixe" id="appareil-fixe" data-src="appareil-fixe.webp" alt="" aria-hidden="true" hidden />
 <div class="eclair" id="eclair" aria-hidden="true"></div>
@@ -113,20 +123,53 @@
     </div>
   </section>
 
-  <!-- 2. Le contenu, à côté de l'appareil -->
+  <!-- 2. En quatre temps : l'appareil au centre, il se démonte puis se remonte -->
+  <section class="chapitres" id="chapitres" aria-label="Mon travail en quatre temps">
+    <div class="chap-scene" id="chap-scene">
+      <article class="chap" id="accroche" data-cote="gauche" aria-labelledby="accroche-titre">
+        <p class="chap-sur"><span>01</span>Le regard</p>
+        <div class="bascule" role="group" aria-label="Votre univers">
+          <button type="button" class="bascule-btn" data-univers="particuliers" aria-pressed="false">Particulier</button>
+          <button type="button" class="bascule-btn" data-univers="commerces" aria-pressed="false">Commerce</button>
+        </div>
+        <h2 class="chap-titre chap-titre-long" id="accroche-titre" data-texte="titre"></h2>
+        <p class="chap-texte" data-texte="texte"></p>
+        <div class="accroche-actions">
+          <a class="lien lien-or" href="#pellicule">Voir mon travail</a>
+          <a class="lien" href="../../contact.html" data-lien-univers data-flash>Me contacter</a>
+        </div>
+      </article>
+      <article class="chap" data-cote="droite" aria-labelledby="chap2-titre">
+        <p class="chap-sur"><span>02</span>La lumière</p>
+        <h2 class="chap-titre" id="chap2-titre">La lumière <em>d'abord</em>.</h2>
+        <p class="chap-texte">Naturelle, douce, travaillée sur place. Des couleurs fidèles, sans filtre forcé.</p>
+      </article>
+      <article class="chap" data-cote="gauche" aria-labelledby="chap3-titre">
+        <p class="chap-sur"><span>03</span>Le déclic</p>
+        <h2 class="chap-titre" id="chap3-titre" data-texte="declic"></h2>
+        <p class="chap-texte" data-texte="declic-texte"></p>
+      </article>
+      <article class="chap" data-cote="droite" aria-labelledby="chap4-titre">
+        <p class="chap-sur"><span>04</span>La galerie</p>
+        <h2 class="chap-titre" id="chap4-titre">Vos photos, <em>rien qu'à vous</em>.</h2>
+        <ul class="chap-liste" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
+      </article>
+
+      <div class="chap-cartes" aria-hidden="true">
+        <span class="carte carte-reglage" data-groupe="2"><small>Ouverture</small><strong>f/1.8</strong></span>
+        <span class="carte carte-reglage" data-groupe="2"><small>Focale</small><strong>23 mm</strong></span>
+        <span class="carte carte-reglage" data-groupe="2"><small>Lumière</small><strong>naturelle</strong></span>
+        <span class="carte carte-photo" data-groupe="3" data-vue="0"></span>
+        <span class="carte carte-photo" data-groupe="3" data-vue="1"></span>
+        <span class="carte carte-photo" data-groupe="3" data-vue="2"></span>
+      </div>
+      <ol class="chap-index" aria-hidden="true"><li>Le regard</li><li>La lumière</li><li>Le déclic</li><li>La galerie</li></ol>
+      <p class="chap-num" id="chap-num" aria-hidden="true">01</p>
+    </div>
+  </section>
+
+  <!-- 3. La suite : la pellicule, puis les tirages -->
   <div class="contenu" id="contenu" tabindex="-1">
-    <section class="bloc accroche" id="accroche" aria-labelledby="accroche-titre">
-      <div class="bascule" role="group" aria-label="Votre univers">
-        <button type="button" class="bascule-btn" data-univers="particuliers" aria-pressed="false">Particulier</button>
-        <button type="button" class="bascule-btn" data-univers="commerces" aria-pressed="false">Commerce</button>
-      </div>
-      <h2 class="accroche-titre" id="accroche-titre" data-texte="titre"></h2>
-      <p class="accroche-texte" data-texte="texte"></p>
-      <div class="accroche-actions">
-        <a class="lien lien-or" href="#pellicule">Voir mon travail</a>
-        <a class="lien" href="../../contact.html" data-lien-univers data-flash>Me contacter</a>
-      </div>
-    </section>
 
     <!-- La pellicule : chaque vue avance d'un cran et se développe (négatif → photo) -->
     <section class="bloc pellicule" id="pellicule" aria-labelledby="pellicule-titre">
@@ -158,7 +201,6 @@
           <li><a class="fb-tirage" href="../../contact.html" data-lien-univers data-flash><span class="fb-pince" aria-hidden="true"></span><span class="fb-papier"><span class="fb-photo" data-tirage="2"></span><span class="fb-legende">Contact</span></span></a></li>
         </ul>
       </div>
-      <ul class="fb-reglages" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
       <p class="canaux" data-canaux></p>
     </section>
 
@@ -171,12 +213,12 @@
 </main>
 
 <noscript>
-  <style>.intro{height:auto}.scene{position:relative}.contenu{margin-top:0}</style>
+  <style>.intro{height:auto}.scene{position:relative}.chapitres{margin-top:0}</style>
 </noscript>
 
 <script src="../vendor/gsap.min.js" defer></script>
 <script src="../vendor/ScrollTrigger.min.js" defer></script>
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="appareil.js?v=9" defer></script>
+<script src="appareil.js?v=10" defer></script>
 </body>
 </html>

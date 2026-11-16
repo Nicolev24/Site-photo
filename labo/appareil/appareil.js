@@ -58,7 +58,12 @@
   const scene = $("#scene");
   const contenu = $("#contenu");
   const zones = $$(".zone");
-  const accroche = $("#accroche");
+  const chapitres = $("#chapitres");
+  const chaps = $$(".chap");
+  const cartes = $$(".carte");
+  const indexChap = $$(".chap-index li");
+  const numChap = $("#chap-num");
+  const ombre = $("#ombre");
   const cale = $("#contenu-cale");
   const pellicule = $("#pellicule");
   const bande = $("#pellicule-bande");
@@ -95,30 +100,19 @@
       y: (1 - (y / h) * 2) * prof * M.tan,
     });
     const pxParUnite = l / (2 * prof * M.tan * M.aspect);
-    let cx, cy, largeur;
-    if (M.mobile) {
-      cx = l / 2;
-      cy = M.entete / 2;
-      largeur = 64;
-    } else {
-      const finColonne = Math.min(0.56 * l, 800) + clamp(0.06 * l, 22, 96);
-      cx = (finColonne + l) / 2;
-      cy = h * 0.53;
-      largeur = Math.min((l - finColonne) * 0.78, 560);
-    }
+    // Rangé à la fin : au centre de l'en-tête, sur téléphone comme sur ordinateur
+    const cx = l / 2;
+    const cy = M.entete / 2;
+    const largeur = M.mobile ? 56 : 72;
     const w = versMonde(cx, cy);
-    M.dock = { x: w.x, y: w.y, s: largeur / (GEO.corps.l * pxParUnite), px: cx, py: cy };
-    // Le contenu arrive juste sous l'en-tête à la fin de l'intro (pas de zone vide).
-    // Sur téléphone, juste sous l'appareil rangé dans l'en-tête.
-    const ppuDock = h / (2 * prof * M.tan);
-    M.basDock = h / 2 - M.dock.y * ppuDock + 4.5 * M.dock.s * ppuDock;
-    M.ecart = M.mobile ? 14 : 28;
-    M.cibleContenu = M.mobile ? Math.max(M.entete + 6, Math.ceil(M.basDock + M.ecart + 2)) : M.entete;
-    contenu.style.marginTop = M.cibleContenu - h + "px";
-    M.contenuHaut = h + M.course + (M.cibleContenu - h); // position dans la page
-    halo.style.background = M.mobile
-      ? ""
-      : `radial-gradient(${largeur * 1.15}px ${largeur * 1.05}px at ${cx}px ${cy}px, rgba(174,140,91,0.17), rgba(174,140,91,0) 72%)`;
+    M.prof = prof;
+    M.pxu = pxParUnite;
+    M.dock = { x: w.x, y: w.y, s: largeur / (GEO.corps.l * pxParUnite), px: cx, py: cy, l: largeur };
+    // Les chapitres : un écran de défilement chacun environ
+    M.pasCh = Math.round(h * (M.mobile ? 0.95 : 1.05));
+    chapitres.style.height = calme ? "" : h + Math.round(3.75 * M.pasCh) + "px";
+    M.contenuHaut = contenu.getBoundingClientRect().top + window.scrollY;
+    halo.style.background = "";
     mesurerPellicule();
     return true;
   }
@@ -136,8 +130,44 @@
   let api3d = null;
   let modeFixe = false;
 
-  function calculer(p, temps) {
-    const e = { p };
+  // Les quatre temps : position de l'appareil (fractions d'écran), largeur (px), angles.
+  function etats() {
+    const l = M.l;
+    if (M.mobile)
+      return [
+        { x: 0.5, y: 0.3, w: 0.8 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
+        { x: 0.6, y: 0.29, w: 0.56 * l, ry: 2.3, rx: 0.14, rz: 0 },
+        { x: 0.5, y: 0.29, w: 0.66 * l, ry: Math.PI + 0.2, rx: 0.1, rz: 0 },
+        { x: 0.5, y: 0.29, w: 0.7 * l, ry: 2 * Math.PI - 0.3, rx: 0.08, rz: 0.02 },
+      ];
+    return [
+      { x: 0.68, y: 0.52, w: Math.min(0.4 * l, 640), ry: TOUR, rx: 0.16, rz: -0.05 },
+      { x: 0.37, y: 0.53, w: Math.min(0.3 * l, 470), ry: 2.3, rx: 0.14, rz: 0 },
+      { x: 0.65, y: 0.5, w: Math.min(0.34 * l, 540), ry: Math.PI + 0.2, rx: 0.1, rz: 0 },
+      { x: 0.3, y: 0.52, w: Math.min(0.33 * l, 520), ry: 2 * Math.PI - 0.3, rx: 0.08, rz: 0.02 },
+    ];
+  }
+  const melange = (a, b, k) => ({
+    x: lerp(a.x, b.x, k),
+    y: lerp(a.y, b.y, k),
+    w: lerp(a.w, b.w, k),
+    ry: lerp(a.ry, b.ry, k),
+    rx: lerp(a.rx, b.rx, k),
+    rz: lerp(a.rz, b.rz, k),
+  });
+  function monde(st) {
+    return {
+      x: (st.x * 2 - 1) * M.prof * M.tan * M.aspect,
+      y: (1 - st.y * 2) * M.prof * M.tan,
+      s: st.w / (GEO.corps.l * M.pxu),
+    };
+  }
+
+  // pp : défilement / longueur de l'intro (0 → 1 pendant l'intro, puis au-delà)
+  function calculer(pp, temps) {
+    const p = clamp(pp);
+    const c = ((pp - 1) * M.course) / M.pasCh; // avancement dans les chapitres (0 → 4)
+    const e = { p, c };
     if (calme) {
       // Version douce : pas de recul ni de rotation, l'appareil apparaît rangé.
       const f = seg(p, 0, 0.55);
@@ -146,8 +176,8 @@
       e.toile = seg(p, 0.35, 0.8);
       e.viseur = 1 - seg(p, 0, 0.12);
       e.fond = 0;
-      e.halo = seg(p, 0.5, 1);
-      e.accroche = seg(p, 0.4, 0.8);
+      e.dock = true;
+      e.px = { x: M.dock.px, y: M.dock.py, w: M.dock.l };
       return e;
     }
 
@@ -161,55 +191,80 @@
     if (p >= PH.a && api3d) e.cadre.o = 0; // l'écran 3D prend le relais, au pixel près
     else if (!api3d) e.cadre.o = 1 - seg(p, PH.a, PH.a + 0.14);
 
-    // b. Un tour complet, légère inclinaison ; c. rangement
+    // b. Demi-tour vers l'objectif ; c. il se place pour le premier chapitre
+    const E = etats();
     const tb = seg(p, PH.b0, PH.b1);
     const tour = ease.inOut3(tb) * TOUR;
     const vague = Math.sin(Math.PI * tb);
-    const tc = ease.inOut4(seg(p, PH.c0, PH.c1));
+    const tc = ease.inOut3(seg(p, PH.c0, PH.c1));
     const recentre = ease.inOut2(seg(p, PH.b0, PH.b0 + 0.22));
-    let x = -GEO.ecran.cx * (1 - recentre);
-    let y = -GEO.ecran.cy * (1 - recentre) + 0.55 * vague * (1 - tc);
-    const z = GEO.camZ - d - GEO.ecran.z;
-    x = lerp(x, M.dock.x, tc);
-    y = lerp(y, M.dock.y, tc);
-    // pendant le tour, l'appareil recule un peu (l'objectif ne sort pas de l'écran)
     const recul = 1 - (M.mobile ? 0.42 : 0.24) * ease.inOut2(seg(p, PH.b0, PH.b0 + 0.3));
-    const s = lerp(recul, M.dock.s, tc);
-    let rx = 0.16 * vague + 0.16 * tc;
+    const w0 = monde(E[0]);
+    let x = lerp(-GEO.ecran.cx * (1 - recentre), w0.x, tc);
+    let y = lerp(-GEO.ecran.cy * (1 - recentre) + 0.55 * vague, w0.y, tc);
+    let s = lerp(recul, w0.s, tc);
     let ry = tour;
-    let rz = 0.07 * vague - 0.05 * tc;
+    let rx = 0.16 * vague * (1 - tc) + E[0].rx * tc;
+    let rz = 0.07 * vague * (1 - tc) + E[0].rz * tc;
+    let eclate = 0;
+    const z = GEO.camZ - d - GEO.ecran.z;
 
-    // Reflet qui balaie l'objectif quand il arrive face à nous
-    const balayage = tour > TOUR - 1.5 ? seg(tour, TOUR - 1.5, TOUR) : -1;
-
-    // Après l'intro : l'appareil reste vivant
-    const vivant = seg(p, 0.9, 1);
-    let yFlotte = 0;
-    if (vivant > 0) {
-      const apres = (window.scrollY - M.course) / M.h;
-      ry += vivant * (Math.sin(apres * 1.1) * 0.16 + reaction.ry);
-      rx += vivant * (Math.sin(apres * 0.8 + 1) * 0.04 + reaction.rx);
-      if (!M.mobile && temps) {
-        yFlotte = Math.sin(temps * 0.9) * 0.05 * s * 6;
-        ry += Math.sin(temps * 0.45) * 0.035 * vivant;
-        rz += Math.sin(temps * 0.6) * 0.01 * vivant;
-      }
+    // Les chapitres : l'appareil passe d'une pose à l'autre, se démonte (02), se remonte et déclenche (03),
+    // montre son écran (04), puis se range dans l'en-tête.
+    if (c > 0) {
+      let st = E[0];
+      for (let i = 1; i < E.length; i++) if (c > i - 0.62) st = melange(E[i - 1], E[i], ease.inOut3(seg(c, i - 0.62, i - 0.08)));
+      const kd = ease.inOut3(seg(c, 3.5, 4.3));
+      if (kd > 0) st = melange(st, { x: 0.5, y: M.dock.py / M.h, w: M.dock.l, ry: 2 * Math.PI + TOUR, rx: 0.16, rz: -0.05 }, kd);
+      const w = monde(st);
+      x = w.x;
+      y = w.y;
+      s = w.s;
+      ry = st.ry;
+      rx = st.rx;
+      rz = st.rz;
+      eclate = ease.inOut3(seg(c, 0.5, 1.02)) * (1 - ease.inOut3(seg(c, 1.42, 1.95)));
     }
-    e.d = { x, y: y + yFlotte * vivant, z, s, rx, ry, rz, balayage, reflet: 0.32 * seg(p, PH.a, PH.a + 0.08), flash: reaction.flash };
-    // Bas de l'appareil à l'écran : le texte se cale juste en dessous et monte avec lui.
+
+    const balayage = tour > TOUR - 1.5 && c <= 0 ? seg(tour, TOUR - 1.5, TOUR) : -1;
+
+    // Vivant : réactions (pellicule, choix d'univers) et léger flottement sur ordinateur
+    const vivant = seg(pp, 0.9, 1);
+    let yFlotte = 0;
+    ry += vivant * reaction.ry;
+    rx += vivant * reaction.rx;
+    if (!M.mobile && temps && c < 3.5) {
+      yFlotte = Math.sin(temps * 0.9) * 0.05 * s * 6 * vivant;
+      ry += Math.sin(temps * 0.45) * 0.035 * vivant;
+    }
+    e.d = { x, y: y + yFlotte, z, s, rx, ry, rz, balayage, reflet: 0.32 * seg(p, PH.a, PH.a + 0.08), flash: reaction.flash, eclate };
+
+    // Position à l'écran (ombre, image fixe sans 3D)
     const ppu = M.h / (2 * (GEO.camZ - z) * M.tan);
-    e.basAppareil = M.h / 2 - y * ppu + 4.5 * s * ppu;
-    e.suivi = M.mobile ? 1 : 1 - tc; // sur ordinateur, l'appareil part sur le côté : le texte est libre
+    const cxp = M.l / 2 + x * ppu;
+    const cyp = M.h / 2 - (y + yFlotte) * ppu;
+    const larg = GEO.corps.l * s * ppu;
+    e.px = { x: cxp, y: cyp, w: larg };
+    e.ombre = { x: cxp, y: cyp + GEO.corps.h * 0.56 * s * ppu, w: larg * 1.1, o: seg(pp, 0.8, 1) * (1 - seg(c, 3.45, 3.8)) };
+
+    // Textes des chapitres, index, numéro, cartes
+    e.chap = [0, 1, 2, 3].map((i) => {
+      const entree = i === 0 ? seg(pp, 0.84, 1) : seg(c, i - 0.34, i - 0.1);
+      return entree * (1 - seg(c, i + 0.44, i + 0.64));
+    });
+    e.chapActif = clamp(Math.round(c), 0, 3);
+    e.chrome = seg(pp, 0.9, 1) * (1 - seg(c, 3.4, 3.65));
+    e.cartes = { 2: seg(c, 0.78, 1.02) * (1 - seg(c, 1.46, 1.68)), 3: seg(c, 2.02, 2.3) * (1 - seg(c, 2.5, 2.72)) };
+    e.dock = c > 3.95;
     e.toile = 1;
     e.viseur = 1 - seg(p, 0, 0.09);
     e.fond = 0.85 * seg(p, 0.06, 0.26) * (1 - seg(p, 0.42, 0.68));
-    e.halo = seg(p, 0.72, 1);
-    e.accroche = seg(p, 0.6, 0.85);
     return e;
   }
 
   // ---------- Appliquer l'état (DOM + 3D) ----------
   let derniereCadre = "";
+  let dernierC = -9;
   function appliquer(e) {
     const c = e.cadre;
     const cle = `${c.x | 0},${c.y | 0},${c.w | 0},${c.h | 0},${c.o.toFixed(3)}`;
@@ -227,24 +282,45 @@
     viseur.style.transform = `translateY(${-24 * (1 - e.viseur)}px)`;
     viseur.style.visibility = e.viseur <= 0.01 ? "hidden" : "";
     fondPhoto.style.opacity = e.fond;
-    accroche.style.opacity = e.accroche;
-    // Le contenu suit l'appareil : jamais par-dessus, jamais de vide entre les deux.
-    // Une fois l'intro passée, le « plancher » remonte avec le défilement : le texte est libre.
-    let haut = null;
-    if (!calme && e.basAppareil != null) {
-      const naturel = M.contenuHaut - window.scrollY;
-      const plancher = e.basAppareil + M.ecart - Math.max(0, window.scrollY - M.course);
-      const pousse = (plancher - naturel) * e.suivi;
-      if (pousse > 0.5) haut = naturel + pousse;
+    halo.style.opacity = 0;
+
+    if (e.chap) {
+      chaps.forEach((el, i) => {
+        const o = e.chap[i];
+        el.style.opacity = o.toFixed(3);
+        el.style.visibility = o <= 0.01 ? "hidden" : "visible";
+        el.classList.toggle("est-visible", o > 0.6);
+        const decale = (1 - ease.out3(o)) * 26;
+        el.style.transform = M.mobile ? `translateY(${decale.toFixed(1)}px)` : `translateY(calc(-50% + ${decale.toFixed(1)}px))`;
+      });
+      indexChap.forEach((li, i) => li.classList.toggle("actif", i === e.chapActif));
+      numChap.textContent = String(e.chapActif + 1).padStart(2, "0");
+      numChap.style.opacity = e.chrome.toFixed(3);
+      numChap.parentNode.querySelector(".chap-index").style.opacity = e.chrome.toFixed(3);
+      cartes.forEach((el, i) => {
+        const g = e.cartes[el.dataset.groupe] || 0;
+        const rang = el.dataset.groupe === "2" ? i : i - 3;
+        el.style.setProperty("--o", clamp(g * 1.5 - rang * 0.22).toFixed(3));
+      });
+      // L'appareil déclenche quand il revient face à nous (chapitre 03)
+      if (e.c >= 2 && dernierC < 2 && dernierC > 1) flash();
+      dernierC = e.c;
     }
-    poserContenu(haut);
-    accroche.style.transform = e.accroche < 1 ? `translateY(${30 * (1 - ease.out3(e.accroche))}px)` : "";
-    halo.style.opacity = e.halo;
+    if (e.ombre) {
+      const o = e.ombre;
+      ombre.style.width = o.w.toFixed(0) + "px";
+      ombre.style.height = (o.w * 0.14).toFixed(0) + "px";
+      ombre.style.transform = `translate(${(o.x - o.w / 2).toFixed(1)}px, ${(o.y - o.w * 0.07).toFixed(1)}px)`;
+      ombre.style.opacity = (o.o * (modeFixe || api3d ? 1 : 0)).toFixed(3);
+    }
     majPellicule();
-    entete.classList.toggle("est-plein", e.p > 0.9);
-    R.classList.toggle("dock", M.mobile && e.p > 0.86);
+    entete.classList.toggle("est-plein", e.p > 0.62);
+    R.classList.toggle("dock", !!e.dock);
     if (modeFixe) {
-      fixe.style.opacity = seg(e.p, 0.7, 1);
+      const px = e.px;
+      fixe.style.width = px.w.toFixed(0) + "px";
+      fixe.style.transform = `translate(${(px.x - px.w / 2).toFixed(1)}px, ${(px.y - px.w * 0.36).toFixed(1)}px)`;
+      fixe.style.opacity = calme ? 1 : seg(e.p, 0.7, 1);
     } else if (api3d) {
       toile.style.opacity = calme ? e.toile : "";
       api3d.appliquer(e.d);
@@ -379,7 +455,7 @@
   let forcer = true;
 
   function avancement() {
-    return clamp(window.scrollY / M.course);
+    return Math.max(0, window.scrollY / M.course);
   }
 
   function tick(_t, dtMs) {
@@ -388,7 +464,7 @@
     const cible = avancement();
     pLisse = calme ? cible : pLisse + (cible - pLisse) * (1 - Math.exp(-dt * (M.mobile ? 16 : 11)));
     if (Math.abs(cible - pLisse) < 0.0002) pLisse = cible;
-    const vivantContinu = !calme && !M.mobile && pLisse > 0.9 && api3d && document.visibilityState === "visible";
+    const vivantContinu = !calme && !M.mobile && pLisse > 0.9 && pLisse < 1 + (3.5 * M.pasCh) / M.course && api3d && document.visibilityState === "visible";
     const sig = `${reaction.ry.toFixed(4)},${reaction.rx.toFixed(4)},${reaction.flash.toFixed(3)},${window.scrollY}`;
     if (forcer || vivantContinu || Math.abs(pLisse - pDernier) > 0.00005 || sig !== signature) {
       forcer = false;
@@ -593,12 +669,16 @@
       titre: "Des moments *vrais*, rien de forcé.",
       texte: "Mariages, couples, portraits, événements : je photographie les gens tels qu'ils sont, avec une lumière soignée et des couleurs fidèles.",
       formules: "Trois formules pour s'adapter à votre besoin, du portrait rapide à la journée complète.",
+      declic: "Un instant, *pas une pose*.",
+      "declic-texte": "Je vous guide sans vous figer : les vrais moments arrivent quand on oublie l'appareil.",
       photos: "Mariages, couples, *portraits*",
     },
     commerces: {
       titre: "Des photos qui donnent envie de *pousser la porte*.",
       texte: "Commerces et entreprises : votre lieu, votre équipe et votre savoir-faire, tels qu'ils sont, prêts pour votre fiche Google et vos réseaux.",
       formules: "Des photos pro et un site simple pour les petits commerces de la région.",
+      declic: "Votre métier, *sur le vif*.",
+      "declic-texte": "Vos gestes, votre lieu, votre équipe : pris au naturel, pendant que vous travaillez.",
       photos: "Votre lieu, votre *savoir-faire*",
     },
   };
@@ -697,6 +777,13 @@
         if (!t) return;
         el.style.setProperty("--pos", t[1]);
         el.innerHTML = image(t[0], 800, "(max-width: 760px) 32vw, 16vw", "");
+      });
+      $$("[data-vue]").forEach((el) => {
+        const v = VUES[u][+el.dataset.vue];
+        if (!v) return;
+        el.style.setProperty("--pos", v.pos);
+        el.innerHTML = image(v.image, 480, "150px", "");
+        reveler(el.querySelector("img"));
       });
       $$("[data-tirage] img[data-src]").forEach((img) => observateurImages.observe(img));
       $$(".bascule-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.univers === u)));
@@ -845,7 +932,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=9"))
+      .then(() => import("./scene.js?v=10"))
       .then((m) => {
         const api = m.creerAppareil({ canvas: toile, photo, geo: GEO, mobile: M.mobile, cadrage: [0.5, 0.5] });
         api.redimensionner(M.l, M.h);
@@ -879,7 +966,7 @@
           window.Univers.definir(u);
           window.Univers.confirmer();
           afficherUnivers(u, true);
-          const cible = M.course + 2;
+          const cible = M.course + Math.round(0.1 * M.pasCh); // le chapitre 01 bien en place
           const finir = () => {
             enCours = false;
             contenu.focus({ preventScroll: true });
@@ -951,10 +1038,29 @@
         if (aGsap && !calme) gsap.fromTo(reaction, { ry: reaction.ry + 0.5 }, { ry: reaction.ry, duration: 1.2, ease: "elastic.out(1, 0.5)" });
       })
     );
+    // Jour / nuit (mémorisé dans ce navigateur)
+    const boutonTheme = $("#theme-btn");
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const majTheme = () => {
+      const nuit = R.getAttribute("data-theme") === "nuit";
+      boutonTheme.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
+      if (meta) meta.setAttribute("content", nuit ? "#1c1916" : "#f3ede4");
+    };
+    majTheme();
+    boutonTheme.addEventListener("click", () => {
+      const t = R.getAttribute("data-theme") === "nuit" ? "jour" : "nuit";
+      R.setAttribute("data-theme", t);
+      try {
+        localStorage.setItem("labo-theme", t);
+      } catch (err) {}
+      majTheme();
+      forcer = true;
+    });
+
     const lienTravail = $('a[href="#pellicule"]');
     lienTravail.addEventListener("click", (ev) => {
       ev.preventDefault();
-      const cible = M.contenuHaut + pellicule.offsetTop; // indépendant du contenu « posé »
+      const cible = Math.round(pellicule.getBoundingClientRect().top + window.scrollY);
       if (lenis) lenis.scrollTo(cible, { duration: 1.6, easing: ease.inOut3 });
       else window.scrollTo({ top: cible, behavior: calme ? "auto" : "smooth" });
     });
@@ -969,7 +1075,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=9", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=10", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;

@@ -45,6 +45,31 @@
   --course: 170svh;
   --colonne: min(56vw, 800px);
   --doux: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --carte: #2a2521;
+  --ombre: rgba(0, 0, 0, 0.55);
+  --trous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%231c1916'/%3E%3C/svg%3E");
+}
+/* Mode jour : papier crème, encre brune, or plus profond (même identité) */
+:root[data-theme="jour"] {
+  --fond: #f3ede4;
+  --fond-2: #e9e1d4;
+  --creme: #1c1916;
+  --texte: rgba(28, 25, 22, 0.8);
+  --attenue: rgba(28, 25, 22, 0.55);
+  --trait: rgba(28, 25, 22, 0.14);
+  --or-clair: #8c6b3d;
+  --carte: #fbf8f2;
+  --ombre: rgba(60, 45, 30, 0.3);
+  --trous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%23f3ede4'/%3E%3C/svg%3E");
+}
+/* Le viseur et l'en-tête posé sur la photo gardent toujours leurs couleurs claires */
+.scene,
+.entete:not(.est-plein) {
+  --creme: #f3ede4;
+  --texte: rgba(243, 237, 228, 0.82);
+  --attenue: rgba(243, 237, 228, 0.58);
+  --trait: rgba(243, 237, 228, 0.14);
+  --or-clair: #d6b886;
 }
 
 *,
@@ -132,6 +157,9 @@ body::after {
   pointer-events: none;
   transition: opacity 0.5s var(--doux);
 }
+[data-theme="jour"] .entete.est-plein {
+  background: rgba(243, 237, 228, 0.8);
+}
 .entete.est-plein {
   background: rgba(24, 21, 19, 0.74);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
@@ -164,6 +192,40 @@ body::after {
 }
 .entete-nav a:hover {
   color: var(--creme);
+}
+.theme-btn {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--trait);
+  border-radius: 50%;
+  background: none;
+  color: var(--creme);
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+.theme-btn:hover {
+  border-color: var(--or-clair);
+  color: var(--or-clair);
+}
+.theme-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ic-soleil,
+[data-theme="nuit"] .ic-lune {
+  display: none;
+}
+[data-theme="nuit"] .ic-soleil {
+  display: block;
 }
 .entete-reserver {
   padding: 9px 18px;
@@ -224,13 +286,24 @@ html.dock .toile {
 .appareil-fixe {
   position: fixed;
   z-index: 1;
-  right: 5vw;
-  top: 50%;
+  left: 0;
+  top: 0;
   width: 34vw;
-  max-width: 560px;
-  transform: translateY(-50%);
   pointer-events: none;
   opacity: 0;
+}
+/* Ombre douce posée sous l'appareil (comme une photo produit en studio) */
+.ombre {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(closest-side, var(--ombre), rgba(0, 0, 0, 0));
 }
 .eclair {
   position: fixed;
@@ -630,11 +703,212 @@ html.js:not(.calme) .cadre-photo {
 .contenu {
   position: relative;
   z-index: 3;
-  margin-top: -100svh;
-  width: calc(var(--colonne) + clamp(22px, 6vw, 96px));
-  padding: 0 0 0 clamp(22px, 6vw, 96px);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(22px, 6vw, 96px);
   outline: none;
 }
+
+/* ---------- Chapitres ---------- */
+.chapitres {
+  position: relative;
+  z-index: 3;
+}
+html.js:not(.calme) .chapitres {
+  margin-top: -100svh;
+  pointer-events: none;
+}
+.chap-scene {
+  padding: 4vh clamp(22px, 6vw, 96px) 0;
+}
+html.js:not(.calme) .chap-scene {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.chap {
+  padding: 8vh 0 0;
+  max-width: 640px;
+}
+html.js:not(.calme) .chap {
+  position: absolute;
+  top: 50%;
+  left: clamp(22px, 6vw, 96px);
+  width: min(42vw, 620px);
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50%);
+}
+html.js:not(.calme) .chap[data-cote="droite"] {
+  left: auto;
+  right: calc(clamp(22px, 6vw, 96px) + 96px);
+  width: min(36vw, 540px);
+}
+html.js:not(.calme) .chap.est-visible {
+  pointer-events: auto;
+}
+.chap-sur {
+  margin: 0 0 18px;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--or-clair);
+}
+.chap-sur span {
+  margin-right: 1em;
+  color: var(--creme);
+}
+.chap .bascule {
+  margin-bottom: 8px;
+}
+.chap-titre {
+  margin: 10px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(3rem, 6.2vw, 6.4rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--creme);
+}
+.chap-titre-long {
+  font-size: clamp(2.6rem, 4.7vw, 4.9rem);
+}
+.chap-titre em {
+  font-style: italic;
+  color: var(--or-clair);
+}
+.chap-texte {
+  max-width: 38ch;
+  margin: 24px 0 0;
+  font-size: 1rem;
+  color: var(--texte);
+}
+.chap-liste {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texte);
+}
+.chap-liste li::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  margin: 0 12px 4px 0;
+  vertical-align: middle;
+  background: var(--or-clair);
+}
+.chap-index,
+.chap-num,
+.chap-cartes {
+  display: none;
+}
+html.js:not(.calme) .chap-index {
+  position: absolute;
+  right: clamp(22px, 3vw, 44px);
+  top: 50%;
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ch;
+  transform: translateY(-50%);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--attenue);
+}
+.chap-index li {
+  counter-increment: ch;
+  transition: color 0.4s;
+}
+.chap-index li::after {
+  content: counter(ch, decimal-leading-zero);
+  display: inline-block;
+  width: 2.4em;
+  margin-left: 10px;
+  text-align: left;
+}
+.chap-index li.actif {
+  color: var(--creme);
+}
+.chap-index li.actif::after {
+  color: var(--or-clair);
+}
+html.js:not(.calme) .chap-num {
+  position: absolute;
+  left: clamp(22px, 6vw, 96px);
+  bottom: 5vh;
+  display: block;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 1;
+  color: var(--creme);
+}
+html.js:not(.calme) .chap-cartes {
+  display: block;
+}
+.carte {
+  --o: 0;
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  opacity: var(--o);
+  transform: translate(-50%, -50%) translateY(calc((1 - var(--o)) * 34px)) rotate(var(--r));
+  box-shadow: 0 18px 40px rgba(20, 14, 8, 0.22);
+}
+.carte-reglage {
+  display: grid;
+  gap: 4px;
+  min-width: 128px;
+  padding: 12px 16px 14px;
+  border-radius: 3px;
+  background: var(--carte);
+}
+.carte-reglage small {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.carte-reglage strong {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--creme);
+}
+.carte-photo {
+  width: clamp(92px, 9.5vw, 150px);
+  padding: 6px 6px 20px;
+  background: #f6f1e8;
+}
+.carte-photo img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+}
+/* Positions des cartes autour de l'appareil (ordinateur) */
+.carte:nth-child(1) { --x: 25%; --y: 25%; --r: -6deg; }
+.carte:nth-child(2) { --x: 50%; --y: 83%; --r: 4deg; }
+.carte:nth-child(3) { --x: 13%; --y: 79%; --r: -3deg; }
+.carte:nth-child(4) { --x: 46%; --y: 27%; --r: -7deg; }
+.carte:nth-child(5) { --x: 86%; --y: 30%; --r: 6deg; }
+.carte:nth-child(6) { --x: 84%; --y: 76%; --r: -4deg; }
 .bloc {
   padding: 13vh 0 4vh;
 }
@@ -1241,7 +1515,7 @@ html.js:not(.calme) .pellicule-bande {
   left: 0;
   right: 0;
   height: 12px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%231c1916'/%3E%3C/svg%3E") repeat-x 0 0 / 24px 12px;
+  background: var(--trous) repeat-x 0 0 / 24px 12px;
 }
 .vue-film::before {
   top: 5px;
@@ -1746,10 +2020,59 @@ html.js:not(.calme) .reglage:nth-child(3) {
     letter-spacing: 0.16em;
   }
   .contenu {
-    width: auto;
     padding: 0 20px;
-    margin-top: -100svh;
   }
+  .entete-reserver {
+    margin-left: 0;
+  }
+  .theme-btn {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+  }
+  html.js:not(.calme) .chap,
+  html.js:not(.calme) .chap[data-cote="droite"] {
+    top: auto;
+    bottom: 6vh;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    transform: none;
+  }
+  .chap-titre {
+    font-size: clamp(2.4rem, 11vw, 3.3rem);
+  }
+  .chap-titre-long {
+    font-size: clamp(2rem, 8.6vw, 2.7rem);
+  }
+  .chap-texte {
+    margin-top: 14px;
+    font-size: 0.95rem;
+  }
+  .chap-sur {
+    margin-bottom: 10px;
+  }
+  html.js:not(.calme) .chap-index,
+  html.js:not(.calme) .chap-num {
+    display: none;
+  }
+  .carte-reglage {
+    min-width: 0;
+    padding: 8px 11px 10px;
+  }
+  .carte-reglage strong {
+    font-size: 1.2rem;
+  }
+  .carte-photo {
+    width: 84px;
+    padding: 4px 4px 13px;
+  }
+  .carte:nth-child(1) { --x: 20%; --y: 15%; --r: -6deg; }
+  .carte:nth-child(2) { --x: 80%; --y: 14%; --r: 5deg; }
+  .carte:nth-child(3) { --x: 22%; --y: 46%; --r: 3deg; }
+  .carte:nth-child(4) { --x: 17%; --y: 18%; --r: -7deg; }
+  .carte:nth-child(5) { --x: 84%; --y: 17%; --r: 6deg; }
+  .carte:nth-child(6) { --x: 80%; --y: 45%; --r: -4deg; }
   .contenu.pose {
     right: 0;
   }

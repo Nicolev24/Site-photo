@@ -447,7 +447,7 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     0.05
   );
   faceVitesses.rotation.x = -Math.PI / 2;
-  ajouter(new THREE.CylinderGeometry(0.34, 0.34, 0.05, 40), M.chrome, 2.15, yHaut + 0.645, 0.05);
+  const capVitesses = ajouter(new THREE.CylinderGeometry(0.34, 0.34, 0.05, 40), M.chrome, 2.15, yHaut + 0.645, 0.05);
 
   const molExpo = ajouter(cylindreStrie(0.86, 0.5, 36, 0.035), M.aluClair, 5.05, yHaut + 0.25, 0.62);
   const faceExpo = ajouter(
@@ -469,7 +469,7 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
   ajouter(new THREE.BoxGeometry(0.5, 0.1, 0.36), M.alu, 4.42, yHaut + 0.07, -1.05);
   ajouter(cylindreStrie(0.46, 0.26, 40, 0.02), M.chrome, 3.85, yHaut + 0.25, -0.72);
   const bouton = ajouter(new THREE.CylinderGeometry(0.3, 0.32, 0.18, 40), M.chrome, 3.85, yHaut + 0.46, -0.72);
-  ajouter(new THREE.CylinderGeometry(0.12, 0.12, 0.02, 24), M.noirBrillant, 3.85, yHaut + 0.56, -0.72);
+  const centreBouton = ajouter(new THREE.CylinderGeometry(0.12, 0.12, 0.02, 24), M.noirBrillant, 3.85, yHaut + 0.56, -0.72);
 
   // Griffe porte-flash et micro
   ajouter(new THREE.BoxGeometry(2.0, 0.12, 1.8), M.alu, -0.85, yHaut + 0.06, 0.05);
@@ -499,7 +499,7 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
   ajouter(plaque(1.95, 1.4, 0.48, 0.28, 0.08), M.caoutchouc, -4.35, yHautPlaque + 1.05, zDos + 0.2);
   ajouter(plaque(1.25, 0.82, 0.04, 0.08, 0.01), M.vitre, -4.35, yHautPlaque + 1.05, zDos + 0.44);
   const E = geo.ecran;
-  ajouter(plaque(E.l + 0.42, E.h + 0.4, 0.16, 0.12, 0.03), M.noirBrillant, E.cx, E.cy, zDos + 0.07);
+  const cadreEcran = ajouter(plaque(E.l + 0.42, E.h + 0.4, 0.16, 0.12, 0.03), M.noirBrillant, E.cx, E.cy, zDos + 0.07);
 
   // L'écran : la même photo que le viseur, sans retouche de couleur
   const nw = photo.naturalWidth || 1200;
@@ -596,6 +596,37 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
   ajouter(calotte(1.05, 0.26), M.verreFond, 0, 0, zAvant + 0.72, objectif);
   ajouter(new THREE.CircleGeometry(1.05, 48), M.interieur, 0, 0, zAvant + 0.78, objectif);
 
+  // Lentilles intérieures : cachées dans le fût, elles sortent quand l'appareil se démonte.
+  const lentilles = [];
+  [
+    [1.5, 0.3, -0.55],
+    [1.75, 0.36, -0.95],
+    [1.6, 0.3, -1.35],
+  ].forEach(([r, f, z]) => {
+    const g = new THREE.Group();
+    g.position.set(0, 0, z);
+    const avant = new THREE.Mesh(calotte(r, f), M.verre);
+    const arriere = new THREE.Mesh(calotte(r, f * 0.7), M.verreFond);
+    arriere.rotation.y = Math.PI;
+    const bord = new THREE.Mesh(new THREE.TorusGeometry(r, 0.06, 10, 72), M.chrome);
+    g.add(avant, arriere, bord);
+    objectif.add(g);
+    lentilles.push(g);
+  });
+
+  // Vue éclatée : chaque pièce de l'objectif avance d'un cran (ordre de montage).
+  const ECARTS = [0, 0.7, 1.5, 1.5, 3.0, 3.9, 3.9, 5.0, 5.0, 7.2, 4.4, 5.0, 2.2, 3.3, 4.4];
+  const pieces = objectif.children.map((m, i) => ({ m, z0: m.position.z, ecart: ECARTS[i] || 0, sens: i % 2 ? 1 : -1 }));
+  const levees = [
+    [molVitesses, 1.9],
+    [faceVitesses, 1.9],
+    [capVitesses, 1.9],
+    [molExpo, 1.5],
+    [faceExpo, 1.5],
+    [centreBouton, 2.6],
+  ].map(([m, h]) => ({ m, y0: m.position.y, h }));
+  const reculs = [cadreEcran, ecran, reflet].map((m) => ({ m, z0: m.position.z }));
+
   // ----- API pour la chorégraphie -----
   const tmp = new THREE.Vector3();
   let largeur = 1;
@@ -631,7 +662,15 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     faceVitesses.rotation.z = e.ry * 0.12;
     molExpo.rotation.y = -e.ry * 0.18;
     faceExpo.rotation.z = -e.ry * 0.18;
-    bouton.position.y = yHaut + 0.46 - 0.05 * (e.flash || 0);
+    // Démontage (0 = monté, 1 = pièces écartées)
+    const x = e.eclate || 0;
+    objectif.position.z = zFace - 0.9 * x;
+    pieces.forEach((p) => {
+      p.m.position.z = p.z0 - 1.05 * p.ecart * x;
+      p.m.position.y = 0.18 * p.sens * Math.sin(Math.PI * x) * (p.ecart > 0 ? 1 : 0);
+    });
+    levees.forEach((l) => (l.m.position.y = l.y0 + l.h * x));
+    bouton.position.y = yHaut + 0.46 - 0.05 * (e.flash || 0) + 2.6 * x;
   }
 
   function projeter(nom) {
