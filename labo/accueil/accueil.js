@@ -96,6 +96,20 @@
   const cartes = $("#cartes");
   const N = etapes.length;
 
+  // L'appareil 3D (essais : ?appareil=nikon ou ?appareil=olympus)
+  const APPAREIL = (new URLSearchParams(location.search).get("appareil") || "leica").toLowerCase();
+  // Licence CC BY : l'auteur du modèle 3D est cité en bas de page
+  const CREDITS = {
+    nikon: '« NIKON Z6 with NIKKOR 50 f1.8S » par <a href="https://sketchfab.com/3d-models/5c6b4f4bc1cf4386989c1f9f66cedcf4" target="_blank" rel="noopener">Metazeon</a>',
+    olympus: '« Olympus Film Camera PBR Scan Project » par <a href="https://sketchfab.com/3d-models/aa843426948145aea7213ae6bf5d3bb6" target="_blank" rel="noopener">johngreenstone</a>',
+  };
+  if (CREDITS[APPAREIL]) {
+    const p = document.createElement("p");
+    p.className = "pied-labo";
+    p.innerHTML = `Modèle 3D : ${CREDITS[APPAREIL]} (<a href="https://creativecommons.org/licenses/by/4.0/deed.fr" target="_blank" rel="noopener">CC BY 4.0</a>), allégé.`;
+    const pied = document.querySelector(".pied");
+    if (pied) pied.appendChild(p);
+  }
   let univers = window.Univers ? window.Univers.courant() : "particuliers";
   let forcer = true; // redessiner au prochain passage
   let manifeste = {};
@@ -342,8 +356,9 @@
   // ---------- L'état à un instant c (c = l'étape, 0 → 4, en continu) ----------
   const PI = Math.PI;
   function calculer(c) {
-    const pxL = M.dLentille / 4.04; // la lentille fait 4,04 unités de diamètre
-    const pxC = M.lCorps / 12.8; // le boîtier fait 12,8 unités de large
+    const dL = api ? 2 * api.rLentille : 4.04; // diamètre de la lentille (unités 3D)
+    const pxL = M.dLentille / dL;
+    const pxC = (M.lCorps * (api ? api.echelle : 1)) / 12.8; // le boîtier fait 12,8 unités de large
     const e = {
       x: M.x,
       y: cle(c, [
@@ -352,7 +367,7 @@
       ]),
       px: cle(c, [
         [0, pxL],
-        [1.2, pxL * 0.86],
+        [1.2, pxL * (api && api.echelle < 1 ? 0.74 : 0.86)],
         [1.95, pxC],
         [2.8, pxC * 1.05],
         [3.55, pxC * 0.62],
@@ -507,8 +522,8 @@
   function lancer3D() {
     if (lance) return;
     lance = true;
-    import("./scene.js?v=1")
-      .then((m) => m.creerAppareil({ canvas: toile, mobile: M.mobile, base: "../appareil/" }))
+    import("./scene.js?v=2")
+      .then((m) => m.creerAppareil({ canvas: toile, mobile: M.mobile, base: "../appareil/", appareil: APPAREIL }))
       .then((a) => {
         api = a;
         api.redimensionner(M.l, M.h);

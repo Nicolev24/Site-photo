@@ -31,10 +31,60 @@ function sousGeometrie(geom, triangles) {
   return g;
 }
 
+// Les appareils disponibles (?appareil=nikon / olympus ; Leica par défaut).
+// Mesures dans les unités du fichier : centre du boîtier, largeur, axe de l'objectif [x, y, rayon],
+// avant de l'objectif, monture (où il rejoint le boîtier), verre avant (rayon relatif, position),
+// hauteur sous laquelle on retire la plaque de trépied du scan.
+const PROFILS = {
+  leica: { leica: true, echelle: 1 },
+  nikon: {
+    // « NIKON Z6 with NIKKOR 50 f1.8S » par Metazeon (Sketchfab), CC BY 4.0
+    fichier: new URL("modeles/nikon.glb", import.meta.url).href,
+    meshopt: true,
+    centre: [-1.54, 6.69, 3.6],
+    largeur: 20.46,
+    axe: [-4.2, 5.3, 5.3],
+    zAvant: -12.34,
+    zMonture: -1.0,
+    rVerre: 0.74,
+    zVerre: -11.75,
+    yCoupe: -0.45,
+    gorge: [0.6, 0.9],
+    echelle: 0.86,
+  },
+  olympus: {
+    // « Olympus Film Camera PBR Scan Project » par johngreenstone (Sketchfab), CC BY 4.0
+    fichier: new URL("modeles/olympus.glb", import.meta.url).href,
+    meshopt: true,
+    centre: [-1.9625, -4.7385, 0.385],
+    largeur: 2.511,
+    axe: [-2.07, -4.975, 0.55],
+    zAvant: -0.778,
+    zMonture: 0.03,
+    rVerre: 0.72,
+    zVerre: -0.7,
+    retirer: ["Material.008"], // l'ancien verre (violet), qui traverse le boîtier
+    gorge: [0.4, 1.0], // l'ouverture de la monture : jusqu'où, quel rayon (relatif)
+    echelle: 1,
+  },
+};
+
+// Les fichiers allégés stockent les points en entiers compressés : on les repasse en flottants
+// avant de les déplacer (sinon ils sont écrêtés entre -1 et 1).
+function enFlottants(g) {
+  for (const nom of ["position", "normal"]) {
+    const a = g.attributes[nom];
+    if (!a || (a.array instanceof Float32Array && !a.isInterleavedBufferAttribute)) continue;
+    const f = new Float32Array(a.count * a.itemSize);
+    for (let i = 0; i < a.count; i++) for (let c = 0; c < a.itemSize; c++) f[i * a.itemSize + c] = a.getComponent(i, c);
+    g.setAttribute(nom, new THREE.BufferAttribute(f, a.itemSize));
+  }
+}
+
 const lisse = (t) => t * t * (3 - 2 * t);
 const borne = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
-export async function creerAppareil({ canvas, mobile, base }) {
+export async function creerAppareil({ canvas, mobile, base, appareil }) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.75 : 2));
   renderer.setClearColor(0x000000, 0);
@@ -64,7 +114,13 @@ export async function creerAppareil({ canvas, mobile, base }) {
   scene.add(cle, remplissage, contre, eclair);
 
   // ----- Le modèle -----
-  const gltf = await new THREE.GLTFLoader().loadAsync(base + (mobile ? "modele/appareil-1k.gltf" : "modele/appareil-2k.gltf"));
+  const profil = PROFILS[appareil] || PROFILS.leica;
+  const chargeur = new THREE.GLTFLoader();
+  if (profil.meshopt) {
+    const { MeshoptDecoder } = await import("../vendor/meshopt_decoder.module.js");
+    chargeur.setMeshoptDecoder(MeshoptDecoder);
+  }
+  const gltf = await chargeur.loadAsync(profil.leica ? base + (mobile ? "modele/appareil-1k.gltf" : "modele/appareil-2k.gltf") : profil.fichier);
   const groupe = new THREE.Group(); // tout l'appareil (son origine = centre du boîtier)
   scene.add(groupe);
   const boitier = new THREE.Group();
@@ -83,63 +139,128 @@ export async function creerAppareil({ canvas, mobile, base }) {
   });
   const chrome = new THREE.MeshStandardMaterial({ color: 0x202022, metalness: 1, roughness: 0.28, envMapIntensity: 1.3 });
 
-  const ax = -(AXE.x - CENTRE.x) * K; // centre de l'objectif, dans le repère du boîtier
-  const ay = (AXE.y - CENTRE.y) * K;
-  const zLentille = -6.0;
-
   const maillages = [];
   gltf.scene.updateMatrixWorld(true);
   gltf.scene.traverse((o) => o.isMesh && maillages.push(o));
 
-  // L'objectif est découpé en bagues (tranches le long de son axe)
+  // L'objectif est découpé en bagues (tranches le long de son axe), la bague 0 contre le boîtier
   const NB = 6;
-  const zMin = 0.0108;
-  const zMax = 0.0701;
-  const parBague = Array.from({ length: NB }, () => []); // [ { g, tri, mat } ]
+  const parBague = Array.from({ length: NB }, () => []);
+  let ax, ay, zLentille, rL, zAvant, zMonture;
 
-  for (const o of maillages) {
-    const g = o.geometry.clone();
-    g.applyMatrix4(o.matrixWorld);
-    const pos = g.attributes.position;
-    const idx = g.index ? Array.from(g.index.array) : Array.from({ length: pos.count }, (_, i) => i);
-    const nomMat = o.material.name || "";
-    let mat = o.material;
-    if (mat.metalnessMap) {
-      mat.aoMap = mat.metalnessMap; // la texture « ARM » contient l'occlusion (canal rouge)
-      mat.aoMapIntensity = 1;
-    }
-    const corps = [];
-    const tranches = Array.from({ length: NB }, () => []);
-    for (let t = 0; t < idx.length; t += 3) {
-      let cx = 0;
-      let cy = 0;
-      let cz = 0;
-      for (let k = 0; k < 3; k++) {
-        const i = idx[t + k];
-        cx += pos.getX(i) / 3;
-        cy += pos.getY(i) / 3;
-        cz += pos.getZ(i) / 3;
+  if (profil.leica) {
+    // Leica (Poly Haven) : découpe par matériaux, objectif vers +z dans le fichier
+    const zMin = 0.0108;
+    const zMax = 0.0701;
+    ax = -(AXE.x - CENTRE.x) * K;
+    ay = (AXE.y - CENTRE.y) * K;
+    zLentille = -6.0;
+    rL = 2.02;
+    zMonture = -(zMin - CENTRE.z) * K;
+    zAvant = -(zMax - CENTRE.z) * K;
+    for (const o of maillages) {
+      const g = o.geometry.clone();
+      g.applyMatrix4(o.matrixWorld);
+      const pos = g.attributes.position;
+      const idx = g.index ? Array.from(g.index.array) : Array.from({ length: pos.count }, (_, i) => i);
+      const nomMat = o.material.name || "";
+      const mat = o.material;
+      if (mat.metalnessMap) {
+        mat.aoMap = mat.metalnessMap; // la texture « ARM » contient l'occlusion (canal rouge)
+        mat.aoMapIntensity = 1;
       }
-      const dansObjectif = cz > zMin && Math.hypot(cx - AXE.x, cy - AXE.y) < AXE.r;
-      const tri = [idx[t], idx[t + 1], idx[t + 2]];
-      if (nomMat === "Camera_01_lens" && dansObjectif) continue; // remplacé par notre lentille
-      if (nomMat === "Camera_01_lens_body" || (nomMat === "Camera_01_strap" && dansObjectif)) {
-        const n = Math.min(NB - 1, Math.max(0, Math.floor(((cz - zMin) / (zMax - zMin)) * NB)));
-        tranches[n].push(...tri);
-      } else corps.push(...tri);
+      const corps = [];
+      const tranches = Array.from({ length: NB }, () => []);
+      for (let t = 0; t < idx.length; t += 3) {
+        let cx = 0;
+        let cy = 0;
+        let cz = 0;
+        for (let k = 0; k < 3; k++) {
+          const i = idx[t + k];
+          cx += pos.getX(i) / 3;
+          cy += pos.getY(i) / 3;
+          cz += pos.getZ(i) / 3;
+        }
+        const dansObjectif = cz > zMin && Math.hypot(cx - AXE.x, cy - AXE.y) < AXE.r;
+        const tri = [idx[t], idx[t + 1], idx[t + 2]];
+        if (nomMat === "Camera_01_lens" && dansObjectif) continue; // remplacé par notre lentille
+        if (nomMat === "Camera_01_lens_body" || (nomMat === "Camera_01_strap" && dansObjectif)) {
+          const n = Math.min(NB - 1, Math.max(0, Math.floor(((cz - zMin) / (zMax - zMin)) * NB)));
+          tranches[n].push(...tri);
+        } else corps.push(...tri);
+      }
+      g.translate(-CENTRE.x, -CENTRE.y, -CENTRE.z);
+      g.rotateY(Math.PI);
+      g.scale(K, K, K);
+      if (corps.length) boitier.add(new THREE.Mesh(sousGeometrie(g, corps), nomMat === "Camera_01_lens" ? verre : mat));
+      tranches.forEach((tri, n) => tri.length && parBague[n].push(new THREE.Mesh(sousGeometrie(g, tri), mat)));
     }
-    g.translate(-CENTRE.x, -CENTRE.y, -CENTRE.z);
-    g.rotateY(Math.PI);
-    g.scale(K, K, K);
-    if (corps.length) boitier.add(new THREE.Mesh(sousGeometrie(g, corps), nomMat === "Camera_01_lens" ? verre : mat));
-    tranches.forEach((tri, n) => tri.length && parBague[n].push(new THREE.Mesh(sousGeometrie(g, tri), mat)));
+  } else {
+    // Appareils scannés : un seul maillage, découpé par la géométrie.
+    // Tout est remis dans le repère commun : boîtier de 12,8 unités de large, centré, objectif vers -z.
+    const P = profil;
+    const k = 12.8 / P.largeur;
+    const vers = (x, y, z) => [(x - P.centre[0]) * k, (y - P.centre[1]) * k, (z - P.centre[2]) * k];
+    [ax, ay] = vers(P.axe[0], P.axe[1], 0);
+    const R = P.axe[2] * k;
+    zAvant = vers(0, 0, P.zAvant)[2];
+    zMonture = vers(0, 0, P.zMonture)[2];
+    const yCoupe = P.yCoupe == null ? -Infinity : vers(0, P.yCoupe, 0)[1];
+    rL = P.rVerre * R * 1.03;
+    const zGorge = P.gorge ? vers(0, 0, P.gorge[0])[2] : null;
+    if (P.gorge) {
+      // le fond de la monture, noir mat (on le voit quand l'objectif n'est pas encore monté)
+      const fond = new THREE.Mesh(
+        new THREE.CircleGeometry(P.gorge[1] * R * 1.02, 64),
+        new THREE.MeshStandardMaterial({ color: 0x060607, roughness: 0.7, side: THREE.DoubleSide })
+      );
+      fond.position.set(ax, ay, zGorge);
+      boitier.add(fond);
+    }
+    zLentille = vers(0, 0, P.zVerre)[2];
+    for (const o of maillages) {
+      if (P.retirer && P.retirer.includes(o.material.name)) continue;
+      const g = o.geometry.clone();
+      enFlottants(g);
+      g.applyMatrix4(o.matrixWorld);
+      g.translate(-P.centre[0], -P.centre[1], -P.centre[2]);
+      g.scale(k, k, k);
+      const pos = g.attributes.position;
+      const idx = g.index ? Array.from(g.index.array) : Array.from({ length: pos.count }, (_, i) => i);
+      const mat = o.material;
+      if (P.matiere) Object.assign(mat, P.matiere);
+      const corps = [];
+      const tranches = Array.from({ length: NB }, () => []);
+      for (let t = 0; t < idx.length; t += 3) {
+        let cx = 0;
+        let cy = 0;
+        let cz = 0;
+        for (let j = 0; j < 3; j++) {
+          const i = idx[t + j];
+          cx += pos.getX(i) / 3;
+          cy += pos.getY(i) / 3;
+          cz += pos.getZ(i) / 3;
+        }
+        if (cy < yCoupe) continue; // la plaque de trépied vissée dessous
+        const tri = [idx[t], idx[t + 1], idx[t + 2]];
+        const d = Math.hypot(cx - ax, cy - ay);
+        if (zGorge !== null && cz >= zMonture && cz < zGorge && d < P.gorge[1] * R) continue; // fond de monture
+        if (cz < zMonture && d < R * 1.12) {
+          if (d < P.rVerre * R) continue; // le verre scanné (flou), remplacé par notre lentille
+          const n = Math.min(NB - 1, Math.max(0, Math.floor(((zMonture - cz) / (zMonture - zAvant)) * NB)));
+          tranches[n].push(...tri);
+        } else corps.push(...tri);
+      }
+      if (corps.length) boitier.add(new THREE.Mesh(sousGeometrie(g, corps), mat));
+      tranches.forEach((tri, n) => tri.length && parBague[n].push(new THREE.Mesh(sousGeometrie(g, tri), mat)));
+    }
   }
 
   // Chaque bague tourne autour de l'axe de l'objectif : on la place dans un pivot sur cet axe.
   const bagues = [];
   parBague.forEach((liste, n) => {
     if (!liste.length) return;
-    const zc = -(zMin + ((n + 0.5) / NB) * (zMax - zMin) - CENTRE.z) * K;
+    const zc = zMonture - ((n + 0.5) / NB) * (zMonture - zAvant);
     const pivot = new THREE.Group();
     pivot.position.set(ax, ay, zc);
     liste.forEach((m) => {
@@ -149,14 +270,15 @@ export async function creerAppareil({ canvas, mobile, base }) {
     groupe.add(pivot);
     // d'où elle arrive : derrière la lentille, écartée sur le côté, en tournant
     const angle = -0.9 + n * 1.05;
+    const e = rL / 2.02; // écarts proportionnels à la taille de l'objectif
     bagues.push({
       pivot,
       x0: ax,
       y0: ay,
       z0: zc,
-      ox: Math.cos(angle) * (3.6 + n * 0.5),
-      oy: Math.sin(angle) * (2.6 + n * 0.4),
-      oz: 7 + (NB - n) * 2.4,
+      ox: Math.cos(angle) * (3.6 + n * 0.5) * e,
+      oy: Math.sin(angle) * (2.6 + n * 0.4) * e,
+      oz: (7 + (NB - n) * 2.4) * e,
       tour: (n % 2 ? 1 : -1) * (1.6 + n * 0.25),
       retard: (NB - 1 - n) * 0.09, // la bague du fond arrive en premier
     });
@@ -165,13 +287,13 @@ export async function creerAppareil({ canvas, mobile, base }) {
   // ----- La lentille (le « grain ») -----
   const lentille = new THREE.Group();
   lentille.position.set(ax, ay, zLentille);
-  const rL = 2.02;
-  const avant = new THREE.Mesh(calotte(rL, 0.55), verre);
-  const arriere = new THREE.Mesh(calotte(rL, 0.32), verre);
+  const fl = rL / 2.02;
+  const avant = new THREE.Mesh(calotte(rL, 0.55 * fl), verre);
+  const arriere = new THREE.Mesh(calotte(rL, 0.32 * fl), verre);
   arriere.rotation.y = Math.PI;
-  const tranche = new THREE.Mesh(new THREE.CylinderGeometry(rL, rL, 0.36, 96, 1, true), chrome);
+  const tranche = new THREE.Mesh(new THREE.CylinderGeometry(rL, rL, 0.36 * fl, 96, 1, true), chrome);
   tranche.rotation.x = Math.PI / 2;
-  tranche.position.z = 0.18;
+  tranche.position.z = 0.18 * fl;
   lentille.add(avant, arriere, tranche);
   groupe.add(lentille);
 
@@ -249,5 +371,5 @@ export async function creerAppareil({ canvas, mobile, base }) {
   // Compile tout (bagues et boîtier compris) pour éviter un à-coup au premier scroll
   bagues.forEach((b) => (b.pivot.visible = true));
   renderer.compile(scene, camera);
-  return { appliquer, rendre, redimensionner, lentilleEcran };
+  return { appliquer, rendre, redimensionner, lentilleEcran, rLentille: rL, echelle: profil.echelle || 1 };
 }
