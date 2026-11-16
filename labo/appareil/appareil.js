@@ -672,7 +672,7 @@
             </div>
             <span class="vue-bord vue-bord-bas" aria-hidden="true"><span>NL 400</span><span>${n + 1}</span></span>
           </div>
-          <div class="vue-legende"><h3>${echapper(v.titre)}</h3><p>${echapper(v.texte)}</p></div>
+          <div class="vue-legende"><h3>${echapper(v.titre)}</h3></div>
         </li>`;
       })
       .join("");
@@ -845,7 +845,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js"))
+      .then(() => import("./scene.js?v=9"))
       .then((m) => {
         const api = m.creerAppareil({ canvas: toile, photo, geo: GEO, mobile: M.mobile, cadrage: [0.5, 0.5] });
         api.redimensionner(M.l, M.h);
@@ -969,7 +969,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=9", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;
