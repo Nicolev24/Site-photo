@@ -905,14 +905,324 @@ html.js:not(.calme) .cadre-photo {
 
 /* Contenu qui change d'univers : léger fondu */
 .contenu [data-texte],
-.formules-liste,
-.photos-grille {
+.pellicule-bande {
   transition: opacity 0.35s var(--doux);
 }
 .contenu.change [data-texte],
-.contenu.change .formules-liste,
-.contenu.change .photos-grille {
+.contenu.change .pellicule-bande {
   opacity: 0;
+}
+
+/* Pendant que l'appareil se range, le contenu est « posé » au-dessus de la page
+   (position fixe) : il suit l'appareil sans se battre avec le défilement. */
+.contenu.pose {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.contenu-cale {
+  display: none;
+  overflow-anchor: none;
+}
+.contenu-cale.actif {
+  display: block;
+}
+
+/* ---------- Pellicule ---------- */
+:root {
+  --vue: clamp(260px, 30vw, 450px);
+  --film: #15110d;
+  --marque: #d8913a;
+}
+.pellicule {
+  padding: 0;
+}
+.pellicule-colle {
+  padding: 11vh 0 6vh;
+}
+html.js:not(.calme) .pellicule-colle {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--entete) + 2vh) 0 3vh;
+}
+.pellicule-tete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 4.5vh;
+}
+.pellicule-compteur {
+  margin: 0 0 6px;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--attenue);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.pellicule-compteur #pellicule-vue {
+  margin-left: 0.5em;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: var(--creme);
+}
+.pellicule-total {
+  margin-left: 0.3em;
+}
+.pellicule-fenetre {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.pellicule-bande {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  width: max-content;
+}
+html.js:not(.calme) .pellicule-bande {
+  will-change: transform;
+}
+.vue {
+  flex: none;
+  width: var(--vue);
+}
+.vue-film {
+  position: relative;
+  padding: 30px 0;
+  background: var(--film);
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.6);
+}
+/* Perforations, en haut et en bas */
+.vue-film::before,
+.vue-film::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%231c1916'/%3E%3C/svg%3E") repeat-x 0 0 / 24px 12px;
+}
+.vue-film::before {
+  top: 5px;
+}
+.vue-film::after {
+  bottom: 5px;
+}
+.vue-bord {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8.5px;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  color: var(--marque);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.vue-bord-haut {
+  top: 19px;
+}
+.vue-bord-bas {
+  bottom: 19px;
+}
+.vue-image {
+  position: relative;
+  margin: 0 5px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #000;
+}
+.vue-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+}
+/* Le négatif : couleurs inversées et masque orangé, comme un film couleur */
+.vue-negatif {
+  position: absolute;
+  inset: 0;
+  will-change: opacity;
+}
+.vue-negatif img {
+  filter: invert(1) saturate(0.65) contrast(0.82) brightness(1.08);
+}
+.vue-negatif::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #dc8a3f;
+  mix-blend-mode: multiply;
+  opacity: 0.82;
+}
+.vue-legende {
+  padding: 20px 8px 0;
+}
+.vue-legende h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  line-height: 1.05;
+  color: var(--creme);
+}
+.vue-legende p {
+  margin: 8px 0 0;
+  max-width: 34ch;
+  font-size: 0.92rem;
+  color: var(--attenue);
+}
+/* La fenêtre d'exposition : le cadre du viseur, qui s'allume quand la vue est en place */
+.pellicule-porte {
+  --c: rgba(243, 237, 228, 0.55);
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: calc(var(--vue) - 10px);
+  aspect-ratio: 3 / 2;
+  transform: translateX(-50%) scale(1.035);
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 18px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / 1.5px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 18px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 1.5px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 18px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 1.5px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 18px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 1.5px 18px no-repeat;
+  transition: transform 0.35s var(--doux);
+}
+.pellicule-porte.verrouille {
+  --c: var(--or-clair);
+  transform: translateX(-50%) scale(1);
+}
+/* Sans animation (mouvements réduits ou sans JavaScript) : une bande qu'on fait glisser */
+html:not(.js) .pellicule-fenetre,
+html.calme .pellicule-fenetre {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+html:not(.js) .vue,
+html.calme .vue {
+  scroll-snap-align: start;
+}
+html:not(.js) .vue-negatif,
+html.calme .vue-negatif,
+html:not(.js) .pellicule-porte,
+html.calme .pellicule-porte,
+html:not(.js) .pellicule-compteur,
+html.calme .pellicule-compteur {
+  display: none;
+}
+
+/* ---------- Mise au point ---------- */
+.reglages-liste {
+  list-style: none;
+  margin: 34px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.reglage {
+  --c: rgba(243, 237, 228, 0.4);
+  position: relative;
+  padding: 24px 20px 22px;
+  background: rgba(243, 237, 228, 0.025);
+}
+.reglage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 14px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / 1.5px 14px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 14px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 1.5px 14px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 14px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 1.5px 14px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 14px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 1.5px 14px no-repeat;
+}
+.reglage.net {
+  --c: var(--or-clair);
+}
+.reglage-val {
+  display: block;
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--or-clair);
+}
+.reglage-nom {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texte);
+}
+.citation {
+  margin: 10vh 0 0;
+  padding: 0;
+}
+.citation p {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.08;
+  color: var(--creme);
+}
+.citation em {
+  font-style: italic;
+  color: var(--or-clair);
+}
+.citation cite {
+  display: block;
+  margin-top: 16px;
+  font-style: normal;
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.citation cite::before {
+  content: "— ";
+}
+/* Le flou de mise au point, qui devient net à l'arrivée */
+html.js:not(.calme) .map {
+  filter: blur(10px);
+  opacity: 0.25;
+  transform: scale(1.03);
+  transition: filter 1s var(--doux), opacity 1s var(--doux), transform 1.2s var(--doux);
+}
+html.js:not(.calme) .map.net {
+  filter: none;
+  opacity: 1;
+  transform: none;
+}
+html.js:not(.calme) .reglage:nth-child(2) {
+  transition-delay: 0.14s;
+}
+html.js:not(.calme) .reglage:nth-child(3) {
+  transition-delay: 0.28s;
 }
 
 /* ---------- Téléphone ---------- */
@@ -973,6 +1283,38 @@ html.js:not(.calme) .cadre-photo {
     width: auto;
     padding: 0 20px;
     margin-top: -100svh;
+  }
+  .contenu.pose {
+    right: 0;
+  }
+  :root {
+    --vue: 74vw;
+  }
+  .pellicule-fenetre {
+    margin: 0 -20px;
+  }
+  .pellicule-tete {
+    margin-bottom: 3vh;
+  }
+  .vue-legende {
+    padding-top: 16px;
+  }
+  .reglages-liste {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .reglage {
+    display: grid;
+    grid-template-columns: 5.2rem minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px;
+  }
+  .reglage-val {
+    font-size: 2rem;
+  }
+  .reglage-nom {
+    margin-top: 0;
   }
   .bloc {
     padding: 9vh 0 3vh;

@@ -123,23 +123,41 @@
       <h2 class="accroche-titre" id="accroche-titre" data-texte="titre"></h2>
       <p class="accroche-texte" data-texte="texte"></p>
       <div class="accroche-actions">
-        <a class="bouton bouton-plein" href="#formules">Voir les formules</a>
+        <a class="bouton bouton-plein" href="#pellicule">Voir mon travail</a>
         <a class="bouton bouton-verre" href="../../contact.html" data-lien-univers data-flash>Me contacter</a>
       </div>
     </section>
 
-    <section class="bloc formules" id="formules" aria-labelledby="formules-titre">
-      <p class="surtitre">Formules</p>
-      <h2 class="bloc-titre" id="formules-titre">À partir de</h2>
-      <p class="bloc-intro" data-texte="formules"></p>
-      <ol class="formules-liste" id="formules-liste"></ol>
-      <a class="lien-fleche" href="../../services.html" data-lien-univers>Tous les détails et la FAQ</a>
+    <!-- La pellicule : chaque vue avance d'un cran et se développe (négatif → photo) -->
+    <section class="bloc pellicule" id="pellicule" aria-labelledby="pellicule-titre">
+      <div class="pellicule-colle">
+        <div class="pellicule-tete">
+          <div>
+            <p class="surtitre">Pellicule</p>
+            <h2 class="bloc-titre" id="pellicule-titre">Ce que je <em>photographie</em></h2>
+          </div>
+          <p class="pellicule-compteur" aria-hidden="true">Vue <span id="pellicule-vue">01</span><span class="pellicule-total">/<span id="pellicule-total">04</span></span></p>
+        </div>
+        <div class="pellicule-fenetre">
+          <ol class="pellicule-bande" id="pellicule-bande"></ol>
+          <span class="pellicule-porte" id="pellicule-porte" aria-hidden="true"></span>
+        </div>
+      </div>
     </section>
 
-    <section class="bloc photos" id="photos" aria-labelledby="photos-titre">
-      <p class="surtitre">Quelques photos</p>
-      <h2 class="bloc-titre" id="photos-titre" data-texte="photos-titre"></h2>
-      <div class="photos-grille" id="photos-grille"></div>
+    <!-- Mise au point : l'essentiel, net quand il arrive à l'écran -->
+    <section class="bloc reglages" id="reglages" aria-labelledby="reglages-titre">
+      <p class="surtitre">Mise au point</p>
+      <h2 class="bloc-titre" id="reglages-titre">Simple, du premier message à vos <em>photos</em></h2>
+      <ul class="reglages-liste" id="reglages-liste">
+        <li class="reglage map"><span class="reglage-val">48 h</span><span class="reglage-nom">Réponse sous 48 h</span></li>
+        <li class="reglage map"><span class="reglage-val">Privée</span><span class="reglage-nom">Galerie privée en ligne</span></li>
+        <li class="reglage map"><span class="reglage-val">∞</span><span class="reglage-nom">Aucune limite de photos livrées</span></li>
+      </ul>
+      <blockquote class="citation map" id="citation">
+        <p id="citation-texte">Pas de pose figée : juste <em>vous</em>, et la lumière du moment.</p>
+        <cite id="citation-signature">Nicolas</cite>
+      </blockquote>
     </section>
 
     <section class="bloc liens" id="liens" aria-labelledby="liens-titre">
@@ -158,6 +176,7 @@
       <p class="pied-labo">Maquette de travail — page non publiée</p>
     </footer>
   </div>
+  <div class="contenu-cale" id="contenu-cale" aria-hidden="true"></div>
 </main>
 
 <noscript>

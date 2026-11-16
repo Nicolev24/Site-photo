@@ -15,7 +15,7 @@
   const R = document.documentElement;
   const calme = R.classList.contains("calme");
   const $ = (s) => document.querySelector(s);
-  const $$ = (s) => Array.from(document.querySelectorAll(s));
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const BASE = "../../";
   const aGsap = typeof window.gsap !== "undefined";
 
@@ -59,6 +59,10 @@
   const contenu = $("#contenu");
   const zones = $$(".zone");
   const accroche = $("#accroche");
+  const cale = $("#contenu-cale");
+  const pellicule = $("#pellicule");
+  const bande = $("#pellicule-bande");
+  const porte = $("#pellicule-porte");
 
   // ---------- Mesures (taille d'écran → distances 3D) ----------
   const M = {};
@@ -104,12 +108,17 @@
     const w = versMonde(cx, cy);
     M.dock = { x: w.x, y: w.y, s: largeur / (GEO.corps.l * pxParUnite), px: cx, py: cy };
     // Le contenu arrive juste sous l'en-tête à la fin de l'intro (pas de zone vide).
-    M.cibleContenu = M.mobile ? M.entete + 6 : M.entete;
+    // Sur téléphone, juste sous l'appareil rangé dans l'en-tête.
+    const ppuDock = h / (2 * prof * M.tan);
+    M.basDock = h / 2 - M.dock.y * ppuDock + 4.5 * M.dock.s * ppuDock;
+    M.ecart = M.mobile ? 14 : 28;
+    M.cibleContenu = M.mobile ? Math.max(M.entete + 6, Math.ceil(M.basDock + M.ecart + 2)) : M.entete;
     contenu.style.marginTop = M.cibleContenu - h + "px";
     M.contenuHaut = h + M.course + (M.cibleContenu - h); // position dans la page
     halo.style.background = M.mobile
       ? ""
       : `radial-gradient(${largeur * 1.15}px ${largeur * 1.05}px at ${cx}px ${cy}px, rgba(174,140,91,0.17), rgba(174,140,91,0) 72%)`;
+    mesurerPellicule();
     return true;
   }
 
@@ -219,14 +228,18 @@
     fondPhoto.style.opacity = e.fond;
     accroche.style.opacity = e.accroche;
     // Le contenu suit l'appareil : jamais par-dessus, jamais de vide entre les deux.
-    let pousse = 0;
+    // Une fois l'intro passée, le « plancher » remonte avec le défilement : le texte est libre.
+    let haut = null;
     if (!calme && e.basAppareil != null) {
       const naturel = M.contenuHaut - window.scrollY;
-      pousse = Math.max(0, (e.basAppareil + (M.mobile ? 14 : 28) - naturel) * e.suivi);
+      const plancher = e.basAppareil + M.ecart - Math.max(0, window.scrollY - M.course);
+      const pousse = (plancher - naturel) * e.suivi;
+      if (pousse > 0.5) haut = naturel + pousse;
     }
-    contenu.style.transform = pousse > 0.5 ? `translate3d(0, ${pousse.toFixed(1)}px, 0)` : "";
+    poserContenu(haut);
     accroche.style.transform = e.accroche < 1 ? `translateY(${30 * (1 - ease.out3(e.accroche))}px)` : "";
     halo.style.opacity = e.halo;
+    majPellicule();
     entete.classList.toggle("est-plein", e.p > 0.9);
     R.classList.toggle("dock", M.mobile && e.p > 0.86);
     if (modeFixe) {
@@ -236,6 +249,84 @@
       api3d.appliquer(e.d);
       api3d.rendre();
     }
+  }
+
+  // Le contenu « posé » (position fixe) pendant qu'il suit l'appareil ; une cale
+  // garde la hauteur de la page. Sa position ne dépend alors plus du défilement :
+  // le navigateur ne peut plus le décaler entre deux images (c'était le tremblement).
+  let contenuPose = false;
+  function hauteurCale() {
+    return Math.max(0, contenu.offsetHeight + M.cibleContenu - M.h) + "px";
+  }
+  function poserContenu(haut) {
+    const pose = haut != null;
+    if (pose !== contenuPose) {
+      contenuPose = pose;
+      if (pose) cale.style.height = hauteurCale();
+      contenu.classList.toggle("pose", pose);
+      cale.classList.toggle("actif", pose);
+      if (!pose) contenu.style.transform = "";
+    }
+    if (pose) contenu.style.transform = `translate3d(0, ${(haut - (M.cibleContenu - M.h)).toFixed(1)}px, 0)`;
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(() => contenuPose && (cale.style.height = hauteurCale())).observe(contenu);
+
+  // ---------- Pellicule : la bande avance d'un cran à la fois, chaque vue se développe ----------
+  const P = { n: 0, vues: [], fw: 1, fen: 1, pas: 1, course: 0, actif: false, verrou: -1 };
+  function mesurerPellicule() {
+    if (!bande) return;
+    P.vues = $$(".vue", bande);
+    P.n = P.vues.length;
+    if (!P.n || calme) {
+      pellicule.style.height = "";
+      return;
+    }
+    P.fw = P.vues[0].offsetWidth || 1;
+    P.fen = bande.parentNode.clientWidth || 1;
+    P.pas = Math.round(M.h * (M.mobile ? 0.62 : 0.7));
+    P.course = (P.n - 1) * P.pas;
+    pellicule.style.height = P.course + Math.round(P.pas * 0.45) + M.h + "px";
+    P.vues.forEach((li) => {
+      li._neg = li.querySelector(".vue-negatif");
+      li._leg = li.querySelector(".vue-legende");
+    });
+    $("#pellicule-total").textContent = String(P.n).padStart(2, "0");
+    P.verrou = -1;
+  }
+  function majPellicule() {
+    if (calme || !P.n) return;
+    const y = window.scrollY;
+    const haut = M.contenuHaut + pellicule.offsetTop;
+    if (y < haut - M.h * 1.3 || y > haut + P.course + M.h * 1.5) {
+      if (P.actif) reagirPellicule(false);
+      P.verrou = -1;
+      return;
+    }
+    // Avance « au cran » : la vue reste un moment en place, puis la suivante arrive.
+    const brut = clamp((y - haut) / P.pas, 0, P.n - 1);
+    const i0 = Math.min(Math.floor(brut), P.n - 1);
+    const f = i0 >= P.n - 1 ? P.n - 1 : i0 + ease.inOut3(seg(brut - i0, 0.32, 0.94));
+    const approche = seg(y, haut - 0.8 * M.h, haut - 0.12 * M.h);
+    const fDev = f - 0.7 * (1 - approche);
+    bande.style.transform = `translate3d(${(P.fen / 2 - (f + 0.5) * P.fw).toFixed(1)}px, 0, 0)`;
+    P.vues.forEach((li, i) => {
+      li._neg.style.opacity = (1 - seg(fDev, i - 0.62, i - 0.1)).toFixed(3);
+      li._leg.style.opacity = clamp(1 - Math.abs(f - i) * 1.7).toFixed(3);
+    });
+    const vue = Math.round(f);
+    $("#pellicule-vue").textContent = String(vue + 1).padStart(2, "0");
+    const enPlace = Math.abs(f - vue) < 0.025 && approche >= 1;
+    porte.classList.toggle("verrouille", enPlace);
+    if (enPlace && vue !== P.verrou) {
+      if (vue > P.verrou) flash(); // l'appareil déclenche à chaque nouvelle vue
+      P.verrou = vue;
+    }
+    const actif = y > haut - M.h * 0.4 && y < haut + P.course + P.pas * 0.3;
+    if (actif !== P.actif) reagirPellicule(actif);
+  }
+  function reagirPellicule(actif) {
+    P.actif = actif;
+    if (aGsap) gsap.to(reaction, { ry: actif ? (M.mobile ? -0.4 : -0.62) : 0, duration: 1.2, ease: "power3.out", overwrite: "auto" });
   }
 
   // ---------- Boucle : on suit le défilement (lissé), on ne dessine que si besoin ----------
@@ -425,6 +516,22 @@
       ["images/commerces/outils-miroir.jpg", "Les outils du barbier devant le miroir"],
     ],
   };
+  // Les vues de la pellicule (sans prix : la vitrine montre le travail)
+  const VUES = {
+    particuliers: [
+      { titre: "Mariages", texte: "Toute la journée, des préparatifs à la première danse.", image: "images/mariages/premiere-danse-etincelles.jpg", alt: "Première danse des mariés entre deux fontaines d'étincelles", pos: "50% 45%" },
+      { titre: "Couples", texte: "Une balade à deux, naturelle, sans pose figée.", image: "images/portfolio/couples/img1.jpg", alt: "Un couple assis dans l'herbe avec son chien", pos: "50% 62%" },
+      { titre: "Portraits", texte: "Pour vous, en famille ou entre amis.", image: "images/portfolio/portraits/img3.jpg", alt: "Deux amies assises sur un muret de briques", pos: "50% 62%" },
+      { titre: "Événements", texte: "Baptêmes, anniversaires, fêtes : les moments qui comptent.", image: "images/portfolio/evenements/img2.jpg", alt: "Les mariés entourés de leurs invités", pos: "50% 40%" },
+    ],
+    commerces: [
+      { titre: "Votre lieu", texte: "L'ambiance de votre commerce, qui donne envie d'entrer.", image: "images/commerces/salon-vue-ensemble.jpg", alt: "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux", pos: "50% 50%" },
+      { titre: "Votre savoir-faire", texte: "Vos gestes et votre métier, pris sur le vif.", image: "images/commerces/rasage-coupe-chou.jpg", alt: "Rasage au coupe-chou", pos: "50% 42%" },
+      { titre: "Vos équipes", texte: "Vos équipes et vos chantiers, pour vos réseaux et votre site.", image: "images/portfolio/entreprises/img2.jpg", alt: "Une équipe en casques de chantier dans un entrepôt", pos: "50% 40%" },
+      { titre: "Votre site vitrine", texte: "Un site simple et soigné, avec vos propres photos.", image: "images/formules/site-vitrine.jpg", alt: "Exemple de site vitrine, sur ordinateur et sur téléphone", pos: "50% 50%" },
+    ],
+  };
+
   const TEXTES_PAR_DEFAUT = {
     particuliers: {
       titre: "Des moments *vrais*, rien de forcé.",
@@ -482,13 +589,43 @@
         )
       : { observe: reveler };
 
-  function prix(p) {
-    const brut = String(p.price || "").trim();
-    if (/\d/.test(brut)) {
-      const joli = brut.replace(/\s*€\s*$/, " €");
-      return `<small>dès</small><strong>${echapper(joli)}</strong>${p.price_suffix ? `<span>${echapper(p.price_suffix)}</span>` : ""}`;
-    }
-    return `<small>sur</small><strong>${echapper(brut || "Devis")}</strong>`;
+  // Les images de la pellicule se chargent quand la section approche
+  // (la bande déborde sur les côtés : on ne peut pas attendre que chaque vue soit visible).
+  const observateurPellicule =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entrees) =>
+            entrees.forEach((e) => {
+              if (e.isIntersecting) $$("img[data-src]", bande).forEach(reveler);
+            }),
+          { rootMargin: "150% 0px" }
+        )
+      : null;
+
+  function construirePellicule(u) {
+    const sizes = "(max-width: 760px) 74vw, 30vw";
+    bande.innerHTML = VUES[u]
+      .map((v, i) => {
+        const n = i + 1;
+        return `<li class="vue">
+          <div class="vue-film">
+            <span class="vue-bord vue-bord-haut" aria-hidden="true"><span>▸ ${n}</span><span>${n}A</span></span>
+            <div class="vue-image" style="--pos: ${v.pos}">
+              ${image(v.image, 800, sizes, v.alt)}
+              <div class="vue-negatif" aria-hidden="true">${image(v.image, 800, sizes, "")}</div>
+            </div>
+            <span class="vue-bord vue-bord-bas" aria-hidden="true"><span>NL 400</span><span>${n + 1}</span></span>
+          </div>
+          <div class="vue-legende"><h3>${echapper(v.titre)}</h3><p>${echapper(v.texte)}</p></div>
+        </li>`;
+      })
+      .join("");
+    if (observateurPellicule) {
+      observateurPellicule.disconnect();
+      observateurPellicule.observe(pellicule);
+    } else $$("img[data-src]", bande).forEach(reveler);
+    mesurerPellicule();
+    forcer = true;
   }
 
   function afficherUnivers(u, anime) {
@@ -498,24 +635,7 @@
         const cle = el.dataset.texte === "photos-titre" ? "photos" : el.dataset.texte;
         el.innerHTML = emphase(t[cle] || "");
       });
-      const plans = (donnees && donnees.plans[u]) || [];
-      $("#formules-liste").innerHTML = plans
-        .map((p) => {
-          const img = p.image || (p.maquette && (p.visuel === "pack" ? p.maquette.tirage1 : p.maquette.ecran) || {}).image;
-          const points = (p.features || []).slice(0, 2).join(" · ");
-          return `<li class="formule"><a href="${BASE}services.html?pour=${u}">
-            <span class="formule-photo">${img ? image(img, 480, "76px", "") : ""}</span>
-            <span class="formule-texte"><span class="formule-nom">${echapper(p.title)}${
-              p.badge ? ` <span class="formule-badge">${echapper(p.badge)}</span>` : ""
-            }</span><span class="formule-points">${echapper(points)}</span></span>
-            <span class="formule-prix">${prix(p)}</span></a></li>`;
-        })
-        .join("");
-      $("#photos-grille").innerHTML = PHOTOS[u]
-        .map(([chemin, alt], i) => `<figure>${image(chemin, i === 0 ? 1200 : 800, i === 0 ? "(max-width: 760px) 100vw, 36vw" : "(max-width: 760px) 50vw, 18vw", alt)}</figure>`)
-        .join("");
-      $$("#photos-grille img").forEach((img) => img.addEventListener("load", () => img.classList.add("charge"), { once: true }));
-      $$("#contenu img[data-src]").forEach((img) => observateurImages.observe(img));
+      construirePellicule(u);
       $$(".bascule-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.univers === u)));
       $$("[data-lien-univers]").forEach((a) => {
         if (!a.dataset.base) a.dataset.base = a.getAttribute("href");
@@ -536,13 +656,26 @@
 
   function chargerDonnees() {
     const lire = (f) => fetch(BASE + f, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    return Promise.all([lire("content/pages/services.json"), lire("content/pages/a-propos.json"), lire("content/contact.json"), lire("content/images.json")]).then(
-      ([services, apropos, contact, images]) => {
+    return Promise.all([
+      lire("content/pages/services.json"),
+      lire("content/pages/a-propos.json"),
+      lire("content/contact.json"),
+      lire("content/images.json"),
+      lire("content/pages/index.json"),
+    ]).then(
+      ([services, apropos, contact, images, accueil]) => {
         manifeste = (images && images.images) || {};
         const d = { textes: { particuliers: {}, commerces: {} }, plans: { particuliers: [], commerces: [] } };
         ((services && services.sections) || []).forEach((s) => {
           if (s.type === "tarifs" && d.plans[s.tab]) d.plans[s.tab] = s.data.plans || [];
           if (s.type === "onglets_tarifs") (s.data.tabs || []).forEach((t) => d.textes[t.id] && (d.textes[t.id].formules = t.text));
+          if (s.type === "reassurance") afficherReglages(s.data.items || []);
+        });
+        ((accueil && accueil.sections) || []).forEach((s) => {
+          if (s.type === "citation" && s.data.text) {
+            $("#citation-texte").innerHTML = emphase(s.data.text);
+            $("#citation-signature").textContent = s.data.signature || "";
+          }
         });
         ((apropos && apropos.sections) || []).forEach((s) => {
           if (s.type === "ouverture" && d.textes[s.tab]) {
@@ -561,6 +694,40 @@
         }
       }
     );
+  }
+
+  // Les « réglages » (réponse sous 48 h, galerie privée…) : une valeur courte, façon viseur.
+  function valeurReglage(t, i) {
+    if (/(\d+)\s*h\b/i.test(t)) return t.match(/(\d+)\s*h\b/i)[1] + " h";
+    if (/limite/i.test(t)) return "∞";
+    if (/galerie/i.test(t)) return "Privée";
+    if (/(\d+)/.test(t)) return t.match(/(\d+)/)[1];
+    return String(i + 1).padStart(2, "0");
+  }
+  function afficherReglages(items) {
+    const liste = items.filter((it) => it && it.text).slice(0, 3);
+    if (!liste.length) return;
+    $("#reglages-liste").innerHTML = liste
+      .map((it, i) => `<li class="reglage map"><span class="reglage-val">${echapper(valeurReglage(it.text, i))}</span><span class="reglage-nom">${echapper(it.text)}</span></li>`)
+      .join("");
+    observerMiseAuPoint();
+  }
+
+  // Mise au point : flou → net quand l'élément arrive à l'écran (et le cadre passe en or).
+  const observateurMap =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entrees) =>
+            entrees.forEach((e) => {
+              if (!e.isIntersecting) return;
+              observateurMap.unobserve(e.target);
+              e.target.classList.add("net");
+            }),
+          { rootMargin: "0px 0px -18% 0px", threshold: 0.2 }
+        )
+      : null;
+  function observerMiseAuPoint() {
+    $$(".map:not(.net)").forEach((el) => (observateurMap ? observateurMap.observe(el) : el.classList.add("net")));
   }
 
   // ---------- Réactions de l'appareil ----------
@@ -590,19 +757,7 @@
   }
 
   function brancherSections() {
-    if (!aGsap || !window.ScrollTrigger || calme) return;
-    ScrollTrigger.create({
-      trigger: "#photos",
-      start: "top 70%",
-      end: "bottom 35%",
-      onToggle: (s) => gsap.to(reaction, { ry: s.isActive ? (M.mobile ? -0.4 : -0.62) : 0, duration: 1.2, ease: "power3.out" }),
-    });
-    ScrollTrigger.create({
-      trigger: "#formules",
-      start: "top 65%",
-      end: "bottom 40%",
-      onToggle: (s) => gsap.to(reaction, { rx: s.isActive ? 0.14 : 0, duration: 1.1, ease: "power3.out" }),
-    });
+    observerMiseAuPoint();
   }
 
   // ---------- Chargement de la 3D (après la photo) ----------
@@ -741,11 +896,12 @@
         if (aGsap && !calme) gsap.fromTo(reaction, { ry: reaction.ry + 0.5 }, { ry: reaction.ry, duration: 1.2, ease: "elastic.out(1, 0.5)" });
       })
     );
-    const lienFormules = $('a[href="#formules"]');
-    lienFormules.addEventListener("click", (ev) => {
-      if (!lenis) return;
+    const lienTravail = $('a[href="#pellicule"]');
+    lienTravail.addEventListener("click", (ev) => {
       ev.preventDefault();
-      lenis.scrollTo("#formules", { offset: -90, duration: 1.4, easing: ease.inOut3 });
+      const cible = M.contenuHaut + pellicule.offsetTop; // indépendant du contenu « posé »
+      if (lenis) lenis.scrollTo(cible, { duration: 1.6, easing: ease.inOut3 });
+      else window.scrollTo({ top: cible, behavior: calme ? "auto" : "smooth" });
     });
 
     // La 3D démarre au premier geste du visiteur (souris, toucher, défilement,
