@@ -87,7 +87,7 @@
     M.mobile = l <= 760;
     M.aspect = l / h;
     M.tan = Math.tan((GEO.fov * Math.PI) / 360);
-    M.course = Math.round((calme ? 0.9 : M.mobile ? 1.3 : 1.5) * h);
+    M.course = Math.round((calme ? 0.9 : M.mobile ? 1.85 : 2.1) * h);
     M.entete = M.mobile ? 56 : 64;
     intro.style.height = h + M.course + "px";
     scene.style.height = h + "px";
@@ -924,7 +924,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=15"))
+      .then(() => import("./scene.js?v=16"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -963,11 +963,11 @@
             enCours = false;
             contenu.focus({ preventScroll: true });
           };
-          if (lenis) lenis.scrollTo(cible, { duration: M.mobile ? 2.1 : 2.5, easing: ease.inOut3, lock: true, onComplete: finir });
+          if (lenis) lenis.scrollTo(cible, { duration: M.mobile ? 2.6 : 3.0, easing: ease.inOut3, lock: true, onComplete: finir });
           else if (!calme) {
             // téléphone : la même descente douce qu'entre deux étapes
-            allerEtape(cible, 1800);
-            setTimeout(finir, 1850);
+            allerEtape(cible, 2400);
+            setTimeout(finir, 2450);
           } else {
             window.scrollTo(0, cible);
             finir();
@@ -1173,7 +1173,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=15", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=16", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;
