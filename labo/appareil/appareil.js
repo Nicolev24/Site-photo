@@ -753,17 +753,7 @@
           if (contact.instagram_url) liens.push(`<a href="${echapper(contact.instagram_url)}" target="_blank" rel="noopener">${echapper(contact.instagram_handle || "Instagram")}</a>`);
           if (contact.email) liens.push(`<a href="mailto:${echapper(contact.email)}" data-flash>${echapper(contact.email)}</a>`);
           const sep = '<span class="canaux-sep" aria-hidden="true">·</span>';
-          $$("[data-canaux]").forEach((el) => {
-            // Sur la carte claire, l'e-mail est déjà affiché en grand au-dessus.
-            const l = el.closest(".fin-c") ? liens.filter((x) => x.indexOf("mailto:") < 0) : liens;
-            el.innerHTML = l.join(sep);
-          });
-          if (contact.email)
-            $$("[data-email]").forEach((a) => {
-              a.href = "mailto:" + contact.email;
-              a.textContent = contact.email;
-              a.setAttribute("data-flash", "");
-            });
+          $$("[data-canaux]").forEach((el) => (el.innerHTML = liens.join(sep)));
           brancherFlash();
         }
       }
@@ -906,8 +896,6 @@
   // ---------- Démarrage ----------
   let lenis = null;
   function demarrer() {
-    const rendu = (location.search.match(/[?&]fin=([abc])/) || [])[1] || "a";
-    $$(".fin").forEach((s) => s.classList.toggle("actif", s.dataset.fin === rendu));
     mesurer(true);
     tailleObturateur();
 
