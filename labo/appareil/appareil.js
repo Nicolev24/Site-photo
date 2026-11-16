@@ -31,7 +31,17 @@
   const TOUR = Math.PI - 0.5; // un demi-tour : du dos vers l'objectif, en trois-quarts
   // Chapitres : moment où chacun est en place (t) et où il commence à s'effacer (fin).
   // Le 03 dure plus longtemps : la pellicule y défile.
-  const CH = { t: [0, 1, 2, 3.5], fin: [0.44, 1.44, 2.95, 3.94], range: 4.0, lacher: 4.05 };
+  const CH = { t: [0, 1, 4.6], fin: [0.44, 1.44, 5.1], lentille: [1.42, 2.0], s0: 2.0, pasS: 0.85, n: 3, rangement: [2.05, 2.5] };
+  // Le calendrier dépend du nombre de formules (une par écran)
+  function calendrier(n) {
+    CH.n = Math.max(1, n);
+    CH.finSlides = CH.s0 + (CH.n - 1) * CH.pasS + 0.45;
+    CH.t[2] = CH.finSlides + 0.5;
+    CH.fin[2] = CH.t[2] + 0.5;
+    CH.lacher = CH.fin[2] + 0.1;
+    CH.range = CH.lentille[1];
+  }
+  calendrier(3);
   let derniereC = -9;
   const PH = { a: 0.36, b0: 0.32, b1: 0.86, c0: 0.62, c1: 1 };
 
@@ -74,6 +84,13 @@
   const bande = $("#pellicule-bande");
   const porte = $("#pellicule-porte");
   const fenetre = $("#pellicule-fenetre");
+  const services = $("#services");
+  const listeServices = $("#services-liste");
+  const bague = $("#services-bague");
+  const grille = $("#galerie-grille");
+  const chapScene = $("#chap-scene");
+  let slides = [];
+  let tuiles = [];
 
   // ---------- Mesures (taille d'écran → distances 3D) ----------
   const M = {};
@@ -219,13 +236,16 @@
     // Les chapitres : l'appareil passe d'une pose à l'autre, se démonte (02), se remonte et déclenche (03),
     // montre son écran (04), puis se range dans l'en-tête.
     if (c > 0) {
-      let st = E[0];
-      for (let i = 1; i < E.length; i++) if (c > CH.t[i] - 0.62) st = melange(E[i - 1], E[i], ease.inOut3(seg(c, CH.t[i] - 0.62, CH.t[i] - 0.08)));
-      const kd = ease.inOut3(seg(c, CH.range, CH.range + 0.8));
+      let st = Object.assign({}, E[0]);
+      if (c > CH.t[1] - 0.62) st = melange(E[0], E[1], ease.inOut3(seg(c, CH.t[1] - 0.62, CH.t[1] - 0.08)));
+      // à travers l'objectif : l'appareil démonté s'avance un peu pendant que la lentille s'ouvre
+      const kl = ease.inOut3(seg(c, CH.lentille[0], CH.lentille[1]));
+      st.w *= 1 + 0.2 * kl;
+      // puis il se range dans l'en-tête, caché derrière les photos
+      const kd = ease.inOut3(seg(c, CH.rangement[0], CH.rangement[1]));
       if (kd > 0) st = melange(st, { x: 0.5, y: M.dock.py / M.h, w: M.dock.l, ry: Math.PI + 0.5, rx: 0.16, rz: -0.05 }, kd);
-      let proche = 0;
-      CH.t.forEach((t, i) => c > t - 0.5 && (proche = i));
-      st = Object.assign({}, st, { ry: st.ry + 0.3 * clamp(c - CH.t[proche], -0.5, 0.6) * (1 - kd) });
+      const derive = c < CH.t[1] - 0.5 ? c : c - CH.t[1];
+      st.ry += 0.3 * clamp(derive, -0.5, 0.6) * (1 - kd);
       const w = monde(st);
       x = w.x;
       y = w.y;
@@ -233,7 +253,7 @@
       ry = st.ry;
       rx = st.rx;
       rz = st.rz;
-      eclate = ease.inOut3(seg(c, 0.5, 1.02)) * (1 - ease.inOut3(seg(c, 1.42, 1.95)));
+      eclate = ease.inOut3(seg(c, 0.5, 1.02)) * (1 - ease.inOut3(seg(c, CH.rangement[0], CH.rangement[1])));
     }
 
     const balayage = tour > TOUR - 1.5 && c <= 0 ? seg(tour, TOUR - 1.5, TOUR) : -1;
@@ -255,19 +275,27 @@
     const cyp = M.h / 2 - (y + yFlotte) * ppu;
     const larg = GEO.corps.l * s * ppu;
     e.px = { x: cxp, y: cyp, w: larg };
-    e.ombre = { x: cxp, y: cyp + GEO.corps.h * 0.56 * s * ppu, w: larg * 1.1, o: seg(pp, 0.8, 1) * (1 - seg(c, CH.range - 0.05, CH.range + 0.3)) };
+    e.ombre = { x: cxp, y: cyp + GEO.corps.h * 0.56 * s * ppu, w: larg * 1.1, o: seg(pp, 0.8, 1) * (1 - seg(c, CH.lentille[0], CH.lentille[0] + 0.3)) };
 
-    // Textes des chapitres, index, numéro, cartes
-    e.chap = [0, 1, 2, 3].map((i) => {
-      const entree = i === 0 ? seg(pp, 0.84, 1) : seg(c, CH.t[i] - 0.34, CH.t[i] - 0.1);
-      return entree * (1 - seg(c, CH.fin[i], CH.fin[i] + 0.2));
-    });
-    let actif = 0;
-    CH.t.forEach((t, i) => c > t - 0.5 && (actif = i));
-    e.chapActif = actif;
-    e.chrome = seg(pp, 0.9, 1) * (1 - seg(c, CH.fin[3] - 0.05, CH.fin[3] + 0.2));
-    e.cartes = { 2: seg(c, 0.78, 1.02) * (1 - seg(c, 1.46, 1.68)) };
-    e.dock = c > CH.range + 0.45;
+    // Textes : 01, 02, puis la galerie (04)
+    e.chap = CH.t.map((t, i) => (i === 0 ? seg(pp, 0.84, 1) : seg(c, t - 0.34, t - 0.1)) * (1 - seg(c, CH.fin[i], CH.fin[i] + 0.2)));
+    // 03 : les formules, une par écran ; la première apparaît à travers l'objectif
+    e.lentille = seg(c, CH.lentille[0], CH.lentille[1]);
+    e.services = { visible: c > CH.lentille[0] - 0.02 && c < CH.finSlides + 0.5, sortie: ease.inOut2(seg(c, CH.finSlides, CH.finSlides + 0.4)), slides: [] };
+    for (let k = 0; k < CH.n; k++) {
+      const S = CH.s0 + k * CH.pasS;
+      const entree = k === 0 ? 1 : ease.inOut3(seg(c, S - 0.5, S - 0.05));
+      const suivante = k < CH.n - 1 ? ease.inOut3(seg(c, S + CH.pasS - 0.5, S + CH.pasS - 0.05)) : 0;
+      const dev = k === 0 ? seg(c, CH.lentille[1] - 0.3, CH.lentille[1] + 0.02) : seg(c, S - 0.34, S - 0.06);
+      const dedans = k === 0 ? seg(c, CH.lentille[1] + 0.0, CH.lentille[1] + 0.14) : seg(c, S - 0.06, S + 0.08);
+      const dehors = k < CH.n - 1 ? seg(c, S + 0.32, S + 0.42) : seg(c, CH.finSlides - 0.05, CH.finSlides + 0.12);
+      e.services.slides.push({ entree, suivante, dev, texte: dedans * (1 - dehors), zoom: seg(c, S - 0.6, S + 0.5) });
+    }
+    e.surPhoto = c > CH.lentille[1] - 0.08 && c < CH.finSlides + 0.25;
+    e.chapActif = c < 0.5 ? 0 : c < CH.lentille[1] - 0.1 ? 1 : c < CH.t[2] - 0.4 ? 2 : 3;
+    e.chrome = seg(pp, 0.9, 1) * (1 - seg(c, CH.fin[2] - 0.05, CH.fin[2] + 0.2));
+    e.cartes = { 2: seg(c, 0.78, 1.02) * (1 - seg(c, 1.36, 1.5)) };
+    e.dock = c > CH.rangement[1] - 0.05;
     e.toile = 1;
     e.viseur = 1 - seg(p, 0, 0.09);
     e.fond = 0.85 * seg(p, 0.06, 0.26) * (1 - seg(p, 0.42, 0.68));
@@ -298,7 +326,7 @@
 
     if (e.chap) {
       chaps.forEach((el, i) => {
-        const o = e.chap[i];
+        const o = e.chap[i] || 0;
         el.style.opacity = o.toFixed(3);
         el.style.visibility = o <= 0.01 ? "hidden" : "visible";
         el.classList.toggle("est-visible", o > 0.6);
@@ -309,13 +337,13 @@
       numChap.textContent = String(e.chapActif + 1).padStart(2, "0");
       numChap.style.opacity = e.chrome.toFixed(3);
       numChap.parentNode.querySelector(".chap-index").style.opacity = e.chrome.toFixed(3);
-      cartes.forEach((el, i) => {
-        const g = e.cartes[el.dataset.groupe] || 0;
-        const rang = el.dataset.groupe === "2" ? i : i - 3;
-        el.style.setProperty("--o", clamp(g * 1.5 - rang * 0.22).toFixed(3));
-      });
-      // L'appareil déclenche quand il revient face à nous (chapitre 03)
-      if (e.c >= CH.t[2] - 0.1 && dernierC < CH.t[2] - 0.1 && dernierC > 1) flash();
+      chapScene.classList.toggle("sur-photo", !!e.surPhoto);
+      cartes.forEach((el, i) => el.style.setProperty("--o", clamp((e.cartes[el.dataset.groupe] || 0) * 1.5 - i * 0.22).toFixed(3)));
+      if (e.c > 0.2) revelerChapitres();
+      appliquerServices(e);
+      tuiles.forEach((t, i) => t.style.setProperty("--o", clamp(e.chap[2] * 1.7 - i * 0.12).toFixed(3)));
+      // Le déclic : on vient d'entrer dans la photo (elle apparaît en négatif puis se développe)
+      if (e.c >= CH.lentille[1] - 0.04 && dernierC < CH.lentille[1] - 0.04 && dernierC > 1) flash();
       dernierC = e.c;
       derniereC = e.c;
     }
@@ -420,7 +448,7 @@
     }
   }
   let rafPellicule = 0;
-  fenetre.addEventListener(
+  if (fenetre) fenetre.addEventListener(
     "scroll",
     () => {
       if (!P.glisse) return;
@@ -731,6 +759,7 @@
       : null;
 
   function construirePellicule(u) {
+    if (!bande) return;
     const sizes = "(max-width: 760px) 74vw, 30vw";
     bande.innerHTML = VUES[u]
       .map((v, i) => {
@@ -756,6 +785,141 @@
     forcer = true;
   }
 
+
+  // ---------- 03 : les formules en plein écran ----------
+  // Construites à partir des formules de la page Tarifs (modifiables dans l'admin) — sans les prix.
+  const FORMULES = {
+    particuliers: [
+      { title: "Formule découverte", features: ["Environ 1h de séance", "1 lieu", "Galerie privée en ligne"], image: "images/portfolio/portraits/img1.jpg" },
+      { title: "Formule complète", badge: "Le plus demandé", features: ["2h à 3h de séance", "Plusieurs lieux possibles", "Galerie privée en ligne"], image: "images/mariages/baiser-pont-chateau.jpg" },
+      { title: "Sur devis", features: ["Événements, journées complètes, entreprises...", "Durée et lieux adaptés à votre besoin", "Galerie privée en ligne"], image: "images/mariages/premiere-danse-etincelles.jpg" },
+    ],
+    commerces: [
+      { title: "Séance photo commerce", features: ["1h sur place", "Photos retouchées", "Prêtes pour Google, les réseaux et votre site"], image: "images/commerces/barbier-sourire-client.jpg" },
+      { title: "Site vitrine 1 page", features: ["Un site moderne et rapide", "Adapté à tous les écrans", "Vos photos intégrées"], image: "images/formules/site-vitrine.jpg" },
+      { title: "Pack Photo + Site", badge: "Le plus choisi", features: ["Séance photo commerce incluse", "Site vitrine 1 page inclus"], image: "images/commerces/salon-vue-ensemble.jpg" },
+    ],
+  };
+  // Les photos de la galerie (04)
+  const GALERIE = {
+    particuliers: [
+      "images/mariages/bouquets-leves.jpg",
+      "images/mariages/maries-chien.jpg",
+      "images/mariages/preparatifs-boutons-manchette.jpg",
+      "images/mariages/premiere-danse-enlaces.jpg",
+      "images/mariages/sortie-confettis.jpg",
+      "images/mariages/baiser-renverse.jpg",
+    ],
+    commerces: [
+      "images/commerces/coupe-ciseaux.jpg",
+      "images/commerces/barbier-portrait-miroir.jpg",
+      "images/commerces/outils-miroir.jpg",
+      "images/commerces/serviette-chaude.jpg",
+      "images/commerces/salon-trophees.jpg",
+      "images/commerces/salon-decor-vinyle.jpg",
+    ],
+  };
+  let imagesChapitresVues = false;
+  function revelerChapitres() {
+    if (imagesChapitresVues) return;
+    imagesChapitresVues = true;
+    $$("img[data-src]", chapScene).forEach(reveler);
+  }
+  function majHauteurChapitres() {
+    if (calme) return;
+    chapitres.style.height = M.h + Math.round(CH.lacher * M.pasCh) + "px";
+    M.contenuHaut = contenu.getBoundingClientRect().top + window.scrollY;
+  }
+  function construireServices(u) {
+    if (!listeServices) return;
+    const plans = donnees && donnees.plans[u] && donnees.plans[u].length ? donnees.plans[u] : FORMULES[u];
+    const n = plans.length;
+    const deux = (v) => String(v).padStart(2, "0");
+    listeServices.innerHTML = plans
+      .map((p, i) => {
+        const img = p.image || ((p.maquette && p.maquette.ecran) || {}).image || FORMULES[u][i % FORMULES[u].length].image;
+        const points = (p.features || []).filter((f) => !/€|euros?\b/i.test(f)).slice(0, 3);
+        return `<li class="service" style="--pos: ${echapper(p.position || "50% 50%")}">
+          <div class="service-photo">${image(img, 1600, "100vw", p.alt || p.title || "")}
+            <div class="service-negatif" aria-hidden="true">${image(img, 1600, "100vw", "")}</div>
+          </div>
+          <div class="service-voile" aria-hidden="true"></div>
+          <div class="service-texte">
+            <p class="chap-sur"><span>03</span>Mes formules · ${deux(i + 1)}/${deux(n)}</p>
+            ${p.badge ? `<p class="service-badge">${echapper(p.badge)}</p>` : ""}
+            <h3 class="service-titre">${echapper(p.title || "")}</h3>
+            ${points.length ? `<p class="service-points">${points.map(echapper).join(" · ")}</p>` : ""}
+            <div class="service-actions">
+              <a class="pastille" href="${BASE}services.html?pour=${u}">Voir la formule</a>
+              <a class="lien lien-blanc" href="${BASE}contact.html?pour=${u}" data-flash>Réserver</a>
+            </div>
+          </div>
+        </li>`;
+      })
+      .join("");
+    slides = $$(".service", listeServices).map((li) => {
+      li._photo = li.querySelector(".service-photo");
+      li._neg = li.querySelector(".service-negatif");
+      li._voile = li.querySelector(".service-voile");
+      li._texte = li.querySelector(".service-texte");
+      return li;
+    });
+    if (grille) {
+      grille.innerHTML = GALERIE[u].map((c) => `<span class="tuile">${image(c, 480, "(max-width: 760px) 30vw, 15vw", "")}</span>`).join("");
+      tuiles = $$(".tuile", grille);
+    }
+    if (imagesChapitresVues || calme) $$("img[data-src]", chapScene).forEach(reveler);
+    if (n !== CH.n) {
+      calendrier(n);
+      majHauteurChapitres();
+    }
+    brancherFlash();
+    forcer = true;
+  }
+  function appliquerServices(e) {
+    const S = e.services;
+    if (!services || !S) return;
+    if (!S.visible) {
+      services.style.visibility = "hidden";
+      bague.style.opacity = 0;
+      services.classList.remove("est-active");
+      return;
+    }
+    services.style.visibility = "visible";
+    // Le cercle part de la lentille avant de l'appareil démonté
+    let cx = M.l * 0.3;
+    let cy = M.h * 0.5;
+    let r0 = 40;
+    if (api3d) {
+      const o = api3d.projeter("objectif");
+      cx = o.x;
+      cy = o.y;
+      r0 = Math.max(14, o.r || 40);
+    }
+    const rMax = Math.hypot(Math.max(cx, M.l - cx), Math.max(cy, M.h - cy)) + 6;
+    const k = ease.inOut3(e.lentille);
+    const r = lerp(r0, rMax, k);
+    services.style.clipPath = k >= 0.999 ? "none" : `circle(${r.toFixed(1)}px at ${cx.toFixed(1)}px ${cy.toFixed(1)}px)`;
+    bague.style.width = bague.style.height = (2 * r).toFixed(1) + "px";
+    bague.style.transform = `translate(${(cx - r).toFixed(1)}px, ${(cy - r).toFixed(1)}px)`;
+    bague.style.opacity = (seg(e.lentille, 0, 0.06) * (1 - seg(e.lentille, 0.55, 0.95))).toFixed(3);
+    services.style.opacity = (1 - S.sortie).toFixed(3);
+    services.style.transform = S.sortie > 0 ? `scale(${(1 - 0.06 * S.sortie).toFixed(4)})` : "";
+    services.classList.toggle("est-active", k >= 0.999 && S.sortie < 0.5);
+    slides.forEach((li, i) => {
+      const s = S.slides[i];
+      if (!s) return;
+      li.style.clipPath = i === 0 ? "" : `inset(${(100 * (1 - s.entree)).toFixed(2)}% 0 0 0)`;
+      li.style.visibility = s.entree <= 0.001 ? "hidden" : "visible";
+      li._photo.style.transform = `scale(${(1.14 - 0.1 * s.zoom - 0.05 * s.suivante).toFixed(4)})`;
+      li._voile.style.opacity = (0.6 * s.suivante).toFixed(3);
+      li._neg.style.opacity = (1 - s.dev).toFixed(3);
+      li._texte.style.opacity = s.texte.toFixed(3);
+      li._texte.style.transform = `translateY(${((1 - s.texte) * 24).toFixed(1)}px)`;
+      li._texte.style.visibility = s.texte <= 0.01 ? "hidden" : "visible";
+    });
+  }
+
   function afficherUnivers(u, anime) {
     const faire = () => {
       const t = Object.assign({}, TEXTES_PAR_DEFAUT[u], (donnees && donnees.textes[u]) || {});
@@ -764,6 +928,7 @@
         el.innerHTML = emphase(t[cle] || "");
       });
       construirePellicule(u);
+      construireServices(u);
       $$("[data-tirage]").forEach((el) => {
         const t = TIRAGES[u][+el.dataset.tirage];
         if (!t) return;
@@ -924,7 +1089,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=17"))
+      .then(() => import("./scene.js?v=18"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -1173,7 +1338,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=17", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=18", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;

@@ -175,6 +175,10 @@ export async function creerAppareil({ canvas, geo, mobile, base }) {
   const frontale = new THREE.Object3D();
   frontale.position.set(ax, ay, -6.0);
   groupe.add(frontale);
+  const bordFrontale = new THREE.Object3D(); // un point du bord de la lentille (pour son rayon à l'écran)
+  bordFrontale.position.set(ax + 2.0, ay, -6.0);
+  groupe.add(bordFrontale);
+  const tmp2 = new THREE.Vector3();
 
   // ----- API pour la chorégraphie -----
   const tmp = new THREE.Vector3();
@@ -212,13 +216,24 @@ export async function creerAppareil({ canvas, geo, mobile, base }) {
       p.m.position.y = p.y0 + 0.16 * p.sens * vague;
       if (p.interne) p.m.visible = x > 0.02;
     });
+    const zf = -6.0 - 1.15 * (NB * 1.0 + 1.1) * x; // la lentille frontale, là où elle flotte
+    frontale.position.z = zf;
+    bordFrontale.position.z = zf;
   }
 
   function projeter(nom) {
     if (nom === "objectif") frontale.getWorldPosition(tmp);
     else groupe.getWorldPosition(tmp);
     tmp.project(camera);
-    return { x: ((tmp.x + 1) / 2) * largeur, y: ((1 - tmp.y) / 2) * hauteur };
+    const x = ((tmp.x + 1) / 2) * largeur;
+    const y = ((1 - tmp.y) / 2) * hauteur;
+    let r = 0;
+    if (nom === "objectif") {
+      bordFrontale.getWorldPosition(tmp2);
+      tmp2.project(camera);
+      r = Math.hypot(((tmp2.x + 1) / 2) * largeur - x, ((1 - tmp2.y) / 2) * hauteur - y);
+    }
+    return { x, y, r };
   }
 
   function rendre() {

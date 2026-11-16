@@ -36,7 +36,7 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="labo.css?v=17" />
+<link rel="stylesheet" href="labo.css?v=18" />
 </head>
 <body>
 
@@ -152,37 +152,24 @@
           <p class="chap-texte">Naturelle, douce, travaillée sur place. Des couleurs fidèles, sans filtre forcé.</p>
         </div>
       </article>
-      <article class="chap chap-travail" data-cote="gauche" aria-labelledby="chap3-titre">
+      <!-- 03 : à travers l'objectif, les formules en grand (construites à partir des tarifs) -->
+      <div class="services" id="services" role="region" aria-label="Mes formules">
+        <ol class="services-liste" id="services-liste"></ol>
+      </div>
+      <span class="services-bague" id="services-bague" aria-hidden="true"></span>
+
+      <!-- 04 : vos photos, rangées comme dans la galerie privée -->
+      <div class="galerie-grille" id="galerie-grille" aria-hidden="true"></div>
+      <article class="chap chap-galerie" data-cote="droite" aria-labelledby="chap4-titre">
         <div class="chap-haut">
-          <p class="chap-sur"><span>03</span>Ce que je photographie</p>
-          <h2 class="chap-titre" id="chap3-titre" data-texte="declic"></h2>
-        </div>
-        <div class="chap-bas">
-          <!-- La pellicule : chaque vue avance d'un cran et se développe (négatif → photo) -->
-          <div class="pellicule" id="pellicule">
-            <p class="pellicule-compteur" aria-hidden="true">Vue <span id="pellicule-vue">01</span><span class="pellicule-total">/<span id="pellicule-total">04</span></span></p>
-            <div class="pellicule-cadre">
-              <div class="pellicule-fenetre" id="pellicule-fenetre">
-                <ol class="pellicule-bande" id="pellicule-bande"></ol>
-              </div>
-              <span class="pellicule-porte" id="pellicule-porte" aria-hidden="true"></span>
-            </div>
-            <p class="pellicule-glisser" aria-hidden="true">Glissez pour voir la suite</p>
-          </div>
-          <div class="accroche-actions">
-            <a class="lien lien-or" href="../travail.html" data-lien-univers>Voir mon travail</a>
-          </div>
-        </div>
-      </article>
-      <article class="chap" data-cote="droite" aria-labelledby="chap4-titre">
-        <div class="chap-haut">
-          <p class="chap-sur"><span>04</span>La galerie</p>
+          <p class="chap-sur"><span>04</span>Votre galerie</p>
           <h2 class="chap-titre" id="chap4-titre">Vos photos, <em>rien qu'à vous</em>.</h2>
         </div>
         <div class="chap-bas">
           <ul class="chap-liste" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
           <div class="accroche-actions">
             <a class="lien lien-or" href="../../services.html" data-lien-univers>Voir les tarifs</a>
+            <a class="lien" href="../travail.html" data-lien-univers>Voir mon travail</a>
           </div>
         </div>
       </article>
@@ -192,7 +179,7 @@
         <span class="carte carte-reglage" data-groupe="2"><small>Focale</small><strong>50 mm</strong></span>
         <span class="carte carte-reglage" data-groupe="2"><small>Lumière</small><strong>naturelle</strong></span>
       </div>
-      <ol class="chap-index" aria-hidden="true"><li>Le regard</li><li>La lumière</li><li>Mon travail</li><li>La galerie</li></ol>
+      <ol class="chap-index" aria-hidden="true"><li>Le regard</li><li>La lumière</li><li>Mes formules</li><li>Votre galerie</li></ol>
       <p class="chap-num" id="chap-num" aria-hidden="true">01</p>
     </div>
   </section>
@@ -220,6 +207,6 @@
 <script src="../vendor/gsap.min.js" defer></script>
 <script src="../vendor/ScrollTrigger.min.js" defer></script>
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="appareil.js?v=17" defer></script>
+<script src="appareil.js?v=18" defer></script>
 </body>
 </html>
