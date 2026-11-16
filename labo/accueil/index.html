@@ -12,7 +12,8 @@
 <link rel="icon" href="../../icones/favicon.svg" type="image/svg+xml" />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
-<link rel="preload" as="image" href="lentille.webp" fetchpriority="high" />
+<link rel="preload" as="image" href="sequence/640/c_0.000.webp" fetchpriority="high" media="(max-width: 899px)" />
+<link rel="preload" as="image" href="sequence/1000/c_0.000.webp" fetchpriority="high" media="(min-width: 900px)" />
 
 <!-- Univers Particuliers / Commerces : même système que le site (lu, jamais modifié). -->
 <script src="../../js/univers.js"></script>
@@ -72,7 +73,8 @@
     <div class="plateau" id="plateau">
       <div class="halo" aria-hidden="true"></div>
       <div class="ombre-sol" id="ombre-sol" aria-hidden="true"></div>
-      <img class="lentille-fixe" id="lentille-fixe" src="lentille.webp" alt="" width="600" height="600" decoding="async" />
+      <img class="lentille-fixe" id="lentille-fixe" src="sequence/640/c_0.000.webp" srcset="sequence/640/c_0.000.webp 640w, sequence/1000/c_0.000.webp 1000w" sizes="(max-width: 899px) 640px, 1000px" alt="" width="640" height="640" decoding="async" />
+      <canvas class="film" id="film" aria-hidden="true"></canvas>
       <canvas class="toile" id="toile" aria-hidden="true"></canvas>
       <div class="eclair" id="eclair" aria-hidden="true"></div>
 

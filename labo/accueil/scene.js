@@ -31,42 +31,12 @@ function sousGeometrie(geom, triangles) {
   return g;
 }
 
-// Les appareils disponibles (?appareil=nikon / olympus ; Leica par défaut).
+// L'appareil 3D en direct (?appareil=leica). Les profils de scans ont été essayés puis retirés.
 // Mesures dans les unités du fichier : centre du boîtier, largeur, axe de l'objectif [x, y, rayon],
 // avant de l'objectif, monture (où il rejoint le boîtier), verre avant (rayon relatif, position),
 // hauteur sous laquelle on retire la plaque de trépied du scan.
 const PROFILS = {
   leica: { leica: true, echelle: 1 },
-  nikon: {
-    // « NIKON Z6 with NIKKOR 50 f1.8S » par Metazeon (Sketchfab), CC BY 4.0
-    fichier: new URL("modeles/nikon.glb", import.meta.url).href,
-    meshopt: true,
-    centre: [-1.54, 6.69, 3.6],
-    largeur: 20.46,
-    axe: [-4.2, 5.3, 5.3],
-    zAvant: -12.34,
-    zMonture: -1.0,
-    rVerre: 0.74,
-    zVerre: -11.75,
-    yCoupe: -0.45,
-    gorge: [0.6, 0.9],
-    echelle: 0.86,
-  },
-  olympus: {
-    // « Olympus Film Camera PBR Scan Project » par johngreenstone (Sketchfab), CC BY 4.0
-    fichier: new URL("modeles/olympus.glb", import.meta.url).href,
-    meshopt: true,
-    centre: [-1.9625, -4.7385, 0.385],
-    largeur: 2.511,
-    axe: [-2.07, -4.975, 0.55],
-    zAvant: -0.778,
-    zMonture: 0.03,
-    rVerre: 0.72,
-    zVerre: -0.7,
-    retirer: ["Material.008"], // l'ancien verre (violet), qui traverse le boîtier
-    gorge: [0.4, 1.0], // l'ouverture de la monture : jusqu'où, quel rayon (relatif)
-    echelle: 1,
-  },
 };
 
 // Les fichiers allégés stockent les points en entiers compressés : on les repasse en flottants

@@ -97,19 +97,10 @@
   const N = etapes.length;
 
   // L'appareil 3D (essais : ?appareil=nikon ou ?appareil=olympus)
-  const APPAREIL = (new URLSearchParams(location.search).get("appareil") || "leica").toLowerCase();
-  // Licence CC BY : l'auteur du modèle 3D est cité en bas de page
-  const CREDITS = {
-    nikon: '« NIKON Z6 with NIKKOR 50 f1.8S » par <a href="https://sketchfab.com/3d-models/5c6b4f4bc1cf4386989c1f9f66cedcf4" target="_blank" rel="noopener">Metazeon</a>',
-    olympus: '« Olympus Film Camera PBR Scan Project » par <a href="https://sketchfab.com/3d-models/aa843426948145aea7213ae6bf5d3bb6" target="_blank" rel="noopener">johngreenstone</a>',
-  };
-  if (CREDITS[APPAREIL]) {
-    const p = document.createElement("p");
-    p.className = "pied-labo";
-    p.innerHTML = `Modèle 3D : ${CREDITS[APPAREIL]} (<a href="https://creativecommons.org/licenses/by/4.0/deed.fr" target="_blank" rel="noopener">CC BY 4.0</a>), allégé.`;
-    const pied = document.querySelector(".pied");
-    if (pied) pied.appendChild(p);
-  }
+  // Par défaut : la séquence d'images calculée à l'avance (rendu « cinéma »).
+  // Pour comparer avec l'ancienne 3D en direct : ?appareil=leica.
+  const APPAREIL = (new URLSearchParams(location.search).get("appareil") || "film").toLowerCase();
+  const MODE_FILM = APPAREIL === "film";
   let univers = window.Univers ? window.Univers.courant() : "particuliers";
   let forcer = true; // redessiner au prochain passage
   let manifeste = {};
@@ -296,6 +287,10 @@
 
   // ---------- Version calme (mouvements réduits) : tout est posé, rien ne bouge ----------
   if (calme) {
+    // une seule image, l'appareil complet (rendu « cinéma »)
+    fixe.removeAttribute("srcset");
+    fixe.src = "sequence/640/c_2.000.webp";
+    fixe.alt = "Appareil photo Leica, objectif monté";
     pret.then(() => {
       if (voile) voile.style.opacity = 0;
     });
@@ -318,6 +313,18 @@
       else window.scrollTo({ top: cible.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
     })
   );
+
+  // ---------- Le film (séquence d'images) ----------
+  const film = MODE_FILM ? $("#film") : null;
+  const FILM = {
+    pas: 0.04, // une image tous les 0,04 d'étape
+    n: 79, // de 0 à 3,12
+    dossier: (window.innerWidth < 900 ? "sequence/640/" : "sequence/1000/"),
+    images: [],
+    pret: 0,
+    reperes: null,
+    dernier: -1,
+  };
 
   // ---------- Mesures ----------
   const M = { l: 1, h: 1, mobile: true, pas: 1, haut: 0 };
@@ -346,6 +353,17 @@
       M.ty = M.h * 0.53;
       M.tx = M.l * 0.61;
     }
+    // le film (images carrées) : centré sur l'objet
+    M.S = M.mobile ? Math.min(M.l * 1.04, M.h * 0.64) : Math.min(M.l * 0.56, M.h * 0.92);
+    M.fx = M.x;
+    M.fy = M.y;
+    if (film) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      film.width = film.height = Math.round(M.S * dpr);
+      film.style.width = film.style.height = M.S + "px";
+      film.style.transform = `translate(${(M.fx - M.S / 2).toFixed(1)}px, ${(M.fy - M.S / 2).toFixed(1)}px)`;
+      FILM.dernier = -1;
+    }
     plateau.style.setProperty("--ox", M.x + "px");
     plateau.style.setProperty("--oy", M.y + "px");
     tirage.style.setProperty("--tw", M.tw + "px");
@@ -367,7 +385,7 @@
       ]),
       px: cle(c, [
         [0, pxL],
-        [1.2, pxL * (api && api.echelle < 1 ? 0.74 : 0.86)],
+        [1.2, pxL * 0.86],
         [1.95, pxC],
         [2.8, pxC * 1.05],
         [3.55, pxC * 0.62],
@@ -405,6 +423,7 @@
       return { o: entree * (1 - fin), y: (1 - entree) * 22 - fin * 14 };
     });
     e.etape = Math.round(borne(c, 0, N - 1));
+    e.c = c;
     e.defiler = 1 - seg(c, 0.04, 0.3);
     return e;
   }
@@ -432,7 +451,17 @@
     if (defiler) defiler.style.opacity = e.defiler.toFixed(3);
 
     // L'appareil
-    if (api) {
+    if (MODE_FILM) {
+      dessinerFilm(e.c);
+      film.style.opacity = e.toile.toFixed(3);
+      const r = reperesLentille(e.c);
+      lentilleVue = { x: M.fx - M.S / 2 + r[0] * M.S, y: M.fy - M.S / 2 + r[1] * M.S, r: r[2] * M.S };
+      if (FILM.pret && fixe.style.display !== "none") fixe.style.display = "none";
+      else if (!FILM.pret) {
+        fixe.style.width = M.S + "px";
+        fixe.style.transform = `translate(${(M.fx - M.S / 2).toFixed(1)}px, ${(M.fy - M.S / 2).toFixed(1)}px)`;
+      }
+    } else if (api) {
       api.appliquer(e);
       api.rendre();
       lentilleVue = api.lentilleEcran();
@@ -454,7 +483,7 @@
     ombre.style.width = largeurObjet.toFixed(1) + "px";
     ombre.style.height = (largeurObjet * 0.16).toFixed(1) + "px";
     ombre.style.transform = `translate(${(e.x - largeurObjet / 2).toFixed(1)}px, ${(oy - largeurObjet * 0.08).toFixed(1)}px)`;
-    ombre.style.opacity = ((api ? 0.9 : 0.6) * e.toile).toFixed(3);
+    ombre.style.opacity = MODE_FILM ? 0 : ((api ? 0.9 : 0.6) * e.toile).toFixed(3); // le film a sa vraie ombre
 
     // Le tirage sort de l'objectif et vient se poser
     const t = e.tirage;
@@ -517,6 +546,89 @@
     requestAnimationFrame(boucle);
   }
 
+  // ---------- Le film : une image par position de défilement (flip-book) ----------
+  function chargerFilm() {
+    if (FILM.lance) return;
+    FILM.lance = true;
+    fetch(FILM.dossier + "../lentille.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j) {
+          FILM.reperes = j;
+          forcer = true;
+        }
+      })
+      .catch(() => {});
+    // d'abord une image sur huit (on voit tout de suite le mouvement), puis on comble
+    const ordre = [];
+    [8, 4, 2, 1].forEach((p) => {
+      for (let i = 0; i < FILM.n; i += p) if (!ordre.includes(i)) ordre.push(i);
+    });
+    let enCours = 0;
+    const suite = () => {
+      while (enCours < 6 && ordre.length) {
+        const i = ordre.shift();
+        enCours++;
+        const img = new Image();
+        img.decoding = "async";
+        img.src = FILM.dossier + nomImage(i);
+        const fini = () => {
+          enCours--;
+          suite();
+        };
+        img.decode().then(() => {
+          FILM.images[i] = img;
+          FILM.pret++;
+          forcer = true;
+          fini();
+        }, fini);
+      }
+    };
+    suite();
+  }
+  function nomImage(i) {
+    return "c_" + (i * FILM.pas).toFixed(3) + ".webp";
+  }
+  function plusProche(i) {
+    for (let d = 0; d < FILM.n; d++) {
+      if (FILM.images[i - d]) return FILM.images[i - d];
+      if (FILM.images[i + d]) return FILM.images[i + d];
+    }
+    return null;
+  }
+  function dessinerFilm(c) {
+    if (!film || !FILM.pret) return;
+    const f = borne(c / FILM.pas, 0, FILM.n - 1);
+    const i0 = Math.floor(f);
+    const a = f - i0;
+    const im0 = FILM.images[i0] || plusProche(i0);
+    const im1 = a > 0.02 && i0 + 1 < FILM.n ? FILM.images[i0 + 1] : null;
+    const cle_ = (im0 && im0.src) + "|" + (im1 ? a.toFixed(2) : "");
+    if (cle_ === FILM.dernier) return;
+    FILM.dernier = cle_;
+    const ctx = film.getContext("2d");
+    ctx.clearRect(0, 0, film.width, film.height);
+    if (!im0) return;
+    ctx.globalAlpha = 1;
+    ctx.drawImage(im0, 0, 0, film.width, film.height);
+    if (im1) {
+      // fondu entre deux images voisines : le mouvement reste fluide entre les images calculées
+      ctx.globalAlpha = a;
+      ctx.drawImage(im1, 0, 0, film.width, film.height);
+      ctx.globalAlpha = 1;
+    }
+  }
+  function reperesLentille(c) {
+    const R0 = [0.5, 0.5, 0.06];
+    if (!FILM.reperes) return R0;
+    const f = borne(c / FILM.pas, 0, FILM.n - 1);
+    const i0 = Math.floor(f);
+    const a = f - i0;
+    const r0 = FILM.reperes[(i0 * FILM.pas).toFixed(3)] || R0;
+    const r1 = FILM.reperes[(Math.min(FILM.n - 1, i0 + 1) * FILM.pas).toFixed(3)] || r0;
+    return [lerp(r0[0], r1[0], a), lerp(r0[1], r1[1], a), lerp(r0[2], r1[2], a)];
+  }
+
   // ---------- La 3D, chargée sans retarder l'affichage ----------
   let lance = false;
   function lancer3D() {
@@ -536,8 +648,15 @@
       })
       .catch((err) => console.warn("3D indisponible :", err));
   }
-  ["scroll", "pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => window.addEventListener(ev, lancer3D, { once: true, passive: true }));
-  window.addEventListener("load", () => setTimeout(lancer3D, 2500));
+  if (MODE_FILM) {
+    if (document.readyState === "complete") chargerFilm();
+    else window.addEventListener("load", chargerFilm);
+  } else {
+    fixe.src = "lentille.webp";
+    fixe.removeAttribute("srcset");
+    ["scroll", "pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => window.addEventListener(ev, lancer3D, { once: true, passive: true }));
+    window.addEventListener("load", () => setTimeout(lancer3D, 2500));
+  }
 
   let largeurPrec = 0;
   let hauteurPrec = 0;
@@ -554,5 +673,5 @@
   requestAnimationFrame(boucle);
 
   // Pour les tests
-  window.__accueil = { M, calculer, get api() { return api; }, lancer3D };
+  window.__accueil = { M, calculer, get api() { return api; }, lancer3D, FILM };
 })();
