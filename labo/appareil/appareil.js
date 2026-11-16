@@ -90,6 +90,8 @@
   const grille = $("#galerie-grille");
   const chapScene = $("#chap-scene");
   let slides = [];
+  const progresBarre = $("#progres span");
+  let finVisible = false;
   let tuiles = [];
 
   // ---------- Mesures (taille d'écran → distances 3D) ----------
@@ -159,10 +161,10 @@
     const l = M.l;
     if (M.mobile)
       return [
-        { x: 0.5, y: 0.5, w: 0.78 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
+        { x: 0.5, y: 0.46, w: 0.7 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
         { x: 0.6, y: 0.46, w: 0.56 * l, ry: 2.3, rx: 0.14, rz: 0 },
         { x: 0.5, y: 0.37, w: 0.46 * l, ry: Math.PI + 0.35, rx: 0.12, rz: 0 },
-        { x: 0.5, y: 0.5, w: 0.66 * l, ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
+        { x: 0.5, y: 0.46, w: 0.62 * l, ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
       ];
     return [
       { x: 0.68, y: 0.52, w: Math.min(0.4 * l, 640), ry: TOUR, rx: 0.16, rz: -0.05 },
@@ -356,6 +358,13 @@
     }
     majPellicule(e.c != null ? e.c : 0);
     entete.classList.toggle("est-plein", e.p > 0.62);
+    if (!calme) {
+      const total = M.course + CH.lacher * M.pasCh;
+      const avance = clamp(window.scrollY / total);
+      progresBarre.style.transform = `scaleX(${avance.toFixed(4)})`;
+      R.classList.toggle("progres-visible", e.p > 0.62 && avance < 0.995);
+    }
+    R.classList.toggle("barre-visible", e.p > 0.62 && !finVisible);
     R.classList.toggle("dock", !!e.dock);
     if (modeFixe) {
       const px = e.px;
@@ -850,14 +859,17 @@
             <h3 class="service-titre">${echapper(p.title || "")}</h3>
             ${points.length ? `<p class="service-points">${points.map(echapper).join(" · ")}</p>` : ""}
             <div class="service-actions">
-              <a class="pastille" href="${BASE}services.html?pour=${u}">Voir la formule</a>
-              <a class="lien lien-blanc" href="${BASE}contact.html?pour=${u}" data-flash>Réserver</a>
+              <a class="pastille" href="${BASE}contact.html?pour=${u}&amp;formule=${encodeURIComponent(p.title || "")}" data-flash>Réserver cette formule</a>
+              <a class="lien lien-blanc" href="${BASE}services.html?pour=${u}">Voir le détail</a>
             </div>
           </div>
         </li>`;
       })
       .join("");
     slides = $$(".service", listeServices).map((li) => {
+      const img = li.querySelector(".service-photo > img");
+      const mesure = () => li.style.setProperty("--clarte", clarteBas(img).toFixed(2));
+      if (img) img.complete && img.naturalWidth ? mesure() : img.addEventListener("load", mesure, { once: true });
       li._photo = li.querySelector(".service-photo");
       li._neg = li.querySelector(".service-negatif");
       li._voile = li.querySelector(".service-voile");
@@ -875,6 +887,23 @@
     }
     brancherFlash();
     forcer = true;
+  }
+  // Clarté moyenne du bas de la photo (là où est le texte), de 0 (noir) à 1 (blanc)
+  function clarteBas(img) {
+    try {
+      if (!img || !img.naturalWidth) return 0.5;
+      const c = document.createElement("canvas");
+      c.width = 24;
+      c.height = 24;
+      const g = c.getContext("2d");
+      g.drawImage(img, 0, 0, 24, 24);
+      const d = g.getImageData(0, 10, 24, 14).data;
+      let s = 0;
+      for (let i = 0; i < d.length; i += 4) s += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+      return clamp(s / (d.length / 4));
+    } catch (err) {
+      return 0.5;
+    }
   }
   function appliquerServices(e) {
     const S = e.services;
@@ -1089,7 +1118,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=18"))
+      .then(() => import("./scene.js?v=19"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -1308,15 +1337,50 @@
         if (aGsap && !calme) gsap.fromTo(reaction, { ry: reaction.ry + 0.5 }, { ry: reaction.ry, duration: 1.2, ease: "elastic.out(1, 0.5)" });
       })
     );
+    // Menu du téléphone
+    const menu = $("#menu-mobile");
+    const boutonMenu = $("#barre-menu");
+    const fermerMenu = () => {
+      menu.hidden = true;
+      boutonMenu.setAttribute("aria-expanded", "false");
+      boutonMenu.focus({ preventScroll: true });
+    };
+    boutonMenu.addEventListener("click", () => {
+      menu.hidden = false;
+      boutonMenu.setAttribute("aria-expanded", "true");
+      const premier = menu.querySelector("a");
+      if (premier) premier.focus({ preventScroll: true });
+    });
+    $$("[data-fermer]", menu).forEach((el) => el.addEventListener("click", fermerMenu));
+    document.addEventListener("keydown", (ev) => ev.key === "Escape" && !menu.hidden && fermerMenu());
+    // « Voir les formules » : on saute l'animation, droit à la première formule
+    $("#lien-formules").addEventListener("click", (ev) => {
+      ev.preventDefault();
+      const cible = Math.round(M.course + (CH.lentille[1] + 0.16) * M.pasCh);
+      if (calme) window.scrollTo(0, Math.round($("#services").getBoundingClientRect().top + window.scrollY));
+      else if (lenis) lenis.scrollTo(cible, { duration: 2.2, easing: ease.inOut3 });
+      else allerEtape(cible, 1900);
+    });
+    // La barre du bas se retire quand l'invitation finale est à l'écran
+    const fin = $(".reserver");
+    if (fin && "IntersectionObserver" in window)
+      new IntersectionObserver((entrees) => {
+        finVisible = entrees[0].isIntersecting;
+        forcer = true;
+      }).observe(fin);
+
     // Jour / nuit (mémorisé dans ce navigateur)
     const boutonTheme = $("#theme-btn");
     const meta = document.querySelector('meta[name="theme-color"]');
+    const boutonThemeMenu = $("#menu-theme");
     const majTheme = () => {
       const nuit = R.getAttribute("data-theme") === "nuit";
       boutonTheme.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
+      if (boutonThemeMenu) boutonThemeMenu.textContent = nuit ? "Mode jour" : "Mode nuit";
       if (meta) meta.setAttribute("content", nuit ? "#111113" : "#ededf0");
     };
     majTheme();
+    if (boutonThemeMenu) boutonThemeMenu.addEventListener("click", () => boutonTheme.click());
     boutonTheme.addEventListener("click", () => {
       const t = R.getAttribute("data-theme") === "nuit" ? "jour" : "nuit";
       R.setAttribute("data-theme", t);
@@ -1338,7 +1402,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=18", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=19", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;

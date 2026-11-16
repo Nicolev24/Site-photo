@@ -2640,3 +2640,353 @@ html.js:not(.calme) .galerie-grille {
     aspect-ratio: 1;
   }
 }
+
+/* ============================================================
+   Règles de web design appliquées (lisibilité, pouce, contraste)
+   ============================================================ */
+/* 8. Une échelle d'espacement régulière (multiples de 8 px) */
+:root {
+  --e1: 8px;
+  --e2: 16px;
+  --e3: 24px;
+  --e4: 32px;
+  --e6: 48px;
+  --e8: 64px;
+  --barre-h: 76px;
+}
+
+/* 2. Assez grand pour le doigt (44 px) et pour l'œil (12 px minimum) */
+.lien {
+  min-height: 44px;
+  padding: 0;
+  font-size: 0.78rem;
+}
+.lien::before {
+  bottom: 9px;
+}
+.bascule-btn {
+  min-height: 44px;
+  font-size: 0.75rem;
+}
+.theme-btn {
+  width: 44px;
+  height: 44px;
+}
+.entete-reserver {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.chap-sur {
+  font-size: 0.75rem;
+}
+.chap-liste {
+  font-size: 0.8rem;
+}
+html.js:not(.calme) .chap-index {
+  font-size: 0.72rem;
+}
+.carte-reglage small,
+.service-badge {
+  font-size: 0.75rem;
+}
+.pastille {
+  min-height: 48px;
+  font-size: 0.78rem;
+}
+
+/* 9. L'action principale est une pastille pleine ; tout le reste reste fin */
+.pastille-noire {
+  background: var(--creme);
+  color: var(--fond);
+}
+.pastille-noire:hover,
+.pastille-noire:focus-visible {
+  background: transparent;
+  color: var(--creme);
+  box-shadow: inset 0 0 0 1px var(--creme);
+}
+
+/* 7. Le visage du photographe, à côté de « Qui suis-je » */
+.moi-lien {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--creme);
+}
+.moi-portrait {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  box-shadow: 0 0 0 1px var(--trait);
+}
+.moi-lien:hover .lien::after {
+  transform: translateX(5px);
+}
+.lien-saut::after {
+  content: "↓";
+}
+.chap .accroche-actions {
+  align-items: center;
+  gap: var(--e2) var(--e4);
+}
+
+/* 4. Texte sur photo : le voile s'adapte à la clarté de chaque photo */
+.service::after {
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, calc(0.62 + 0.3 * var(--clarte, 0.5))), rgba(0, 0, 0, calc(0.16 + 0.24 * var(--clarte, 0.5))) 48%, rgba(0, 0, 0, 0) 74%),
+    linear-gradient(to right, rgba(0, 0, 0, calc(0.3 + 0.2 * var(--clarte, 0.5))), rgba(0, 0, 0, 0) 60%);
+}
+.service-texte {
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* 3. Une fine barre de progression pendant l'animation */
+.progres {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 70;
+  height: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.progres span {
+  display: block;
+  height: 100%;
+  background: var(--creme);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+html.progres-visible .progres {
+  opacity: 1;
+}
+
+/* 1. Téléphone : « Réserver » et le menu sous le pouce */
+.barre,
+.menu-mobile {
+  display: none;
+}
+@media (max-width: 760px) {
+  .barre {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 55;
+    display: flex;
+    gap: var(--e1);
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(237, 237, 240, 0.86);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 10px 30px rgba(10, 12, 20, 0.18), inset 0 0 0 1px rgba(18, 18, 20, 0.08);
+    transform: translateY(150%);
+    transition: transform 0.45s var(--doux);
+  }
+  [data-theme="nuit"] .barre {
+    background: rgba(24, 24, 27, 0.86);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(242, 242, 244, 0.1);
+  }
+  html.barre-visible .barre {
+    transform: none;
+  }
+  .barre-menu {
+    flex: none;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--trait);
+    border-radius: 999px;
+    background: none;
+    color: var(--creme);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .barre-reserver {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    border-radius: 999px;
+    background: var(--creme);
+    color: var(--fond);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .barre-reserver::after {
+    content: "→";
+    letter-spacing: 0;
+  }
+  .menu-mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: block;
+  }
+  .menu-mobile[hidden] {
+    display: none;
+  }
+  .menu-fond {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+  }
+  .menu-feuille {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    padding: var(--e4) var(--e3) calc(var(--e3) + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0;
+    background: var(--fond);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+    animation: feuille 0.35s var(--doux);
+  }
+  @keyframes feuille {
+    from {
+      transform: translateY(40px);
+      opacity: 0;
+    }
+  }
+  .menu-feuille a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px;
+    border-bottom: 1px solid var(--trait);
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    text-decoration: none;
+    color: var(--creme);
+  }
+  .menu-feuille a::after {
+    content: "→";
+    font-family: var(--sans);
+    font-size: 1rem;
+  }
+  .menu-fermer {
+    margin-top: var(--e3);
+    min-height: 48px;
+    border: 1px solid var(--trait);
+    border-radius: 999px;
+    background: none;
+    color: var(--creme);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  /* la place de la barre est gardée en bas des écrans */
+  html.js:not(.calme) .chap,
+  html.js:not(.calme) .chap[data-cote="droite"] {
+    padding-bottom: calc(3vh + var(--barre-h) + env(safe-area-inset-bottom, 0px));
+  }
+  .service-texte {
+    bottom: calc(3vh + var(--barre-h) + env(safe-area-inset-bottom, 0px));
+  }
+  /* 8. marges latérales de 24 px sur téléphone */
+  .contenu {
+    padding: 0 var(--e3);
+  }
+  html.js:not(.calme) .chap,
+  html.js:not(.calme) .chap[data-cote="droite"] {
+    left: var(--e3);
+    right: var(--e3);
+  }
+  .service-texte {
+    left: var(--e3);
+    right: var(--e3);
+  }
+  html.js:not(.calme) .galerie-grille {
+    left: var(--e3);
+    right: var(--e3);
+  }
+  .viseur-texte {
+    left: var(--e3);
+    right: var(--e3);
+  }
+  .zone-detail,
+  .indice {
+    font-size: 0.75rem;
+  }
+  .chap-titre {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+  .chap-titre-long {
+    font-size: clamp(1.9rem, 8.2vw, 2.5rem);
+  }
+  .chap .accroche-actions {
+    gap: var(--e1) var(--e3);
+  }
+}
+@media (max-width: 760px) {
+  /* 01 : portrait + deux liens sur une seule ligne */
+  #accroche .accroche-actions {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-top: var(--e3);
+  }
+  /* 04 : la grille au centre, une seule action pleine (« Mon travail » est dans le menu) */
+  html.js:not(.calme) .galerie-grille {
+    top: 47%;
+  }
+  .chap-galerie .accroche-actions .lien {
+    display: none;
+  }
+  /* l'en-tête respire : le bouton jour/nuit passe dans le menu */
+  .entete .theme-btn {
+    display: none;
+  }
+  .menu-bas {
+    display: flex;
+    gap: var(--e1);
+    margin-top: var(--e3);
+  }
+  .menu-bas button {
+    flex: 1;
+    margin: 0;
+  }
+  .menu-theme {
+    min-height: 48px;
+    border: 1px solid var(--trait);
+    border-radius: 999px;
+    background: none;
+    color: var(--creme);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+}
+@media (max-width: 760px) {
+  /* « Réserver » reste collé à droite (le bouton jour/nuit est dans le menu) */
+  .entete .entete-reserver {
+    margin-left: auto;
+  }
+  /* 04 : vignettes un peu plus basses de plafond, la grille ne touche plus la liste */
+  html.js:not(.calme) .galerie-grille {
+    top: 44%;
+  }
+  .tuile {
+    aspect-ratio: 4 / 3;
+  }
+}
+/* Le logo aussi se touche facilement (44 px) */
+.entete-logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

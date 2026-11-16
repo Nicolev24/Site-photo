@@ -18,6 +18,7 @@
   imagesizes="(max-aspect-ratio: 3/2) 150vh, 100vw" />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-italic.woff2" crossorigin />
 
 <!-- Univers Particuliers / Commerces : même système que le site (lu, jamais modifié). -->
 <script src="../../js/univers.js"></script>
@@ -36,11 +37,12 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="labo.css?v=18" />
+<link rel="stylesheet" href="labo.css?v=19" />
 </head>
 <body>
 
 <a class="evitement" href="#contenu">Aller au contenu</a>
+<div class="progres" id="progres" aria-hidden="true"><span></span></div>
 
 <header class="entete" id="entete">
   <a class="entete-logo" href="../../index.html">Nicolas Leveugle</a>
@@ -56,6 +58,26 @@
   </button>
   <a class="entete-reserver" href="../../contact.html" data-lien-univers>Réserver</a>
 </header>
+
+<!-- Téléphone : réserver et le menu, toujours sous le pouce (après le viseur) -->
+<nav class="barre" id="barre" aria-label="Accès rapide">
+  <button type="button" class="barre-menu" id="barre-menu" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+  <a class="barre-reserver" href="../../contact.html" data-lien-univers data-flash>Réserver un shooting</a>
+</nav>
+<div class="menu-mobile" id="menu-mobile" hidden>
+  <div class="menu-fond" data-fermer></div>
+  <div class="menu-feuille" role="dialog" aria-modal="true" aria-label="Menu">
+    <a href="../moi.html" data-lien-univers>Qui suis-je</a>
+    <a href="../travail.html" data-lien-univers>Mon travail</a>
+    <a href="../../services.html" data-lien-univers>Tarifs</a>
+    <a href="../../contact.html" data-lien-univers>Contact</a>
+    <a href="../../galerie/index.html">Espace client</a>
+    <div class="menu-bas">
+      <button type="button" class="menu-theme" id="menu-theme">Mode nuit</button>
+      <button type="button" class="menu-fermer" data-fermer>Fermer</button>
+    </div>
+  </div>
+</div>
 
 <!-- Couches fixes : flou d'arrière-plan, halo, appareil 3D, grain. -->
 <div class="fond" aria-hidden="true">
@@ -139,7 +161,11 @@
         <div class="chap-bas">
           <p class="chap-texte" data-texte="texte"></p>
           <div class="accroche-actions">
-            <a class="lien lien-or" href="../moi.html" data-lien-univers>Qui suis-je</a>
+            <a class="moi-lien" href="../moi.html" data-lien-univers>
+              <img class="moi-portrait" src="../../images/tailles/nicolas-leveugle-portrait-480.webp" alt="" width="48" height="48" loading="lazy" decoding="async" />
+              <span class="lien">Qui suis-je</span>
+            </a>
+            <a class="lien lien-saut" href="#services" id="lien-formules">Les formules</a>
           </div>
         </div>
       </article>
@@ -168,7 +194,7 @@
         <div class="chap-bas">
           <ul class="chap-liste" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
           <div class="accroche-actions">
-            <a class="lien lien-or" href="../../services.html" data-lien-univers>Voir les tarifs</a>
+            <a class="pastille pastille-noire" href="../../services.html" data-lien-univers>Voir les tarifs</a>
             <a class="lien" href="../travail.html" data-lien-univers>Voir mon travail</a>
           </div>
         </div>
@@ -207,6 +233,6 @@
 <script src="../vendor/gsap.min.js" defer></script>
 <script src="../vendor/ScrollTrigger.min.js" defer></script>
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="appareil.js?v=18" defer></script>
+<script src="appareil.js?v=19" defer></script>
 </body>
 </html>
