@@ -15,7 +15,7 @@
 <link rel="preload" as="image" fetchpriority="high"
   href="../../images/tailles/mariages/gateau-lumiere-1200.webp"
   imagesrcset="../../images/tailles/mariages/gateau-lumiere-480.webp 480w, ../../images/tailles/mariages/gateau-lumiere-800.webp 800w, ../../images/tailles/mariages/gateau-lumiere-1200.webp 1200w, ../../images/tailles/mariages/gateau-lumiere-1600.webp 1600w, ../../images/mariages/gateau-lumiere.jpg 2134w"
-  imagesizes="100vw" />
+  imagesizes="(max-aspect-ratio: 3/2) 150vh, 100vw" />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
 
@@ -64,17 +64,13 @@
         <img class="cadre-photo" id="photo"
           src="../../images/tailles/mariages/gateau-lumiere-1200.webp"
           srcset="../../images/tailles/mariages/gateau-lumiere-480.webp 480w, ../../images/tailles/mariages/gateau-lumiere-800.webp 800w, ../../images/tailles/mariages/gateau-lumiere-1200.webp 1200w, ../../images/tailles/mariages/gateau-lumiere-1600.webp 1600w, ../../images/mariages/gateau-lumiere.jpg 2134w"
-          sizes="100vw" width="2134" height="1421" fetchpriority="high" decoding="sync"
+          sizes="(max-aspect-ratio: 3/2) 150vh, 100vw" width="2134" height="1421" fetchpriority="high" decoding="sync"
           alt="Les mariés coupent leur gâteau dans un faisceau de lumière" />
       </div>
 
       <div class="viseur" id="viseur">
         <!-- Interface du viseur (décor) -->
         <div class="hud" aria-hidden="true">
-          <svg class="hud-grille" viewBox="0 0 300 300" preserveAspectRatio="none">
-            <line x1="100" y1="0" x2="100" y2="300" /><line x1="200" y1="0" x2="200" y2="300" />
-            <line x1="0" y1="100" x2="300" y2="100" /><line x1="0" y1="200" x2="300" y2="200" />
-          </svg>
           <span class="hud-coin hud-coin-hg"></span><span class="hud-coin hud-coin-hd"></span>
           <span class="hud-coin hud-coin-bg"></span><span class="hud-coin hud-coin-bd"></span>
           <div class="hud-haut">

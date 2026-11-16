@@ -103,6 +103,10 @@
     }
     const w = versMonde(cx, cy);
     M.dock = { x: w.x, y: w.y, s: largeur / (GEO.corps.l * pxParUnite), px: cx, py: cy };
+    // Le contenu arrive juste sous l'en-tête à la fin de l'intro (pas de zone vide).
+    M.cibleContenu = M.mobile ? M.entete + 6 : M.entete;
+    contenu.style.marginTop = M.cibleContenu - h + "px";
+    M.contenuHaut = h + M.course + (M.cibleContenu - h); // position dans la page
     halo.style.background = M.mobile
       ? ""
       : `radial-gradient(${largeur * 1.15}px ${largeur * 1.05}px at ${cx}px ${cy}px, rgba(174,140,91,0.17), rgba(174,140,91,0) 72%)`;
@@ -182,11 +186,15 @@
       }
     }
     e.d = { x, y: y + yFlotte * vivant, z, s, rx, ry, rz, balayage, reflet: 0.32 * seg(p, PH.a, PH.a + 0.08), flash: reaction.flash };
+    // Bas de l'appareil à l'écran : le texte se cale juste en dessous et monte avec lui.
+    const ppu = M.h / (2 * (GEO.camZ - z) * M.tan);
+    e.basAppareil = M.h / 2 - y * ppu + 4.5 * s * ppu;
+    e.suivi = M.mobile ? 1 : 1 - tc; // sur ordinateur, l'appareil part sur le côté : le texte est libre
     e.toile = 1;
     e.viseur = 1 - seg(p, 0, 0.09);
     e.fond = 0.85 * seg(p, 0.06, 0.26) * (1 - seg(p, 0.42, 0.68));
     e.halo = seg(p, 0.72, 1);
-    e.accroche = seg(p, 0.74, 0.95);
+    e.accroche = seg(p, 0.6, 0.85);
     return e;
   }
 
@@ -210,6 +218,13 @@
     viseur.style.visibility = e.viseur <= 0.01 ? "hidden" : "";
     fondPhoto.style.opacity = e.fond;
     accroche.style.opacity = e.accroche;
+    // Le contenu suit l'appareil : jamais par-dessus, jamais de vide entre les deux.
+    let pousse = 0;
+    if (!calme && e.basAppareil != null) {
+      const naturel = M.contenuHaut - window.scrollY;
+      pousse = Math.max(0, (e.basAppareil + (M.mobile ? 14 : 28) - naturel) * e.suivi);
+    }
+    contenu.style.transform = pousse > 0.5 ? `translate3d(0, ${pousse.toFixed(1)}px, 0)` : "";
     accroche.style.transform = e.accroche < 1 ? `translateY(${30 * (1 - ease.out3(e.accroche))}px)` : "";
     halo.style.opacity = e.halo;
     entete.classList.toggle("est-plein", e.p > 0.9);
@@ -241,7 +256,7 @@
     pLisse = calme ? cible : pLisse + (cible - pLisse) * (1 - Math.exp(-dt * (M.mobile ? 16 : 11)));
     if (Math.abs(cible - pLisse) < 0.0002) pLisse = cible;
     const vivantContinu = !calme && !M.mobile && pLisse > 0.9 && api3d && document.visibilityState === "visible";
-    const sig = `${reaction.ry.toFixed(4)},${reaction.rx.toFixed(4)},${reaction.flash.toFixed(3)},${pLisse > 0.9 ? window.scrollY : 0}`;
+    const sig = `${reaction.ry.toFixed(4)},${reaction.rx.toFixed(4)},${reaction.flash.toFixed(3)},${window.scrollY}`;
     if (forcer || vivantContinu || Math.abs(pLisse - pDernier) > 0.00005 || sig !== signature) {
       forcer = false;
       pDernier = pLisse;
@@ -654,7 +669,7 @@
           window.Univers.definir(u);
           window.Univers.confirmer();
           afficherUnivers(u, true);
-          const cible = M.course + Math.round(M.h * 0.42);
+          const cible = M.course + 2;
           const finir = () => {
             enCours = false;
             contenu.focus({ preventScroll: true });
