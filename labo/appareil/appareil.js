@@ -924,7 +924,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=16"))
+      .then(() => import("./scene.js?v=17"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -1149,7 +1149,7 @@
     const majTheme = () => {
       const nuit = R.getAttribute("data-theme") === "nuit";
       boutonTheme.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
-      if (meta) meta.setAttribute("content", nuit ? "#1c1916" : "#f3ede4");
+      if (meta) meta.setAttribute("content", nuit ? "#111113" : "#ededf0");
     };
     majTheme();
     boutonTheme.addEventListener("click", () => {
@@ -1173,7 +1173,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=16", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=17", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;

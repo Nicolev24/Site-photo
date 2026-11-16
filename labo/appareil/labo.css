@@ -51,16 +51,35 @@
 }
 /* Mode jour : papier crème, encre brune, or plus profond (même identité) */
 :root[data-theme="jour"] {
-  --fond: #f3ede4;
-  --fond-2: #e9e1d4;
-  --creme: #1c1916;
-  --texte: rgba(28, 25, 22, 0.8);
-  --attenue: rgba(28, 25, 22, 0.55);
-  --trait: rgba(28, 25, 22, 0.14);
-  --or-clair: #8c6b3d;
-  --carte: #fbf8f2;
-  --ombre: rgba(60, 45, 30, 0.3);
-  --trous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%23f3ede4'/%3E%3C/svg%3E");
+  --fond: #ededf0;
+  --fond-2: #e2e2e6;
+  --lumiere: #fafafb;
+  --creme: #121214;
+  --texte: rgba(18, 18, 20, 0.78);
+  --attenue: rgba(18, 18, 20, 0.5);
+  --trait: rgba(18, 18, 20, 0.12);
+  --or: #121214;
+  --or-clair: #121214;
+  --carte: #ffffff;
+  --ombre: rgba(20, 22, 30, 0.3);
+  --film: #121212;
+  --trous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%23ededf0'/%3E%3C/svg%3E");
+}
+/* Nuit : le même système en négatif — noir profond, encre blanche */
+:root[data-theme="nuit"] {
+  --fond: #111113;
+  --fond-2: #1a1a1d;
+  --lumiere: #202024;
+  --creme: #f2f2f4;
+  --texte: rgba(242, 242, 244, 0.8);
+  --attenue: rgba(242, 242, 244, 0.52);
+  --trait: rgba(242, 242, 244, 0.13);
+  --or: #f2f2f4;
+  --or-clair: #f2f2f4;
+  --carte: #1d1d21;
+  --ombre: rgba(0, 0, 0, 0.6);
+  --film: #0b0b0b;
+  --trous: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='7' y='1' width='10' height='10' rx='2.2' fill='%23111113'/%3E%3C/svg%3E");
 }
 /* Le viseur et l'en-tête posé sur la photo gardent toujours leurs couleurs claires */
 .scene,
@@ -158,7 +177,10 @@ body::after {
   transition: opacity 0.5s var(--doux);
 }
 [data-theme="jour"] .entete.est-plein {
-  background: rgba(243, 237, 228, 0.8);
+  background: rgba(237, 237, 240, 0.82);
+}
+[data-theme="nuit"] .entete.est-plein {
+  background: rgba(17, 17, 19, 0.78);
 }
 .entete.est-plein {
   background: rgba(24, 21, 19, 0.74);
@@ -1387,7 +1409,6 @@ html.js:not(.calme) .chap-cartes {
 /* ---------- Pellicule ---------- */
 :root {
   --vue: clamp(260px, 30vw, 450px);
-  --film: #15110d;
   --marque: #d8913a;
 }
 .pellicule {
@@ -2323,4 +2344,50 @@ html.js:not(.calme) .chap.chap-travail {
   .carte:nth-child(1) { --x: 19%; --y: 33%; --r: -6deg; }
   .carte:nth-child(2) { --x: 82%; --y: 31%; --r: 5deg; }
   .carte:nth-child(3) { --x: 26%; --y: 62%; --r: 3deg; }
+}
+
+/* ---------- Couleurs façon vidéo (studio clair / noir profond) ---------- */
+/* Fond studio : plus clair au centre, comme une photo produit */
+.fond {
+  background: radial-gradient(120% 85% at 50% 45%, var(--lumiere, var(--fond)), var(--fond) 72%);
+}
+:root[data-theme] .fond-halo {
+  background: none;
+}
+/* « Réserver » en haut : même forme, en noir (blanc la nuit) une fois sorti du viseur */
+.entete.est-plein .entete-reserver {
+  border-color: var(--creme);
+  color: var(--creme);
+}
+.entete.est-plein .entete-reserver:hover,
+.entete.est-plein .entete-reserver:focus-visible {
+  background: var(--creme);
+  color: var(--fond);
+}
+/* L'invitation finale : une pastille pleine, comme les boutons de la vidéo */
+.reserver-lien {
+  border-color: var(--creme);
+  background: var(--creme);
+  color: var(--fond);
+}
+.reserver-lien:hover,
+.reserver-lien:focus-visible {
+  background: transparent;
+  color: var(--creme);
+}
+.reserver-titre em,
+.chap-titre em {
+  color: var(--creme);
+}
+.carte {
+  box-shadow: 0 18px 40px rgba(10, 12, 20, 0.16);
+}
+.carte-photo {
+  background: #ffffff;
+}
+.chap-liste li::before {
+  background: var(--creme);
+}
+.pellicule-porte.verrouille {
+  --c: #ffffff;
 }
