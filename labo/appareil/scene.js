@@ -1,84 +1,220 @@
-// Appareil photo hybride en 3D, construit entièrement en code (aucun modèle à
-// télécharger). Silhouette inspirée d'un hybride compact : viseur en haut à
-// gauche, grosse poignée à droite, deux molettes, écran arrière, focale fixe
-// courte avec bague de mise au point striée. Aucun logo.
+// Appareil photo en 3D, construit en code (aucun modèle à télécharger).
+// Inspiration : les hybrides « télémètre » rétro (style Fujifilm X100) —
+// capots supérieur et inférieur en aluminium brossé, gainage noir façon cuir,
+// molettes gravées (vitesses, correction d'exposition), fenêtre de viseur à
+// l'avant, focale fixe courte avec bague de diaphragme chiffrée. Aucun logo.
 //
 // Repère (vu de dos, l'écran face à nous) : x vers la droite, y vers le haut,
 // z vers nous. L'objectif pointe donc vers −z.
 
 import * as THREE from "../vendor/three.module.min.js";
 
-const COULEUR_OR = 0xae8c5b;
+const OR = 0xae8c5b;
 
-// ---------- Textures fabriquées à la volée (grain du cuir, reflets) ----------
+// ---------- Petits outils ----------
 
-function toileTexture(taille, dessiner) {
+function hasardGraine(g) {
+  let s = g;
+  return () => ((s = (s * 16807) % 2147483647) / 2147483647);
+}
+
+function toile(l, h, dessiner) {
   const c = document.createElement("canvas");
-  c.width = c.height = taille;
-  dessiner(c.getContext("2d"), taille);
+  c.width = l;
+  c.height = h;
+  dessiner(c.getContext("2d"), l, h);
+  return c;
+}
+
+function textureDe(c, couleur, repeat) {
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  if (couleur) t.colorSpace = THREE.SRGBColorSpace;
+  if (repeat) t.repeat.set(repeat[0], repeat[1]);
+  t.anisotropy = 4;
   return t;
 }
 
-// Grain « cuir » : petits galets irréguliers, pour le relief (bumpMap).
-function textureCuir() {
-  return toileTexture(256, (g, n) => {
-    g.fillStyle = "#808080";
-    g.fillRect(0, 0, n, n);
-    let graine = 7;
-    const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 2600; i++) {
-      const x = hasard() * n;
-      const y = hasard() * n;
-      const r = 1.2 + hasard() * 2.6;
-      const v = 95 + hasard() * 70;
-      g.fillStyle = `rgba(${v},${v},${v},0.9)`;
-      for (const dx of [-n, 0, n]) {
-        for (const dy of [-n, 0, n]) {
-          g.beginPath();
-          g.arc(x + dx, y + dy, r, 0, Math.PI * 2);
-          g.fill();
-        }
+// Carte de relief → carte de normales (pour un grain de cuir crédible).
+function versNormales(hauteur, force) {
+  const l = hauteur.width;
+  const h = hauteur.height;
+  const src = hauteur.getContext("2d").getImageData(0, 0, l, h).data;
+  const H = (x, y) => src[(((y + h) % h) * l + ((x + l) % l)) * 4] / 255;
+  return toile(l, h, (g) => {
+    const img = g.createImageData(l, h);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < l; x++) {
+        const dx = (H(x + 1, y) - H(x - 1, y)) * force;
+        const dy = (H(x, y + 1) - H(x, y - 1)) * force;
+        const n = Math.hypot(dx, dy, 1);
+        const i = (y * l + x) * 4;
+        img.data[i] = ((-dx / n) * 0.5 + 0.5) * 255;
+        img.data[i + 1] = ((dy / n) * 0.5 + 0.5) * 255;
+        img.data[i + 2] = ((1 / n) * 0.5 + 0.5) * 255;
+        img.data[i + 3] = 255;
       }
-    }
-  });
-}
-
-// Grain fin (boîtier satiné).
-function textureGrainFin() {
-  return toileTexture(128, (g, n) => {
-    const img = g.createImageData(n, n);
-    let graine = 11;
-    for (let i = 0; i < img.data.length; i += 4) {
-      graine = (graine * 16807) % 2147483647;
-      const v = 110 + (graine % 40);
-      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-      img.data[i + 3] = 255;
     }
     g.putImageData(img, 0, 0);
   });
 }
 
-// Reflet doux en diagonale, posé sur l'écran arrière.
-function textureReflet() {
-  return toileTexture(256, (g, n) => {
-    const d = g.createLinearGradient(0, 0, n, n);
-    d.addColorStop(0, "rgba(255,255,255,0.0)");
-    d.addColorStop(0.38, "rgba(255,255,255,0.0)");
-    d.addColorStop(0.46, "rgba(255,255,255,0.55)");
-    d.addColorStop(0.6, "rgba(255,255,255,0.06)");
-    d.addColorStop(1, "rgba(255,255,255,0.0)");
-    g.fillStyle = d;
+// Gainage : petits grains irréguliers et serrés.
+function textureCuir() {
+  const r = hasardGraine(7);
+  const haut = toile(512, 512, (g, n) => {
+    g.fillStyle = "#7a7a7a";
     g.fillRect(0, 0, n, n);
+    for (let i = 0; i < 9000; i++) {
+      const x = r() * n;
+      const y = r() * n;
+      const rx = 1.6 + r() * 3.2;
+      const ry = rx * (0.7 + r() * 0.5);
+      const a = r() * 3;
+      const v = 120 + r() * 90;
+      g.fillStyle = `rgba(${v},${v},${v},0.85)`;
+      for (const dx of [-n, 0, n]) {
+        for (const dy of [-n, 0, n]) {
+          g.beginPath();
+          g.ellipse(x + dx, y + dy, rx, ry, a, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+    }
   });
+  return { normales: textureDe(versNormales(haut, 2.4), false), rugosite: textureDe(haut, false) };
 }
 
-// ---------- Environnement studio (pour les reflets réalistes) ----------
+// Aluminium brossé : fines stries horizontales.
+function textureBrosse() {
+  const r = hasardGraine(13);
+  return textureDe(
+    toile(512, 512, (g, l, h) => {
+      for (let y = 0; y < h; y++) {
+        const v = 100 + r() * 18;
+        g.fillStyle = `rgb(${v},${v},${v})`;
+        g.fillRect(0, y, l, 1);
+      }
+      for (let i = 0; i < 900; i++) {
+        const v = 85 + r() * 50;
+        g.fillStyle = `rgba(${v},${v},${v},0.25)`;
+        g.fillRect(r() * l, r() * h, 20 + r() * 160, 1);
+      }
+    }),
+    false
+  );
+}
+
+// Face supérieure d'une molette : graduations et chiffres gravés.
+function faceMolette(valeurs, rouges, fond, encre) {
+  return textureDe(
+    toile(512, 512, (g, n) => {
+      const c = n / 2;
+      g.fillStyle = fond;
+      g.fillRect(0, 0, n, n);
+      for (let i = 0; i < 70; i++) {
+        g.strokeStyle = `rgba(255,255,255,${0.02 + (i % 3) * 0.01})`;
+        g.beginPath();
+        g.arc(c, c, 40 + i * 3, 0, Math.PI * 2);
+        g.stroke();
+      }
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.font = "600 34px Helvetica, Arial, sans-serif";
+      valeurs.forEach((v, i) => {
+        const a = -Math.PI / 2 + (i / valeurs.length) * Math.PI * 2;
+        g.save();
+        g.translate(c + Math.cos(a) * 178, c + Math.sin(a) * 178);
+        g.rotate(a + Math.PI / 2);
+        g.fillStyle = rouges.includes(v) ? "#b3261e" : encre;
+        g.fillText(v, 0, 0);
+        g.restore();
+        g.save();
+        g.translate(c, c);
+        g.rotate(a);
+        g.fillStyle = encre;
+        g.fillRect(212, -2, 20, 4);
+        g.restore();
+      });
+      g.beginPath();
+      g.arc(c, c, 96, 0, Math.PI * 2);
+      g.strokeStyle = "rgba(0,0,0,0.35)";
+      g.lineWidth = 3;
+      g.stroke();
+    }),
+    true
+  );
+}
+
+// Bande chiffrée autour d'une bague (diaphragme, distances).
+function bandeChiffres(valeurs, fond, encre, hauteurTexte) {
+  return textureDe(
+    toile(2048, 128, (g, l, h) => {
+      g.fillStyle = fond;
+      g.fillRect(0, 0, l, h);
+      g.fillStyle = encre;
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.font = `600 ${hauteurTexte}px Helvetica, Arial, sans-serif`;
+      const pas = l / (valeurs.length * 2);
+      valeurs.forEach((v, i) => {
+        g.fillText(v, pas * (i + 0.5), h / 2 + 8);
+        g.fillRect(pas * (i + 0.5) - 1.5, 6, 3, 16);
+      });
+    }),
+    true
+  );
+}
+
+// Inscription gravée sur l'anneau avant de l'objectif (sans marque).
+function anneauTexte(texte, fond, encre) {
+  return textureDe(
+    toile(1024, 1024, (g, n) => {
+      const c = n / 2;
+      g.fillStyle = fond;
+      g.fillRect(0, 0, n, n);
+      g.fillStyle = encre;
+      g.font = "500 30px Helvetica, Arial, sans-serif";
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      const lettres = texte.split("");
+      const pas = 0.034;
+      const total = lettres.length * pas;
+      lettres.forEach((ch, i) => {
+        const a = -Math.PI / 2 - total / 2 + i * pas;
+        g.save();
+        g.translate(c + Math.cos(a) * 440, c + Math.sin(a) * 440);
+        g.rotate(a + Math.PI / 2);
+        g.fillText(ch, 0, 0);
+        g.restore();
+      });
+    }),
+    true
+  );
+}
+
+// Reflet doux en diagonale, posé sur l'écran arrière.
+function textureReflet() {
+  return textureDe(
+    toile(256, 256, (g, n) => {
+      const d = g.createLinearGradient(0, 0, n, n);
+      d.addColorStop(0, "rgba(255,255,255,0)");
+      d.addColorStop(0.4, "rgba(255,255,255,0)");
+      d.addColorStop(0.47, "rgba(255,255,255,0.5)");
+      d.addColorStop(0.6, "rgba(255,255,255,0.05)");
+      d.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = d;
+      g.fillRect(0, 0, n, n);
+    }),
+    false
+  );
+}
+
+// ---------- Environnement studio (reflets réalistes sur le métal et le verre) ----------
 
 function environnementStudio(renderer) {
   const s = new THREE.Scene();
-  s.background = new THREE.Color(0x0b0a09);
+  s.background = new THREE.Color(0x24211e);
   const boite = (l, h, couleur, intensite, pos) => {
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(l, h),
@@ -88,14 +224,16 @@ function environnementStudio(renderer) {
     m.lookAt(0, 0, 0);
     s.add(m);
   };
-  boite(16, 10, 0xffffff, 3.0, [0, 13, 7]); // grande boîte à lumière au-dessus
-  boite(4, 16, 0xfff1e2, 2.2, [-15, 2, 5]); // bande gauche, chaude
-  boite(4, 16, 0xe6edf8, 1.3, [15, 1, 7]); // bande droite, froide
-  boite(18, 2.2, COULEUR_OR, 1.6, [0, 5, -15]); // liseré doré à l'arrière
-  boite(5, 3, 0xffffff, 2.6, [-5, 6, 15]); // petite boîte en face (reflet sur la lentille)
-  boite(36, 10, 0x2b241d, 0.7, [0, -12, 0]); // sol sombre et chaud
+  boite(22, 9, 0xffffff, 2.6, [0, 14, 4]); // grande boîte au-dessus
+  boite(5, 18, 0xfff3e6, 2.4, [-16, 3, 6]); // bande gauche, chaude
+  boite(5, 18, 0xe8eef8, 1.5, [16, 2, 6]); // bande droite, froide
+  boite(9, 4, 0xffffff, 2.2, [-6, 6, 15]); // boîte en face (reflet sur la lentille)
+  boite(34, 7, 0xd8d2c8, 1.1, [0, -1, 18]); // grand fond clair devant (les faces verticales du métal)
+  boite(34, 7, 0xbfb8ad, 0.8, [0, 0, -18]); // et derrière
+  boite(20, 2.4, OR, 1.4, [0, 5, -16]); // liseré doré à l'arrière
+  boite(40, 12, 0x2a231c, 0.9, [0, -14, 0]); // sol sombre et chaud
   const pm = new THREE.PMREMGenerator(renderer);
-  const env = pm.fromScene(s, 0.035).texture;
+  const env = pm.fromScene(s, 0.02).texture;
   pm.dispose();
   return env;
 }
@@ -106,78 +244,86 @@ function rectangleArrondi(l, h, r) {
   const s = new THREE.Shape();
   const x = -l / 2;
   const y = -h / 2;
+  r = Math.min(r, l / 2, h / 2);
   s.moveTo(x + r, y);
   s.lineTo(x + l - r, y);
-  s.quadraticCurveTo(x + l, y, x + l, y + r);
+  s.absarc(x + l - r, y + r, r, -Math.PI / 2, 0, false);
   s.lineTo(x + l, y + h - r);
-  s.quadraticCurveTo(x + l, y + h, x + l - r, y + h);
+  s.absarc(x + l - r, y + h - r, r, 0, Math.PI / 2, false);
   s.lineTo(x + r, y + h);
-  s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI, false);
   s.lineTo(x, y + r);
-  s.quadraticCurveTo(x, y, x + r, y);
+  s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5, false);
   return s;
 }
 
-// Volume arrondi centré, épaisseur le long de z.
-function blocArrondi(l, h, p, r, biseau, segments = 4) {
-  const prof = Math.max(0.01, p - 2 * biseau);
+// Tranche du boîtier : forme vue de dessus (largeur × profondeur), extrudée en hauteur.
+function tranche(l, p, r, hauteur, biseau) {
+  const h = Math.max(0.01, hauteur - 2 * biseau);
+  const g = new THREE.ExtrudeGeometry(rectangleArrondi(l - 2 * biseau, p - 2 * biseau, Math.max(0.02, r - biseau)), {
+    depth: h,
+    bevelEnabled: biseau > 0,
+    bevelThickness: biseau,
+    bevelSize: biseau,
+    bevelSegments: 6,
+    curveSegments: 28,
+  });
+  g.rotateX(-Math.PI / 2); // la forme se couche, l'extrusion monte en y
+  g.translate(0, biseau, 0);
+  return g; // de y = 0 à y = hauteur
+}
+
+// Plaque arrondie (épaisseur le long de z), centrée.
+function plaque(l, h, p, r, biseau = 0.03) {
+  const prof = Math.max(0.005, p - 2 * biseau);
   const g = new THREE.ExtrudeGeometry(rectangleArrondi(l - 2 * biseau, h - 2 * biseau, Math.max(0.01, r - biseau)), {
     depth: prof,
     bevelEnabled: biseau > 0,
     bevelThickness: biseau,
     bevelSize: biseau,
-    bevelSegments: segments + 3,
-    curveSegments: 18,
+    bevelSegments: 3,
+    curveSegments: 16,
   });
   g.translate(0, 0, -prof / 2);
   return g;
 }
 
-// Cylindre strié (molettes, bague de mise au point). Axe le long de y.
-function cylindreStrie(r, h, stries, profondeur, segmentsH = 1, ouvert = false) {
-  const g = new THREE.CylinderGeometry(r, r, h, stries * 4, segmentsH, ouvert);
+// Cylindre strié (bord des molettes, bagues). Axe le long de y.
+function cylindreStrie(r, h, stries, profondeur, ouvert = false) {
+  const g = new THREE.CylinderGeometry(r, r, h, stries * 4, 1, ouvert);
   const pos = g.attributes.position;
   const v = new THREE.Vector3();
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i);
     const rayon = Math.hypot(v.x, v.z);
-    if (rayon < r * 0.6) continue; // centre des faces : inchangé
+    if (rayon < r * 0.6) continue;
     const a = Math.atan2(v.z, v.x);
     const k = 1 - profondeur * (0.5 + 0.5 * Math.cos(a * stries));
-    // les bords des faces gardent la même forme pour éviter les trous
-    v.x *= k;
-    v.z *= k;
-    pos.setXYZ(i, v.x, v.y, v.z);
+    pos.setXYZ(i, v.x * k, v.y, v.z * k);
   }
   g.computeVertexNormals();
   return g;
 }
 
-// Calotte sphérique (lentille) : bord de rayon `rayonBord`, bombé `fleche`.
-// Le sommet pointe vers −z, la base est à z = 0.
+// Calotte (lentille) : sommet vers −z, base à z = 0.
 function calotte(rayonBord, fleche) {
   const R = (rayonBord * rayonBord + fleche * fleche) / (2 * fleche);
   const theta = Math.asin(Math.min(1, rayonBord / R));
-  const g = new THREE.SphereGeometry(R, 64, 18, 0, Math.PI * 2, 0, theta);
-  g.rotateX(-Math.PI / 2); // pôle vers −z
-  g.translate(0, 0, R * Math.cos(theta)); // base à z = 0, sommet à z = −flèche
+  const g = new THREE.SphereGeometry(R, 64, 20, 0, Math.PI * 2, 0, theta);
+  g.rotateX(-Math.PI / 2);
+  g.translate(0, 0, R * Math.cos(theta));
   return g;
 }
 
 // ---------- L'appareil ----------
 
 export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true,
-    powerPreference: "high-performance",
-  });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.75 : 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.06;
+  renderer.toneMappingExposure = 1.0;
 
   const scene = new THREE.Scene();
   scene.environment = environnementStudio(renderer);
@@ -186,60 +332,79 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
   camera.position.set(0, 0, geo.camZ);
   camera.lookAt(0, 0, 0);
 
-  // Lumières studio (fixes dans la pièce : l'appareil tourne dedans)
-  const cle = new THREE.DirectionalLight(0xfff2e4, 2.6);
-  cle.position.set(-8, 10, 12);
-  const remplissage = new THREE.DirectionalLight(0xdfe7ff, 0.55);
-  remplissage.position.set(10, 2, 8);
-  const contreOr = new THREE.DirectionalLight(COULEUR_OR, 2.2);
-  contreOr.position.set(7, 7, -12);
-  const contreOr2 = new THREE.DirectionalLight(0xc9a46a, 0.9);
-  contreOr2.position.set(-10, -3, -8);
+  // Éclairage studio (fixe : l'appareil tourne dedans)
+  const cle = new THREE.DirectionalLight(0xfff3e8, 2.4);
+  cle.position.set(-8, 11, 12);
+  const remplissage = new THREE.DirectionalLight(0xe2e9ff, 0.5);
+  remplissage.position.set(11, 1, 8);
+  const contre = new THREE.DirectionalLight(OR, 1.8);
+  contre.position.set(7, 8, -12);
+  const contre2 = new THREE.DirectionalLight(0xd9c6a3, 0.7);
+  contre2.position.set(-10, -2, -9);
   const balayage = new THREE.PointLight(0xffffff, 0, 30, 1.6);
-  balayage.position.set(-9, 3, 12);
   const eclair = new THREE.PointLight(0xfff6e8, 0, 40, 1.4);
-  eclair.position.set(0, 2, 10);
-  scene.add(cle, remplissage, contreOr, contreOr2, balayage, eclair);
+  scene.add(cle, remplissage, contre, contre2, balayage, eclair);
 
   // ----- Matériaux -----
   const cuir = textureCuir();
-  cuir.repeat.set(0.42, 0.42);
-  const grain = textureGrainFin();
-  grain.repeat.set(1.4, 1.4);
+  cuir.normales.repeat.set(0.55, 0.55);
+  cuir.rugosite.repeat.set(0.55, 0.55);
+  const brosse = textureBrosse();
+  brosse.repeat.set(0.18, 0.18);
 
   const M = {
-    corps: new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.56, metalness: 0.18, bumpMap: grain, bumpScale: 0.35, envMapIntensity: 0.95 }),
-    cuir: new THREE.MeshStandardMaterial({ color: 0x0f0f0f, roughness: 0.86, metalness: 0.0, bumpMap: cuir, bumpScale: 2.2, envMapIntensity: 0.7 }),
-    noirBrillant: new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.22, metalness: 0.2, envMapIntensity: 1.2 }),
-    metal: new THREE.MeshStandardMaterial({ color: 0x9c9893, roughness: 0.32, metalness: 1.0, envMapIntensity: 1.1 }),
-    metalSombre: new THREE.MeshStandardMaterial({ color: 0x2c2c2c, roughness: 0.36, metalness: 0.92, envMapIntensity: 1.0 }),
-    caoutchouc: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.92, metalness: 0.0, envMapIntensity: 0.6 }),
-    or: new THREE.MeshStandardMaterial({ color: COULEUR_OR, roughness: 0.26, metalness: 1.0, envMapIntensity: 1.3 }),
-    interieur: new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.7, metalness: 0.0, side: THREE.DoubleSide }),
-    blanc: new THREE.MeshStandardMaterial({ color: 0xe8e2d6, roughness: 0.5, metalness: 0.0 }),
+    alu: new THREE.MeshPhysicalMaterial({
+      color: 0xd2cfc9,
+      metalness: 1,
+      roughness: 0.36,
+      roughnessMap: brosse,
+      anisotropy: 0.25,
+      clearcoat: 0.15,
+      clearcoatRoughness: 0.2,
+      envMapIntensity: 1.15,
+    }),
+    aluClair: new THREE.MeshStandardMaterial({ color: 0xe2dfd9, metalness: 1, roughness: 0.24, envMapIntensity: 1.2 }),
+    chrome: new THREE.MeshStandardMaterial({ color: 0xf0eeea, metalness: 1, roughness: 0.1, envMapIntensity: 1.4 }),
+    cuir: new THREE.MeshPhysicalMaterial({
+      color: 0x141414,
+      roughness: 0.78,
+      roughnessMap: cuir.rugosite,
+      normalMap: cuir.normales,
+      normalScale: new THREE.Vector2(0.9, 0.9),
+      sheen: 0.4,
+      sheenColor: new THREE.Color(0x3a3a3a),
+      sheenRoughness: 0.6,
+      envMapIntensity: 0.8,
+    }),
+    peinture: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.42, metalness: 0.25, envMapIntensity: 0.9 }),
+    noirBrillant: new THREE.MeshStandardMaterial({ color: 0x070707, roughness: 0.16, metalness: 0.3, envMapIntensity: 1.2 }),
+    caoutchouc: new THREE.MeshStandardMaterial({ color: 0x101010, roughness: 0.92, metalness: 0, envMapIntensity: 0.5 }),
+    interieur: new THREE.MeshStandardMaterial({ color: 0x040404, roughness: 0.75, metalness: 0, side: THREE.DoubleSide }),
+    or: new THREE.MeshStandardMaterial({ color: OR, metalness: 1, roughness: 0.28, envMapIntensity: 1.2 }),
     verre: new THREE.MeshPhysicalMaterial({
-      color: 0x0a0e14,
-      metalness: 0.0,
-      roughness: 0.04,
+      color: 0x0a0d12,
+      metalness: 0,
+      roughness: 0.03,
       clearcoat: 1,
       clearcoatRoughness: 0.02,
-      iridescence: 0.75,
-      iridescenceIOR: 1.55,
-      iridescenceThicknessRange: [220, 640],
-      envMapIntensity: 1.8,
+      iridescence: 0.85,
+      iridescenceIOR: 1.6,
+      iridescenceThicknessRange: [240, 680],
+      envMapIntensity: 2.0,
     }),
     verreFond: new THREE.MeshPhysicalMaterial({
-      color: 0x06080b,
-      roughness: 0.08,
+      color: 0x05070a,
+      roughness: 0.06,
       clearcoat: 1,
       iridescence: 1,
-      iridescenceIOR: 1.8,
-      iridescenceThicknessRange: [300, 800],
-      envMapIntensity: 1.4,
+      iridescenceIOR: 1.9,
+      iridescenceThicknessRange: [300, 820],
+      envMapIntensity: 1.5,
     }),
+    vitre: new THREE.MeshPhysicalMaterial({ color: 0x0b1016, roughness: 0.04, metalness: 0.1, clearcoat: 1, envMapIntensity: 1.8 }),
   };
 
-  const groupe = new THREE.Group(); // ce que l'on anime
+  const groupe = new THREE.Group();
   scene.add(groupe);
   const ajouter = (geom, mat, x = 0, y = 0, z = 0, parent = groupe) => {
     const m = new THREE.Mesh(geom, mat);
@@ -248,38 +413,95 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     return m;
   };
 
-  // Boîtier
+  // ----- Boîtier : capot inférieur argent, gainage noir, capot supérieur argent -----
   const C = geo.corps; // l, h, p
-  ajouter(blocArrondi(C.l, C.h, C.p, 0.62, 0.26, 5), M.corps);
-  // Habillage cuir sur la face avant (côté objectif)
-  ajouter(blocArrondi(C.l - 0.5, C.h - 1.5, 0.12, 0.4, 0.04, 2), M.cuir, -0.2, -0.35, -C.p / 2 - 0.02);
-
-  // Poignée (côté droit vu de dos, en avant)
-  ajouter(blocArrondi(3.3, 6.6, 2.9, 1.15, 0.6, 6), M.cuir, 4.2, 0, -C.p / 2 - 0.95);
-
-  // Plateau supérieur : molette de mode + molette de commande, déclencheur, griffe
+  const R = 0.95; // arrondi des flancs vus de dessus
+  const yBas = -C.h / 2;
+  const hBas = 0.72;
+  const hHaut = 2.2;
+  const hCuir = C.h - hBas - hHaut;
+  ajouter(tranche(C.l, C.p, R, hBas, 0.14), M.alu, 0, yBas, 0);
+  ajouter(tranche(C.l - 0.07, C.p - 0.07, R - 0.035, hCuir + 0.02, 0.0), M.cuir, 0, yBas + hBas - 0.01, 0);
+  const yHautPlaque = yBas + hBas + hCuir;
+  ajouter(tranche(C.l, C.p, R, hHaut, 0.16), M.alu, 0, yHautPlaque, 0);
   const yHaut = C.h / 2;
-  const molette = ajouter(cylindreStrie(0.95, 0.5, 30, 0.035, 2), M.metalSombre, 2.45, yHaut + 0.25, 0.3);
-  ajouter(new THREE.CylinderGeometry(0.62, 0.62, 0.06, 48), M.metal, 2.45, yHaut + 0.53, 0.3);
-  const molette2 = ajouter(cylindreStrie(0.72, 0.3, 26, 0.04, 1), M.metalSombre, 4.45, yHaut + 0.15, -0.35);
-  ajouter(new THREE.CylinderGeometry(0.52, 0.56, 0.16, 48), M.metal, 4.25, yHaut + 0.05, -2.9);
-  ajouter(new THREE.CylinderGeometry(0.36, 0.38, 0.2, 48), M.metalSombre, 4.25, yHaut + 0.2, -2.9);
-  ajouter(new THREE.BoxGeometry(2.1, 0.14, 1.75), M.metal, -0.95, yHaut + 0.07, 0.15);
-  ajouter(new THREE.BoxGeometry(1.7, 0.08, 1.35), M.noirBrillant, -0.95, yHaut + 0.15, 0.15);
-  // repère doré discret sur la molette de mode
-  ajouter(new THREE.BoxGeometry(0.08, 0.06, 0.32), M.or, 2.45, yHaut + 0.57, 0.62);
-
-  // Attaches de courroie
-  for (const sx of [-1, 1]) ajouter(new THREE.BoxGeometry(0.3, 0.5, 0.55), M.metal, sx * (C.l / 2 + 0.08), yHaut - 0.75, 0);
-
-  // Dos : viseur (œilleton), écran, molette arrière, boutons, repose-pouce
   const zDos = C.p / 2;
-  const E = geo.ecran;
-  ajouter(blocArrondi(2.7, 1.25, 0.5, 0.35, 0.09, 3), M.caoutchouc, -3.95, 2.62, zDos + 0.2);
-  ajouter(new THREE.PlaneGeometry(1.75, 0.72), M.noirBrillant, -3.95, 2.62, zDos + 0.46);
-  ajouter(blocArrondi(E.l + 0.5, E.h + 0.45, 0.12, 0.22, 0.03, 2), M.noirBrillant, E.cx, E.cy, zDos + 0.06);
+  const zFace = -C.p / 2;
 
-  // Écran : la même photo que le viseur, sans retouche de couleur
+  // Dos peint en noir (sur la hauteur du gainage)
+  ajouter(plaque(C.l - 2 * R + 0.1, hCuir - 0.08, 0.05, 0.3, 0.015), M.peinture, 0, yBas + hBas + hCuir / 2, zDos - 0.01);
+
+  // ----- Plateau supérieur -----
+  const molVitesses = ajouter(cylindreStrie(1.08, 0.62, 44, 0.03), M.aluClair, 2.15, yHaut + 0.31, 0.05);
+  const faceVitesses = ajouter(
+    new THREE.CircleGeometry(1.02, 64),
+    new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      map: faceMolette(["A", "4000", "2000", "1000", "500", "250", "125", "60", "30", "15", "8", "4", "2", "1", "T", "B"], ["A"], "#cfccc6", "#1d1d1d"),
+      metalness: 0.85,
+      roughness: 0.3,
+      envMapIntensity: 1.1,
+    }),
+    2.15,
+    yHaut + 0.625,
+    0.05
+  );
+  faceVitesses.rotation.x = -Math.PI / 2;
+  ajouter(new THREE.CylinderGeometry(0.34, 0.34, 0.05, 40), M.chrome, 2.15, yHaut + 0.645, 0.05);
+
+  const molExpo = ajouter(cylindreStrie(0.86, 0.5, 36, 0.035), M.aluClair, 5.05, yHaut + 0.25, 0.62);
+  const faceExpo = ajouter(
+    new THREE.CircleGeometry(0.8, 64),
+    new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      map: faceMolette(["0", "+1", "+2", "+3", "C", "-3", "-2", "-1"], ["C"], "#cfccc6", "#1d1d1d"),
+      metalness: 0.85,
+      roughness: 0.3,
+    }),
+    5.05,
+    yHaut + 0.505,
+    0.62
+  );
+  faceExpo.rotation.x = -Math.PI / 2;
+
+  // Déclencheur chromé, filetage pour déclencheur souple, levier marche/arrêt
+  ajouter(new THREE.CylinderGeometry(0.62, 0.66, 0.12, 48), M.alu, 3.85, yHaut + 0.06, -0.72);
+  ajouter(new THREE.BoxGeometry(0.5, 0.1, 0.36), M.alu, 4.42, yHaut + 0.07, -1.05);
+  ajouter(cylindreStrie(0.46, 0.26, 40, 0.02), M.chrome, 3.85, yHaut + 0.25, -0.72);
+  const bouton = ajouter(new THREE.CylinderGeometry(0.3, 0.32, 0.18, 40), M.chrome, 3.85, yHaut + 0.46, -0.72);
+  ajouter(new THREE.CylinderGeometry(0.12, 0.12, 0.02, 24), M.noirBrillant, 3.85, yHaut + 0.56, -0.72);
+
+  // Griffe porte-flash et micro
+  ajouter(new THREE.BoxGeometry(2.0, 0.12, 1.8), M.alu, -0.85, yHaut + 0.06, 0.05);
+  ajouter(new THREE.BoxGeometry(1.6, 0.06, 1.4), M.noirBrillant, -0.85, yHaut + 0.14, 0.05);
+  for (let i = 0; i < 4; i++) ajouter(new THREE.CylinderGeometry(0.05, 0.05, 0.03, 12), M.noirBrillant, -3.2 + i * 0.22, yHaut + 0.005, -0.7);
+
+  // Attaches de courroie avec anneaux
+  for (const sx of [-1, 1]) {
+    const att = ajouter(new THREE.CylinderGeometry(0.18, 0.18, 0.3, 24), M.alu, sx * (C.l / 2 + 0.05), yHautPlaque + 0.9, -0.2);
+    att.rotation.z = Math.PI / 2;
+    const anneau = ajouter(new THREE.TorusGeometry(0.42, 0.06, 12, 40), M.chrome, sx * (C.l / 2 + 0.28), yHautPlaque + 0.5, -0.2);
+    anneau.rotation.y = Math.PI / 2;
+  }
+
+  // ----- Face avant : fenêtre du viseur, levier, lampe, poignée -----
+  ajouter(plaque(2.2, 1.35, 0.14, 0.18, 0.03), M.aluClair, -4.35, yHautPlaque + 1.08, zFace - 0.04);
+  ajouter(plaque(1.86, 1.05, 0.1, 0.12, 0.02), M.vitre, -4.35, yHautPlaque + 1.08, zFace - 0.1);
+  const axeLevier = ajouter(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 24), M.aluClair, -2.9, yHautPlaque + 1.1, zFace - 0.06);
+  axeLevier.rotation.x = Math.PI / 2;
+  const levier = ajouter(plaque(0.2, 0.8, 0.1, 0.09, 0.03), M.aluClair, -2.82, yHautPlaque + 0.72, zFace - 0.1);
+  levier.rotation.z = 0.18;
+  const lampe = ajouter(new THREE.CylinderGeometry(0.16, 0.16, 0.06, 24), M.vitre, -2.4, yBas + hBas + hCuir - 0.6, zFace - 0.02);
+  lampe.rotation.x = Math.PI / 2;
+  ajouter(plaque(1.35, hCuir - 0.7, 0.34, 0.5, 0.16), M.cuir, 5.2, yBas + hBas + hCuir / 2 - 0.05, zFace - 0.1);
+
+  // ----- Dos : œilleton du viseur, écran, boutons, levier de mise au point -----
+  ajouter(plaque(1.95, 1.4, 0.48, 0.28, 0.08), M.caoutchouc, -4.35, yHautPlaque + 1.05, zDos + 0.2);
+  ajouter(plaque(1.25, 0.82, 0.04, 0.08, 0.01), M.vitre, -4.35, yHautPlaque + 1.05, zDos + 0.44);
+  const E = geo.ecran;
+  ajouter(plaque(E.l + 0.42, E.h + 0.4, 0.16, 0.12, 0.03), M.noirBrillant, E.cx, E.cy, zDos + 0.07);
+
+  // L'écran : la même photo que le viseur, sans retouche de couleur
   const nw = photo.naturalWidth || 1200;
   const nh = photo.naturalHeight || 800;
   const ech = Math.min(1, 2048 / Math.max(nw, nh));
@@ -290,8 +512,6 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
   const tex = new THREE.CanvasTexture(toilePhoto);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  tex.generateMipmaps = true;
-  tex.minFilter = THREE.LinearMipmapLinearFilter;
   const ratioImage = nw / nh;
   const ratioEcran = E.l / E.h;
   const fx = cadrage ? cadrage[0] : 0.5;
@@ -303,14 +523,7 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     tex.repeat.set(1, ratioImage / ratioEcran);
     tex.offset.set(0, (1 - tex.repeat.y) * (1 - fy));
   }
-  tex.needsUpdate = true;
-  const ecran = ajouter(
-    new THREE.PlaneGeometry(E.l, E.h),
-    new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }),
-    E.cx,
-    E.cy,
-    E.z
-  );
+  const ecran = ajouter(new THREE.PlaneGeometry(E.l, E.h), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }), E.cx, E.cy, E.z);
   const reflet = ajouter(
     new THREE.PlaneGeometry(E.l, E.h),
     new THREE.MeshBasicMaterial({ map: textureReflet(), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }),
@@ -319,45 +532,69 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     E.z + 0.005
   );
 
-  const molette3 = ajouter(cylindreStrie(0.85, 0.22, 28, 0.05), M.metalSombre, 4.3, -0.7, zDos + 0.11);
-  molette3.rotation.x = Math.PI / 2;
-  const centre = ajouter(new THREE.CylinderGeometry(0.34, 0.34, 0.26, 40), M.noirBrillant, 4.3, -0.7, zDos + 0.13);
-  centre.rotation.x = Math.PI / 2;
-  for (const [bx, by] of [[4.75, 1.45], [3.55, 1.45], [4.85, -2.5], [3.6, -2.5]]) {
-    const b = ajouter(new THREE.CylinderGeometry(0.25, 0.25, 0.14, 32), M.noirBrillant, bx, by, zDos + 0.07);
+  // Boutons arrière (colonne de droite), levier de mise au point, molette, repose-pouce
+  const xBoutons = 3.55;
+  [
+    [xBoutons, 0.35, 0.23],
+    [xBoutons + 1.1, -0.35, 0.21],
+    [xBoutons, -1.25, 0.21],
+    [xBoutons + 1.1, -2.1, 0.21],
+    [xBoutons, -2.3, 0.21],
+  ].forEach(([bx, by, br]) => {
+    const b = ajouter(new THREE.CylinderGeometry(br, br, 0.1, 32), M.peinture, bx, by, zDos + 0.06);
     b.rotation.x = Math.PI / 2;
-  }
-  ajouter(blocArrondi(1.9, 1.15, 0.14, 0.35, 0.05, 2), M.cuir, 4.55, 2.45, zDos + 0.05);
+  });
+  const levierAF = ajouter(new THREE.CylinderGeometry(0.15, 0.2, 0.32, 24), M.caoutchouc, xBoutons + 1.1, 0.75, zDos + 0.16);
+  levierAF.rotation.x = Math.PI / 2;
+  const molDos = ajouter(cylindreStrie(0.5, 0.3, 26, 0.05), M.peinture, 5.55, yHautPlaque - 0.15, zDos - 0.12);
+  molDos.rotation.x = Math.PI / 2;
+  ajouter(plaque(1.4, 1.1, 0.12, 0.35, 0.04), M.caoutchouc, 5.2, yHautPlaque + 0.85, zDos + 0.04);
 
-  // Objectif : focale fixe courte, bague de mise au point striée
+  // ----- Objectif : focale fixe courte (style 23 mm) -----
   const objectif = new THREE.Group();
-  objectif.position.set(geo.objectif.x, geo.objectif.y, -C.p / 2);
+  objectif.position.set(geo.objectif.x, geo.objectif.y, zFace);
+  objectif.scale.setScalar(0.92);
   groupe.add(objectif);
-  const cylZ = (r1, r2, longueur, z, mat, ouvert = true, seg = 72) => {
+  const cylZ = (r1, r2, longueur, z, mat, ouvert = true, seg = 96) => {
     const m = ajouter(new THREE.CylinderGeometry(r1, r2, longueur, seg, 1, ouvert), mat, 0, 0, z - longueur / 2, objectif);
     m.rotation.x = Math.PI / 2;
     return m;
   };
-  cylZ(2.6, 2.6, 0.32, 0, M.metal, false); // baïonnette
-  cylZ(2.46, 2.46, 0.75, -0.32, M.noirBrillant); // fût arrière
-  ajouter(new THREE.BoxGeometry(0.12, 0.3, 0.08), M.blanc, 0, 2.48, -0.66, objectif); // repère de montage
-  const bague = ajouter(cylindreStrie(2.56, 1.5, 70, 0.028, 1, true), M.caoutchouc, 0, 0, -1.07 - 0.75, objectif);
-  bague.rotation.x = Math.PI / 2;
-  cylZ(2.47, 2.47, 0.06, -2.57, M.or); // liseré doré
-  cylZ(2.44, 2.4, 0.62, -2.63, M.noirBrillant); // fût avant
-  // face avant (anneau) et intérieur
-  const anneau = ajouter(new THREE.RingGeometry(1.92, 2.4, 72), M.metalSombre, 0, 0, -3.25, objectif);
+  cylZ(2.42, 2.42, 0.22, 0, M.alu, false); // embase
+  cylZ(2.3, 2.3, 0.1, -0.22, M.peinture); // gorge
+  // bague de diaphragme : partie lisse chiffrée + partie striée
+  cylZ(2.36, 2.36, 0.42, -0.32, new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    map: bandeChiffres(["A", "16", "11", "8", "5.6", "4", "2.8", "2"], "#cfccc6", "#1d1d1d", 44),
+    metalness: 0.9,
+    roughness: 0.32,
+    envMapIntensity: 1.1,
+  }));
+  const stries = ajouter(cylindreStrie(2.4, 0.34, 120, 0.018, true), M.aluClair, 0, 0, -0.74 - 0.17, objectif);
+  stries.rotation.x = Math.PI / 2;
+  // bague de mise au point (noire, échelle des distances)
+  cylZ(2.26, 2.26, 0.5, -1.08, new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    map: bandeChiffres(["∞", "10", "5", "3", "2", "1.5", "1", "0.8", "0.5m", "∞", "10", "5", "3", "2"], "#121212", "#d8d4cc", 38),
+    metalness: 0.2,
+    roughness: 0.5,
+  }));
+  cylZ(2.27, 2.27, 0.04, -1.58, M.or); // fin liseré doré (l'accent du site)
+  cylZ(2.24, 2.2, 0.32, -1.62, M.alu); // fût avant
+  // face avant : anneau gravé, intérieur, lentilles
+  const zAvant = -1.94;
+  const anneau = ajouter(new THREE.RingGeometry(1.62, 2.2, 96), new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    map: anneauTexte("1:2  f=23mm  ·  Ø49", "#0f0f0f", "#cfcac0"),
+    metalness: 0.3,
+    roughness: 0.45,
+  }), 0, 0, zAvant, objectif);
   anneau.rotation.y = Math.PI;
-  const tube = ajouter(new THREE.CylinderGeometry(1.92, 1.92, 0.9, 64, 1, true), M.interieur, 0, 0, -3.25 + 0.45, objectif);
+  const tube = ajouter(new THREE.CylinderGeometry(1.62, 1.62, 0.8, 64, 1, true), M.interieur, 0, 0, zAvant + 0.4, objectif);
   tube.rotation.x = Math.PI / 2;
-  // lentilles
-  const frontale = ajouter(calotte(1.92, 0.42), M.verre, 0, 0, -2.8, objectif);
-  ajouter(calotte(1.25, 0.32), M.verreFond, 0, 0, -2.4, objectif);
-  ajouter(new THREE.CircleGeometry(1.25, 48), M.interieur, 0, 0, -2.35, objectif);
-
-  // Petit bouton de déverrouillage de l'objectif
-  const deverrou = ajouter(new THREE.CylinderGeometry(0.3, 0.3, 0.16, 32), M.metal, 1.9, -1.55, -C.p / 2 - 0.08);
-  deverrou.rotation.x = Math.PI / 2;
+  const frontale = ajouter(calotte(1.62, 0.34), M.verre, 0, 0, zAvant + 0.38, objectif);
+  ajouter(calotte(1.05, 0.26), M.verreFond, 0, 0, zAvant + 0.72, objectif);
+  ajouter(new THREE.CircleGeometry(1.05, 48), M.interieur, 0, 0, zAvant + 0.78, objectif);
 
   // ----- API pour la chorégraphie -----
   const tmp = new THREE.Vector3();
@@ -378,24 +615,25 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     groupe.scale.setScalar(e.s);
     reflet.material.opacity = e.reflet || 0;
     ecran.visible = e.ecran !== false;
-    // Reflet qui balaie l'objectif : une lumière passe devant, de gauche à droite.
+    const k = e.s || 1;
     const b = e.balayage;
-    const echelle = e.s || 1;
     if (b > 0 && b < 1) {
-      balayage.position.set(e.x + (-10 + 20 * b) * echelle, e.y + (3 - 2 * b) * echelle, e.z + 9 * echelle);
-      balayage.distance = 30 * echelle;
-      balayage.intensity = 260 * echelle * echelle * Math.sin(Math.PI * b);
+      balayage.position.set(e.x + (-10 + 20 * b) * k, e.y + (3 - 2 * b) * k, e.z + 9 * k);
+      balayage.distance = 30 * k;
+      balayage.intensity = 240 * k * k * Math.sin(Math.PI * b);
     } else {
       balayage.intensity = 0;
     }
-    eclair.position.set(e.x - 2 * echelle, e.y + 2 * echelle, e.z + 8 * echelle);
-    eclair.distance = 40 * echelle;
-    eclair.intensity = 420 * echelle * echelle * (e.flash || 0);
-    molette.rotation.y = e.ry * 0.15;
-    molette2.rotation.y = -e.ry * 0.22;
+    eclair.position.set(e.x - 2 * k, e.y + 2 * k, e.z + 8 * k);
+    eclair.distance = 40 * k;
+    eclair.intensity = 420 * k * k * (e.flash || 0);
+    molVitesses.rotation.y = e.ry * 0.12;
+    faceVitesses.rotation.z = e.ry * 0.12;
+    molExpo.rotation.y = -e.ry * 0.18;
+    faceExpo.rotation.z = -e.ry * 0.18;
+    bouton.position.y = yHaut + 0.46 - 0.05 * (e.flash || 0);
   }
 
-  // Position à l'écran (pixels CSS) d'un point de l'appareil, ex. le centre de l'objectif.
   function projeter(nom) {
     if (nom === "objectif") frontale.getWorldPosition(tmp);
     else groupe.getWorldPosition(tmp);
@@ -407,8 +645,6 @@ export function creerAppareil({ canvas, photo, geo, mobile, cadrage }) {
     renderer.render(scene, camera);
   }
 
-  // Préparer les shaders tout de suite (évite un à-coup au premier défilement).
   renderer.compile(scene, camera);
-
   return { appliquer, rendre, redimensionner, projeter, renderer };
 }

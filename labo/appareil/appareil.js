@@ -23,12 +23,12 @@
   const GEO = {
     fov: 26,
     camZ: 46,
-    corps: { l: 11.8, h: 6.6, p: 3.1 },
-    ecran: { cx: -1.05, cy: -0.55, l: 6.6, h: 4.4, z: 1.68 },
-    objectif: { x: -1.05, y: -0.3 },
+    corps: { l: 12.8, h: 7.4, p: 3.3 },
+    ecran: { cx: -1.4, cy: -0.75, l: 6.3, h: 4.2, z: 1.81 },
+    objectif: { x: 0.5, y: -0.74 },
   };
-  const TOUR = 3 * Math.PI - 0.5; // un tour complet, puis trois-quarts face (objectif visible)
-  const PH = { a: 0.34, b0: 0.3, b1: 0.9, c0: 0.64, c1: 1 };
+  const TOUR = Math.PI - 0.5; // un demi-tour : du dos vers l'objectif, en trois-quarts
+  const PH = { a: 0.36, b0: 0.32, b1: 0.86, c0: 0.62, c1: 1 };
 
   // ---------- Outils ----------
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -72,7 +72,7 @@
     M.mobile = l <= 760;
     M.aspect = l / h;
     M.tan = Math.tan((GEO.fov * Math.PI) / 360);
-    M.course = Math.round((calme ? 0.9 : M.mobile ? 1.45 : 1.7) * h);
+    M.course = Math.round((calme ? 0.9 : M.mobile ? 1.3 : 1.5) * h);
     M.entete = M.mobile ? 56 : 64;
     intro.style.height = h + M.course + "px";
     scene.style.height = h + "px";
@@ -165,10 +165,8 @@
     let ry = tour;
     let rz = 0.07 * vague - 0.05 * tc;
 
-    // Reflet qui balaie l'objectif : au premier passage de face, puis à l'arrivée
-    let balayage = -1;
-    if (tour > Math.PI - 1.2 && tour < Math.PI + 1.2) balayage = (tour - (Math.PI - 1.2)) / 2.4;
-    else if (tour > TOUR - 1.3) balayage = seg(tour, TOUR - 1.3, TOUR);
+    // Reflet qui balaie l'objectif quand il arrive face à nous
+    const balayage = tour > TOUR - 1.5 ? seg(tour, TOUR - 1.5, TOUR) : -1;
 
     // Après l'intro : l'appareil reste vivant
     const vivant = seg(p, 0.9, 1);
