@@ -924,7 +924,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=14"))
+      .then(() => import("./scene.js?v=15"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -1109,7 +1109,7 @@
       requestAnimationFrame(boucle);
     }
 
-    brancherEtapes();
+    // brancherEtapes(); // « un geste = une étape » : essayé puis retiré (l'animation passait trop vite)
     afficherUnivers(window.Univers ? window.Univers.courant() : "particuliers", false);
     chargerDonnees().then(() => {
       afficherUnivers(window.Univers ? window.Univers.courant() : "particuliers", false);
@@ -1173,7 +1173,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=14", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=15", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;
