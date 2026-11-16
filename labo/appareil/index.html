@@ -138,37 +138,72 @@
           </div>
           <p class="pellicule-compteur" aria-hidden="true">Vue <span id="pellicule-vue">01</span><span class="pellicule-total">/<span id="pellicule-total">04</span></span></p>
         </div>
-        <div class="pellicule-fenetre">
-          <ol class="pellicule-bande" id="pellicule-bande"></ol>
+        <div class="pellicule-cadre">
+          <div class="pellicule-fenetre" id="pellicule-fenetre">
+            <ol class="pellicule-bande" id="pellicule-bande"></ol>
+          </div>
           <span class="pellicule-porte" id="pellicule-porte" aria-hidden="true"></span>
         </div>
+        <p class="pellicule-glisser" aria-hidden="true">Glissez pour voir la suite</p>
       </div>
     </section>
 
-    <!-- Mise au point : l'essentiel, net quand il arrive à l'écran -->
-    <section class="bloc reglages" id="reglages" aria-labelledby="reglages-titre">
-      <p class="surtitre">Mise au point</p>
-      <h2 class="bloc-titre" id="reglages-titre">Simple, du premier message à vos <em>photos</em></h2>
-      <ul class="reglages-liste" id="reglages-liste">
-        <li class="reglage map"><span class="reglage-val">48 h</span><span class="reglage-nom">Réponse sous 48 h</span></li>
-        <li class="reglage map"><span class="reglage-val">Privée</span><span class="reglage-nom">Galerie privée en ligne</span></li>
-        <li class="reglage map"><span class="reglage-val">∞</span><span class="reglage-nom">Aucune limite de photos livrées</span></li>
-      </ul>
-      <blockquote class="citation map" id="citation">
-        <p id="citation-texte">Pas de pose figée : juste <em>vous</em>, et la lumière du moment.</p>
-        <cite id="citation-signature">Nicolas</cite>
+    <!-- Fin de page : trois rendus à comparer (?fin=a, ?fin=b ou ?fin=c) -->
+
+    <!-- A. L'index : de grands mots, une vignette au survol -->
+    <section class="fin fin-a actif" data-fin="a" aria-labelledby="fin-a-titre">
+      <h2 class="surtitre" id="fin-a-titre">Entrez, faites un tour</h2>
+      <ol class="fa-index">
+        <li><a href="../../a-propos.html" data-lien-univers><span class="fa-num">01</span><span class="fa-mot">À propos</span><span class="fa-detail">Mon univers</span><span class="fa-vignette" data-tirage="0"></span></a></li>
+        <li><a href="../../services.html" data-lien-univers><span class="fa-num">02</span><span class="fa-mot">Services &amp; tarifs</span><span class="fa-detail">Les formules</span><span class="fa-vignette" data-tirage="1"></span></a></li>
+        <li><a href="../../contact.html" data-lien-univers data-flash><span class="fa-num">03</span><span class="fa-mot">Contact</span><span class="fa-detail">Écrivez-moi</span><span class="fa-vignette" data-tirage="2"></span></a></li>
+      </ol>
+      <ul class="fa-reglages" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
+      <blockquote class="fin-citation map">
+        <p data-citation>Pas de pose figée : juste <em>vous</em>, et la lumière du moment.</p>
+        <cite data-signature>Nicolas</cite>
       </blockquote>
+      <p class="canaux" data-canaux></p>
     </section>
 
-    <section class="bloc liens" id="liens" aria-labelledby="liens-titre">
-      <p class="surtitre">Entrez, faites un tour</p>
-      <h2 class="bloc-titre" id="liens-titre">La <em>suite</em></h2>
-      <ul class="tirages">
-        <li><a class="tirage" href="../../a-propos.html" data-lien-univers><span class="tirage-photo"></span><span class="tirage-texte"><span class="tirage-num">01</span><span class="tirage-nom">À propos</span><span class="tirage-detail">Mon univers</span></span></a></li>
-        <li><a class="tirage" href="../../services.html" data-lien-univers><span class="tirage-photo"></span><span class="tirage-texte"><span class="tirage-num">02</span><span class="tirage-nom">Services &amp; tarifs</span><span class="tirage-detail">Les formules</span></span></a></li>
-        <li><a class="tirage" href="../../contact.html" data-lien-univers data-flash><span class="tirage-photo"></span><span class="tirage-texte"><span class="tirage-num">03</span><span class="tirage-nom">Contact</span><span class="tirage-detail">Écrivez-moi</span></span></a></li>
-      </ul>
-      <p class="canaux" id="canaux"></p>
+    <!-- B. La chambre noire : les tirages sèchent sur un fil -->
+    <section class="fin fin-b" data-fin="b" aria-labelledby="fin-b-titre">
+      <p class="surtitre">Chambre noire</p>
+      <h2 class="bloc-titre" id="fin-b-titre">Les derniers tirages <em>sèchent</em> encore</h2>
+      <div class="fb-fil">
+        <svg class="fb-corde" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M0 1 Q50 8 100 1" /></svg>
+        <ul class="fb-tirages">
+          <li><a class="fb-tirage" href="../../a-propos.html" data-lien-univers><span class="fb-pince" aria-hidden="true"></span><span class="fb-papier"><span class="fb-photo" data-tirage="0"></span><span class="fb-legende">À propos</span></span></a></li>
+          <li><a class="fb-tirage" href="../../services.html" data-lien-univers><span class="fb-pince" aria-hidden="true"></span><span class="fb-papier"><span class="fb-photo" data-tirage="1"></span><span class="fb-legende">Services &amp; tarifs</span></span></a></li>
+          <li><a class="fb-tirage" href="../../contact.html" data-lien-univers data-flash><span class="fb-pince" aria-hidden="true"></span><span class="fb-papier"><span class="fb-photo" data-tirage="2"></span><span class="fb-legende">Contact</span></span></a></li>
+        </ul>
+      </div>
+      <ul class="fb-reglages" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
+      <blockquote class="fin-citation map">
+        <p data-citation>Pas de pose figée : juste <em>vous</em>, et la lumière du moment.</p>
+        <cite data-signature>Nicolas</cite>
+      </blockquote>
+      <p class="canaux" data-canaux></p>
+    </section>
+
+    <!-- C. Le tirage papier : une carte claire, le contact en grand -->
+    <section class="fin fin-c" data-fin="c" aria-labelledby="fin-c-titre">
+      <div class="fc-carte">
+        <p class="fc-sur">Prêt quand vous l'êtes</p>
+        <h2 class="fc-titre" id="fin-c-titre">Parlons de vos <em>photos</em>.</h2>
+        <a class="fc-mail" href="../../contact.html" data-email>Écrivez-moi</a>
+        <p class="canaux fc-canaux" data-canaux></p>
+        <ol class="fc-reglages" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ol>
+        <nav class="fc-nav" aria-label="Les autres pages">
+          <a class="lien" href="../../a-propos.html" data-lien-univers>À propos</a>
+          <a class="lien" href="../../services.html" data-lien-univers>Services &amp; tarifs</a>
+          <a class="lien" href="../../contact.html" data-lien-univers data-flash>Contact</a>
+        </nav>
+      </div>
+      <blockquote class="fin-citation map">
+        <p data-citation>Pas de pose figée : juste <em>vous</em>, et la lumière du moment.</p>
+        <cite data-signature>Nicolas</cite>
+      </blockquote>
     </section>
 
     <footer class="pied">

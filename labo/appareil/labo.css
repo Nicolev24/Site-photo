@@ -1119,16 +1119,68 @@ html.js:not(.calme) .cadre-photo {
   padding: 0;
 }
 .pellicule-colle {
-  padding: 11vh 0 6vh;
+  padding: 8vh 0 2vh;
 }
-html.js:not(.calme) .pellicule-colle {
+/* Ordinateur : la bande avance avec le défilement (le bloc reste en place) */
+.pellicule.defile {
+  padding-top: 5vh;
+}
+.pellicule.defile .pellicule-colle {
   position: sticky;
-  top: 0;
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: calc(var(--entete) + 2vh) 0 3vh;
+  top: calc(var(--entete) + 3vh);
+  padding: 0;
+}
+.pellicule-cadre {
+  position: relative;
+}
+/* Téléphone : on fait glisser la bande avec le doigt */
+.pellicule.glisse .pellicule-colle {
+  padding-top: 6vh;
+}
+.pellicule.glisse .pellicule-fenetre {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.pellicule.glisse .pellicule-fenetre::-webkit-scrollbar {
+  display: none;
+}
+.pellicule.glisse .pellicule-bande {
+  padding: 0 calc((100vw - var(--vue)) / 2);
+}
+.pellicule.glisse .vue {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.pellicule-glisser {
+  display: none;
+  margin: 18px 0 0;
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--attenue);
+  transition: opacity 0.5s;
+}
+.pellicule-glisser::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 10px;
+  color: var(--or-clair);
+  animation: glisser 1.6s ease-in-out infinite;
+}
+@keyframes glisser {
+  50% {
+    transform: translateX(6px);
+  }
+}
+.pellicule.glisse .pellicule-glisser {
+  display: block;
+}
+.pellicule.a-glisse .pellicule-glisser {
+  opacity: 0;
 }
 .pellicule-tete {
   display: flex;
@@ -1311,6 +1363,372 @@ html.calme .pellicule-compteur {
   display: none;
 }
 
+/* ---------- Fin de page (trois rendus) ---------- */
+.fin {
+  position: relative;
+  padding: 9vh 0 0;
+}
+.fin:not(.actif) {
+  display: none;
+}
+h2.surtitre {
+  font-family: var(--sans);
+  font-weight: 400;
+}
+.fin-citation {
+  margin: 9vh 0 0;
+  padding: 0;
+}
+.fin-citation p {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.12;
+  color: var(--creme);
+}
+.fin-citation em {
+  font-style: italic;
+  color: var(--or-clair);
+}
+.fin-citation cite {
+  display: block;
+  margin-top: 14px;
+  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.fin-citation cite::before {
+  content: "— ";
+}
+
+/* A. L'index */
+.fa-index {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+.fa-index li + li {
+  border-top: 1px solid var(--trait);
+}
+.fa-index a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0 14px;
+  padding: 20px 0 18px;
+  text-decoration: none;
+  color: var(--creme);
+}
+.fa-num {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  color: var(--or-clair);
+}
+.fa-mot {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1;
+  transition: transform 0.7s var(--doux), color 0.3s;
+}
+.fa-index a:hover .fa-mot,
+.fa-index a:focus-visible .fa-mot {
+  transform: translateX(14px);
+  font-style: italic;
+  color: var(--or-clair);
+}
+.fa-detail {
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.fa-vignette {
+  position: absolute;
+  right: 22%;
+  top: 50%;
+  z-index: 2;
+  width: 118px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(-50%) rotate(-4deg) scale(0.9);
+  transition: opacity 0.35s, transform 0.6s var(--doux);
+}
+.fa-index li:nth-child(2) .fa-vignette {
+  transform: translateY(-50%) rotate(3deg) scale(0.9);
+}
+.fa-index a:hover .fa-vignette,
+.fa-index a:focus-visible .fa-vignette {
+  opacity: 1;
+  transform: translateY(-50%) rotate(-4deg) scale(1);
+}
+.fa-index li:nth-child(2) a:hover .fa-vignette {
+  transform: translateY(-50%) rotate(3deg) scale(1);
+}
+.fa-vignette img,
+.fb-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+}
+.fa-reglages {
+  list-style: none;
+  margin: 7vh 0 0;
+  padding: 16px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texte);
+}
+.fa-reglages li + li::before {
+  content: "·";
+  margin: 0 1.1em;
+  color: var(--or);
+}
+
+/* B. La chambre noire */
+.fin-b::before {
+  content: "";
+  position: absolute;
+  inset: 0 -8vw;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(60% 45% at 45% 32%, rgba(170, 40, 30, 0.17), rgba(170, 40, 30, 0) 72%);
+}
+.fb-fil {
+  position: relative;
+  margin-top: 6vh;
+}
+.fb-corde {
+  position: absolute;
+  left: -3%;
+  top: 0;
+  width: 106%;
+  height: 40px;
+  overflow: visible;
+}
+.fb-corde path {
+  fill: none;
+  stroke: rgba(243, 237, 228, 0.38);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+.fb-tirages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 5%;
+}
+.fb-tirages li {
+  padding: 0 5%;
+  margin-top: 16px;
+}
+.fb-tirages li:nth-child(2) {
+  margin-top: 25px;
+}
+.fb-tirage {
+  --r: -2.5deg;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  transform-origin: 50% 0;
+  transform: rotate(var(--r));
+}
+.fb-tirages li:nth-child(2) .fb-tirage {
+  --r: 1.6deg;
+}
+.fb-tirages li:nth-child(3) .fb-tirage {
+  --r: 2.6deg;
+}
+.fb-tirage:hover,
+.fb-tirage:focus-visible {
+  animation: balance 1.8s var(--doux);
+}
+@keyframes balance {
+  30% {
+    transform: rotate(calc(var(--r) + 4deg));
+  }
+  62% {
+    transform: rotate(calc(var(--r) - 2deg));
+  }
+  100% {
+    transform: rotate(var(--r));
+  }
+}
+.fb-pince {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  z-index: 2;
+  width: 10px;
+  height: 28px;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #7d5f3e, #c9a476 45%, #8a6a45);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+}
+.fb-pince::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #4f3b26;
+  transform: translateX(-50%);
+}
+.fb-papier {
+  display: block;
+  padding: 7% 7% 0;
+  background: #eee7da;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5);
+}
+.fb-photo {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #2a2420;
+}
+.fb-photo img {
+  filter: sepia(0.12) contrast(1.03);
+}
+.fb-legende {
+  display: block;
+  padding: 10px 0 13px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.1;
+  text-align: center;
+  color: #2a231d;
+}
+.fb-reglages {
+  list-style: none;
+  margin: 8vh 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texte);
+}
+.fb-reglages li::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 10px 2px 0;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #c9443a;
+  box-shadow: 0 0 9px rgba(201, 68, 58, 0.75);
+}
+
+/* C. Le tirage papier */
+.fc-carte {
+  position: relative;
+  padding: clamp(30px, 5vw, 60px);
+  background: #eee7da;
+  color: #1c1916;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.38);
+}
+.fc-sur {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #8a6d45;
+}
+.fc-titre {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 5vw, 4.3rem);
+  line-height: 1;
+  color: #1c1916;
+}
+.fc-titre em {
+  font-style: italic;
+  color: #94713f;
+}
+.fc-mail {
+  display: inline-block;
+  margin-top: 28px;
+  padding-bottom: 5px;
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+  line-height: 1.15;
+  color: #1c1916;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background: linear-gradient(#ae8c5b, #ae8c5b) 0 100% / 100% 1px no-repeat;
+  transition: color 0.3s, background-size 0.4s var(--doux);
+}
+.fc-mail:hover,
+.fc-mail:focus-visible {
+  color: #94713f;
+  background-size: 100% 2px;
+}
+.fc-canaux {
+  margin-top: 16px;
+}
+.fc-carte .canaux a {
+  color: #3a322b;
+}
+.fc-carte .canaux a:hover {
+  color: #1c1916;
+}
+.fc-reglages {
+  list-style: none;
+  counter-reset: r;
+  margin: 46px 0 0;
+  padding: 22px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 24px;
+  border-top: 1px solid rgba(28, 25, 22, 0.16);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #3a322b;
+}
+.fc-reglages li {
+  counter-increment: r;
+}
+.fc-reglages li::before {
+  content: counter(r, decimal-leading-zero);
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  color: #94713f;
+}
+.fc-nav {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 30px;
+}
+.fc-nav .lien {
+  color: #1c1916;
+}
+
 /* ---------- Mise au point ---------- */
 .reglages-liste {
   list-style: none;
@@ -1455,6 +1873,59 @@ html.js:not(.calme) .reglage:nth-child(3) {
     font-size: 0.6rem;
     letter-spacing: 0.12em;
   }
+  .bloc.pellicule {
+    padding: 0;
+  }
+  .pellicule.glisse .pellicule-colle {
+    padding-top: 5vh;
+  }
+  .fin {
+    padding-top: 6vh;
+  }
+  .canaux {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .canaux-sep {
+    display: none;
+  }
+  .fa-index a {
+    grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+    padding: 16px 0 14px;
+  }
+  .fa-index a::after {
+    content: "→";
+    color: var(--or-clair);
+  }
+  .fa-mot {
+    font-size: 2.2rem;
+  }
+  .fa-detail,
+  .fa-vignette {
+    display: none;
+  }
+  .fa-reglages,
+  .fb-reglages {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .fa-reglages li + li::before {
+    content: none;
+  }
+  .fb-tirages {
+    gap: 0 3%;
+  }
+  .fb-tirages li {
+    padding: 0 1%;
+  }
+  .fb-legende {
+    font-size: 0.92rem;
+    padding: 8px 2px 10px;
+  }
+  .fc-reglages {
+    grid-template-columns: 1fr;
+    margin-top: 34px;
+  }
   .tirages {
     grid-template-columns: 1fr;
     gap: 0;
@@ -1493,7 +1964,7 @@ html.js:not(.calme) .reglage:nth-child(3) {
   :root {
     --vue: 74vw;
   }
-  .pellicule-fenetre {
+  .pellicule-cadre {
     margin: 0 -20px;
   }
   .pellicule-tete {

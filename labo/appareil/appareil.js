@@ -63,6 +63,7 @@
   const pellicule = $("#pellicule");
   const bande = $("#pellicule-bande");
   const porte = $("#pellicule-porte");
+  const fenetre = $("#pellicule-fenetre");
 
   // ---------- Mesures (taille d'écran → distances 3D) ----------
   const M = {};
@@ -281,11 +282,26 @@
       pellicule.style.height = "";
       return;
     }
+    P.glisse = M.mobile;
+    pellicule.classList.toggle("glisse", P.glisse);
+    pellicule.classList.toggle("defile", !P.glisse);
     P.fw = P.vues[0].offsetWidth || 1;
-    P.fen = bande.parentNode.clientWidth || 1;
-    P.pas = Math.round(M.h * (M.mobile ? 0.62 : 0.7));
-    P.course = (P.n - 1) * P.pas;
-    pellicule.style.height = P.course + Math.round(P.pas * 0.45) + M.h + "px";
+    P.fen = fenetre.clientWidth || 1;
+    if (P.glisse) {
+      // Téléphone : la bande se fait glisser au doigt, la page défile normalement.
+      P.course = 0;
+      pellicule.style.height = "";
+      bande.style.transform = "";
+    } else {
+      // Ordinateur : le bloc reste en place pendant que la bande avance d'un cran à la fois.
+      const colle = $(".pellicule-colle");
+      P.pas = Math.round(M.h * 0.7);
+      P.course = (P.n - 1) * P.pas;
+      P.haut = parseFloat(getComputedStyle(colle).top) || 0;
+      const marge = parseFloat(getComputedStyle(pellicule).paddingTop) || 0;
+      pellicule.style.height = Math.round(marge + colle.offsetHeight + P.course + P.pas * 0.35) + "px";
+      P.debut = pellicule.offsetTop + marge - P.haut; // défilement où le bloc s'arrête
+    }
     P.vues.forEach((li) => {
       li._neg = li.querySelector(".vue-negatif");
       li._leg = li.querySelector(".vue-legende");
@@ -296,34 +312,60 @@
   function majPellicule() {
     if (calme || !P.n) return;
     const y = window.scrollY;
-    const haut = M.contenuHaut + pellicule.offsetTop;
+    const haut = M.contenuHaut + (P.glisse ? pellicule.offsetTop : P.debut);
     if (y < haut - M.h * 1.3 || y > haut + P.course + M.h * 1.5) {
       if (P.actif) reagirPellicule(false);
       P.verrou = -1;
       return;
     }
     // Avance « au cran » : la vue reste un moment en place, puis la suivante arrive.
-    const brut = clamp((y - haut) / P.pas, 0, P.n - 1);
-    const i0 = Math.min(Math.floor(brut), P.n - 1);
-    const f = i0 >= P.n - 1 ? P.n - 1 : i0 + ease.inOut3(seg(brut - i0, 0.32, 0.94));
-    const approche = seg(y, haut - 0.8 * M.h, haut - 0.12 * M.h);
+    let f, approche;
+    if (P.glisse) {
+      f = clamp(fenetre.scrollLeft / P.fw, 0, P.n - 1);
+      approche = seg(y, haut - 0.9 * M.h, haut - 0.4 * M.h);
+    } else {
+      const brut = clamp((y - haut) / P.pas, 0, P.n - 1);
+      const i0 = Math.min(Math.floor(brut), P.n - 1);
+      f = i0 >= P.n - 1 ? P.n - 1 : i0 + ease.inOut3(seg(brut - i0, 0.32, 0.94));
+      approche = seg(y, haut - 0.8 * M.h, haut - 0.12 * M.h);
+      bande.style.transform = `translate3d(${(P.fen / 2 - (f + 0.5) * P.fw).toFixed(1)}px, 0, 0)`;
+    }
     const fDev = f - 0.7 * (1 - approche);
-    bande.style.transform = `translate3d(${(P.fen / 2 - (f + 0.5) * P.fw).toFixed(1)}px, 0, 0)`;
     P.vues.forEach((li, i) => {
       li._neg.style.opacity = (1 - seg(fDev, i - 0.62, i - 0.1)).toFixed(3);
       li._leg.style.opacity = clamp(1 - Math.abs(f - i) * 1.7).toFixed(3);
     });
     const vue = Math.round(f);
     $("#pellicule-vue").textContent = String(vue + 1).padStart(2, "0");
-    const enPlace = Math.abs(f - vue) < 0.025 && approche >= 1;
+    const enPlace = Math.abs(f - vue) < (P.glisse ? 0.04 : 0.025) && approche >= 1;
     porte.classList.toggle("verrouille", enPlace);
     if (enPlace && vue !== P.verrou) {
       if (vue > P.verrou) flash(); // l'appareil déclenche à chaque nouvelle vue
       P.verrou = vue;
     }
-    const actif = y > haut - M.h * 0.4 && y < haut + P.course + P.pas * 0.3;
+    const actif = P.glisse ? y > haut - M.h * 0.6 && y < haut + M.h * 0.5 : y > haut - M.h * 0.4 && y < haut + P.course + P.pas * 0.3;
     if (actif !== P.actif) reagirPellicule(actif);
   }
+  let rafPellicule = 0;
+  fenetre.addEventListener(
+    "scroll",
+    () => {
+      if (!P.glisse) return;
+      if (fenetre.scrollLeft > 8) pellicule.classList.add("a-glisse");
+      if (!rafPellicule)
+        rafPellicule = requestAnimationFrame(() => {
+          rafPellicule = 0;
+          majPellicule();
+        });
+    },
+    { passive: true }
+  );
+  if (document.fonts && document.fonts.ready)
+    document.fonts.ready.then(() => {
+      mesurerPellicule();
+      forcer = true;
+    });
+
   function reagirPellicule(actif) {
     P.actif = actif;
     if (aGsap) gsap.to(reaction, { ry: actif ? (M.mobile ? -0.4 : -0.62) : 0, duration: 1.2, ease: "power3.out", overwrite: "auto" });
@@ -650,13 +692,13 @@
         el.innerHTML = emphase(t[cle] || "");
       });
       construirePellicule(u);
-      $$(".tirage-photo").forEach((el, i) => {
-        const t = TIRAGES[u][i];
+      $$("[data-tirage]").forEach((el) => {
+        const t = TIRAGES[u][+el.dataset.tirage];
         if (!t) return;
         el.style.setProperty("--pos", t[1]);
-        el.innerHTML = image(t[0], 800, "(max-width: 760px) 72px, 17vw", "");
+        el.innerHTML = image(t[0], 800, "(max-width: 760px) 32vw, 16vw", "");
       });
-      $$(".tirage-photo img[data-src]").forEach((img) => observateurImages.observe(img));
+      $$("[data-tirage] img[data-src]").forEach((img) => observateurImages.observe(img));
       $$(".bascule-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.univers === u)));
       $$("[data-lien-univers]").forEach((a) => {
         if (!a.dataset.base) a.dataset.base = a.getAttribute("href");
@@ -694,8 +736,8 @@
         });
         ((accueil && accueil.sections) || []).forEach((s) => {
           if (s.type === "citation" && s.data.text) {
-            $("#citation-texte").innerHTML = emphase(s.data.text);
-            $("#citation-signature").textContent = s.data.signature || "";
+            $$("[data-citation]").forEach((el) => (el.innerHTML = emphase(s.data.text)));
+            $$("[data-signature]").forEach((el) => (el.textContent = s.data.signature || ""));
           }
         });
         ((apropos && apropos.sections) || []).forEach((s) => {
@@ -710,28 +752,30 @@
           if (contact.whatsapp_url) liens.push(`<a href="${echapper(contact.whatsapp_url)}" target="_blank" rel="noopener" data-flash>WhatsApp</a>`);
           if (contact.instagram_url) liens.push(`<a href="${echapper(contact.instagram_url)}" target="_blank" rel="noopener">${echapper(contact.instagram_handle || "Instagram")}</a>`);
           if (contact.email) liens.push(`<a href="mailto:${echapper(contact.email)}" data-flash>${echapper(contact.email)}</a>`);
-          $("#canaux").innerHTML = liens.join('<span class="canaux-sep" aria-hidden="true">·</span>');
+          const sep = '<span class="canaux-sep" aria-hidden="true">·</span>';
+          $$("[data-canaux]").forEach((el) => {
+            // Sur la carte claire, l'e-mail est déjà affiché en grand au-dessus.
+            const l = el.closest(".fin-c") ? liens.filter((x) => x.indexOf("mailto:") < 0) : liens;
+            el.innerHTML = l.join(sep);
+          });
+          if (contact.email)
+            $$("[data-email]").forEach((a) => {
+              a.href = "mailto:" + contact.email;
+              a.textContent = contact.email;
+              a.setAttribute("data-flash", "");
+            });
           brancherFlash();
         }
       }
     );
   }
 
-  // Les « réglages » (réponse sous 48 h, galerie privée…) : une valeur courte, façon viseur.
-  function valeurReglage(t, i) {
-    if (/(\d+)\s*h\b/i.test(t)) return t.match(/(\d+)\s*h\b/i)[1] + " h";
-    if (/limite/i.test(t)) return "∞";
-    if (/galerie/i.test(t)) return "Privée";
-    if (/(\d+)/.test(t)) return t.match(/(\d+)/)[1];
-    return String(i + 1).padStart(2, "0");
-  }
+  // Les points rassurants (réponse sous 48 h, galerie privée…), repris de l'admin.
   function afficherReglages(items) {
     const liste = items.filter((it) => it && it.text).slice(0, 3);
     if (!liste.length) return;
-    $("#reglages-liste").innerHTML = liste
-      .map((it, i) => `<li class="reglage map"><span class="reglage-val">${echapper(valeurReglage(it.text, i))}</span><span class="reglage-nom">${echapper(it.text)}</span></li>`)
-      .join("");
-    observerMiseAuPoint();
+    const html = liste.map((it) => `<li>${echapper(it.text)}</li>`).join("");
+    $$("[data-reglages]").forEach((el) => (el.innerHTML = html));
   }
 
   // Mise au point : flou → net quand l'élément arrive à l'écran (et le cadre passe en or).
@@ -862,6 +906,8 @@
   // ---------- Démarrage ----------
   let lenis = null;
   function demarrer() {
+    const rendu = (location.search.match(/[?&]fin=([abc])/) || [])[1] || "a";
+    $$(".fin").forEach((s) => s.classList.toggle("actif", s.dataset.fin === rendu));
     mesurer(true);
     tailleObturateur();
 
