@@ -31,7 +31,7 @@
   const TOUR = Math.PI - 0.5; // un demi-tour : du dos vers l'objectif, en trois-quarts
   // Chapitres : moment où chacun est en place (t) et où il commence à s'effacer (fin).
   // Le 03 dure plus longtemps : la pellicule y défile.
-  const CH = { t: [0, 1, 2, 3.5], fin: [0.44, 1.44, 2.95, 3.94], range: 4.0, lacher: 4.25 };
+  const CH = { t: [0, 1, 2, 3.5], fin: [0.44, 1.44, 2.95, 3.94], range: 4.0, lacher: 4.05 };
   let derniereC = -9;
   const PH = { a: 0.36, b0: 0.32, b1: 0.86, c0: 0.62, c1: 1 };
 
@@ -142,10 +142,10 @@
     const l = M.l;
     if (M.mobile)
       return [
-        { x: 0.5, y: 0.3, w: 0.8 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
-        { x: 0.6, y: 0.29, w: 0.56 * l, ry: 2.3, rx: 0.14, rz: 0 },
-        { x: 0.5, y: 0.17, w: 0.44 * l, ry: Math.PI + 0.35, rx: 0.12, rz: 0 },
-        { x: 0.5, y: 0.3, w: 0.7 * l, ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
+        { x: 0.5, y: 0.5, w: 0.78 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
+        { x: 0.6, y: 0.46, w: 0.56 * l, ry: 2.3, rx: 0.14, rz: 0 },
+        { x: 0.5, y: 0.37, w: 0.46 * l, ry: Math.PI + 0.35, rx: 0.12, rz: 0 },
+        { x: 0.5, y: 0.5, w: 0.66 * l, ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
       ];
     return [
       { x: 0.68, y: 0.52, w: Math.min(0.4 * l, 640), ry: TOUR, rx: 0.16, rz: -0.05 },
@@ -223,6 +223,9 @@
       for (let i = 1; i < E.length; i++) if (c > CH.t[i] - 0.62) st = melange(E[i - 1], E[i], ease.inOut3(seg(c, CH.t[i] - 0.62, CH.t[i] - 0.08)));
       const kd = ease.inOut3(seg(c, CH.range, CH.range + 0.8));
       if (kd > 0) st = melange(st, { x: 0.5, y: M.dock.py / M.h, w: M.dock.l, ry: Math.PI + 0.5, rx: 0.16, rz: -0.05 }, kd);
+      let proche = 0;
+      CH.t.forEach((t, i) => c > t - 0.5 && (proche = i));
+      st = Object.assign({}, st, { ry: st.ry + 0.3 * clamp(c - CH.t[proche], -0.5, 0.6) * (1 - kd) });
       const w = monde(st);
       x = w.x;
       y = w.y;
@@ -921,7 +924,7 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=12"))
+      .then(() => import("./scene.js?v=14"))
       .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
       .then((api) => {
         api.redimensionner(M.l, M.h);
@@ -955,17 +958,129 @@
           window.Univers.definir(u);
           window.Univers.confirmer();
           afficherUnivers(u, true);
-          const cible = M.course + Math.round(0.1 * M.pasCh); // le chapitre 01 bien en place
+          const cible = Math.round(M.course + 0.08 * M.pasCh); // le chapitre 01 bien en place
           const finir = () => {
             enCours = false;
             contenu.focus({ preventScroll: true });
           };
           if (lenis) lenis.scrollTo(cible, { duration: M.mobile ? 2.1 : 2.5, easing: ease.inOut3, lock: true, onComplete: finir });
-          else {
+          else if (!calme) {
+            // téléphone : la même descente douce qu'entre deux étapes
+            allerEtape(cible, 1800);
+            setTimeout(finir, 1850);
+          } else {
             window.scrollTo(0, cible);
             finir();
           }
         })
+    );
+  }
+
+
+  // ---------- Téléphone : un geste = une étape ----------
+  // Un glissement vers le haut amène à l'étape suivante (le viseur, puis chaque chapitre,
+  // puis « Réserver ») avec une animation à vitesse fixe : rien de trop lent, rien qui saute.
+  function etapes() {
+    const enC = (c) => Math.round(M.course + c * M.pasCh);
+    const bas = document.documentElement.scrollHeight - window.innerHeight;
+    if (M.mobile) return [0, enC(0.08), enC(CH.t[1] + 0.05), enC(CH.t[2] + 0.06), enC(CH.t[3] + 0.05), bas];
+    const vues = Math.max(1, P.n || 4);
+    const film = Array.from({ length: vues }, (_, k) => enC(CH.t[2] + 0.02 + (k * (CH.fin[2] - 0.1 - CH.t[2])) / Math.max(1, vues - 1)));
+    return [0, enC(0.08), enC(CH.t[1] + 0.05), ...film, enC(CH.t[3] + 0.05), bas];
+  }
+  let animEtape = null;
+  let finEtape = 0;
+  function allerEtape(y, duree) {
+    const y0 = window.scrollY;
+    const t0 = performance.now();
+    const jeton = {};
+    animEtape = jeton;
+    const pas = (t) => {
+      if (animEtape !== jeton) return;
+      const k = Math.min(1, (t - t0) / duree);
+      window.scrollTo(0, Math.round(y0 + (y - y0) * ease.inOut3(k)));
+      if (k < 1) requestAnimationFrame(pas);
+      else {
+        animEtape = null;
+        finEtape = performance.now();
+      }
+    };
+    requestAnimationFrame(pas);
+  }
+  function etapeSuivante(sens) {
+    const E = etapes();
+    const y = window.scrollY;
+    const cible = sens > 0 ? E.find((v) => v > y + 6) : [...E].reverse().find((v) => v < y - 6);
+    if (cible == null) return false;
+    const d = Math.abs(cible - y);
+    allerEtape(cible, clamp((d / M.h) * 950, 750, 1700));
+    return true;
+  }
+  function brancherEtapes() {
+    if (calme) return;
+    let x0 = 0;
+    let y0 = 0;
+    let surPellicule = false;
+    window.addEventListener(
+      "touchstart",
+      (ev) => {
+        if (!M.mobile || ev.touches.length > 1) return;
+        x0 = ev.touches[0].clientX;
+        y0 = ev.touches[0].clientY;
+        surPellicule = !!(ev.target.closest && ev.target.closest(".pellicule-fenetre"));
+      },
+      { passive: true }
+    );
+    window.addEventListener(
+      "touchmove",
+      (ev) => {
+        if (!M.mobile || ev.touches.length > 1) return;
+        const dx = ev.touches[0].clientX - x0;
+        const dy = ev.touches[0].clientY - y0;
+        if (surPellicule && Math.abs(dx) > Math.abs(dy)) return; // on fait glisser la pellicule
+        ev.preventDefault(); // la page avance par étapes
+      },
+      { passive: false }
+    );
+    // Molette / pavé tactile : tout un mouvement (même avec l'inertie) compte pour une seule étape.
+    let dernierRoue = 0;
+    let gesteLibre = false;
+    window.addEventListener(
+      "wheel",
+      (ev) => {
+        if (M.mobile || ev.ctrlKey) return;
+        ev.preventDefault();
+        // heure du geste lui-même (pas de son traitement) : un ordinateur lent ne crée pas de faux gestes
+        const t = ev.timeStamp || performance.now();
+        if (t - dernierRoue > 220) gesteLibre = true; // un nouveau geste commence
+        dernierRoue = t;
+        if (performance.now() - finEtape < 250) gesteLibre = false; // l'inertie de la fin d'un geste ne compte pas
+        if (!gesteLibre || animEtape || Math.abs(ev.deltaY) < 3) return;
+        gesteLibre = false;
+        etapeSuivante(ev.deltaY > 0 ? 1 : -1);
+      },
+      { passive: false }
+    );
+    window.addEventListener("keydown", (ev) => {
+      const cible = ev.target;
+      if (ev.altKey || ev.ctrlKey || ev.metaKey || (cible && /^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName))) return;
+      const bas = ["ArrowDown", "PageDown"].includes(ev.key) || (ev.key === " " && !ev.shiftKey);
+      const haut = ["ArrowUp", "PageUp"].includes(ev.key) || (ev.key === " " && ev.shiftKey);
+      if (!bas && !haut) return;
+      if (cible && cible.closest && cible.closest(".pellicule-fenetre") && M.mobile) return;
+      ev.preventDefault();
+      if (!animEtape) etapeSuivante(bas ? 1 : -1);
+    });
+    window.addEventListener(
+      "touchend",
+      (ev) => {
+        if (!M.mobile) return;
+        const dx = ev.changedTouches[0].clientX - x0;
+        const dy = ev.changedTouches[0].clientY - y0;
+        if (Math.abs(dy) < 26 || Math.abs(dx) > Math.abs(dy) || animEtape) return;
+        etapeSuivante(dy < 0 ? 1 : -1);
+      },
+      { passive: true }
     );
   }
 
@@ -994,6 +1109,7 @@
       requestAnimationFrame(boucle);
     }
 
+    brancherEtapes();
     afficherUnivers(window.Univers ? window.Univers.courant() : "particuliers", false);
     chargerDonnees().then(() => {
       afficherUnivers(window.Univers ? window.Univers.courant() : "particuliers", false);
@@ -1057,7 +1173,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=12", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=14", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;
@@ -1094,6 +1210,8 @@
       api: () => api3d,
       charger3D,
       avancement: () => pLisse,
+      etapes,
+      etapeSuivante,
       figer: (p) => {
         pLisse = p;
         pDernier = -1;

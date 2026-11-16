@@ -36,7 +36,7 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="labo.css?v=12" />
+<link rel="stylesheet" href="labo.css?v=14" />
 </head>
 <body>
 
@@ -128,52 +128,68 @@
   <section class="chapitres" id="chapitres" aria-label="Mon travail en quatre temps">
     <div class="chap-scene" id="chap-scene">
       <article class="chap" id="accroche" data-cote="gauche" aria-labelledby="accroche-titre">
-        <p class="chap-sur"><span>01</span>Le regard</p>
-        <div class="bascule" role="group" aria-label="Votre univers">
-          <button type="button" class="bascule-btn" data-univers="particuliers" aria-pressed="false">Particulier</button>
-          <button type="button" class="bascule-btn" data-univers="commerces" aria-pressed="false">Commerce</button>
+        <div class="chap-haut">
+          <p class="chap-sur"><span>01</span>Le regard</p>
+          <div class="bascule" role="group" aria-label="Votre univers">
+            <button type="button" class="bascule-btn" data-univers="particuliers" aria-pressed="false">Particulier</button>
+            <button type="button" class="bascule-btn" data-univers="commerces" aria-pressed="false">Commerce</button>
+          </div>
+          <h2 class="chap-titre chap-titre-long" id="accroche-titre" data-texte="titre"></h2>
         </div>
-        <h2 class="chap-titre chap-titre-long" id="accroche-titre" data-texte="titre"></h2>
-        <p class="chap-texte" data-texte="texte"></p>
-        <div class="accroche-actions">
-          <a class="lien lien-or" href="../moi.html" data-lien-univers>Qui suis-je</a>
+        <div class="chap-bas">
+          <p class="chap-texte" data-texte="texte"></p>
+          <div class="accroche-actions">
+            <a class="lien lien-or" href="../moi.html" data-lien-univers>Qui suis-je</a>
+          </div>
         </div>
       </article>
       <article class="chap" data-cote="droite" aria-labelledby="chap2-titre">
-        <p class="chap-sur"><span>02</span>La lumière</p>
-        <h2 class="chap-titre" id="chap2-titre">La lumière <em>d'abord</em>.</h2>
-        <p class="chap-texte">Naturelle, douce, travaillée sur place. Des couleurs fidèles, sans filtre forcé.</p>
+        <div class="chap-haut">
+          <p class="chap-sur"><span>02</span>La lumière</p>
+          <h2 class="chap-titre" id="chap2-titre">La lumière <em>d'abord</em>.</h2>
+        </div>
+        <div class="chap-bas">
+          <p class="chap-texte">Naturelle, douce, travaillée sur place. Des couleurs fidèles, sans filtre forcé.</p>
+        </div>
       </article>
       <article class="chap chap-travail" data-cote="gauche" aria-labelledby="chap3-titre">
-        <p class="chap-sur"><span>03</span>Ce que je photographie</p>
-        <h2 class="chap-titre" id="chap3-titre" data-texte="declic"></h2>
-        <!-- La pellicule : chaque vue avance d'un cran et se développe (négatif → photo) -->
-        <div class="pellicule" id="pellicule">
-          <p class="pellicule-compteur" aria-hidden="true">Vue <span id="pellicule-vue">01</span><span class="pellicule-total">/<span id="pellicule-total">04</span></span></p>
-          <div class="pellicule-cadre">
-            <div class="pellicule-fenetre" id="pellicule-fenetre">
-              <ol class="pellicule-bande" id="pellicule-bande"></ol>
-            </div>
-            <span class="pellicule-porte" id="pellicule-porte" aria-hidden="true"></span>
-          </div>
-          <p class="pellicule-glisser" aria-hidden="true">Glissez pour voir la suite</p>
+        <div class="chap-haut">
+          <p class="chap-sur"><span>03</span>Ce que je photographie</p>
+          <h2 class="chap-titre" id="chap3-titre" data-texte="declic"></h2>
         </div>
-        <div class="accroche-actions">
-          <a class="lien lien-or" href="../travail.html" data-lien-univers>Voir mon travail</a>
+        <div class="chap-bas">
+          <!-- La pellicule : chaque vue avance d'un cran et se développe (négatif → photo) -->
+          <div class="pellicule" id="pellicule">
+            <p class="pellicule-compteur" aria-hidden="true">Vue <span id="pellicule-vue">01</span><span class="pellicule-total">/<span id="pellicule-total">04</span></span></p>
+            <div class="pellicule-cadre">
+              <div class="pellicule-fenetre" id="pellicule-fenetre">
+                <ol class="pellicule-bande" id="pellicule-bande"></ol>
+              </div>
+              <span class="pellicule-porte" id="pellicule-porte" aria-hidden="true"></span>
+            </div>
+            <p class="pellicule-glisser" aria-hidden="true">Glissez pour voir la suite</p>
+          </div>
+          <div class="accroche-actions">
+            <a class="lien lien-or" href="../travail.html" data-lien-univers>Voir mon travail</a>
+          </div>
         </div>
       </article>
       <article class="chap" data-cote="droite" aria-labelledby="chap4-titre">
-        <p class="chap-sur"><span>04</span>La galerie</p>
-        <h2 class="chap-titre" id="chap4-titre">Vos photos, <em>rien qu'à vous</em>.</h2>
-        <ul class="chap-liste" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
-        <div class="accroche-actions">
-          <a class="lien lien-or" href="../../services.html" data-lien-univers>Voir les tarifs</a>
+        <div class="chap-haut">
+          <p class="chap-sur"><span>04</span>La galerie</p>
+          <h2 class="chap-titre" id="chap4-titre">Vos photos, <em>rien qu'à vous</em>.</h2>
+        </div>
+        <div class="chap-bas">
+          <ul class="chap-liste" data-reglages><li>Réponse sous 48 h</li><li>Galerie privée en ligne</li><li>Aucune limite de photos livrées</li></ul>
+          <div class="accroche-actions">
+            <a class="lien lien-or" href="../../services.html" data-lien-univers>Voir les tarifs</a>
+          </div>
         </div>
       </article>
 
       <div class="chap-cartes" aria-hidden="true">
-        <span class="carte carte-reglage" data-groupe="2"><small>Ouverture</small><strong>f/1.8</strong></span>
-        <span class="carte carte-reglage" data-groupe="2"><small>Focale</small><strong>23 mm</strong></span>
+        <span class="carte carte-reglage" data-groupe="2"><small>Ouverture</small><strong>f/1.4</strong></span>
+        <span class="carte carte-reglage" data-groupe="2"><small>Focale</small><strong>50 mm</strong></span>
         <span class="carte carte-reglage" data-groupe="2"><small>Lumière</small><strong>naturelle</strong></span>
       </div>
       <ol class="chap-index" aria-hidden="true"><li>Le regard</li><li>La lumière</li><li>Mon travail</li><li>La galerie</li></ol>
@@ -203,7 +219,6 @@
 
 <script src="../vendor/gsap.min.js" defer></script>
 <script src="../vendor/ScrollTrigger.min.js" defer></script>
-<script src="../vendor/lenis.min.js" defer></script>
-<script src="appareil.js?v=12" defer></script>
+<script src="appareil.js?v=14" defer></script>
 </body>
 </html>

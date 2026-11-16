@@ -885,6 +885,7 @@ html.js:not(.calme) .chap-cartes {
   color: var(--attenue);
 }
 .carte-reglage strong {
+  white-space: nowrap;
   font-family: var(--serif);
   font-weight: 500;
   font-size: 1.7rem;
@@ -2280,4 +2281,46 @@ html.js:not(.calme) .chap.chap-travail {
     min-height: 60svh;
     padding-top: 12vh;
   }
+}
+
+/* ---------- Téléphone : l'écran se lit de haut en bas ---------- */
+.chap-bas > :first-child {
+  margin-top: 22px;
+}
+@media (max-width: 760px) {
+  html.js:not(.calme) .chap,
+  html.js:not(.calme) .chap[data-cote="droite"] {
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: calc(var(--entete) + 3vh) 0 calc(4vh + env(safe-area-inset-bottom, 0px));
+  }
+  html.js:not(.calme) .chap-bas > :first-child {
+    margin-top: 0;
+  }
+  .chap-titre {
+    font-size: clamp(2.3rem, 10.6vw, 3.2rem);
+  }
+  .chap-titre-long {
+    font-size: clamp(2rem, 8.8vw, 2.7rem);
+  }
+  .chap-texte {
+    max-width: none;
+    font-size: 1rem;
+  }
+  .chap-liste {
+    margin-top: 0;
+    font-size: 0.74rem;
+  }
+  .chap .bascule {
+    margin-bottom: 4px;
+  }
+  .chap-travail .pellicule {
+    margin-top: 0;
+  }
+  .carte:nth-child(1) { --x: 19%; --y: 33%; --r: -6deg; }
+  .carte:nth-child(2) { --x: 82%; --y: 31%; --r: 5deg; }
+  .carte:nth-child(3) { --x: 26%; --y: 62%; --r: 3deg; }
 }
