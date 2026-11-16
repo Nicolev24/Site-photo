@@ -532,6 +532,20 @@
     ],
   };
 
+  // Les photos des trois tirages de fin de page
+  const TIRAGES = {
+    particuliers: [
+      ["images/nicolas-leveugle-portrait.jpg", "50% 30%"],
+      ["images/mariages/baiser-pont-chateau.jpg", "50% 40%"],
+      ["images/mariages/photo-instantanee.jpg", "50% 45%"],
+    ],
+    commerces: [
+      ["images/nicolas-leveugle-portrait.jpg", "50% 30%"],
+      ["images/commerces/outils-miroir.jpg", "50% 50%"],
+      ["images/commerces/barbier-sourire-client.jpg", "50% 35%"],
+    ],
+  };
+
   const TEXTES_PAR_DEFAUT = {
     particuliers: {
       titre: "Des moments *vrais*, rien de forcé.",
@@ -636,6 +650,13 @@
         el.innerHTML = emphase(t[cle] || "");
       });
       construirePellicule(u);
+      $$(".tirage-photo").forEach((el, i) => {
+        const t = TIRAGES[u][i];
+        if (!t) return;
+        el.style.setProperty("--pos", t[1]);
+        el.innerHTML = image(t[0], 800, "(max-width: 760px) 72px, 17vw", "");
+      });
+      $$(".tirage-photo img[data-src]").forEach((img) => observateurImages.observe(img));
       $$(".bascule-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.univers === u)));
       $$("[data-lien-univers]").forEach((a) => {
         if (!a.dataset.base) a.dataset.base = a.getAttribute("href");
@@ -689,7 +710,7 @@
           if (contact.whatsapp_url) liens.push(`<a href="${echapper(contact.whatsapp_url)}" target="_blank" rel="noopener" data-flash>WhatsApp</a>`);
           if (contact.instagram_url) liens.push(`<a href="${echapper(contact.instagram_url)}" target="_blank" rel="noopener">${echapper(contact.instagram_handle || "Instagram")}</a>`);
           if (contact.email) liens.push(`<a href="mailto:${echapper(contact.email)}" data-flash>${echapper(contact.email)}</a>`);
-          $("#canaux").innerHTML = liens.join("");
+          $("#canaux").innerHTML = liens.join('<span class="canaux-sep" aria-hidden="true">·</span>');
           brancherFlash();
         }
       }

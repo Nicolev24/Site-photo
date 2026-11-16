@@ -507,52 +507,90 @@ html.js:not(.calme) .cadre-photo {
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 }
 .zones {
-  margin-top: 28px;
+  margin-top: 30px;
   display: flex;
-  gap: 14px;
   pointer-events: auto;
 }
 .zone {
   position: relative;
-  min-width: 230px;
-  padding: 16px 22px 15px;
+  min-width: 0;
+  padding: 8px 36px 8px 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 8px;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 12px;
-  background: rgba(18, 15, 13, 0.22);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  border: 0;
+  background: none;
   cursor: pointer;
-  transition: border-color 0.25s, background 0.25s, transform 0.35s var(--doux);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.25s;
   -webkit-tap-highlight-color: transparent;
 }
-.zone:hover,
-.zone:focus-visible,
-.zone.vise {
-  border-color: rgba(214, 184, 134, 0.75);
-  background: rgba(18, 15, 13, 0.36);
+.zone + .zone {
+  padding-left: 36px;
+  border-left: 1px solid rgba(255, 255, 255, 0.24);
 }
 .zone:focus-visible {
   outline: none;
 }
 .zone:active {
-  transform: scale(0.98);
+  opacity: 0.8;
 }
 .zone-nom {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
   font-family: var(--serif);
   font-style: italic;
-  font-size: 1.75rem;
+  font-size: 1.9rem;
   line-height: 1.05;
   color: #fff;
 }
+.zone-nom::after {
+  content: "→";
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 0.95rem;
+  color: var(--or-clair);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s, transform 0.4s var(--doux);
+}
 .zone-detail {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  position: relative;
+  padding-bottom: 11px;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.72);
+}
+.zone-detail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 26px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.45);
+  transition: width 0.5s var(--doux), background 0.3s;
+}
+.zone:hover .zone-nom::after,
+.zone:focus-visible .zone-nom::after,
+.zone.vise .zone-nom::after {
+  opacity: 1;
+  transform: none;
+}
+.zone:hover .zone-detail::after,
+.zone:focus-visible .zone-detail::after,
+.zone.vise .zone-detail::after {
+  width: 100%;
+  background: var(--or-clair);
+}
+@media (hover: none) {
+  .zone-nom::after {
+    opacity: 0.9;
+    transform: none;
+  }
 }
 .indice {
   margin: 22px 0 0;
@@ -638,10 +676,50 @@ html.js:not(.calme) .cadre-photo {
   font-size: 1.05rem;
 }
 .accroche-actions {
-  margin-top: 32px;
+  margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
+  gap: 8px 38px;
+}
+.lien {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   gap: 12px;
+  padding: 10px 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--creme);
+}
+.lien::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+  transform-origin: left;
+  transition: opacity 0.3s, transform 0.5s var(--doux);
+}
+.lien::after {
+  content: "→";
+  letter-spacing: 0;
+  transition: transform 0.35s var(--doux);
+}
+.lien:hover::before,
+.lien:focus-visible::before {
+  opacity: 1;
+}
+.lien:hover::after,
+.lien:focus-visible::after {
+  transform: translateX(5px);
+}
+.lien-or {
+  color: var(--or-clair);
 }
 .bouton {
   display: inline-flex;
@@ -680,28 +758,53 @@ html.js:not(.calme) .cadre-photo {
 
 .bascule {
   display: inline-flex;
-  padding: 4px;
-  gap: 4px;
-  border: 1px solid var(--trait);
-  border-radius: 13px;
-  background: rgba(243, 237, 228, 0.03);
+  align-items: center;
 }
 .bascule-btn {
-  padding: 8px 18px;
-  border: 1px solid transparent;
-  border-radius: 9px;
+  position: relative;
+  padding: 8px 0;
+  border: 0;
   background: none;
-  font-size: 0.76rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--attenue);
   cursor: pointer;
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  transition: color 0.3s;
+}
+.bascule-btn + .bascule-btn {
+  margin-left: 31px;
+}
+.bascule-btn + .bascule-btn::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--trait);
+  transform: translateY(-50%);
+}
+.bascule-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0.2em;
+  bottom: 2px;
+  height: 1px;
+  background: var(--or-clair);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--doux);
+}
+.bascule-btn:hover {
+  color: var(--creme);
 }
 .bascule-btn[aria-pressed="true"] {
-  background: rgba(174, 140, 91, 0.2);
-  border-color: rgba(174, 140, 91, 0.55);
   color: var(--creme);
+}
+.bascule-btn[aria-pressed="true"]::after {
+  transform: scaleX(1);
 }
 
 /* Formules : une carte des prix, simple et lisible */
@@ -872,24 +975,102 @@ html.js:not(.calme) .cadre-photo {
   text-transform: uppercase;
   color: var(--attenue);
 }
+/* Trois tirages, comme accrochés au mur */
+.tirages {
+  list-style: none;
+  margin: 36px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.tirage {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.tirage-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--fond-2);
+}
+.tirage-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(243, 237, 228, 0.08);
+  pointer-events: none;
+}
+.tirage-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+  filter: saturate(0.78) brightness(0.86);
+  transition: transform 1.4s var(--doux), filter 0.8s var(--doux);
+}
+.tirage:hover .tirage-photo img,
+.tirage:focus-visible .tirage-photo img {
+  transform: scale(1.045);
+  filter: none;
+}
+.tirage-texte {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: baseline;
+  padding-top: 16px;
+}
+.tirage-num {
+  grid-row: span 2;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  color: var(--or-clair);
+}
+.tirage-nom {
+  justify-self: start;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2vw, 1.75rem);
+  line-height: 1.1;
+  color: var(--creme);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.5s var(--doux);
+}
+.tirage:hover .tirage-nom,
+.tirage:focus-visible .tirage-nom {
+  background-size: 100% 1px;
+}
+.tirage-detail {
+  margin-top: 6px;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
 .canaux {
-  margin: 26px 0 0;
+  margin: 34px 0 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  font-size: 0.86rem;
 }
 .canaux a {
-  padding: 9px 16px;
-  border: 1px solid var(--trait);
-  border-radius: 10px;
-  font-size: 0.82rem;
+  padding: 6px 0;
   text-decoration: none;
   color: var(--texte);
-  transition: border-color 0.3s, color 0.3s;
+  background: linear-gradient(var(--or-clair), var(--or-clair)) 0 calc(100% - 3px) / 0 1px no-repeat;
+  transition: color 0.3s, background-size 0.45s var(--doux);
 }
-.canaux a:hover {
-  border-color: var(--or-clair);
+.canaux a:hover,
+.canaux a:focus-visible {
   color: var(--creme);
+  background-size: 100% 1px;
+}
+.canaux-sep {
+  margin: 0 0.9em;
+  color: var(--or);
 }
 .pied {
   padding: 12vh 0 40px;
@@ -1260,20 +1441,42 @@ html.js:not(.calme) .reglage:nth-child(3) {
     width: auto;
     bottom: calc(4vmin + 44px);
   }
-  .zones {
-    gap: 10px;
-  }
   .zone {
     flex: 1 1 0;
-    min-width: 0;
-    padding: 13px 14px 12px;
+    padding: 8px 16px 8px 0;
+  }
+  .zone + .zone {
+    padding-left: 18px;
   }
   .zone-nom {
-    font-size: 1.45rem;
+    font-size: 1.55rem;
   }
   .zone-detail {
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+  .tirages {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 1px solid var(--trait);
+  }
+  .tirage {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--trait);
+  }
+  .tirage::after {
+    content: "→";
+    color: var(--or-clair);
+  }
+  .tirage-texte {
+    padding-top: 0;
+  }
+  .tirage-nom {
+    font-size: 1.5rem;
   }
   .indice {
     font-size: 0.62rem;
