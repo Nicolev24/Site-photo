@@ -2175,3 +2175,109 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
+
+
+/* ---------- Chapitre 03 : la pellicule dans l'animation ---------- */
+.chap-travail .pellicule {
+  margin-top: 26px;
+  padding: 0;
+}
+.chap-travail .pellicule-compteur {
+  margin: 0 0 10px;
+  text-align: right;
+}
+.chap-travail .vue-legende {
+  padding-top: 12px;
+}
+.chap-travail .vue-legende h3 {
+  font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+}
+.chap-travail .accroche-actions {
+  margin-top: 18px;
+}
+html.js:not(.calme) .chap.chap-travail {
+  --vue: clamp(220px, 20vw, 320px);
+  width: min(60vw, 880px);
+  max-width: none;
+}
+.chap-travail .pellicule-glisser {
+  margin-top: 6px;
+}
+
+/* ---------- Sous l'animation : réserver ---------- */
+.reserver {
+  min-height: 70svh;
+  padding: 18vh 0 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.reserver-titre {
+  max-width: 14ch;
+  margin: 6px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6.4vw, 6.2rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--creme);
+}
+.reserver-titre em {
+  font-style: italic;
+  color: var(--or-clair);
+}
+.reserver-lien {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 46px;
+  padding: 16px 30px;
+  border: 1px solid var(--or-clair);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--creme);
+  transition: background 0.35s, color 0.35s;
+}
+.reserver-lien::after {
+  content: "→";
+  letter-spacing: 0;
+  transition: transform 0.35s var(--doux);
+}
+.reserver-lien:hover,
+.reserver-lien:focus-visible {
+  background: var(--creme);
+  color: var(--fond);
+}
+.reserver-lien:hover::after {
+  transform: translateX(5px);
+}
+.pied {
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .chap-travail {
+    --vue: 62vw;
+  }
+  .chap-travail .pellicule {
+    margin-top: 14px;
+  }
+  .chap-travail .pellicule-compteur {
+    display: none;
+  }
+  .chap-travail .accroche-actions {
+    margin-top: 6px;
+  }
+  .chap-travail .chap-titre {
+    font-size: clamp(2rem, 9vw, 2.6rem);
+  }
+  .reserver {
+    min-height: 60svh;
+    padding-top: 12vh;
+  }
+}

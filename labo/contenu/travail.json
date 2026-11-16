@@ -1,0 +1,269 @@
+{
+  "seo": {
+    "title": "Mon travail – Nicolas Leveugle, photographe à Ath",
+    "description": "Mariages, couples, portraits, événements et commerces : une sélection de photos de Nicolas Leveugle, photographe à Ath.",
+    "og_image": "images/teaser-evenements.jpg"
+  },
+  "sections": [
+    {
+      "id": "ouverture-particuliers",
+      "type": "ouverture",
+      "tab": "particuliers",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "Mon travail · Photographe à Ath",
+        "title": "Des moments *vrais*, rien de forcé.",
+        "text": "Mariages, couples, portraits, événements : je photographie les gens tels qu'ils sont, avec une lumière soignée et des couleurs fidèles.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=particuliers",
+        "image": "images/teaser-evenements.jpg",
+        "alt": "Mariés entourés de leurs témoins, bouquets en l'air",
+        "position": "50% 45%",
+        "image_side": "gauche"
+      }
+    },
+    {
+      "id": "photos-particuliers",
+      "type": "bande_photos",
+      "data": {
+        "photos": [
+          {
+            "image": "images/mariages/preparatifs-temoins.jpg",
+            "alt": "Les témoins aident le marié à s'habiller"
+          },
+          {
+            "image": "images/mariages/maries-ponton-noir-et-blanc.jpg",
+            "alt": "Les mariés marchent sur un ponton au milieu des herbes hautes, en noir et blanc"
+          },
+          {
+            "image": "images/mariages/baiser-invites.jpg",
+            "alt": "Baiser des mariés à la sortie de la cérémonie, entourés des invités"
+          },
+          {
+            "image": "images/mariages/baiser-cortege.jpg",
+            "alt": "Baiser des mariés pendant que le cortège passe devant eux"
+          },
+          {
+            "image": "images/mariages/premiere-danse-enlaces.jpg",
+            "alt": "Les mariés enlacés pendant leur première danse, devant leurs invités"
+          },
+          {
+            "image": "images/mariages/selfie-temoins.jpg",
+            "alt": "Le marié prend un selfie avec ses témoins, en noir et blanc"
+          },
+          {
+            "image": "images/mariages/premiere-danse-etincelles.jpg",
+            "alt": "Première danse des mariés entre deux fontaines d'étincelles"
+          },
+          {
+            "image": "images/mariages/bouquets-leves.jpg",
+            "alt": "Les mariés s'embrassent, entourés de leurs témoins qui lèvent leurs bouquets"
+          },
+          {
+            "image": "images/mariages/baiser-renverse.jpg",
+            "alt": "Le marié renverse la mariée pour un baiser à la fin de la cérémonie"
+          },
+          {
+            "image": "images/mariages/maries-course-jardin.jpg",
+            "alt": "Les mariés courent dans un jardin, la robe de la mariée au vent"
+          },
+          {
+            "image": "images/mariages/preparatifs-boutons-manchette.jpg",
+            "alt": "Le marié ajuste ses boutons de manchette devant ses témoins"
+          }
+        ]
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "couples-portraits",
+      "type": "texte_duo",
+      "tab": "particuliers",
+      "data": {
+        "eyebrow": "Couples & portraits",
+        "title": "À deux, ou rien que *vous*",
+        "text": "Une balade, un lieu qui vous ressemble, et du temps pour que le naturel revienne.",
+        "text_suite": "",
+        "button_label": "",
+        "button_href": "",
+        "image_side": "gauche",
+        "photos": [
+          {
+            "image": "images/portfolio/couples/img1.jpg",
+            "alt": "Un couple assis dans l'herbe avec son chien",
+            "position": "50% 60%"
+          },
+          {
+            "image": "images/portfolio/portraits/img3.jpg",
+            "alt": "Deux amies assises sur un muret de briques",
+            "position": "50% 55%"
+          }
+        ]
+      }
+    },
+    {
+      "id": "instagram",
+      "type": "instagram",
+      "data": {
+        "eyebrow": "Instagram",
+        "title": "Tout mon travail est sur Instagram",
+        "text": "Mes dernières séances et les coulisses : venez faire un tour pour découvrir mon univers.",
+        "button_label": "Voir mon Instagram",
+        "photos": [
+          {
+            "image": "images/mariages/maries-colonnes.jpg",
+            "alt": "Les mariés main dans la main sous des colonnes de pierre",
+            "position": "50% 30%"
+          },
+          {
+            "image": "images/mariages/sortie-confettis.jpg",
+            "alt": "Sortie des mariés sous les confettis, vue de dos",
+            "position": "50% 60%"
+          },
+          {
+            "image": "images/mariages/maries-chien.jpg",
+            "alt": "Les mariés assis dans l'herbe avec leur chien"
+          },
+          {
+            "image": "images/mariages/bouquet-chateau.jpg",
+            "alt": "Le marié à genoux offre un bouquet de roses blanches à la mariée devant un château",
+            "position": "50% 55%"
+          },
+          {
+            "image": "images/mariages/gateau-lumiere.jpg",
+            "alt": "Les mariés derrière leur pièce montée, dans un faisceau de lumière"
+          },
+          {
+            "image": "images/mariages/premiere-danse-tournoiement.jpg",
+            "alt": "La mariée tourne pendant la première danse, devant les invités",
+            "position": "50% 65%"
+          }
+        ]
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "contact-particuliers",
+      "type": "cta",
+      "data": {
+        "title": "Ce style vous plaît ?",
+        "text": "Découvrez les formules et les tarifs, simples et clairs.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=particuliers"
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "ouverture-commerces",
+      "type": "ouverture",
+      "tab": "commerces",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "Mon travail · Photographe à Ath",
+        "title": "Des photos qui donnent envie de *pousser la porte*.",
+        "text": "Commerces et entreprises : votre lieu, votre équipe et votre savoir-faire, tels qu'ils sont, prêts pour votre fiche Google et vos réseaux.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=commerces",
+        "image": "images/teaser-entreprises.jpg",
+        "alt": "Séance photo chez un barbier",
+        "position": "50% 30%",
+        "image_side": "gauche"
+      }
+    },
+    {
+      "id": "site-vitrine",
+      "type": "texte_duo",
+      "data": {
+        "eyebrow": "Photos + site vitrine",
+        "title": "Votre commerce, en ligne",
+        "text": "Vous n'avez pas encore de site ? Je crée des sites vitrines simples et efficaces, avec vos photos, vos horaires et vos coordonnées.",
+        "text_suite": "Je vous prépare d'abord une maquette gratuite et sans engagement.",
+        "button_label": "Voir les offres commerces",
+        "button_href": "services.html?pour=commerces",
+        "image_side": "gauche",
+        "photos": [],
+        "visuel": "site",
+        "maquette": {
+          "nom": "Votre commerce",
+          "titre": "Bienvenue chez vous",
+          "ecran": {
+            "image": "images/commerces/salon-vue-ensemble.jpg",
+            "alt": "Vue d'ensemble du salon de barbier, sous ses néons hexagonaux",
+            "position": "50% 45%"
+          },
+          "tirage1": {
+            "image": "images/commerces/barbier-portrait-miroir.jpg",
+            "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+            "position": "50% 25%"
+          },
+          "tirage2": {
+            "image": "images/commerces/salon-decor-vinyle.jpg",
+            "alt": "Détail du salon : un vinyle d'Aznavour et une platine",
+            "position": "50% 40%"
+          }
+        }
+      },
+      "tab": "commerces"
+    },
+    {
+      "id": "photos-commerces",
+      "type": "bande_photos",
+      "tab": "commerces",
+      "data": {
+        "photos": [
+          {
+            "image": "images/commerces/coupe-ciseaux.jpg",
+            "alt": "Coupe aux ciseaux, en gros plan"
+          },
+          {
+            "image": "images/portfolio/entreprises/img2.jpg",
+            "alt": "Réunion sur un chantier"
+          },
+          {
+            "image": "images/commerces/salon-decor-vinyle.jpg",
+            "alt": "Détail du salon : un vinyle d'Aznavour et une platine"
+          },
+          {
+            "image": "images/commerces/coupe-client-tatoue.jpg",
+            "alt": "Le barbier prépare un client assis dans le salon"
+          },
+          {
+            "image": "images/portfolio/entreprises/img3.jpg",
+            "alt": "Manutention en entrepôt"
+          },
+          {
+            "image": "images/commerces/rasage-coupe-chou.jpg",
+            "alt": "Rasage au coupe-chou, en gros plan"
+          },
+          {
+            "image": "images/commerces/salon-trophees.jpg",
+            "alt": "Détail du salon : figurines et trophée sur une étagère"
+          },
+          {
+            "image": "images/portfolio/entreprises/img4.jpg",
+            "alt": "Équipe sur un chantier"
+          },
+          {
+            "image": "images/commerces/serviette-chaude.jpg",
+            "alt": "Le barbier pose une serviette chaude sur un client"
+          },
+          {
+            "image": "images/commerces/barbier-sourire-client.jpg",
+            "alt": "Le barbier sourit en taillant la barbe d'un client"
+          }
+        ]
+      }
+    },
+    {
+      "id": "contact-commerces",
+      "type": "cta",
+      "tab": "commerces",
+      "data": {
+        "title": "Ce style vous plaît ?",
+        "text": "Découvrez les formules et les tarifs, simples et clairs.",
+        "button_label": "Voir les formules et tarifs",
+        "button_href": "services.html?pour=commerces"
+      }
+    }
+  ]
+}

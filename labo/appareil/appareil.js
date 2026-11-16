@@ -23,11 +23,16 @@
   const GEO = {
     fov: 26,
     camZ: 46,
-    corps: { l: 12.8, h: 7.4, p: 3.3 },
-    ecran: { cx: -1.4, cy: -0.75, l: 6.3, h: 4.2, z: 1.81 },
-    objectif: { x: 0.5, y: -0.74 },
+    corps: { l: 12.8, h: 6.74, p: 3.33 },
+    // l'œilleton du viseur, au dos : on en sort au début de la page
+    ecran: { cx: -3.97, cy: 2.44, l: 0.8, h: 0.8, z: 1.5 },
+    objectif: { x: -0.76, y: -0.47 },
   };
   const TOUR = Math.PI - 0.5; // un demi-tour : du dos vers l'objectif, en trois-quarts
+  // Chapitres : moment où chacun est en place (t) et où il commence à s'effacer (fin).
+  // Le 03 dure plus longtemps : la pellicule y défile.
+  const CH = { t: [0, 1, 2, 3.5], fin: [0.44, 1.44, 2.95, 3.94], range: 4.0, lacher: 4.25 };
+  let derniereC = -9;
   const PH = { a: 0.36, b0: 0.32, b1: 0.86, c0: 0.62, c1: 1 };
 
   // ---------- Outils ----------
@@ -91,7 +96,9 @@
     const dLarg = (f) => E.l / (2 * M.tan * M.aspect * f);
     const dHaut = (f) => E.h / (2 * M.tan * f);
     M.d0 = Math.min(dLarg(1), dHaut(1)) * 0.985; // l'écran arrière couvre tout l'écran
-    M.dA = Math.max(dLarg(M.mobile ? 0.8 : 0.5), dHaut(M.mobile ? 0.42 : 0.6)); // posé sur l'appareil
+    // Distance finale : l'appareil entier occupe la moitié de l'écran (ordinateur) ou presque toute la largeur (téléphone)
+    const C0 = GEO.corps;
+    M.dA = Math.max(C0.l / (2 * M.tan * M.aspect * (M.mobile ? 0.86 : 0.5)), C0.h / (2 * M.tan * (M.mobile ? 0.42 : 0.62)));
 
     // Rangement : colonne de droite (ordinateur) ou en haut, dans l'en-tête (téléphone)
     const prof = M.dA + E.z; // profondeur du centre de l'appareil
@@ -110,7 +117,7 @@
     M.dock = { x: w.x, y: w.y, s: largeur / (GEO.corps.l * pxParUnite), px: cx, py: cy, l: largeur };
     // Les chapitres : un écran de défilement chacun environ
     M.pasCh = Math.round(h * (M.mobile ? 0.95 : 1.05));
-    chapitres.style.height = calme ? "" : h + Math.round(3.75 * M.pasCh) + "px";
+    chapitres.style.height = calme ? "" : h + Math.round(CH.lacher * M.pasCh) + "px";
     M.contenuHaut = contenu.getBoundingClientRect().top + window.scrollY;
     halo.style.background = "";
     mesurerPellicule();
@@ -137,14 +144,14 @@
       return [
         { x: 0.5, y: 0.3, w: 0.8 * l, ry: TOUR, rx: 0.16, rz: -0.05 },
         { x: 0.6, y: 0.29, w: 0.56 * l, ry: 2.3, rx: 0.14, rz: 0 },
-        { x: 0.5, y: 0.29, w: 0.66 * l, ry: Math.PI + 0.2, rx: 0.1, rz: 0 },
-        { x: 0.5, y: 0.29, w: 0.7 * l, ry: 2 * Math.PI - 0.3, rx: 0.08, rz: 0.02 },
+        { x: 0.5, y: 0.17, w: 0.44 * l, ry: Math.PI + 0.35, rx: 0.12, rz: 0 },
+        { x: 0.5, y: 0.3, w: 0.7 * l, ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
       ];
     return [
       { x: 0.68, y: 0.52, w: Math.min(0.4 * l, 640), ry: TOUR, rx: 0.16, rz: -0.05 },
       { x: 0.37, y: 0.53, w: Math.min(0.3 * l, 470), ry: 2.3, rx: 0.14, rz: 0 },
-      { x: 0.65, y: 0.5, w: Math.min(0.34 * l, 540), ry: Math.PI + 0.2, rx: 0.1, rz: 0 },
-      { x: 0.3, y: 0.52, w: Math.min(0.33 * l, 520), ry: 2 * Math.PI - 0.3, rx: 0.08, rz: 0.02 },
+      { x: 0.83, y: 0.3, w: Math.min(0.2 * l, 320), ry: Math.PI + 0.35, rx: 0.12, rz: 0 },
+      { x: 0.3, y: 0.53, w: Math.min(0.33 * l, 520), ry: Math.PI + 0.95, rx: 0.5, rz: 0.03 },
     ];
   }
   const melange = (a, b, k) => ({
@@ -188,8 +195,8 @@
     const re = rectEcran(d);
     const k = ease.inOut2(ta);
     e.cadre = { x: lerp(0, re.x, k), y: lerp(0, re.y, k), w: lerp(M.l, re.w, k), h: lerp(M.h, re.h, k), o: 1 };
-    if (p >= PH.a && api3d) e.cadre.o = 0; // l'écran 3D prend le relais, au pixel près
-    else if (!api3d) e.cadre.o = 1 - seg(p, PH.a, PH.a + 0.14);
+    if (api3d) e.cadre.o = 1 - seg(ta, 0.72, 1); // la photo rentre dans l'œilleton et s'efface
+    else e.cadre.o = 1 - seg(p, PH.a, PH.a + 0.14);
 
     // b. Demi-tour vers l'objectif ; c. il se place pour le premier chapitre
     const E = etats();
@@ -213,9 +220,9 @@
     // montre son écran (04), puis se range dans l'en-tête.
     if (c > 0) {
       let st = E[0];
-      for (let i = 1; i < E.length; i++) if (c > i - 0.62) st = melange(E[i - 1], E[i], ease.inOut3(seg(c, i - 0.62, i - 0.08)));
-      const kd = ease.inOut3(seg(c, 3.5, 4.3));
-      if (kd > 0) st = melange(st, { x: 0.5, y: M.dock.py / M.h, w: M.dock.l, ry: 2 * Math.PI + TOUR, rx: 0.16, rz: -0.05 }, kd);
+      for (let i = 1; i < E.length; i++) if (c > CH.t[i] - 0.62) st = melange(E[i - 1], E[i], ease.inOut3(seg(c, CH.t[i] - 0.62, CH.t[i] - 0.08)));
+      const kd = ease.inOut3(seg(c, CH.range, CH.range + 0.8));
+      if (kd > 0) st = melange(st, { x: 0.5, y: M.dock.py / M.h, w: M.dock.l, ry: Math.PI + 0.5, rx: 0.16, rz: -0.05 }, kd);
       const w = monde(st);
       x = w.x;
       y = w.y;
@@ -233,7 +240,7 @@
     let yFlotte = 0;
     ry += vivant * reaction.ry;
     rx += vivant * reaction.rx;
-    if (!M.mobile && temps && c < 3.5) {
+    if (!M.mobile && temps && c < CH.range) {
       yFlotte = Math.sin(temps * 0.9) * 0.05 * s * 6 * vivant;
       ry += Math.sin(temps * 0.45) * 0.035 * vivant;
     }
@@ -245,17 +252,19 @@
     const cyp = M.h / 2 - (y + yFlotte) * ppu;
     const larg = GEO.corps.l * s * ppu;
     e.px = { x: cxp, y: cyp, w: larg };
-    e.ombre = { x: cxp, y: cyp + GEO.corps.h * 0.56 * s * ppu, w: larg * 1.1, o: seg(pp, 0.8, 1) * (1 - seg(c, 3.45, 3.8)) };
+    e.ombre = { x: cxp, y: cyp + GEO.corps.h * 0.56 * s * ppu, w: larg * 1.1, o: seg(pp, 0.8, 1) * (1 - seg(c, CH.range - 0.05, CH.range + 0.3)) };
 
     // Textes des chapitres, index, numéro, cartes
     e.chap = [0, 1, 2, 3].map((i) => {
-      const entree = i === 0 ? seg(pp, 0.84, 1) : seg(c, i - 0.34, i - 0.1);
-      return entree * (1 - seg(c, i + 0.44, i + 0.64));
+      const entree = i === 0 ? seg(pp, 0.84, 1) : seg(c, CH.t[i] - 0.34, CH.t[i] - 0.1);
+      return entree * (1 - seg(c, CH.fin[i], CH.fin[i] + 0.2));
     });
-    e.chapActif = clamp(Math.round(c), 0, 3);
-    e.chrome = seg(pp, 0.9, 1) * (1 - seg(c, 3.4, 3.65));
-    e.cartes = { 2: seg(c, 0.78, 1.02) * (1 - seg(c, 1.46, 1.68)), 3: seg(c, 2.02, 2.3) * (1 - seg(c, 2.5, 2.72)) };
-    e.dock = c > 3.95;
+    let actif = 0;
+    CH.t.forEach((t, i) => c > t - 0.5 && (actif = i));
+    e.chapActif = actif;
+    e.chrome = seg(pp, 0.9, 1) * (1 - seg(c, CH.fin[3] - 0.05, CH.fin[3] + 0.2));
+    e.cartes = { 2: seg(c, 0.78, 1.02) * (1 - seg(c, 1.46, 1.68)) };
+    e.dock = c > CH.range + 0.45;
     e.toile = 1;
     e.viseur = 1 - seg(p, 0, 0.09);
     e.fond = 0.85 * seg(p, 0.06, 0.26) * (1 - seg(p, 0.42, 0.68));
@@ -303,8 +312,9 @@
         el.style.setProperty("--o", clamp(g * 1.5 - rang * 0.22).toFixed(3));
       });
       // L'appareil déclenche quand il revient face à nous (chapitre 03)
-      if (e.c >= 2 && dernierC < 2 && dernierC > 1) flash();
+      if (e.c >= CH.t[2] - 0.1 && dernierC < CH.t[2] - 0.1 && dernierC > 1) flash();
       dernierC = e.c;
+      derniereC = e.c;
     }
     if (e.ombre) {
       const o = e.ombre;
@@ -313,13 +323,14 @@
       ombre.style.transform = `translate(${(o.x - o.w / 2).toFixed(1)}px, ${(o.y - o.w * 0.07).toFixed(1)}px)`;
       ombre.style.opacity = (o.o * (modeFixe || api3d ? 1 : 0)).toFixed(3);
     }
-    majPellicule();
+    majPellicule(e.c != null ? e.c : 0);
     entete.classList.toggle("est-plein", e.p > 0.62);
     R.classList.toggle("dock", !!e.dock);
     if (modeFixe) {
       const px = e.px;
-      fixe.style.width = px.w.toFixed(0) + "px";
-      fixe.style.transform = `translate(${(px.x - px.w / 2).toFixed(1)}px, ${(px.y - px.w * 0.36).toFixed(1)}px)`;
+      const lf = px.w * 1.06; // l'image est recadrée au ras de l'appareil (rapport 3:2)
+      fixe.style.width = lf.toFixed(0) + "px";
+      fixe.style.transform = `translate(${(px.x - lf / 2).toFixed(1)}px, ${(px.y - lf / 3).toFixed(1)}px)`;
       fixe.style.opacity = calme ? 1 : seg(e.p, 0.7, 1);
     } else if (api3d) {
       toile.style.opacity = calme ? e.toile : "";
@@ -348,36 +359,20 @@
   }
   if ("ResizeObserver" in window) new ResizeObserver(() => contenuPose && (cale.style.height = hauteurCale())).observe(contenu);
 
-  // ---------- Pellicule : la bande avance d'un cran à la fois, chaque vue se développe ----------
-  const P = { n: 0, vues: [], fw: 1, fen: 1, pas: 1, course: 0, actif: false, verrou: -1 };
+  // ---------- Pellicule (chapitre 03) : la bande avance d'un cran, chaque vue se développe ----------
+  // Ordinateur : elle avance avec le défilement. Téléphone : on la fait glisser au doigt.
+  const P = { n: 0, vues: [], fw: 1, fen: 1, verrou: -1, glisse: false };
   function mesurerPellicule() {
     if (!bande) return;
     P.vues = $$(".vue", bande);
     P.n = P.vues.length;
-    if (!P.n || calme) {
-      pellicule.style.height = "";
-      return;
-    }
-    P.glisse = M.mobile;
+    P.glisse = M.mobile || calme;
     pellicule.classList.toggle("glisse", P.glisse);
     pellicule.classList.toggle("defile", !P.glisse);
+    if (!P.n) return;
     P.fw = P.vues[0].offsetWidth || 1;
     P.fen = fenetre.clientWidth || 1;
-    if (P.glisse) {
-      // Téléphone : la bande se fait glisser au doigt, la page défile normalement.
-      P.course = 0;
-      pellicule.style.height = "";
-      bande.style.transform = "";
-    } else {
-      // Ordinateur : le bloc reste en place pendant que la bande avance d'un cran à la fois.
-      const colle = $(".pellicule-colle");
-      P.pas = Math.round(M.h * 0.7);
-      P.course = (P.n - 1) * P.pas;
-      P.haut = parseFloat(getComputedStyle(colle).top) || 0;
-      const marge = parseFloat(getComputedStyle(pellicule).paddingTop) || 0;
-      pellicule.style.height = Math.round(marge + colle.offsetHeight + P.course + P.pas * 0.35) + "px";
-      P.debut = pellicule.offsetTop + marge - P.haut; // défilement où le bloc s'arrête
-    }
+    if (P.glisse) bande.style.transform = "";
     P.vues.forEach((li) => {
       li._neg = li.querySelector(".vue-negatif");
       li._leg = li.querySelector(".vue-legende");
@@ -385,25 +380,24 @@
     $("#pellicule-total").textContent = String(P.n).padStart(2, "0");
     P.verrou = -1;
   }
-  function majPellicule() {
-    if (calme || !P.n) return;
-    const y = window.scrollY;
-    const haut = M.contenuHaut + (P.glisse ? pellicule.offsetTop : P.debut);
-    if (y < haut - M.h * 1.3 || y > haut + P.course + M.h * 1.5) {
-      if (P.actif) reagirPellicule(false);
-      P.verrou = -1;
+  function majPellicule(c) {
+    if (!P.n) return;
+    if (calme) {
+      P.vues.forEach((li) => {
+        li._neg.style.opacity = 0;
+        li._leg.style.opacity = 1;
+      });
       return;
     }
-    // Avance « au cran » : la vue reste un moment en place, puis la suivante arrive.
-    let f, approche;
-    if (P.glisse) {
-      f = clamp(fenetre.scrollLeft / P.fw, 0, P.n - 1);
-      approche = seg(y, haut - 0.9 * M.h, haut - 0.4 * M.h);
-    } else {
-      const brut = clamp((y - haut) / P.pas, 0, P.n - 1);
+    if (c == null) c = derniereC;
+    const approche = seg(c, CH.t[2] - 0.45, CH.t[2] - 0.05);
+    let f;
+    if (P.glisse) f = clamp(fenetre.scrollLeft / P.fw, 0, P.n - 1);
+    else {
+      const brut = seg(c, CH.t[2], CH.fin[2] - 0.1) * (P.n - 1);
       const i0 = Math.min(Math.floor(brut), P.n - 1);
-      f = i0 >= P.n - 1 ? P.n - 1 : i0 + ease.inOut3(seg(brut - i0, 0.32, 0.94));
-      approche = seg(y, haut - 0.8 * M.h, haut - 0.12 * M.h);
+      f = i0 >= P.n - 1 ? P.n - 1 : i0 + ease.inOut3(seg(brut - i0, 0.3, 0.92));
+      if (P.fw < 2) mesurerPellicule();
       bande.style.transform = `translate3d(${(P.fen / 2 - (f + 0.5) * P.fw).toFixed(1)}px, 0, 0)`;
     }
     const fDev = f - 0.7 * (1 - approche);
@@ -413,14 +407,14 @@
     });
     const vue = Math.round(f);
     $("#pellicule-vue").textContent = String(vue + 1).padStart(2, "0");
-    const enPlace = Math.abs(f - vue) < (P.glisse ? 0.04 : 0.025) && approche >= 1;
+    const dansChapitre = c > CH.t[2] - 0.1 && c < CH.fin[2] + 0.05;
+    const enPlace = Math.abs(f - vue) < (P.glisse ? 0.04 : 0.025) && approche >= 1 && dansChapitre;
     porte.classList.toggle("verrouille", enPlace);
-    if (enPlace && vue !== P.verrou) {
-      if (vue > P.verrou) flash(); // l'appareil déclenche à chaque nouvelle vue
+    if (!dansChapitre) P.verrou = -1;
+    else if (enPlace && vue !== P.verrou) {
+      if (vue > P.verrou && P.verrou >= 0) flash(); // l'appareil déclenche à chaque nouvelle vue
       P.verrou = vue;
     }
-    const actif = P.glisse ? y > haut - M.h * 0.6 && y < haut + M.h * 0.5 : y > haut - M.h * 0.4 && y < haut + P.course + P.pas * 0.3;
-    if (actif !== P.actif) reagirPellicule(actif);
   }
   let rafPellicule = 0;
   fenetre.addEventListener(
@@ -442,11 +436,6 @@
       forcer = true;
     });
 
-  function reagirPellicule(actif) {
-    P.actif = actif;
-    if (aGsap) gsap.to(reaction, { ry: actif ? (M.mobile ? -0.4 : -0.62) : 0, duration: 1.2, ease: "power3.out", overwrite: "auto" });
-  }
-
   // ---------- Boucle : on suit le défilement (lissé), on ne dessine que si besoin ----------
   let pLisse = 0;
   let pDernier = -1;
@@ -464,7 +453,7 @@
     const cible = avancement();
     pLisse = calme ? cible : pLisse + (cible - pLisse) * (1 - Math.exp(-dt * (M.mobile ? 16 : 11)));
     if (Math.abs(cible - pLisse) < 0.0002) pLisse = cible;
-    const vivantContinu = !calme && !M.mobile && pLisse > 0.9 && pLisse < 1 + (3.5 * M.pasCh) / M.course && api3d && document.visibilityState === "visible";
+    const vivantContinu = !calme && !M.mobile && pLisse > 0.9 && pLisse < 1 + (CH.range * M.pasCh) / M.course && api3d && document.visibilityState === "visible";
     const sig = `${reaction.ry.toFixed(4)},${reaction.rx.toFixed(4)},${reaction.flash.toFixed(3)},${window.scrollY}`;
     if (forcer || vivantContinu || Math.abs(pLisse - pDernier) > 0.00005 || sig !== signature) {
       forcer = false;
@@ -932,9 +921,9 @@
             photo.addEventListener("error", ok, { once: true });
           });
     charge3D = photoPrete
-      .then(() => import("./scene.js?v=10"))
-      .then((m) => {
-        const api = m.creerAppareil({ canvas: toile, photo, geo: GEO, mobile: M.mobile, cadrage: [0.5, 0.5] });
+      .then(() => import("./scene.js?v=12"))
+      .then((m) => m.creerAppareil({ canvas: toile, geo: GEO, mobile: M.mobile, base: "" }))
+      .then((api) => {
         api.redimensionner(M.l, M.h);
         api3d = api;
         forcer = true;
@@ -1057,13 +1046,6 @@
       forcer = true;
     });
 
-    const lienTravail = $('a[href="#pellicule"]');
-    lienTravail.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      const cible = Math.round(pellicule.getBoundingClientRect().top + window.scrollY);
-      if (lenis) lenis.scrollTo(cible, { duration: 1.6, easing: ease.inOut3 });
-      else window.scrollTo({ top: cible, behavior: calme ? "auto" : "smooth" });
-    });
 
     // La 3D démarre au premier geste du visiteur (souris, toucher, défilement,
     // clavier) : la photo et les textes s'affichent d'abord, sans rien bloquer.
@@ -1075,7 +1057,7 @@
     };
     gestes.forEach((t) => window.addEventListener(t, premierGeste, { passive: true }));
     const prechargerFichiers = () => {
-      ["scene.js?v=10", "../vendor/three.module.min.js"].forEach((f) => {
+      ["scene.js?v=12", "../vendor/three.module.min.js"].forEach((f) => {
         const l = document.createElement("link");
         l.rel = "prefetch";
         l.href = f;

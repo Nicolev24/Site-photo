@@ -1,0 +1,12 @@
+{
+  "pages": [
+    {
+      "slug": "travail",
+      "title": "Mon travail"
+    },
+    {
+      "slug": "moi",
+      "title": "Qui suis-je"
+    }
+  ]
+}

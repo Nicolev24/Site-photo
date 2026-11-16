@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<base href="../" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<script>
+  // Maquette : le contenu de ces pages vient de /labo/contenu/ (le site en ligne n'est pas touché).
+  (function () {
+    var f = window.fetch.bind(window);
+    var LABO = { "content/pages/travail.json": 1, "content/pages/moi.json": 1, "content/navigation.json": 1, "content/site.json": 1 };
+    window.fetch = function (url, opt) {
+      if (typeof url === "string" && LABO[url]) url = "labo/contenu/" + url.split("/").pop();
+      return f(url, opt);
+    };
+  })();
+</script>
+
+<title>Mon travail – Nicolas Leveugle, photographe à Ath (maquette)</title>
+<meta name="description" content="Mariages, couples, portraits, événements et commerces : une sélection de photos de Nicolas Leveugle, photographe à Ath." />
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/univers.js"></script>
+<link rel="icon" href="favicon.ico" sizes="48x48" />
+<link rel="icon" href="icones/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#1c1916" />
+</head>
+<body>
+
+<div class="univers-barre" id="univers-barre">
+  <div class="container univers-barre-inner">
+    <span class="univers-libelle">Vous êtes</span>
+    <div class="univers-switch" role="group" aria-label="Vous êtes">
+      <button type="button" data-univers="particuliers" aria-pressed="false">Particulier</button>
+      <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
+    <div class="header-nav">
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
+    </div>
+  </div>
+</header>
+
+<main id="sections-root"><!-- version-texte:debut --><noscript><p>Maquette de travail : activez JavaScript pour voir cette page.</p></noscript><!-- version-texte:fin --></main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/sections-renderer.js"></script>
+<script src="js/render.js"></script>
+</body>
+</html>

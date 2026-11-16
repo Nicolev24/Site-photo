@@ -1,0 +1,57 @@
+{
+  "nav_links": [
+    {
+      "label": "Accueil",
+      "href": "labo/appareil/"
+    },
+    {
+      "label": "Qui suis-je",
+      "href": "labo/moi.html"
+    },
+    {
+      "label": "Mon travail",
+      "href": "labo/travail.html"
+    },
+    {
+      "label": "Tarifs",
+      "href": "services.html"
+    },
+    {
+      "label": "Espace client",
+      "href": "galerie/index.html"
+    }
+  ],
+  "cta_button": {
+    "label": "Réserver",
+    "href": "contact.html"
+  },
+  "footer_links": [
+    {
+      "label": "Qui suis-je",
+      "href": "labo/moi.html"
+    },
+    {
+      "label": "Mon travail",
+      "href": "labo/travail.html"
+    },
+    {
+      "label": "Tarifs",
+      "href": "services.html"
+    },
+    {
+      "label": "Contact",
+      "href": "contact.html"
+    }
+  ],
+  "footer_legal_links": [
+    {
+      "label": "Mentions légales",
+      "href": "mentions-legales.html"
+    },
+    {
+      "label": "Confidentialité",
+      "href": "confidentialite.html"
+    }
+  ],
+  "copyright_text": "Nicolas Leveugle Photographie — Ath, Belgique"
+}

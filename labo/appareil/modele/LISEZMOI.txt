@@ -1,0 +1,7 @@
+Modèle 3D de l'appareil photo de la maquette /labo/appareil/.
+
+« Camera 01 » de Poly Haven (polyhaven.com/a/Camera_01), auteur : Rajil Jose Macatangay.
+Licence CC0 (domaine public) : libre de droits, usage commercial permis, sans obligation de citation.
+
+Modifications : sangle retirée de la scène ; textures recompressées (JPEG) ;
+deux versions : appareil-1k.gltf (téléphone) et appareil-2k.gltf (ordinateur), même géométrie (appareil.bin).
