@@ -1,0 +1,258 @@
+/* ============================================================
+   Espace client accordé au nouveau site, en gardant
+   sa chaleur. Même maison (en-tête, titres, boutons du site),
+   lumière plus chaude (ivoire « papier photo », doré en touches).
+   Chargé après galerie/style.css. La liste « Vos shootings » (sans galerie ouverte)
+   prend les tons neutres du site (classe espace-neutre, voir galerie/index.html).
+   ============================================================ */
+
+/* ---------- Jour : ivoire doux ---------- */
+html.galerie-claire {
+  --couleur-fond: #efebe5;
+  --couleur-fond-alt: #e6e1d9;
+  --couleur-carte: #f6f3ee;
+  --couleur-champ: #fbfaf7;
+  --couleur-texte: #1d1a17;
+  --couleur-texte-attenue: rgba(29, 26, 23, 0.64);
+  --couleur-accent: #ae8c5b;
+  --couleur-accent-fonce: #8a6a3b;
+  --couleur-accent-texte: #7a5b2e;
+  --couleur-bordure: rgba(29, 26, 23, 0.13);
+  --couleur-header: rgba(239, 235, 229, 0.86);
+  --g-verre: rgba(255, 255, 255, 0.5);
+  --g-trait: rgba(29, 26, 23, 0.18);
+  --g-papier: rgba(239, 235, 229, 0.86);
+  --rayon-bouton: 999px;
+  --rayon-bordure: 2px;
+  background: var(--couleur-fond);
+}
+/* ---------- Nuit : anthracite chaud (le gris du site, teinté brun) ---------- */
+html.galerie-claire[data-theme="nuit"] {
+  --couleur-fond: #211e1b;
+  --couleur-fond-alt: #282420;
+  --couleur-carte: #2a2622;
+  --couleur-champ: #2a2622;
+  --couleur-texte: #ece6dc;
+  --couleur-texte-attenue: rgba(236, 230, 220, 0.64);
+  --couleur-accent: #c4a272;
+  --couleur-accent-fonce: #ae8c5b;
+  --couleur-accent-texte: #d2b386;
+  --couleur-bordure: rgba(236, 230, 220, 0.13);
+  --couleur-header: rgba(33, 30, 27, 0.86);
+  --g-verre: rgba(255, 255, 255, 0.06);
+  --g-trait: rgba(236, 230, 220, 0.2);
+  --g-papier: rgba(33, 30, 27, 0.86);
+  color-scheme: dark;
+}
+html.galerie-claire body {
+  background: var(--couleur-fond);
+  color: var(--couleur-texte);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ---------- En-tête : exactement celui du site ---------- */
+.galerie-claire .site-header {
+  background: transparent;
+}
+.galerie-claire .site-header::before {
+  background: var(--g-papier);
+}
+.galerie-claire .site-header.est-defile {
+  border-bottom-color: var(--couleur-bordure);
+}
+.galerie-claire .site-header::after {
+  display: none;
+}
+.galerie-claire .site-header:not(.sur-photo) .logo {
+  color: var(--couleur-texte);
+}
+.galerie-claire .site-header:not(.sur-photo) .nav-links a {
+  color: var(--couleur-texte-attenue);
+}
+.galerie-claire .site-header:not(.sur-photo) .nav-links a:hover,
+.galerie-claire .site-header:not(.sur-photo) .nav-links a[aria-current="page"] {
+  color: var(--couleur-texte);
+}
+/* « Réserver » : le bouton fin du site (plus de pavé doré) */
+.galerie-claire .site-header .btn-primary {
+  background: transparent;
+  color: var(--couleur-texte);
+  border: 1px solid var(--couleur-texte);
+  border-radius: 999px;
+}
+.galerie-claire .site-header .btn-primary:hover {
+  background: var(--couleur-texte);
+  color: var(--couleur-fond);
+}
+.galerie-claire .site-header.sur-photo .btn-primary {
+  color: #f5f1ea;
+  border-color: rgba(245, 241, 234, 0.7);
+}
+@media (max-width: 860px) {
+  .galerie-claire .nav-links {
+    background: var(--g-papier);
+  }
+}
+
+/* ---------- Titres : grandes capitales fines, comme le site ---------- */
+.galerie-claire h1,
+.galerie-claire h2 {
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+
+/* ---------- Boutons : fins, en pilule ---------- */
+.galerie-claire .btn,
+.galerie-claire .galerie-action,
+.galerie-claire .galerie-actions .btn,
+.galerie-claire .barre-selection .btn,
+.galerie-claire .pt-lot {
+  border-radius: 999px;
+}
+
+/* ---------- Le doré, seulement en touches (favoris, sélection, survol) ---------- */
+.galerie-claire .tile-favori.actif,
+.galerie-claire .lb-favori.actif {
+  color: var(--couleur-accent);
+}
+
+/* ---------- Pied de page ---------- */
+.galerie-claire .site-footer {
+  background: var(--couleur-fond);
+  border-top-color: var(--couleur-bordure);
+}
+
+/* ---------- Bouton jour / nuit (le même que sur le site) ---------- */
+.bouton-theme {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin: 0 4px;
+  padding: 0;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 50%;
+  background: none;
+  color: var(--couleur-texte);
+  cursor: pointer;
+}
+.site-header.sur-photo .bouton-theme {
+  color: #f5f1ea;
+  border-color: rgba(245, 241, 234, 0.45);
+}
+.bouton-theme svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bouton-theme .ic-soleil,
+html[data-theme="nuit"] .bouton-theme .ic-lune {
+  display: none;
+}
+html[data-theme="nuit"] .bouton-theme .ic-soleil {
+  display: block;
+}
+
+/* ---------- Nuit : les panneaux et barres flottantes passent en sombre chaud ---------- */
+html.galerie-claire[data-theme="nuit"] .galerie-barre::before,
+html.galerie-claire[data-theme="nuit"] #favoris-barre,
+html.galerie-claire[data-theme="nuit"] .barre-selection {
+  background: rgba(42, 38, 34, 0.86);
+  border-color: rgba(236, 230, 220, 0.12);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.4);
+}
+html.galerie-claire[data-theme="nuit"] .panneau-boite,
+html.galerie-claire[data-theme="nuit"] .espace-carte {
+  background: var(--couleur-carte);
+}
+html.galerie-claire[data-theme="nuit"] .espace-photo {
+  background: #3a342e;
+}
+html.galerie-claire[data-theme="nuit"] .pt-etapes li {
+  background: rgba(255, 255, 255, 0.05);
+}
+html.galerie-claire[data-theme="nuit"] .mot-carte {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border-color: rgba(236, 230, 220, 0.12);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.5);
+}
+html.galerie-claire[data-theme="nuit"] .tile-coche {
+  background: rgba(33, 30, 27, 0.78);
+  color: var(--couleur-texte);
+}
+html.galerie-claire[data-theme="nuit"] .favoris-filtres button,
+html.galerie-claire[data-theme="nuit"] .galerie-action,
+html.galerie-claire[data-theme="nuit"] .galerie-actions .btn,
+html.galerie-claire[data-theme="nuit"] .barre-selection .galerie-action,
+html.galerie-claire[data-theme="nuit"] .barre-selection .btn {
+  color: var(--couleur-texte-attenue);
+}
+html.galerie-claire[data-theme="nuit"] .favoris-filtres button.actif,
+html.galerie-claire[data-theme="nuit"] .galerie-action:hover,
+html.galerie-claire[data-theme="nuit"] .galerie-actions .btn:hover {
+  background: rgba(236, 230, 220, 0.1);
+  color: var(--couleur-texte);
+}
+html.galerie-claire[data-theme="nuit"] .galerie-actions {
+  border-left-color: rgba(236, 230, 220, 0.14);
+}
+html.galerie-claire[data-theme="nuit"] .galerie-actions .btn-primary {
+  color: var(--couleur-accent-texte);
+}
+html.galerie-claire[data-theme="nuit"] .barre-selection .btn-primary {
+  background: var(--couleur-texte);
+  color: var(--couleur-fond);
+}
+html.galerie-claire[data-theme="nuit"] #btn-selection::before,
+html.galerie-claire[data-theme="nuit"] #btn-tout-telecharger::before {
+  filter: invert(0.9);
+}
+
+/* ============================================================
+   La page « Espace client » (liste des shootings, ouverte depuis le menu) :
+   exactement les tons du reste du site. Les galeries gardent leur chaleur.
+   ============================================================ */
+html.galerie-claire.espace-neutre {
+  --couleur-fond: #ededf0;
+  --couleur-fond-alt: #e4e4e8;
+  --couleur-carte: #f7f7f9;
+  --couleur-champ: #ffffff;
+  --couleur-texte: #121214;
+  --couleur-texte-attenue: rgba(18, 18, 20, 0.66);
+  --couleur-bordure: rgba(18, 18, 20, 0.16);
+  --couleur-header: rgba(237, 237, 240, 0.86);
+  --couleur-accent: #121214;
+  --couleur-accent-fonce: #3a3a40;
+  --couleur-accent-texte: #121214;
+  --g-papier: rgba(237, 237, 240, 0.86);
+  --g-verre: rgba(255, 255, 255, 0.5);
+  --g-trait: rgba(18, 18, 20, 0.18);
+}
+html.galerie-claire.espace-neutre[data-theme="nuit"] {
+  --couleur-fond: #1c1c1f;
+  --couleur-fond-alt: #222225;
+  --couleur-carte: #252528;
+  --couleur-champ: #252528;
+  --couleur-texte: #e9e9ec;
+  --couleur-texte-attenue: rgba(233, 233, 236, 0.64);
+  --couleur-bordure: rgba(233, 233, 236, 0.15);
+  --couleur-header: rgba(28, 28, 31, 0.86);
+  --couleur-accent: #e9e9ec;
+  --couleur-accent-fonce: #c4c4ca;
+  --couleur-accent-texte: #e9e9ec;
+  --g-papier: rgba(28, 28, 31, 0.86);
+  --g-verre: rgba(255, 255, 255, 0.06);
+  --g-trait: rgba(233, 233, 236, 0.2);
+}
+html.galerie-claire.espace-neutre .espace-photo {
+  background: #d8d8dc;
+}
+html.galerie-claire.espace-neutre[data-theme="nuit"] .espace-photo {
+  background: #2e2e33;
+}
