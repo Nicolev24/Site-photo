@@ -321,67 +321,79 @@
     $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPolas, 0)));
 
     if (!calme) {
-      // chaque photo part de son côté, la plus proche du centre d'abord
+      // chaque photo part de son côté : celle de devant monte à la vitesse du doigt,
+      // les deux de derrière s'écartent ensuite (plages en % du défilement de l'ouverture)
       const D = cartesPola.map((f) => {
         const dx = parseFloat(f.dataset.dx) || 0;
         const dy = parseFloat(f.dataset.dy) || 0;
-        return { f, dx, dy, retard: parseFloat(f.dataset.retard) || 0 };
+        const devant = (parseFloat(f.dataset.retard) || 0) === 0;
+        const de = devant ? 0 : 18;
+        const a = devant ? 75 : 92;
+        f.style.setProperty("--dx", dx);
+        f.style.setProperty("--dy", dy);
+        f.style.animationRange = `contain ${de}% contain ${a}%`;
+        return { f, dx, dy, de: de / 100, a: a / 100 };
       });
-      const P = { W: 1, H: 1, haut: 0, course: 1 };
-      const mesurer = () => {
-        P.W = window.innerWidth;
-        P.H = scene.clientHeight;
-        P.haut = polas.getBoundingClientRect().top + window.scrollY;
-        P.course = Math.max(1, polas.offsetHeight - P.H);
-      };
-      let dernier = -1;
-      const dessiner = () => {
-        const p = borne((window.scrollY - P.haut) / P.course);
-        if (p === dernier) return;
-        dernier = p;
-        D.forEach((d) => {
-          const e = lisse(seg(p, d.retard, d.retard + 0.55));
-          const x = d.dx * P.W * 0.95 * e;
-          const y = d.dy * P.H * 0.8 * e;
-          d.f.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
-        });
-        if (indice) indice.style.opacity = (1 - seg(p, 0, 0.08)).toFixed(3);
-        if (ouverture) {
-          const o = seg(p, 0.1, 0.55);
-          ouverture.style.opacity = o.toFixed(3);
-          ouverture.style.transform = `scale(${lerp(0.96, 1, o).toFixed(4)})`;
-        }
-      };
-      let attente = false;
-      window.addEventListener(
-        "scroll",
-        () => {
-          if (attente) return;
-          attente = true;
-          requestAnimationFrame(() => {
-            attente = false;
-            dessiner();
+      // Le navigateur fait bouger les photos lui-même, au rythme exact du défilement (aucun retard).
+      let auNavigateur = false;
+      try {
+        auNavigateur = CSS.supports("animation-timeline: --a") && CSS.supports("view-timeline-name: --a");
+      } catch (e) {}
+      if (auNavigateur) R.classList.add("polas-css");
+      else {
+        // secours pour les anciens navigateurs : même mouvement, calculé ici
+        const P = { W: 1, H: 1, haut: 0, course: 1 };
+        const mesurer = () => {
+          P.W = window.innerWidth;
+          P.H = scene.clientHeight;
+          P.haut = polas.getBoundingClientRect().top + window.scrollY;
+          P.course = Math.max(1, polas.offsetHeight - P.H);
+        };
+        let dernier = -1;
+        const dessiner = () => {
+          const p = borne((window.scrollY - P.haut) / P.course);
+          if (p === dernier) return;
+          dernier = p;
+          D.forEach((d) => {
+            const e = seg(p, d.de, d.a);
+            d.f.style.transform = `translate3d(${(d.dx * P.W * 0.95 * e).toFixed(1)}px, ${(d.dy * P.H * 0.8 * e).toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
           });
-        },
-        { passive: true }
-      );
-      let lPrec = window.innerWidth;
-      window.addEventListener("resize", () => {
-        if (window.innerWidth === lPrec) return; // barre d'adresse : on ne bouge rien
-        lPrec = window.innerWidth;
+          if (indice) indice.style.opacity = (1 - seg(p, 0, 0.08)).toFixed(3);
+          if (ouverture) {
+            const o = seg(p, 0.25, 0.72);
+            ouverture.style.opacity = o.toFixed(3);
+            ouverture.style.transform = `scale(${lerp(0.96, 1, o).toFixed(4)})`;
+          }
+        };
+        let attente = false;
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (attente) return;
+            attente = true;
+            requestAnimationFrame(() => {
+              attente = false;
+              dessiner();
+            });
+          },
+          { passive: true }
+        );
+        let lPrec = window.innerWidth;
+        window.addEventListener("resize", () => {
+          if (window.innerWidth === lPrec) return; // barre d'adresse : on ne bouge rien
+          lPrec = window.innerWidth;
+          mesurer();
+          dernier = -1;
+          dessiner();
+        });
         mesurer();
-        dernier = -1;
         dessiner();
-      });
-      mesurer();
-      dessiner();
-      window.addEventListener("load", () => {
-        mesurer();
-        dernier = -1;
-        dessiner();
-      });
-      // les photos se posent une à une à l'arrivée
-      R.classList.add("polas-arrivee");
+        window.addEventListener("load", () => {
+          mesurer();
+          dernier = -1;
+          dessiner();
+        });
+      }
 
       // fondu léger à l'arrivée de chaque bloc, plus bas
       if ("IntersectionObserver" in window) {

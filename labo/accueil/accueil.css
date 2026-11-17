@@ -972,8 +972,10 @@ html.chapitres .lentille-fixe {
 html.chapitres:not(.calme) .polas {
   display: block;
   position: relative;
-  height: 165vh;
-  height: 165svh;
+  height: 215vh;
+  height: 215svh;
+  view-timeline-name: --polas;
+  view-timeline-axis: block;
 }
 html.chapitres.calme .etape[data-etape="0"] {
   padding: calc(var(--entete) + 32px) var(--marge) 0;
@@ -1034,19 +1036,39 @@ html.chapitres .pola img {
   object-fit: cover;
   background: #d8d8dc;
 }
-/* les photos se posent une à une à l'arrivée */
-html.polas-arrivee .pola {
-  animation: pola-pose 0.7s var(--doux) both;
-  animation-delay: calc(var(--i) * 70ms);
+/* mouvement confié au navigateur : synchronisé avec le défilement, sans retard */
+html.polas-css .pola {
+  animation: pola-sortie linear both;
+  animation-timeline: --polas;
 }
-@keyframes pola-pose {
+@keyframes pola-sortie {
+  to {
+    transform: translate3d(calc(var(--dx) * 95vw), calc(var(--dy) * 80svh), 0) rotate(calc(var(--dx) * 12deg));
+  }
+}
+html.polas-css .polas-scene .etape {
+  animation: polas-texte linear both;
+  animation-timeline: --polas;
+  animation-range: contain 25% contain 72%;
+}
+@keyframes polas-texte {
   from {
     opacity: 0;
-    scale: 1.08;
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
-    scale: 1;
+    transform: none;
+  }
+}
+html.polas-css .polas-indice {
+  animation: polas-indice linear both;
+  animation-timeline: --polas;
+  animation-range: contain 0% contain 8%;
+}
+@keyframes polas-indice {
+  to {
+    opacity: 0;
   }
 }
 html.chapitres .polas-indice {
