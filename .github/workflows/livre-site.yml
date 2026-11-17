@@ -1,0 +1,34 @@
+# Livre du site : à chaque modification de .claude/skills/site/, prépare un fichier
+# `site.zip` à jour, prêt à importer dans l'appli Claude (Réglages > Capacités > Compétences).
+# Adresse fixe :
+# https://github.com/Nicolev24/Site-photo/releases/download/livre-site/site.zip
+name: Livre du site (zip pour Claude)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".claude/skills/site/**"
+      - ".github/workflows/livre-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fabriquer le zip
+        run: |
+          cd .claude/skills
+          zip -r -q ../../site.zip site
+      - name: Publier (remplace l'ancien)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view livre-site >/dev/null 2>&1 || gh release create livre-site \
+            --title "Livre du site (à importer dans Claude)" \
+            --notes "Fichier mis à jour automatiquement à chaque changement du livre."
+          gh release upload livre-site site.zip --clobber

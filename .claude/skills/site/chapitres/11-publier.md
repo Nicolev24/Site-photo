@@ -18,5 +18,9 @@
 - Vérifier la mise en ligne : boucle `curl -s https://nicolasleveugle.be/<page>?x=$i | grep -q '<nouveau marqueur>'` toutes les 10 s.
 - Dire à Nicolas : le lien, ce qui a changé (en mots simples), ce qui a été vérifié, ce qui n'a pas pu l'être (admin/galerie réelle demandent ses mots de passe), et « recharge la page si l'ancienne version s'affiche ».
 
+## Le livre lui-même
+- Un rappel automatique (`.claude/settings.json` → `.claude/hooks/livre-a-jour.sh`) empêche de terminer si le site a changé sans le livre.
+- À chaque modification du livre sur `main`, le robot `.github/workflows/livre-site.yml` refait `site.zip`, à l'adresse fixe `https://github.com/Nicolev24/Site-photo/releases/download/livre-site/site.zip` (à importer dans l'appli Claude : Réglages > Capacités > Compétences ; l'import dans l'appli reste manuel).
+
 ---
 [← Table des matières](../SKILL.md)
