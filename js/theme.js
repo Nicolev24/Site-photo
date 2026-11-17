@@ -23,7 +23,7 @@
       b.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
     });
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", nuit ? "#232326" : "#ededf0");
+    if (meta) meta.setAttribute("content", nuit ? "#1c1c1f" : "#ededf0");
   }
 
   // le bouton lune / soleil, à côté de « Réserver » dans l'en-tête

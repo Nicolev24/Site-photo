@@ -26,19 +26,19 @@ html[data-theme="jour"] .theme-sombre {
 }
 html[data-theme="nuit"],
 html[data-theme="nuit"] .theme-sombre {
-  --couleur-fond: #232326;
-  --couleur-fond-alt: #29292d;
-  --couleur-carte: #2c2c30;
-  --couleur-champ: #2c2c30;
+  --couleur-fond: #1c1c1f;
+  --couleur-fond-alt: #222225;
+  --couleur-carte: #252528;
+  --couleur-champ: #252528;
   --couleur-texte: #e9e9ec;
   --couleur-texte-attenue: rgba(233, 233, 236, 0.64);
   --couleur-bordure: rgba(233, 233, 236, 0.15);
-  --couleur-header: rgba(35, 35, 38, 0.86);
+  --couleur-header: rgba(28, 28, 31, 0.86);
   --couleur-accent: #e9e9ec !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
   --couleur-accent-fonce: #c9c9cf !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
   --couleur-accent-texte: #e9e9ec;
-  --couleur-sur-accent: #232326;
-  --verre: rgba(35, 35, 38, 0.76);
+  --couleur-sur-accent: #1c1c1f;
+  --verre: rgba(28, 28, 31, 0.76);
   --halo: rgba(255, 255, 255, 0.06);
   color-scheme: dark;
 }

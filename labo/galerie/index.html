@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr" class="galerie-claire">
+<head>
+<meta charset="UTF-8" />
+<base href="../../galerie/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<title>Essai — Espace client</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="style.css" />
+<script>
+  // ESSAI (labo) : une galerie d'exemple faite avec les photos du site. Aucune donnée réelle,
+  // aucun appel au serveur des galeries.
+  (function () {
+    var p = new URLSearchParams(location.search);
+    if (!p.get("g")) {
+      p.set("g", "exemple");
+      history.replaceState(null, "", "?" + p.toString());
+    }
+    var actuel = p.get("style") === "actuel";
+    if (!actuel) {
+      document.write('<link rel="stylesheet" href="../labo/galerie/nouveau.css" />');
+      var t = "jour";
+      try { t = localStorage.getItem("theme") === "nuit" ? "nuit" : "jour"; } catch (e) {}
+      document.documentElement.setAttribute("data-theme", t);
+    }
+    var GALERIE = {
+      name: "Léa & Thomas",
+      title: "Mariage · galerie d'exemple",
+      message: "Merci pour cette belle journée ! Voici vos photos : prenez le temps, mettez un cœur sur vos préférées, et téléchargez-les quand vous voulez.",
+      protegee: false, client: false, peutFavoris: true,
+      couverture: "mariages/baiser-pont-chateau",
+      favoris: ["mariages/maries-colonnes", "mariages/premiere-danse-etincelles"],
+      photos: [{"filename":"mariages/baiser-pont-chateau"},{"filename":"mariages/maries-colonnes"},{"filename":"mariages/premiere-danse-etincelles"},{"filename":"mariages/bouquet-chateau"},{"filename":"mariages/sortie-confettis"},{"filename":"mariages/maries-course-jardin"},{"filename":"mariages/preparatifs-boutons-manchette"},{"filename":"mariages/baiser-renverse"},{"filename":"mariages/premiere-danse-enlaces"},{"filename":"mariages/bouquets-leves"},{"filename":"mariages/maries-chien"},{"filename":"mariages/gateau-lumiere"},{"filename":"mariages/baiser-cortege"},{"filename":"mariages/selfie-temoins"},{"filename":"mariages/premiere-danse-tournoiement"},{"filename":"mariages/maries-ponton-noir-et-blanc"}]
+    };
+    var f = window.fetch.bind(window);
+    window.fetch = function (url, opt) {
+      if (typeof url === "string" && url.indexOf("galerie-api") !== -1) {
+        var corps = /\/accueil$/.test(url) ? { protegee: false, name: GALERIE.name, title: GALERIE.title, couverture: GALERIE.couverture }
+          : /\/api\/gallery\/[^/]+$/.test(url) ? GALERIE : { ok: true };
+        return Promise.resolve(new Response(JSON.stringify(corps), { status: 200, headers: { "Content-Type": "application/json" } }));
+      }
+      return f(url, opt);
+    };
+  })();
+</script>
+
+<link rel="icon" href="../favicon.ico" sizes="48x48" />
+<link rel="icon" href="../icones/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png" />
+<link rel="manifest" href="../site.webmanifest" />
+<meta name="theme-color" content="#f6f2ea" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo js-logo">Nicolas Leveugle</a>
+    <div class="header-nav">
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links"></ul>
+      <a href="../contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="galerie-couverture" id="galerie-couverture" hidden>
+    <img id="couverture-flou" class="couverture-img" alt="" />
+    <img id="couverture-nette" class="couverture-img couverture-nette" alt="" />
+    <div class="container couverture-texte">
+      <a href="./" id="couverture-retour" class="couverture-retour" hidden>← Mes shootings</a>
+      <span class="eyebrow">Votre galerie</span>
+      <h1 id="couverture-nom"></h1>
+      <p class="couverture-sous" id="couverture-titre"></p>
+      <p class="couverture-meta" id="couverture-compte"></p>
+      <a href="#favoris-barre" id="couverture-voir" class="btn btn-verre">Voir les photos</a>
+      <div class="couverture-acces" id="couverture-acces" hidden>
+        <div class="acces-choix" id="acces-choix">
+          <button type="button" id="acces-client" class="btn btn-verre">Je suis le client</button>
+          <button type="button" id="acces-invite" class="btn btn-verre">Je suis invité</button>
+        </div>
+        <p class="acces-aide" id="acces-aide">Client : avec le mot de passe reçu par e-mail, vous retrouvez ce shooting dans l'espace client et choisissez vos favoris. Invité : vous voyez et téléchargez les photos.</p>
+        <form class="acces-form" id="acces-form" autocomplete="off" hidden>
+          <label for="acces-mdp" class="acces-label">Mot de passe reçu par e-mail</label>
+          <div class="acces-ligne">
+            <input id="acces-mdp" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Pivoine-Sable-48" />
+            <button type="submit" id="acces-entrer" class="btn btn-verre">Entrer</button>
+          </div>
+          <p class="acces-erreur" id="acces-erreur" role="alert" hidden></p>
+          <button type="button" id="acces-retour" class="couverture-oublier">← Retour</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <section class="espace-liste" id="espace-liste" hidden>
+    <div class="container">
+      <span class="eyebrow">Espace client</span>
+      <h1>Vos shootings</h1>
+      <p class="lead" id="espace-intro">Touchez un shooting pour retrouver vos photos.</p>
+      <div class="espace-cartes" id="espace-cartes"></div>
+      <div class="espace-vide" id="espace-vide" hidden>
+        <p class="lead">Aucun shooting pour l'instant sur cet appareil.</p>
+        <p>Ouvrez d'abord le lien reçu par e-mail, choisissez « Je suis le client » et tapez votre mot de passe : votre shooting apparaîtra ici.</p>
+        <a href="../contact.html" class="btn-secondary">Me contacter</a>
+      </div>
+      <p class="espace-note" id="espace-note" hidden>Vous ne voyez pas un shooting ? Rouvrez le lien reçu par e-mail et choisissez « Je suis le client ».</p>
+    </div>
+  </section>
+  <section class="galerie-mot" id="galerie-mot" hidden>
+    <div class="container">
+      <div class="mot-carte">
+        <span class="eyebrow">Un mot de Nicolas</span>
+        <p class="mot-texte" id="mot-texte"></p>
+        <p class="mot-signature">Nicolas</p>
+      </div>
+    </div>
+  </section>
+  <section class="page-header">
+    <div class="container">
+      <span class="eyebrow">Espace client</span>
+      <h1 id="gallery-heading">Vos photos</h1>
+      <p class="lead" id="gallery-subheading"></p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div id="gallery-empty-state" hidden>
+      <p class="lead">Pour retrouver vos photos, utilisez le lien privé qui vous a été envoyé par email.</p>
+      <a href="../contact.html" class="btn-secondary">Me contacter</a>
+    </div>
+
+    <div id="favoris-barre" class="favoris-barre galerie-barre" hidden>
+      <div class="favoris-filtres" role="group" aria-label="Photos affichées">
+        <button type="button" id="filtre-tout" class="actif">Toutes les photos</button>
+        <button type="button" id="filtre-favoris">♥ Mes favoris (<span id="favoris-compte">0</span>)</button>
+      </div>
+      <div class="galerie-actions">
+        <button type="button" id="btn-selection" class="galerie-action" aria-label="Sélectionner des photos" title="Sélectionner des photos">Sélectionner</button>
+        <button type="button" id="btn-tout-telecharger" class="btn btn-primary btn-small" aria-label="Tout télécharger" title="Tout télécharger">Tout télécharger</button>
+      </div>
+    </div>
+    <div id="galerie-notes" class="galerie-notes" hidden>
+      <p class="favoris-aide" id="favoris-aide">Touchez le cœur sur vos photos préférées : Nicolas reçoit votre sélection. <span id="favoris-etat"></span></p>
+      <span class="galerie-liens">
+        <a id="lien-mes-shootings" class="lien-aide" href="./" hidden>← Mes shootings</a>
+        <button type="button" id="btn-ou-photos" class="lien-aide" hidden>Où sont mes photos téléchargées ?</button>
+        <a id="lien-avis" class="lien-aide" href="#" target="_blank" rel="noopener" hidden>Laisser un avis sur Google</a>
+      </span>
+    </div>
+    <div id="gallery-grid" class="galerie-client-grid"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
+    <ul class="footer-links" id="footer-links"></ul>
+  </div>
+  <div class="container">
+    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
+  </div>
+</footer>
+
+<!-- Visionneuse plein écran -->
+<div id="lightbox" class="galerie-lightbox" hidden>
+  <span id="lightbox-compteur" class="lightbox-compteur" aria-live="polite"></span>
+  <span id="lightbox-astuce" class="lightbox-astuce" hidden>Touchez deux fois la photo pour l'ajouter à vos favoris</span>
+  <button type="button" class="lightbox-close" aria-label="Fermer">×</button>
+  <button type="button" class="lightbox-prev" aria-label="Photo précédente">‹</button>
+  <img id="lightbox-img" src="" alt="" />
+  <button type="button" class="lightbox-next" aria-label="Photo suivante">›</button>
+  <div class="lightbox-actions">
+    <button type="button" id="lightbox-favori" class="lightbox-favori" aria-pressed="false" title="Ajouter à mes favoris (F)"></button>
+    <button type="button" id="lightbox-download" class="btn btn-primary lightbox-download">Télécharger</button>
+  </div>
+</div>
+
+<!-- Barre du mode sélection -->
+<div id="barre-selection" class="barre-selection" hidden>
+  <span id="selection-compte" class="selection-compte" aria-live="polite"></span>
+  <button type="button" id="selection-tout" class="galerie-action">Tout sélectionner</button>
+  <button type="button" id="selection-annuler" class="galerie-action">Annuler</button>
+  <button type="button" id="selection-telecharger" class="btn btn-primary btn-small">Télécharger</button>
+</div>
+
+<!-- Fenêtre de téléchargement -->
+<div id="panneau-telechargement" class="panneau-telechargement" role="dialog" aria-modal="true" aria-labelledby="pt-titre" hidden>
+  <div class="panneau-boite">
+    <h2 id="pt-titre">Téléchargement</h2>
+    <p id="pt-message" class="pt-message" aria-live="polite"></p>
+    <p id="pt-aide" class="pt-message pt-aide" hidden></p>
+    <div class="pt-barre" aria-hidden="true"><span id="pt-progression"></span></div>
+    <div id="pt-lots" class="pt-lots"></div>
+    <p id="pt-avis" class="pt-avis" hidden>⭐ Vos photos vous plaisent ? Un petit avis Google m'aiderait beaucoup. <a href="#" target="_blank" rel="noopener">Laisser un avis</a></p>
+    <button type="button" id="pt-fermer" class="galerie-action pt-fermer">Fermer</button>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="app.js"></script>
+<script>
+  // les photos de l'exemple viennent du site (tailles WebP)
+  photoUrl = function (token, filename, variant) {
+    return "../images/tailles/" + filename + (variant === "thumb" ? "-800" : "-1200") + ".webp";
+  };
+</script>
+<script>
+  if (new URLSearchParams(location.search).get("style") !== "actuel") document.write('<script src="../js/theme.js"><\/script>');
+</script>
+
+</body>
+</html>

@@ -37,13 +37,13 @@
   color-scheme: light;
 }
 :root[data-theme="nuit"] {
-  --fond: #232326;
-  --fond-verre: rgba(35, 35, 38, 0.86);
+  --fond: #1c1c1f;
+  --fond-verre: rgba(28, 28, 31, 0.86);
   --encre: #e9e9ec;
   --texte: rgba(233, 233, 236, 0.8);
   --attenue: rgba(233, 233, 236, 0.64);
   --trait: rgba(233, 233, 236, 0.15);
-  --carte: #2c2c30;
+  --carte: #252528;
   --halo: rgba(255, 255, 255, 0.06);
   --ombre-sol: rgba(0, 0, 0, 0.4);
   color-scheme: dark;
