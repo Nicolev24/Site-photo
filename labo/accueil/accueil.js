@@ -553,7 +553,7 @@
   function chargerFilm() {
     if (FILM.lance) return;
     FILM.lance = true;
-    fetch(FILM.dossier + "../lentille.json?v=6")
+    fetch(FILM.dossier + "../lentille.json?v=7")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (!j) return;
@@ -575,7 +575,7 @@
             enCours++;
             const img = new Image();
             img.decoding = "async";
-            img.src = FILM.dossier + "c_" + FILM.cles[i] + ".webp?v=6";
+            img.src = FILM.dossier + "c_" + FILM.cles[i] + ".webp?v=7";
             const fini = () => {
               enCours--;
               suite();
