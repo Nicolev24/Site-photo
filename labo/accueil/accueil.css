@@ -972,8 +972,8 @@ html.chapitres .lentille-fixe {
 html.chapitres:not(.calme) .polas {
   display: block;
   position: relative;
-  height: 175vh;
-  height: 175svh;
+  height: 165vh;
+  height: 165svh;
 }
 html.chapitres.calme .etape[data-etape="0"] {
   padding: calc(var(--entete) + 32px) var(--marge) 0;
@@ -995,20 +995,12 @@ html.chapitres .polas-scene .etape {
   gap: 22px;
   margin: 0;
   padding: calc(var(--entete) + 12px) var(--marge) calc(24px + env(safe-area-inset-bottom, 0px));
-  opacity: 0.15;
+  opacity: 0;
   transform-origin: 50% 45%;
   will-change: opacity, transform;
 }
 html.chapitres .polas-scene .etape-bas {
   margin: 0;
-}
-html.chapitres .polas-scene .etiquettes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 26px 0 0;
-  padding: 0;
-  list-style: none;
 }
 /* devant : la pile de photos */
 html.chapitres .polas-pile {
@@ -1021,10 +1013,10 @@ html.chapitres .pola {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 47vw;
-  max-width: 240px;
+  width: 52vw;
+  max-width: 260px;
   margin: 0;
-  padding: 2.2vw 2.2vw 0;
+  padding: 2.4vw 2.4vw 11vw;
   background: #fbfbfa;
   box-shadow: 0 22px 40px -18px rgba(10, 10, 20, 0.5), 0 2px 6px rgba(10, 10, 20, 0.14);
   translate: -50% -50%;
@@ -1032,25 +1024,15 @@ html.chapitres .pola {
   will-change: transform;
 }
 html.chapitres .pola:last-child {
-  width: 54vw;
-  max-width: 270px;
+  width: 62vw;
+  max-width: 310px;
+  padding-bottom: 13vw;
 }
 html.chapitres .pola img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
   background: #d8d8dc;
-}
-html.chapitres .pola figcaption {
-  height: 10vw;
-  max-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1rem;
-  color: #3a3a40;
 }
 /* les photos se posent une à une à l'arrivée */
 html.polas-arrivee .pola {
@@ -1070,42 +1052,25 @@ html.polas-arrivee .pola {
 html.chapitres .polas-indice {
   position: absolute;
   left: 50%;
-  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
   z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 9px 16px;
-  border-radius: 999px;
-  background: var(--fond-verre);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: var(--trait);
   translate: -50% 0;
-  font-size: 0.76rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--encre);
   pointer-events: none;
 }
 html.chapitres .polas-indice span {
+  display: block;
   width: 1px;
-  height: 14px;
+  height: 18px;
   background: var(--encre);
-  animation: indice 1.6s var(--doux) infinite;
-}
-@keyframes indice {
-  0%,
-  100% {
-    transform: translateY(-3px);
-  }
-  50% {
-    transform: translateY(3px);
-  }
+  animation: defiler 1.8s var(--doux) infinite;
 }
 /* la suite : les étapes, simplement, l'une sous l'autre */
 html.chapitres .etapes {
-  margin: 72px 0 0;
+  margin: 8px 0 0;
   padding: 0;
   list-style: none;
 }

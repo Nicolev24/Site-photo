@@ -294,32 +294,15 @@
     const indice = $("#polas-indice");
     const ouverture = etapes[0];
     // le titre, le choix Particulier / Commerce et l'essentiel attendent derrière les photos
-    if (ouverture && !calme) {
-      scene.insertBefore(ouverture, scene.firstChild);
-      $(".etape-bas", ouverture).appendChild(listeEtiquettes);
-    } else if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
+    if (ouverture && !calme) scene.insertBefore(ouverture, scene.firstChild);
+    // les trois points forts, plus bas, après les étapes (l'ouverture reste épurée)
+    if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
     if (tirage) tirage.style.display = "none";
 
     // les photos changent avec Particulier / Commerce
     const POLAS = {
-      particuliers: [
-        ["mariages/maries-colonnes", "Le oui"],
-        ["mariages/premiere-danse-etincelles", "Première danse"],
-        ["portfolio/couples/img3", "Couple"],
-        ["mariages/baiser-pont-chateau", ""],
-        ["portfolio/portraits/img2", "Portrait"],
-        ["mariages/sortie-confettis", ""],
-        ["mariages/maries-course-jardin", "Mariage"],
-      ],
-      commerces: [
-        ["commerces/barbier-portrait-miroir", "Commerce"],
-        ["commerces/salon-vue-ensemble", "Le salon"],
-        ["commerces/coupe-ciseaux", ""],
-        ["portfolio/entreprises/img2", "Entreprise"],
-        ["commerces/serviette-chaude", ""],
-        ["commerces/outils-miroir", "Détails"],
-        ["commerces/barbier-sourire-client", "Portrait pro"],
-      ],
+      particuliers: ["mariages/premiere-danse-etincelles", "portfolio/portraits/img2", "mariages/maries-colonnes"],
+      commerces: ["commerces/salon-vue-ensemble", "commerces/coupe-ciseaux", "commerces/barbier-portrait-miroir"],
     };
     let uPolas = "particuliers";
     const remplirPolas = () => {
@@ -327,12 +310,11 @@
       if (u === uPolas) return;
       uPolas = u;
       cartesPola.forEach((f, i) => {
-        const [chemin, leg] = POLAS[u][i % POLAS[u].length];
+        const chemin = POLAS[u][i % POLAS[u].length];
         const img = $("img", f);
         const base = `${BASE}images/tailles/${chemin}`;
         img.srcset = `${base}-480.webp 480w, ${base}-800.webp 800w`;
         img.src = `${base}-480.webp`;
-        $("figcaption", f).textContent = leg;
       });
     };
     remplirPolas();
@@ -343,8 +325,7 @@
       const D = cartesPola.map((f) => {
         const dx = parseFloat(f.dataset.dx) || 0;
         const dy = parseFloat(f.dataset.dy) || 0;
-        const i = parseInt(f.style.getPropertyValue("--i"), 10) || 0;
-        return { f, dx, dy, retard: [0.1, 0.14, 0.04, 0.08, 0.16, 0.2, 0][i] || 0 };
+        return { f, dx, dy, retard: parseFloat(f.dataset.retard) || 0 };
       });
       const P = { W: 1, H: 1, haut: 0, course: 1 };
       const mesurer = () => {
@@ -359,15 +340,15 @@
         if (p === dernier) return;
         dernier = p;
         D.forEach((d) => {
-          const e = lisse(seg(p, d.retard, d.retard + 0.6));
+          const e = lisse(seg(p, d.retard, d.retard + 0.55));
           const x = d.dx * P.W * 0.95 * e;
-          const y = d.dy * P.H * 0.75 * e;
-          d.f.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${(d.dx * 16 * e).toFixed(2)}deg)`;
+          const y = d.dy * P.H * 0.8 * e;
+          d.f.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
         });
         if (indice) indice.style.opacity = (1 - seg(p, 0, 0.08)).toFixed(3);
         if (ouverture) {
           const o = seg(p, 0.1, 0.55);
-          ouverture.style.opacity = (0.15 + 0.85 * o).toFixed(3);
+          ouverture.style.opacity = o.toFixed(3);
           ouverture.style.transform = `scale(${lerp(0.96, 1, o).toFixed(4)})`;
         }
       };
