@@ -2,9 +2,7 @@
 
 Site statique (HTML/CSS/JS, sans framework), hébergé sur GitHub Pages avec le domaine `nicolasleveugle.be`.
 
-4 pages : accueil, à propos, services & tarifs, contact. Le portfolio
-complet est sur Instagram : sur le site, les photos accompagnent le texte
-(bande qui défile, grande photo, texte + deux photos, étapes, formules…).
+**Toute la documentation est dans le livre `.claude/skills/site/`** (table des matières dans `SKILL.md`) : pages, accueil Polaroïds, style jour/nuit, admin, espace client et galeries, référencement, photos, publication, et méthode pour refaire un site pour un client.
 
 ## Structure
 
