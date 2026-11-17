@@ -5,12 +5,16 @@
       "title": "Accueil"
     },
     {
-      "slug": "a-propos",
-      "title": "À propos"
+      "slug": "moi",
+      "title": "Qui suis-je"
+    },
+    {
+      "slug": "travail",
+      "title": "Mon travail"
     },
     {
       "slug": "services",
-      "title": "Services & tarifs"
+      "title": "Tarifs"
     },
     {
       "slug": "contact",

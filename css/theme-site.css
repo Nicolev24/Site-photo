@@ -1,0 +1,184 @@
+/* ============================================================
+   Le style de la page d'accueil, appliqué à tout le site
+   (chargé après css/style.css : on ne change que les couleurs,
+   l'en-tête, les boutons et quelques finitions).
+   Deux modes : jour (fond studio clair) et nuit, choisis avec le
+   bouton lune / soleil (js/theme.js), retenus d'une page à l'autre.
+   ============================================================ */
+
+html[data-theme="jour"],
+html[data-theme="jour"] .theme-sombre {
+  --couleur-fond: #ededf0;
+  --couleur-fond-alt: #e4e4e8;
+  --couleur-carte: #f7f7f9;
+  --couleur-champ: #ffffff;
+  --couleur-texte: #121214;
+  --couleur-texte-attenue: rgba(18, 18, 20, 0.66);
+  --couleur-bordure: rgba(18, 18, 20, 0.16);
+  --couleur-header: rgba(237, 237, 240, 0.86);
+  --couleur-accent: #121214 !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
+  --couleur-accent-fonce: #3a3a40 !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
+  --couleur-accent-texte: #121214;
+  --couleur-sur-accent: #ededf0;
+  --verre: rgba(237, 237, 240, 0.78);
+  --halo: rgba(255, 255, 255, 0.95);
+  color-scheme: light;
+}
+html[data-theme="nuit"],
+html[data-theme="nuit"] .theme-sombre {
+  --couleur-fond: #111113;
+  --couleur-fond-alt: #18181b;
+  --couleur-carte: #1d1d21;
+  --couleur-champ: #1d1d21;
+  --couleur-texte: #f2f2f4;
+  --couleur-texte-attenue: rgba(242, 242, 244, 0.62);
+  --couleur-bordure: rgba(242, 242, 244, 0.16);
+  --couleur-header: rgba(17, 17, 19, 0.86);
+  --couleur-accent: #f2f2f4 !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
+  --couleur-accent-fonce: #c9c9cf !important; /* plus fort que la couleur choisie dans l'admin (ancien doré) */
+  --couleur-accent-texte: #f2f2f4;
+  --couleur-sur-accent: #111113;
+  --verre: rgba(17, 17, 19, 0.74);
+  --halo: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+html[data-theme] {
+  --rayon-bordure: 2px;
+  --rayon-bouton: 999px;
+  background: var(--couleur-fond);
+}
+html[data-theme] body {
+  background: var(--couleur-fond);
+  color: var(--couleur-texte);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ---------- Titres : grandes capitales fines, comme l'accueil ---------- */
+html[data-theme] h1,
+html[data-theme] main h2 {
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+
+/* ---------- En-tête : discret, verre clair au défilement ---------- */
+html[data-theme] .site-header {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+html[data-theme] .site-header::before {
+  background: var(--verre);
+}
+html[data-theme] .site-header.est-defile {
+  border-bottom-color: var(--couleur-bordure);
+}
+html[data-theme] .site-header::after {
+  display: none;
+}
+html[data-theme] .logo {
+  color: var(--couleur-texte);
+}
+html[data-theme] .nav-links a {
+  color: var(--couleur-texte-attenue);
+}
+html[data-theme] .nav-links a:hover,
+html[data-theme] .nav-links a[aria-current="page"] {
+  color: var(--couleur-texte);
+}
+
+/* ---------- Boutons : fins, contour, sans dorure ---------- */
+html[data-theme] .btn-primary {
+  background: transparent;
+  color: var(--couleur-texte);
+  border-color: var(--couleur-texte);
+}
+html[data-theme] .btn-primary:hover {
+  background: var(--couleur-texte);
+  color: var(--couleur-fond);
+}
+html[data-theme] .btn-verre,
+html[data-theme] .btn-fantome {
+  background: var(--verre);
+  border-color: var(--couleur-bordure);
+  color: var(--couleur-texte);
+  box-shadow: none;
+}
+html[data-theme] .btn-verre:hover,
+html[data-theme] .btn-fantome:hover {
+  background: var(--couleur-texte);
+  border-color: var(--couleur-texte);
+  color: var(--couleur-fond);
+}
+
+/* ---------- Choix Particulier / Commerce : même ton que l'en-tête ---------- */
+html[data-theme] .univers-barre {
+  background: var(--couleur-fond);
+}
+
+/* ---------- Plus de grain de pellicule (fond studio net) ---------- */
+html[data-theme][data-page] body::after {
+  display: none;
+}
+
+/* ---------- Bouton jour / nuit (ajouté par js/theme.js) ---------- */
+.bouton-theme {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin: 0 4px;
+  padding: 0;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 50%;
+  background: none;
+  color: var(--couleur-texte);
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+.bouton-theme:hover {
+  border-color: var(--couleur-texte);
+}
+.bouton-theme svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* une seule icône : la lune en mode jour (passer en nuit), le soleil en mode nuit */
+.bouton-theme .ic-soleil,
+html[data-theme="nuit"] .bouton-theme .ic-lune {
+  display: none;
+}
+html[data-theme="nuit"] .bouton-theme .ic-soleil {
+  display: block;
+}
+
+/* Titres d'en-tête de page aussi en capitales (comme l'accueil) */
+html[data-theme] .univers-entete-titre {
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Téléphone : titre posé sur une photo plein écran → il reste clair, sur un voile sombre */
+@media (max-width: 860px) {
+  html[data-theme] .ouverture:not(.sans-photo) .ouverture-grille::after {
+    z-index: 1;
+  }
+  html[data-theme] .ouverture:not(.sans-photo) .ouverture-texte {
+    --couleur-texte: #f4f4f6;
+    --couleur-texte-attenue: rgba(244, 244, 246, 0.82);
+    color: #f4f4f6;
+  }
+  html[data-theme] .ouverture:not(.sans-photo) .ouverture-texte em {
+    color: inherit;
+  }
+  html[data-theme] .ouverture:not(.sans-photo) .ouverture-texte .btn-fantome {
+    background: rgba(18, 18, 20, 0.34);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+  }
+}

@@ -1,0 +1,165 @@
+/* Fichier généré par outils/theme-neutre.py — ne pas modifier à la main.
+   Les touches dorées de css/style.css, dans les tons du nouveau site. */
+html[data-theme="jour"] { --accent-rvb: 18, 18, 20; }
+html[data-theme="nuit"] { --accent-rvb: 242, 242, 244; }
+.admin-live-editor { --accent-rvb: 18, 18, 20; }
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .btn-fantome {
+  background: rgba(var(--accent-rvb), 0.1);
+  border-color: rgba(var(--accent-rvb), 0.55);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .btn-verre:hover,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .btn-fantome:hover {
+  background: rgba(var(--accent-rvb), 0.3);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .cta-band-inner {
+  border: 1px solid rgba(var(--accent-rvb), 0.3);
+  background: linear-gradient(135deg, rgba(var(--accent-rvb), 0.15), rgba(var(--accent-rvb), 0.04) 70%);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .polaroid {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .polaroid-photo {
+  background: #d8d8dc;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .presentation-polaroid {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .presentation-photo {
+  background: #d8d8dc;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .presentation-texte .btn-secondary,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .texte-duo-texte .btn-secondary {
+  border: 1px solid rgba(var(--accent-rvb), 0.55);
+  background: rgba(var(--accent-rvb), 0.1);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .presentation-texte .btn-secondary:hover,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .texte-duo-texte .btn-secondary:hover {
+  background: rgba(var(--accent-rvb), 0.26);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .vm-canaux svg {
+  border: 1px solid rgba(var(--accent-rvb), 0.45);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .etape .vm-client {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .vp-carte {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .vp-liste svg {
+  color: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .visuel-galerie {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .vg-case {
+  background: #d8d8dc;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .mq-hero-texte i {
+  background: var(--couleur-accent);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .mq-tirage {
+  background: #fbfbfa;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .mq-tirage-photo {
+  background: #d8d8dc;
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .mq-plus {
+  background: var(--couleur-accent);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .site-header.est-defile {
+  border-bottom-color: rgba(var(--accent-rvb), 0.22);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .reassurance li + li::before {
+  background: rgba(var(--accent-rvb), 0.6);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .presentation::before,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .texte-duo::before,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .instagram::before,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .etapes::before,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .faq::before {
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rvb), 0.75), transparent);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .btn-contour:hover {
+  background: rgba(var(--accent-rvb), 0.16);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) html[data-page] input:focus,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) html[data-page] select:focus,
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) html[data-page] textarea:focus {
+  box-shadow: 0 0 0 3px rgba(var(--accent-rvb), 0.16);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .citation::before {
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rvb), 0.75), transparent);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .apercu-col {
+  border: 1px solid rgba(var(--accent-rvb), 0.28);
+  background: linear-gradient(160deg, rgba(var(--accent-rvb), 0.1), rgba(var(--accent-rvb), 0.02) 70%);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .canal {
+  border: 1px solid rgba(var(--accent-rvb), 0.28);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .canal:hover {
+  background: rgba(var(--accent-rvb), 0.14);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .canaux-bas a {
+  border-bottom: 1px solid rgba(var(--accent-rvb), 0.7);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .conseils-col {
+  border: 1px solid rgba(var(--accent-rvb), 0.28);
+  background: linear-gradient(160deg, rgba(var(--accent-rvb), 0.1), rgba(var(--accent-rvb), 0.02) 70%);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .price-card {
+  background: linear-gradient(160deg, rgba(var(--accent-rvb), 0.09), rgba(var(--accent-rvb), 0.02) 70%);
+  border-color: rgba(var(--accent-rvb), 0.26);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .price-card.highlight {
+  background: linear-gradient(160deg, rgba(var(--accent-rvb), 0.18), rgba(var(--accent-rvb), 0.04) 72%);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .liens-liste {
+  border: 1px solid rgba(var(--accent-rvb), 0.28);
+  background: linear-gradient(160deg, rgba(var(--accent-rvb), 0.08), rgba(var(--accent-rvb), 0.015) 70%);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) a.lien-ligne:hover {
+  background: rgba(var(--accent-rvb), 0.13);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .lien-fleche {
+  border: 1px solid rgba(var(--accent-rvb), 0.55);
+}
+
+:is(html[data-theme="jour"], html[data-theme="nuit"], .admin-live-editor) .choix-boite {
+  border: 1px solid rgba(var(--accent-rvb), 0.38);
+}

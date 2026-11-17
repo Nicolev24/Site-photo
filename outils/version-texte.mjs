@@ -291,6 +291,8 @@ for (const { slug } of site.pages || []) {
   const page = await lireJson(`content/pages/${slug}.json`);
   const texte = `<noscript>\n${versionTexte(page, donnees)}\n</noscript>`;
   let nouveau = remplacerEntre(html, DEBUT, FIN, texte, '<main id="sections-root">');
+  // l'accueil (pile de Polaroïds) est écrit en HTML : pas de version texte, mais la fiche Google reste à jour
+  if (nouveau == null && slug === "index") nouveau = html;
   if (nouveau == null) {
     console.log(`⚠ ${fichier} : <main id="sections-root"> introuvable, ignorée`);
     continue;

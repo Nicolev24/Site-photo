@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <!-- Ne pas supprimer : validation Google Search Console -->
 <meta name="google-site-verification" content="KsaHR9IaJ3CnsTFrG3WowzAQdv6kWOI_mURIBIZSnWw" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Photographe à Ath – Mariage, portrait &amp; commerce | Nicolas Leveugle</title>
 <meta name="description" content="Nicolas Leveugle, photographe indépendant basé à Ath : mariages, portraits, couples, événements et photos pour commerces. En Wallonie et à Bruxelles." />
 <meta property="og:title" content="Photographe à Ath – Mariage, portrait &amp; commerce | Nicolas Leveugle" />
@@ -16,13 +16,13 @@
 <meta property="og:site_name" content="Nicolas Leveugle Photographie" />
 <meta property="og:locale" content="fr_BE" />
 <link rel="canonical" href="https://nicolasleveugle.be/" />
-<link rel="stylesheet" href="css/style.css" />
-<script src="js/univers.js"></script>
 <link rel="icon" href="favicon.ico" sizes="48x48" />
 <link rel="icon" href="icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#1c1916" />
+<meta name="theme-color" content="#ededf0" />
+<link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="fonts/jost-latin-400-normal.woff2" crossorigin />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -120,57 +120,196 @@
   }
 }
 </script>
+<script src="js/univers.js"></script>
+<script>
+  (function () {
+    var r = document.documentElement;
+    try {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("calme");
+    } catch (e) {}
+    // la pile de Polaroïds, sur téléphone comme sur ordinateur
+    r.classList.add("js", "chapitres");
+    try {
+      if (!window.matchMedia("(max-width: 899px)").matches) r.classList.add("large");
+    } catch (e) {}
+    var t = "jour";
+    try {
+      t = localStorage.getItem("theme") === "nuit" ? "nuit" : "jour";
+    } catch (e) {}
+    r.setAttribute("data-theme", t);
+  })();
+</script>
+<link rel="stylesheet" href="css/accueil.css?v=1" />
 </head>
 <body>
 
-<div class="univers-barre" id="univers-barre">
-  <div class="container univers-barre-inner">
-    <span class="univers-libelle">Vous êtes</span>
-    <div class="univers-switch" role="group" aria-label="Vous êtes">
-      <button type="button" data-univers="particuliers" aria-pressed="false">Particulier</button>
-      <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
-    </div>
+<a class="evitement" href="#formules">Aller aux formules</a>
+
+<header class="entete" id="entete">
+  <a class="logo" href="index.html">Nicolas Leveugle</a>
+  <nav class="nav" aria-label="Menu principal">
+    <a href="moi.html" data-lien-univers>Qui suis-je</a>
+    <a href="travail.html" data-lien-univers>Mon travail</a>
+    <a href="services.html" data-lien-univers>Tarifs</a>
+    <a href="contact.html" data-lien-univers>Contact</a>
+    <a href="galerie/index.html">Espace client</a>
+  </nav>
+  <button type="button" class="theme" id="theme" aria-label="Passer en mode nuit">
+    <svg class="ic-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 1 1 9.4 4a6.6 6.6 0 0 0 10.6 10.6z" /></svg>
+    <svg class="ic-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4 7 7M17 17l1.6 1.6M5.4 18.6 7 17M17 7l1.6-1.6" /></svg>
+  </button>
+  <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+  <a class="bouton bouton-petit" href="contact.html" data-lien-univers>Réserver</a>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav class="menu-liens" aria-label="Menu">
+    <a href="moi.html" data-lien-univers>Qui suis-je</a>
+    <a href="travail.html" data-lien-univers>Mon travail</a>
+    <a href="services.html" data-lien-univers>Tarifs</a>
+    <a href="contact.html" data-lien-univers>Contact</a>
+    <a href="galerie/index.html">Espace client</a>
+  </nav>
+  <div class="menu-bas">
+    <button type="button" class="lien" id="menu-theme">Mode nuit</button>
+    <button type="button" class="lien" id="menu-fermer">Fermer</button>
   </div>
 </div>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo js-logo">Nicolas Leveugle</a>
-    <div class="header-nav">
-      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="nav-links"></ul>
-      <a href="contact.html" class="btn btn-primary btn-small" id="header-cta"></a>
+<main>
+  <!-- L'histoire : une lentille → l'objectif → l'appareil → le déclic → la photo -->
+  <section class="histoire" id="histoire" aria-label="Comment se passe une séance">
+    <div class="plateau" id="plateau">
+      <div class="halo" aria-hidden="true"></div>
+      <div class="ombre-sol" id="ombre-sol" aria-hidden="true"></div>
+      <!-- Téléphone : une pile de Polaroïds qui s'écarte au défilement, comme un rideau -->
+      <div class="polas" id="polas">
+        <div class="polas-scene" id="polas-scene">
+          <div class="polas-pile" id="polas-pile" aria-hidden="true">
+          <figure class="pola" style="--x: 33%; --y: 48%; --r: -8deg; --i: 0" data-dx="-0.72" data-dy="-0.1" data-retard="0.14">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="images/tailles/mariages/premiere-danse-etincelles-480.webp" srcset="images/tailles/mariages/premiere-danse-etincelles-480.webp 480w, images/tailles/mariages/premiere-danse-etincelles-800.webp 800w" sizes="62vw" alt="" decoding="async" /></picture>
+          </figure>
+          <figure class="pola" style="--x: 67%; --y: 47%; --r: 7deg; --i: 1" data-dx="0.72" data-dy="-0.05" data-retard="0.14">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="images/tailles/portfolio/portraits/img2-480.webp" srcset="images/tailles/portfolio/portraits/img2-480.webp 480w, images/tailles/portfolio/portraits/img2-800.webp 800w" sizes="62vw" alt="" decoding="async" /></picture>
+          </figure>
+          <figure class="pola" style="--x: 50%; --y: 52%; --r: -1.5deg; --i: 2" data-dx="0.0" data-dy="-0.94" data-retard="0.0">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="images/tailles/mariages/maries-colonnes-480.webp" srcset="images/tailles/mariages/maries-colonnes-480.webp 480w, images/tailles/mariages/maries-colonnes-800.webp 800w" sizes="62vw" alt="" decoding="async" /></picture>
+          </figure>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="eclair" id="eclair" aria-hidden="true"></div>
+
+      <figure class="tirage" id="tirage" aria-hidden="true">
+        <div class="tirage-photo" id="tirage-photo"></div>
+        <div class="tirage-voile"></div>
+      </figure>
+      <ul class="etiquettes" id="etiquettes" data-reglages aria-label="Inclus">
+        <li>Réponse sous 48 h</li>
+        <li>Galerie privée en ligne</li>
+        <li>Aucune limite de photos livrées</li>
+      </ul>
+
+      <ol class="etapes">
+        <li class="etape" data-etape="0">
+          <div class="etape-haut">
+            <h1 class="titre"><span class="sur">Photographe à Ath</span><span class="grand">La lumière d'abord.</span></h1>
+          </div>
+          <div class="etape-bas">
+            <p class="texte" data-texte="0">Mariages, couples, portraits : des photos naturelles, une lumière soignée.</p>
+            <div class="actions">
+              <div class="pour" role="group" aria-label="Vous êtes">
+                <button type="button" data-univers="particuliers" aria-pressed="true">Particulier</button>
+                <button type="button" data-univers="commerces" aria-pressed="false">Commerce</button>
+              </div>
+              <a class="lien" href="#formules" data-saut>Les formules</a>
+            </div>
+          </div>
+        </li>
+        <li class="etape" data-etape="1">
+          <p class="chap-num" aria-hidden="true"><span>01</span>La préparation</p>
+          <div class="etape-haut"><h2 class="grand">Tout se prépare.</h2></div>
+          <div class="etape-bas"><p class="texte" data-texte="1">On parle de vos envies, des lieux et du bon moment. Réponse sous 48 h.</p></div>
+        </li>
+        <li class="etape" data-etape="2">
+          <p class="chap-num" aria-hidden="true"><span>02</span>La séance</p>
+          <div class="etape-haut"><h2 class="grand" data-titre="2">Le jour J.</h2></div>
+          <div class="etape-bas">
+            <p class="texte" data-texte="2">Je vous guide sans vous figer. Vous vivez le moment, je m'occupe du reste.</p>
+            <div class="actions"><a class="lien" href="moi.html" data-lien-univers>Qui suis-je</a></div>
+          </div>
+        </li>
+        <li class="etape" data-etape="3">
+          <p class="chap-num" aria-hidden="true"><span>03</span>Le déclic</p>
+          <div class="etape-haut"><h2 class="grand">Le déclic.</h2></div>
+          <div class="etape-bas"><p class="texte" data-texte="3">Un instant vrai, pas une pose.</p></div>
+        </li>
+        <li class="etape" data-etape="4">
+          <p class="chap-num" aria-hidden="true"><span>04</span>Vos photos</p>
+          <div class="etape-haut"><h2 class="grand" data-titre="4">Rien qu'à vous.</h2></div>
+          <div class="etape-bas">
+            <p class="texte" data-texte="4">Vos photos retouchées, dans votre galerie privée en ligne.</p>
+            <div class="actions"><a class="lien" href="travail.html" data-lien-univers>Voir mon travail</a></div>
+          </div>
+        </li>
+      </ol>
+
+      <p class="repere" id="repere" aria-hidden="true"><span class="repere-num">01</span><span class="repere-nom">La lumière</span></p>
+      <ol class="sommaire" id="sommaire" aria-hidden="true">
+        <li>La lumière</li>
+        <li>La préparation</li>
+        <li>La séance</li>
+        <li>Le déclic</li>
+        <li>Vos photos</li>
+      </ol>
+      <div class="defiler" id="defiler" aria-hidden="true"><span></span></div>
     </div>
-  </div>
-</header>
+  </section>
 
-<main id="sections-root"><!-- version-texte:debut --><noscript>
-<h1>Photographe à Ath · Wallonie &amp; Bruxelles</h1>
-<p>Des photos naturelles, qui vous ressemblent.</p>
-<p>Mariages, portraits, couples, événements et commerces — un style épuré, chaleureux, sans surenchère de retouche.</p>
-<h2><a href="a-propos.html?pour=particuliers">Particuliers : Mariages · portraits</a></h2>
-<img src="images/teaser-evenements.jpg" alt="Mariés entourés de leurs témoins" width="1199" height="1800" loading="lazy" />
-<h2><a href="a-propos.html?pour=commerces">Commerces : Photos &amp; site vitrine</a></h2>
-<img src="images/teaser-entreprises.jpg" alt="Séance chez un barbier" width="1200" height="1800" loading="lazy" />
-<blockquote><p>Pas de pose figée : juste vous, et la lumière du moment.</p></blockquote>
-<p>Entrez, faites un tour…</p>
-<ul><li><a href="a-propos.html">À propos</a> : Mon univers<img src="images/mariages/premiere-danse-etincelles.jpg" alt="Première danse des mariés entre deux fontaines d'étincelles" width="2264" height="1508" loading="lazy" /></li><li><a href="services.html">Services &amp; tarifs</a> : Les formules<img src="images/mariages/baiser-pont-chateau.jpg" alt="Les mariés s'embrassent sur le pont d'un château" width="2061" height="2576" loading="lazy" /></li><li><a href="contact.html">Contact</a> : Écrivez-moi<img src="images/mariages/maries-chien.jpg" alt="Les mariés assis dans l'herbe avec leur chien" width="2576" height="1717" loading="lazy" /></li></ul>
-</noscript><!-- version-texte:fin --></main>
+  <!-- Les formules : ce que je vends, sans les prix -->
+  <section class="formules" id="formules" aria-labelledby="formules-titre">
+    <div class="formules-tete">
+      <h2 class="grand" id="formules-titre">Les formules</h2>
+      <div class="onglets" role="group" aria-label="Formules pour">
+        <button type="button" data-univers="particuliers" aria-pressed="true">Particuliers</button>
+        <button type="button" data-univers="commerces" aria-pressed="false">Commerces</button>
+      </div>
+    </div>
+    <ul class="cartes" id="cartes"></ul>
+    <p class="formules-pied"><a class="lien" href="services.html" data-lien-univers>Tous les détails et les tarifs</a></p>
+  </section>
 
-<footer class="site-footer">
-  <div class="container footer-row">
-    <span class="logo js-logo" style="font-size:1.1rem">Nicolas Leveugle</span>
-    <ul class="footer-links" id="footer-links"></ul>
-  </div>
-  <div class="container">
-    <p class="footer-copy" id="footer-copy" style="margin-top:16px"></p>
-  </div>
+  <!-- Qui suis-je, en deux lignes -->
+  <section class="moi" aria-labelledby="moi-titre">
+    <img class="moi-photo" src="images/tailles/nicolas-leveugle-portrait-480.webp"
+      srcset="images/tailles/nicolas-leveugle-portrait-480.webp 480w, images/tailles/nicolas-leveugle-portrait-800.webp 800w"
+      sizes="(max-width: 760px) 40vw, 240px" alt="Nicolas Leveugle, photographe" width="480" height="600" loading="lazy" decoding="async" />
+    <div class="moi-texte">
+      <p class="sur">Derrière l'objectif</p>
+      <h2 class="moyen" id="moi-titre">Je suis Nicolas.</h2>
+      <p class="texte">Photographe indépendant basé à Ath. J'aime photographier les gens tels qu'ils sont, sans mise en scène.</p>
+      <div class="actions">
+        <a class="lien" href="moi.html" data-lien-univers>Qui suis-je</a>
+        <a class="lien" href="travail.html" data-lien-univers>Mon travail</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Une seule invitation, à la fin -->
+  <section class="fin" aria-labelledby="fin-titre">
+    <h2 class="grand" id="fin-titre">À vous de passer devant l'objectif.</h2>
+    <a class="bouton" href="contact.html" data-lien-univers>Réserver une séance</a>
+    <p class="fin-note">Réponse sous 48 h · Ath, Wallonie &amp; Bruxelles</p>
+  </section>
+</main>
+
+<footer class="pied">
+  <p>© <span id="annee">2026</span> Nicolas Leveugle Photographie</p>
+  <p class="pied-liens" data-canaux></p>
+  <p class="pied-legal"><a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a></p>
 </footer>
 
-<script src="js/main.js"></script>
-<script src="js/sections-renderer.js"></script>
-<script src="js/render.js"></script>
+<script src="js/accueil.js?v=1" defer></script>
 </body>
 </html>

@@ -905,7 +905,7 @@ function buildLiensPhotos(data, basePath) {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       if (!window.Univers || window.Univers.aChoisi() || typeof window.ouvrirChoixUnivers !== "function") return;
       // seules les pages qui changent selon l'univers posent la question
-      if (!/^(a-propos|services|contact)\.html/.test((tuile.getAttribute("href") || "").replace(/^.*\//, ""))) return;
+      if (!/^(a-propos|moi|travail|services|contact)\.html/.test((tuile.getAttribute("href") || "").replace(/^.*\//, ""))) return;
       e.preventDefault();
       window.ouvrirChoixUnivers(tuile.getAttribute("href"), { titre: data.choix_titre, intro: data.choix_intro });
     });

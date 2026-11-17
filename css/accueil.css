@@ -1,0 +1,1311 @@
+/* ============================================================
+   Page d'accueil — la pile de Polaroïds
+   (autonome : n'utilise ni ne modifie css/style.css).
+   Téléphone d'abord ; l'ordinateur à partir de 900 px.
+   ============================================================ */
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("../fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jost";
+  src: url("../fonts/jost-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Le système de la vidéo : un fond studio, une seule encre. */
+:root {
+  --fond: #ededf0;
+  --fond-verre: rgba(237, 237, 240, 0.86);
+  --encre: #121214;
+  --texte: rgba(18, 18, 20, 0.76);
+  --attenue: rgba(18, 18, 20, 0.66);
+  --trait: rgba(18, 18, 20, 0.16);
+  --carte: #ffffff;
+  --halo: rgba(255, 255, 255, 0.95);
+  --ombre-sol: rgba(20, 20, 30, 0.22);
+  --serif: "Cormorant Garamond", "Times New Roman", serif;
+  --sans: "Jost", -apple-system, "Segoe UI", sans-serif;
+  --entete: 56px;
+  --marge: 24px;
+  --doux: cubic-bezier(0.22, 0.61, 0.36, 1);
+  color-scheme: light;
+}
+:root[data-theme="nuit"] {
+  --fond: #111113;
+  --fond-verre: rgba(17, 17, 19, 0.86);
+  --encre: #f2f2f4;
+  --texte: rgba(242, 242, 244, 0.78);
+  --attenue: rgba(242, 242, 244, 0.6);
+  --trait: rgba(242, 242, 244, 0.16);
+  --carte: #1d1d21;
+  --halo: rgba(255, 255, 255, 0.075);
+  --ombre-sol: rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--fond);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  transition: background 0.4s var(--doux), color 0.4s var(--doux);
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+figure {
+  margin: 0;
+}
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+:focus-visible {
+  outline: 2px solid var(--encre);
+  outline-offset: 3px;
+}
+
+.evitement {
+  position: absolute;
+  left: 12px;
+  top: -80px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--encre);
+  color: var(--fond);
+  text-decoration: none;
+}
+.evitement:focus {
+  top: 12px;
+}
+
+/* ---------- Typographie ---------- */
+.grand {
+  font-family: var(--serif);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: clamp(2.35rem, 10.4vw, 7rem);
+  line-height: 0.96;
+  letter-spacing: -0.005em;
+}
+.moyen {
+  font-family: var(--serif);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: clamp(1.9rem, 7vw, 3.2rem);
+  line-height: 1;
+}
+.titre .grand {
+  display: block;
+}
+.sur {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.texte {
+  max-width: 34ch;
+  font-size: 1rem;
+  color: var(--texte);
+}
+
+/* ---------- Boutons et liens : fins, discrets ---------- */
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--encre);
+  border-radius: 10px;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--encre);
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+.bouton:hover,
+.bouton:focus-visible {
+  background: var(--encre);
+  color: var(--fond);
+}
+.bouton-petit {
+  padding: 0 14px;
+  font-size: 0.76rem;
+}
+.lien {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--trait);
+  color: var(--encre);
+  cursor: pointer;
+  transition: text-decoration-color 0.3s;
+}
+.lien:hover,
+.lien:focus-visible {
+  text-decoration-color: var(--encre);
+}
+a.lien::after {
+  content: "→";
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  transition: transform 0.3s var(--doux);
+}
+a.lien[data-saut]::after {
+  content: "↓";
+}
+a.lien:hover::after {
+  transform: translateX(3px);
+}
+a.lien[data-saut]:hover::after {
+  transform: translateY(3px);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 28px;
+  margin-top: 14px;
+}
+
+/* ---------- En-tête ---------- */
+.entete {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  height: var(--entete);
+  padding: 0 var(--marge);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--fond-verre);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: background 0.4s var(--doux);
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-right: auto;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav {
+  display: none;
+}
+.theme {
+  display: none;
+}
+.menu-btn {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Menu du téléphone : une page calme, les liens en grand */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--entete) + 24px) var(--marge) calc(28px + env(safe-area-inset-bottom, 0px));
+  background: var(--fond);
+  opacity: 0;
+  transition: opacity 0.3s var(--doux);
+}
+.menu.est-ouvert {
+  opacity: 1;
+}
+.menu[hidden] {
+  display: none;
+}
+.menu-liens {
+  display: flex;
+  flex-direction: column;
+}
+.menu-liens a {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  border-bottom: 1px solid var(--trait);
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.menu-bas {
+  display: flex;
+  justify-content: space-between;
+}
+.menu-ouvert .entete .menu-btn,
+.menu-ouvert .entete .bouton {
+  visibility: hidden;
+}
+.menu-ouvert {
+  overflow: hidden;
+}
+
+/* ---------- L'histoire (sans JavaScript : simple suite d'étapes) ---------- */
+.histoire {
+  position: relative;
+}
+.plateau {
+  position: relative;
+  padding: calc(var(--entete) + 32px) var(--marge) 48px;
+}
+.halo,
+.film,
+.ombre-sol,
+.toile,
+.eclair,
+.repere,
+.sommaire,
+.defiler {
+  display: none;
+}
+.lentille-fixe {
+  width: min(60vw, 300px);
+  height: auto;
+  margin: 24px auto;
+}
+.tirage {
+  display: none;
+}
+.etiquettes {
+  display: none;
+}
+.etape + .etape {
+  margin-top: 64px;
+}
+.etape-bas {
+  margin-top: 16px;
+}
+
+/* ---------- L'histoire animée (au défilement, libre) ---------- */
+html.anime .histoire {
+  height: var(--histoire-h, 560svh);
+}
+html.anime .plateau {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+html.anime .halo {
+  display: block;
+  position: absolute;
+  left: var(--ox, 50%);
+  top: var(--oy, 46%);
+  width: 120vmin;
+  height: 120vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+}
+html.anime .ombre-sol {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--ombre-sol), transparent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+html.anime .lentille-fixe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  width: 200px;
+  transform-origin: 0 0;
+  transition: opacity 0.6s var(--doux);
+  pointer-events: none;
+}
+html.anime .film {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+html.anime .toile {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s var(--doux);
+  pointer-events: none;
+}
+html.anime .toile.est-prete {
+  opacity: var(--toile-o, 1);
+  transition: none;
+}
+html.anime .eclair {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Le tirage qui sort de l'objectif */
+html.js .tirage {
+  display: block;
+  width: var(--tw, 260px);
+  padding: calc(var(--tw, 260px) * 0.034) calc(var(--tw, 260px) * 0.034) calc(var(--tw, 260px) * 0.13);
+  background: #fbfbfa;
+  box-shadow: 0 34px 60px -26px rgba(10, 10, 20, 0.45), 0 2px 8px rgba(10, 10, 20, 0.12);
+}
+html.anime .tirage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.tirage-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #d8d8dc;
+}
+.tirage-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tirage-voile {
+  position: absolute;
+  left: calc(var(--tw, 260px) * 0.034);
+  right: calc(var(--tw, 260px) * 0.034);
+  top: calc(var(--tw, 260px) * 0.034);
+  aspect-ratio: 4 / 5;
+  background: #cfd0d4;
+  opacity: 0;
+  pointer-events: none;
+}
+html.calme .tirage {
+  margin: 24px auto 0;
+}
+html.calme .lentille-fixe {
+  width: min(86vw, 460px);
+  margin: 8px auto 0;
+}
+
+/* Les trois étiquettes autour de la photo */
+html.js .etiquettes {
+  display: block;
+}
+html.anime .etiquettes li {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+}
+.etiquettes li {
+  padding: 9px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 8px;
+  background: var(--carte);
+  box-shadow: 0 10px 24px -14px rgba(10, 10, 20, 0.35);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--encre);
+}
+html.calme .etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* Les étapes, posées sur le plateau */
+html.anime .etapes {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+html.anime .etape {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+/* la première étape est lisible tout de suite, avant même le script */
+html.anime .etape[data-etape="0"] {
+  opacity: 1;
+  visibility: visible;
+}
+html.anime .etape.est-active a,
+html.anime .etape.est-active button {
+  pointer-events: auto;
+}
+html.anime .etape-haut {
+  position: absolute;
+  left: var(--marge);
+  right: var(--marge);
+  top: calc(var(--entete) + 2.6vh);
+}
+html.anime .etape-bas {
+  position: absolute;
+  left: var(--marge);
+  right: var(--marge);
+  bottom: calc(3.6vh + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+}
+
+/* Particulier / Commerce : un choix en toutes lettres */
+.pour {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.pour button {
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--attenue);
+  cursor: pointer;
+}
+.pour button:first-child {
+  padding-left: 0;
+}
+.pour button + button {
+  border-left: 1px solid var(--trait);
+}
+.pour button[aria-pressed="true"] {
+  color: var(--encre);
+}
+
+/* Indice « faire défiler » */
+html.anime .defiler {
+  display: block;
+  position: absolute;
+  right: var(--marge);
+  bottom: calc(3.6vh + env(safe-area-inset-bottom, 0px) + 10px);
+  z-index: 5;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: var(--trait);
+  transition: opacity 0.4s;
+}
+.defiler span {
+  display: block;
+  width: 1px;
+  height: 18px;
+  background: var(--encre);
+  animation: defiler 1.8s var(--doux) infinite;
+}
+@keyframes defiler {
+  from {
+    transform: translateY(-18px);
+  }
+  to {
+    transform: translateY(44px);
+  }
+}
+
+/* ---------- Les formules ---------- */
+.formules {
+  padding: 96px 0 72px;
+}
+.formules-tete {
+  padding: 0 var(--marge);
+}
+.onglets {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  border-bottom: 1px solid var(--trait);
+}
+.onglets button {
+  min-height: 44px;
+  margin-bottom: -1px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--attenue);
+  cursor: pointer;
+}
+.onglets button[aria-pressed="true"] {
+  border-bottom-color: var(--encre);
+  color: var(--encre);
+}
+.cartes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 78%;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 0 var(--marge) 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 var(--marge);
+  scrollbar-width: none;
+  transition: opacity 0.3s var(--doux);
+}
+.cartes::-webkit-scrollbar {
+  display: none;
+}
+.cartes.change {
+  opacity: 0;
+}
+.carte {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+.carte-photo {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--trait);
+}
+.carte-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--doux);
+}
+.carte:hover .carte-photo img {
+  transform: scale(1.03);
+}
+.carte-badge {
+  margin-top: 16px;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+.carte-titre {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.7rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.carte-badge + .carte-titre {
+  margin-top: 4px;
+}
+.carte-points {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: var(--texte);
+}
+.carte-points li + li {
+  margin-top: 2px;
+}
+.carte .actions {
+  margin-top: auto;
+  padding-top: 8px;
+}
+.points-defile {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.points-defile span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--trait);
+  transition: background 0.3s;
+}
+.points-defile span.est-actif {
+  background: var(--encre);
+}
+.formules-pied {
+  margin-top: 20px;
+  padding: 0 var(--marge);
+}
+
+/* ---------- Qui suis-je ---------- */
+.moi {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  gap: 20px;
+  align-items: center;
+  margin: 0 var(--marge);
+  padding: 56px 0;
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+}
+.moi-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.moi .texte {
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+.moi .sur {
+  margin-bottom: 10px;
+}
+
+/* ---------- Invitation finale ---------- */
+.fin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 112px var(--marge) 104px;
+  text-align: center;
+}
+.fin .grand {
+  max-width: 13ch;
+  font-size: clamp(2.2rem, 9.4vw, 5.6rem);
+}
+.fin .bouton {
+  margin-top: 36px;
+}
+.fin-note {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--attenue);
+}
+
+/* ---------- Pied ---------- */
+.pied {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 28px var(--marge) calc(28px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--trait);
+  font-size: 0.82rem;
+  color: var(--attenue);
+}
+.pied-liens a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+.pied-liens a + a {
+  margin-left: 18px;
+}
+.pied-labo {
+  width: 100%;
+  font-size: 0.75rem;
+}
+
+/* ---------- Ordinateur ---------- */
+@media (min-width: 900px) {
+  :root {
+    --entete: 68px;
+    --marge: clamp(32px, 5.5vw, 88px);
+  }
+  .entete {
+    gap: 32px;
+  }
+  .logo {
+    font-size: 1.4rem;
+  }
+  .nav {
+    display: flex;
+    gap: 30px;
+  }
+  .nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--texte);
+    transition: color 0.3s;
+  }
+  .nav a:hover {
+    color: var(--encre);
+  }
+  .theme {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--trait);
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+  }
+  .theme svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* une seule icône : la lune en mode jour (passer en nuit), le soleil en mode nuit */
+  .theme .ic-soleil,
+  :root[data-theme="nuit"] .theme .ic-lune {
+    display: none;
+  }
+  :root[data-theme="nuit"] .theme .ic-soleil {
+    display: block;
+  }
+  .menu-btn {
+    display: none;
+  }
+  .texte {
+    font-size: 1.06rem;
+  }
+  .grand {
+    font-size: clamp(3.4rem, 6.6vw, 7.4rem);
+  }
+
+  /* l'étape à gauche, l'objet à droite (comme la vidéo) */
+  html.anime .etape {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 28px;
+    padding: var(--entete) 0 0 var(--marge);
+    width: min(48vw, 760px);
+  }
+  html.anime .etape-haut,
+  html.anime .etape-bas {
+    position: static;
+  }
+  html.anime .repere {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    position: absolute;
+    left: var(--marge);
+    bottom: 4.5vh;
+    z-index: 5;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--attenue);
+  }
+  .repere-num {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    letter-spacing: 0;
+    color: var(--encre);
+  }
+  html.anime .sommaire {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    right: var(--marge);
+    top: 50%;
+    z-index: 5;
+    transform: translateY(-50%);
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: right;
+    color: var(--attenue);
+  }
+  .sommaire li {
+    transition: color 0.3s;
+  }
+  .sommaire li::after {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    height: 1px;
+    margin-left: 0;
+    background: var(--encre);
+    transition: width 0.4s var(--doux), margin 0.4s var(--doux);
+  }
+  .sommaire li.est-active {
+    color: var(--encre);
+  }
+  .sommaire li.est-active::after {
+    width: 22px;
+    margin-left: 10px;
+  }
+  html.anime .defiler {
+    left: 50%;
+    right: auto;
+    bottom: 4.5vh;
+  }
+
+  .formules {
+    padding: 140px 0 100px;
+  }
+  .formules-tete {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .onglets {
+    margin: 0;
+  }
+  .cartes {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 2.4vw, 40px);
+    margin-top: 48px;
+    overflow: visible;
+  }
+  .points-defile {
+    display: none;
+  }
+  .formules-pied {
+    margin-top: 36px;
+  }
+  .moi {
+    grid-template-columns: 260px minmax(0, 520px);
+    justify-content: center;
+    gap: 56px;
+    padding: 80px 0;
+  }
+  .moi .texte {
+    font-size: 1.04rem;
+  }
+  .fin {
+    padding: 160px var(--marge) 140px;
+  }
+}
+
+/* ============================================================
+   Téléphone : une pile de Polaroïds couvre l'écran ; au défilement
+   elles s'écartent comme un rideau, place au titre et à l'essentiel,
+   puis le site continue (étapes, formules, qui suis-je, réserver)
+   ============================================================ */
+.polas,
+.chap-num {
+  display: none;
+}
+html.chapitres .plateau {
+  padding: 0 0 24px;
+}
+html.chapitres .lentille-fixe {
+  display: none;
+}
+html.chapitres:not(.calme) .polas {
+  display: block;
+  position: relative;
+  height: 175vh;
+  height: 175svh;
+  view-timeline-name: --polas;
+  view-timeline-axis: block;
+}
+html.chapitres.calme .etape[data-etape="0"] {
+  padding: calc(var(--entete) + 32px) var(--marge) 0;
+}
+html.chapitres .polas-scene {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+/* derrière : le titre, le choix, l'essentiel */
+html.chapitres .polas-scene .etape {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: calc(var(--entete) + 18px) var(--marge) calc(26px + env(safe-area-inset-bottom, 0px));
+}
+html.chapitres .polas-scene .etape-bas .texte {
+  margin: 0;
+}
+html.chapitres .polas-scene .etape-bas {
+  margin: 0;
+}
+/* devant : la pile de photos */
+html.chapitres .polas-pile {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--pile-haut, 30%);
+  bottom: var(--pile-bas, 30%);
+  z-index: 2;
+  pointer-events: none;
+}
+html.chapitres .pola {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: min(50vw, calc(var(--pile-h, 400px) * 0.7));
+  max-width: 250px;
+  margin: 0;
+  padding: 2.4vw 2.4vw 11vw;
+  background: #fbfbfa;
+  box-shadow: 0 22px 40px -18px rgba(10, 10, 20, 0.5), 0 2px 6px rgba(10, 10, 20, 0.14);
+  translate: -50% -50%;
+  rotate: var(--r);
+  will-change: transform;
+}
+html.chapitres .pola:last-child {
+  width: min(60vw, calc(var(--pile-h, 400px) * 0.8));
+  max-width: 300px;
+  padding-bottom: 13vw;
+}
+html.chapitres .pola img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #d8d8dc;
+}
+/* mouvement confié au navigateur : synchronisé avec le défilement, sans retard */
+html.polas-css .pola {
+  animation: pola-sortie linear both;
+  animation-timeline: --polas;
+}
+@keyframes pola-sortie {
+  to {
+    transform: translate3d(calc(var(--dx) * var(--sortie-x, 95vw)), calc(var(--dy) * 80svh), 0) rotate(calc(var(--dx) * 12deg));
+  }
+}
+/* la suite : les étapes, simplement, l'une sous l'autre */
+html.chapitres .etapes {
+  margin: 0;
+  padding-top: 24px !important;
+  padding: 0;
+  list-style: none;
+}
+html.chapitres .etapes .etape {
+  padding: 0 var(--marge);
+}
+html.chapitres .etapes .etape + .etape {
+  margin-top: 56px;
+}
+html.chapitres .chap-num {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+html.chapitres .chap-num span {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--encre);
+}
+html.chapitres .chap-num::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--trait);
+}
+html.chapitres .etapes .grand {
+  font-size: clamp(2rem, 9vw, 3rem);
+}
+html.chapitres .etapes .etape-bas {
+  margin-top: 10px;
+}
+html.chapitres .etapes + .etiquettes,
+html.chapitres .etape > .etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 36px 0 0;
+  padding: 0 var(--marge);
+  list-style: none;
+}
+/* le léger fondu */
+html.chapitres .apparait {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.9s var(--doux), transform 0.9s var(--doux);
+}
+html.chapitres .apparait.vu {
+  opacity: 1;
+  transform: none;
+}
+
+/* les étapes 2 et 4 alignées à droite */
+html.chapitres .etapes .etape:nth-child(even) {
+  text-align: right;
+}
+html.chapitres .etapes .etape:nth-child(even) .chap-num {
+  flex-direction: row-reverse;
+}
+html.chapitres .etapes .etape:nth-child(even) .texte {
+  margin-left: auto;
+}
+html.chapitres .etapes .etape:nth-child(even) .actions {
+  justify-content: flex-end;
+}
+/* ordre sur téléphone : qui suis-je juste après l'ouverture */
+html.chapitres .moi {
+  margin-top: 8px;
+}
+html.chapitres .formules {
+  padding-bottom: 32px;
+}
+
+/* « Derrière l'objectif » dans l'ouverture : il apparaît en fondu quand les photos s'écartent */
+html.chapitres .polas-scene .moi {
+  position: absolute;
+  inset: var(--entete) 0 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 0;
+  padding: 12px var(--marge) calc(28px + env(safe-area-inset-bottom, 0px));
+  border: 0;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+}
+/* la photo entière, à taille raisonnable, au centre */
+html.chapitres .polas-scene .moi-photo {
+  flex: none;
+  width: min(62vw, 32svh, 270px);
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 30%;
+  box-shadow: 0 24px 44px -26px rgba(10, 10, 20, 0.45);
+}
+html.chapitres .polas-scene .moi .sur {
+  margin-bottom: 10px;
+}
+html.chapitres .polas-scene .moi .moyen {
+  font-size: clamp(1.9rem, 8.6vw, 2.6rem);
+}
+html.chapitres .polas-scene .moi .texte {
+  max-width: 30ch;
+  margin: 12px auto 0;
+  font-size: 1rem;
+}
+html.chapitres .polas-scene .moi .actions {
+  justify-content: center;
+  margin-top: 14px;
+}
+html.polas-css .polas-scene .moi {
+  animation: moi-arrive linear both;
+  animation-timeline: --polas;
+  animation-range: contain 62% contain 100%;
+}
+@keyframes moi-arrive {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(24px);
+  }
+  1% {
+    visibility: visible;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+html.polas-css .polas-scene .etape {
+  animation: ouverture-part linear both;
+  animation-timeline: --polas;
+  animation-range: contain 35% contain 60%;
+}
+@keyframes ouverture-part {
+  99% {
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ============================================================
+   Version Polaroïds sur ordinateur (essai : ?version=polaroids)
+   le titre à gauche, la pile de photos à droite, même ouverture
+   ============================================================ */
+@media (min-width: 900px) {
+  html.chapitres.large .polas-scene .etape {
+    right: 48%;
+    justify-content: center;
+    gap: 44px;
+    padding: calc(var(--entete) + 24px) 0 48px max(48px, 7vw);
+  }
+  html.chapitres.large .polas-scene .etape .grand {
+    font-size: clamp(3.4rem, 6.4vw, 6.6rem);
+  }
+  html.chapitres.large .polas-scene .etape .texte {
+    font-size: 1.08rem;
+  }
+  html.chapitres.large .polas-pile {
+    left: 50%;
+    right: 3vw;
+    top: calc(var(--entete) + 3vh);
+    bottom: 4vh;
+  }
+  /* sur grand écran, les photos doivent aller plus loin pour sortir */
+  html.chapitres.large .polas-pile {
+    --sortie-x: 150vw;
+  }
+  html.chapitres.large .pola {
+    width: min(21vw, 36vh);
+    max-width: 380px;
+    padding: 0.9vw 0.9vw 4.4vw;
+  }
+  html.chapitres.large .pola:last-child {
+    width: min(25vw, 44vh);
+    max-width: 440px;
+    padding-bottom: 5.2vw;
+  }
+  /* « Derrière l'objectif » : la photo à gauche, le texte à droite */
+  html.chapitres.large .polas-scene .moi {
+    flex-direction: row;
+    justify-content: center;
+    gap: max(48px, 6vw);
+    padding: 24px 8vw 48px;
+    text-align: left;
+  }
+  html.chapitres.large .polas-scene .moi-photo {
+    width: min(26vw, 52vh);
+    max-width: 420px;
+  }
+  html.chapitres.large .polas-scene .moi-texte {
+    max-width: 460px;
+  }
+  html.chapitres.large .polas-scene .moi .moyen {
+    font-size: clamp(2.6rem, 4.2vw, 4rem);
+  }
+  html.chapitres.large .polas-scene .moi .texte {
+    margin: 16px 0 0;
+    max-width: 34ch;
+    font-size: 1.08rem;
+  }
+  html.chapitres.large .polas-scene .moi .actions {
+    justify-content: flex-start;
+  }
+  /* les étapes, en colonne lisible au centre */
+  html.chapitres.large .etapes {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-top: 64px !important;
+  }
+  html.chapitres.large .etapes .etape {
+    padding: 0 48px;
+  }
+  html.chapitres.large .etapes .etape + .etape {
+    margin-top: 88px;
+  }
+  html.chapitres.large .etapes .grand {
+    font-size: clamp(2.6rem, 4.4vw, 4.2rem);
+  }
+  html.chapitres.large .etiquettes {
+    max-width: 1080px;
+    margin: 56px auto 0;
+    padding: 0 48px;
+    justify-content: center;
+  }
+}
+
+/* liens légaux du pied de page */
+.pied-legal {
+  font-size: 0.76rem;
+  color: var(--attenue);
+}
+.pied-legal a {
+  color: inherit;
+}

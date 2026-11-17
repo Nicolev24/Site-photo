@@ -1,19 +1,57 @@
 {
   "nav_links": [
-    { "label": "Accueil", "href": "index.html" },
-    { "label": "À propos", "href": "a-propos.html" },
-    { "label": "Services & tarifs", "href": "services.html" },
-    { "label": "Espace client", "href": "galerie/index.html" }
+    {
+      "label": "Qui suis-je",
+      "href": "moi.html"
+    },
+    {
+      "label": "Mon travail",
+      "href": "travail.html"
+    },
+    {
+      "label": "Tarifs",
+      "href": "services.html"
+    },
+    {
+      "label": "Contact",
+      "href": "contact.html"
+    },
+    {
+      "label": "Espace client",
+      "href": "galerie/index.html"
+    }
   ],
-  "cta_button": { "label": "Réserver", "href": "contact.html" },
+  "cta_button": {
+    "label": "Réserver",
+    "href": "contact.html"
+  },
   "footer_links": [
-    { "label": "À propos", "href": "a-propos.html" },
-    { "label": "Services & tarifs", "href": "services.html" },
-    { "label": "Contact", "href": "contact.html" }
+    {
+      "label": "Qui suis-je",
+      "href": "moi.html"
+    },
+    {
+      "label": "Mon travail",
+      "href": "travail.html"
+    },
+    {
+      "label": "Tarifs",
+      "href": "services.html"
+    },
+    {
+      "label": "Contact",
+      "href": "contact.html"
+    }
   ],
   "footer_legal_links": [
-    { "label": "Mentions légales", "href": "mentions-legales.html" },
-    { "label": "Confidentialité", "href": "confidentialite.html" }
+    {
+      "label": "Mentions légales",
+      "href": "mentions-legales.html"
+    },
+    {
+      "label": "Confidentialité",
+      "href": "confidentialite.html"
+    }
   ],
   "copyright_text": "Nicolas Leveugle Photographie — Ath, Belgique"
 }

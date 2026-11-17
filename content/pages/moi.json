@@ -1,0 +1,103 @@
+{
+  "seo": {
+    "title": "Qui suis-je – Nicolas Leveugle, photographe à Ath",
+    "description": "Nicolas Leveugle, photographe indépendant à Ath : qui je suis, ma façon de travailler, pour les particuliers comme pour les commerces.",
+    "og_image": "images/nicolas-leveugle-portrait.jpg"
+  },
+  "sections": [
+    {
+      "id": "qui-je-suis-particuliers",
+      "type": "presentation",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "Qui suis-je · Photographe à Ath",
+        "title": "Derrière l'objectif",
+        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Mariages, couples, portraits, événements : j'aime photographier les gens tels qu'ils sont.",
+        "text_suite": "Ce qui me plaît dans ce métier, c'est de capter des moments vrais, sans les mettre en scène, et de voir la réaction de mes clients quand ils découvrent leurs photos.",
+        "button_label": "",
+        "button_href": "",
+        "image": "images/nicolas-leveugle-portrait.jpg",
+        "alt": "Nicolas Leveugle, photographe à Ath",
+        "position": "50% 50%"
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "facon-de-travailler-particuliers",
+      "type": "texte_duo",
+      "data": {
+        "eyebrow": "Ma façon de travailler",
+        "title": "Naturel avant tout",
+        "text": "Je vous guide juste assez pour que vous soyez à l'aise, puis je laisse la place aux vrais moments : un regard, un rire, une main qui se serre.",
+        "text_suite": "Côté retouche, je reste sobre : une lumière soignée, des couleurs fidèles, et vous, tels que vous êtes.",
+        "button_label": "Voir mon travail",
+        "button_href": "travail.html",
+        "image_side": "droite",
+        "photos": [
+          {
+            "image": "images/mariages/baiser-pont-chateau.jpg",
+            "alt": "Les mariés s'embrassent sur le pont d'un château",
+            "position": "50% 62%"
+          },
+          {
+            "image": "images/mariages/photo-instantanee.jpg",
+            "alt": "Les mariés montrent une photo instantanée d'eux-mêmes"
+          }
+        ]
+      },
+      "tab": "particuliers"
+    },
+    {
+      "id": "qui-je-suis-commerces",
+      "type": "presentation",
+      "tab": "commerces",
+      "data": {
+        "titre_page": true,
+        "eyebrow": "Qui suis-je · Photographe à Ath",
+        "title": "Derrière l'objectif",
+        "text": "Je suis Nicolas, photographe indépendant basé à Ath. Pour les commerces et les entreprises, je réalise des photos qui montrent votre lieu, votre équipe et votre savoir-faire.",
+        "text_suite": "Des photos prêtes pour votre fiche Google, vos réseaux et votre site — et si vous n'avez pas encore de site, je peux aussi vous en créer un.",
+        "button_label": "",
+        "button_href": "",
+        "image": "images/nicolas-leveugle-portrait.jpg",
+        "alt": "Nicolas Leveugle, photographe à Ath",
+        "position": "50% 50%"
+      }
+    },
+    {
+      "id": "facon-de-travailler-commerces",
+      "type": "texte_duo",
+      "tab": "commerces",
+      "data": {
+        "eyebrow": "Ma façon de travailler",
+        "title": "Des photos qui vous ressemblent",
+        "text": "Je viens sur place, au moment qui vous arrange, et je m'adapte à votre activité. On prépare ensemble la liste des photos utiles : vitrine, équipe, produits, ambiance.",
+        "text_suite": "Le résultat : des photos naturelles, qui donnent envie de pousser la porte.",
+        "button_label": "Voir mon travail",
+        "button_href": "travail.html",
+        "image_side": "droite",
+        "photos": [
+          {
+            "image": "images/commerces/barbier-portrait-miroir.jpg",
+            "alt": "Portrait du barbier dans son salon, reflété dans le miroir",
+            "position": "50% 30%"
+          },
+          {
+            "image": "images/commerces/outils-miroir.jpg",
+            "alt": "Les outils du barbier posés devant un miroir doré"
+          }
+        ]
+      }
+    },
+    {
+      "id": "faisons-connaissance",
+      "type": "cta",
+      "data": {
+        "title": "Faisons *connaissance*",
+        "text": "Racontez-moi votre projet : je vous réponds sous 48 h.",
+        "button_label": "Me contacter",
+        "button_href": "contact.html"
+      }
+    }
+  ]
+}

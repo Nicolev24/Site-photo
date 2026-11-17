@@ -20,7 +20,7 @@
             "image": "images/teaser-evenements.jpg",
             "alt": "Mariés entourés de leurs témoins",
             "position": "50% 45%",
-            "href": "a-propos.html?pour=particuliers"
+            "href": "moi.html?pour=particuliers"
           },
           {
             "univers": "commerces",
@@ -29,7 +29,7 @@
             "image": "images/teaser-entreprises.jpg",
             "alt": "Séance chez un barbier",
             "position": "50% 30%",
-            "href": "a-propos.html?pour=commerces"
+            "href": "moi.html?pour=commerces"
           }
         ],
         "hint": "↑ choisissez votre photo",
@@ -59,7 +59,7 @@
           {
             "title": "À propos",
             "text": "Mon univers",
-            "href": "a-propos.html",
+            "href": "moi.html",
             "image": "images/mariages/premiere-danse-etincelles.jpg",
             "alt": "Première danse des mariés entre deux fontaines d'étincelles",
             "position": "50% 45%"
