@@ -302,7 +302,9 @@
     const listeEtapes = $(".etapes");
     const sectionFormules = $("#formules");
     const sectionMoi = $(".moi");
-    if (sectionFormules && sectionMoi) sectionFormules.before(sectionMoi);
+    // « Derrière l'objectif » apparaît en fondu dans l'ouverture, quand les photos s'écartent
+    if (sectionMoi && !calme) scene.appendChild(sectionMoi);
+    else if (sectionFormules && sectionMoi) sectionFormules.before(sectionMoi);
     if (sectionFormules && listeEtapes) {
       sectionFormules.after(listeEtapes);
       listeEtapes.after(listeEtiquettes);
@@ -387,6 +389,18 @@
             const e = seg(p, d.de, d.a);
             d.f.style.transform = `translate3d(${(d.dx * P.W * 0.95 * e).toFixed(1)}px, ${(d.dy * P.H * 0.8 * e).toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
           });
+          // le titre s'efface, « Derrière l'objectif » arrive
+          if (ouverture) {
+            const o = 1 - seg(p, 0.35, 0.6);
+            ouverture.style.opacity = o.toFixed(3);
+            ouverture.style.visibility = o < 0.01 ? "hidden" : "visible";
+          }
+          if (sectionMoi) {
+            const m = seg(p, 0.62, 1);
+            sectionMoi.style.opacity = m.toFixed(3);
+            sectionMoi.style.visibility = m < 0.01 ? "hidden" : "visible";
+            sectionMoi.style.transform = `translateY(${((1 - m) * 24).toFixed(1)}px)`;
+          }
         };
         let attente = false;
         window.addEventListener(
@@ -420,7 +434,7 @@
 
       // fondu léger à l'arrivée de chaque bloc, plus bas
       if ("IntersectionObserver" in window) {
-        const blocs = $$(".etapes > .etape > *, .formules-tete, .moi, .fin");
+        const blocs = $$(".etapes > .etape > *, .formules-tete, .fin");
         blocs.forEach((bl) => bl.classList.add("apparait"));
         const obs = new IntersectionObserver(
           (entrees) =>

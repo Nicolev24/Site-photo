@@ -36,7 +36,7 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="accueil.css?v=10" />
+<link rel="stylesheet" href="accueil.css?v=11" />
 </head>
 <body>
 
@@ -84,9 +84,9 @@
       </picture>
       <canvas class="film" id="film" aria-hidden="true"></canvas>
       <!-- Téléphone : une pile de Polaroïds qui s'écarte au défilement, comme un rideau -->
-      <div class="polas" id="polas" aria-hidden="true">
+      <div class="polas" id="polas">
         <div class="polas-scene" id="polas-scene">
-          <div class="polas-pile" id="polas-pile">
+          <div class="polas-pile" id="polas-pile" aria-hidden="true">
           <figure class="pola" style="--x: 33%; --y: 48%; --r: -8deg; --i: 0" data-dx="-0.72" data-dy="-0.1" data-retard="0.14">
             <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/premiere-danse-etincelles-480.webp" srcset="../../images/tailles/mariages/premiere-danse-etincelles-480.webp 480w, ../../images/tailles/mariages/premiere-danse-etincelles-800.webp 800w" sizes="62vw" alt="" decoding="async" /></picture>
           </figure>
@@ -213,6 +213,6 @@
 </footer>
 
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="accueil.js?v=15" defer></script>
+<script src="accueil.js?v=16" defer></script>
 </body>
 </html>

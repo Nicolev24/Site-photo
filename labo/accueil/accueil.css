@@ -1129,3 +1129,50 @@ html.chapitres .moi {
 html.chapitres .formules {
   padding-bottom: 32px;
 }
+
+/* « Derrière l'objectif » dans l'ouverture : il apparaît en fondu quand les photos s'écartent */
+html.chapitres .polas-scene .moi {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--entete) + (100svh - var(--entete)) / 2);
+  z-index: 1;
+  margin: 0 var(--marge);
+  translate: 0 -50%;
+  opacity: 0;
+  visibility: hidden;
+}
+html.polas-css .polas-scene .moi {
+  animation: moi-arrive linear both;
+  animation-timeline: --polas;
+  animation-range: contain 62% contain 100%;
+}
+@keyframes moi-arrive {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(24px);
+  }
+  1% {
+    visibility: visible;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+html.polas-css .polas-scene .etape {
+  animation: ouverture-part linear both;
+  animation-timeline: --polas;
+  animation-range: contain 35% contain 60%;
+}
+@keyframes ouverture-part {
+  99% {
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
