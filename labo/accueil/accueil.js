@@ -317,8 +317,9 @@
   // ---------- Le film (séquence d'images) ----------
   const film = MODE_FILM ? $("#film") : null;
   const FILM = {
-    pas: 0.04, // une image tous les 0,04 d'étape
-    n: 79, // de 0 à 3,12
+    n: 0, // nombre d'images (lu dans lentille.json)
+    pos: null, // position c de chaque image
+    cles: null,
     dossier: (window.innerWidth < 900 ? "sequence/640/" : "sequence/1000/"),
     images: [],
     pret: 0,
@@ -547,47 +548,64 @@
   }
 
   // ---------- Le film : une image par position de défilement (flip-book) ----------
+  // La liste des images vient de lentille.json (positions calculées, plus serrées là où ça bouge vite).
+  // On affiche toujours l'image la plus proche, sans fondu : chaque image reste nette.
   function chargerFilm() {
     if (FILM.lance) return;
     FILM.lance = true;
     fetch(FILM.dossier + "../lentille.json")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
-        if (j) {
-          FILM.reperes = j;
-          forcer = true;
-        }
+        if (!j) return;
+        FILM.cles = Object.keys(j).sort((a, b) => a - b);
+        FILM.pos = FILM.cles.map(Number);
+        FILM.reperes = FILM.cles.map((k) => j[k]);
+        FILM.n = FILM.cles.length;
+        forcer = true;
+        // d'abord une image sur huit (on voit tout de suite le mouvement), puis on comble
+        const ordre = [];
+        const vu = new Set();
+        [8, 4, 2, 1].forEach((p) => {
+          for (let i = 0; i < FILM.n; i += p) if (!vu.has(i)) vu.add(i) && ordre.push(i);
+        });
+        let enCours = 0;
+        const suite = () => {
+          while (enCours < 6 && ordre.length) {
+            const i = ordre.shift();
+            enCours++;
+            const img = new Image();
+            img.decoding = "async";
+            img.src = FILM.dossier + "c_" + FILM.cles[i] + ".webp";
+            const fini = () => {
+              enCours--;
+              suite();
+            };
+            img.decode().then(() => {
+              FILM.images[i] = img;
+              FILM.pret++;
+              forcer = true;
+              fini();
+            }, fini);
+          }
+        };
+        suite();
       })
       .catch(() => {});
-    // d'abord une image sur huit (on voit tout de suite le mouvement), puis on comble
-    const ordre = [];
-    [8, 4, 2, 1].forEach((p) => {
-      for (let i = 0; i < FILM.n; i += p) if (!ordre.includes(i)) ordre.push(i);
-    });
-    let enCours = 0;
-    const suite = () => {
-      while (enCours < 6 && ordre.length) {
-        const i = ordre.shift();
-        enCours++;
-        const img = new Image();
-        img.decoding = "async";
-        img.src = FILM.dossier + nomImage(i);
-        const fini = () => {
-          enCours--;
-          suite();
-        };
-        img.decode().then(() => {
-          FILM.images[i] = img;
-          FILM.pret++;
-          forcer = true;
-          fini();
-        }, fini);
-      }
-    };
-    suite();
   }
-  function nomImage(i) {
-    return "c_" + (i * FILM.pas).toFixed(3) + ".webp";
+  // position c → indice de l'image (et fraction vers la suivante)
+  function indiceFilm(c) {
+    const P = FILM.pos;
+    if (!P || !P.length) return [0, 0];
+    if (c <= P[0]) return [0, 0];
+    if (c >= P[P.length - 1]) return [P.length - 1, 0];
+    let b = 0;
+    let h = P.length - 1;
+    while (h - b > 1) {
+      const m = (b + h) >> 1;
+      if (P[m] <= c) b = m;
+      else h = m;
+    }
+    return [b, (c - P[b]) / (P[h] - P[b])];
   }
   function plusProche(i) {
     for (let d = 0; d < FILM.n; d++) {
@@ -598,34 +616,21 @@
   }
   function dessinerFilm(c) {
     if (!film || !FILM.pret) return;
-    const f = borne(c / FILM.pas, 0, FILM.n - 1);
-    const i0 = Math.floor(f);
-    const a = f - i0;
-    const im0 = FILM.images[i0] || plusProche(i0);
-    const im1 = a > 0.02 && i0 + 1 < FILM.n ? FILM.images[i0 + 1] : null;
-    const cle_ = (im0 && im0.src) + "|" + (im1 ? a.toFixed(2) : "");
-    if (cle_ === FILM.dernier) return;
-    FILM.dernier = cle_;
+    const [i, a] = indiceFilm(c);
+    const j = a < 0.5 ? i : Math.min(FILM.n - 1, i + 1);
+    const im = FILM.images[j] || plusProche(j);
+    if (!im || im === FILM.dernier) return;
+    FILM.dernier = im;
     const ctx = film.getContext("2d");
     ctx.clearRect(0, 0, film.width, film.height);
-    if (!im0) return;
-    ctx.globalAlpha = 1;
-    ctx.drawImage(im0, 0, 0, film.width, film.height);
-    if (im1) {
-      // fondu entre deux images voisines : le mouvement reste fluide entre les images calculées
-      ctx.globalAlpha = a;
-      ctx.drawImage(im1, 0, 0, film.width, film.height);
-      ctx.globalAlpha = 1;
-    }
+    ctx.drawImage(im, 0, 0, film.width, film.height);
   }
   function reperesLentille(c) {
     const R0 = [0.5, 0.5, 0.06];
     if (!FILM.reperes) return R0;
-    const f = borne(c / FILM.pas, 0, FILM.n - 1);
-    const i0 = Math.floor(f);
-    const a = f - i0;
-    const r0 = FILM.reperes[(i0 * FILM.pas).toFixed(3)] || R0;
-    const r1 = FILM.reperes[(Math.min(FILM.n - 1, i0 + 1) * FILM.pas).toFixed(3)] || r0;
+    const [i, a] = indiceFilm(c);
+    const r0 = FILM.reperes[i] || R0;
+    const r1 = FILM.reperes[Math.min(FILM.n - 1, i + 1)] || r0;
     return [lerp(r0[0], r1[0], a), lerp(r0[1], r1[1], a), lerp(r0[2], r1[2], a)];
   }
 
