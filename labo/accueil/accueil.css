@@ -955,35 +955,96 @@ html.anime .defiler {
 }
 
 /* ============================================================
-   Téléphone : l'histoire en chapitres d'images fixes
-   (mêmes textes, même rendu « cinéma », un léger fondu à l'arrivée)
+   Téléphone : on entre dans l'objectif, une photo s'ouvre depuis le verre,
+   puis le site continue (étapes, formules, qui suis-je, réserver)
    ============================================================ */
-.chap-num,
-.chap-image {
+.plongee,
+.chap-num {
   display: none;
 }
 html.chapitres .plateau {
-  padding: calc(var(--entete) + 28px) 0 24px;
+  padding: 0 0 24px;
 }
 html.chapitres .lentille-fixe {
   display: none;
 }
-html.chapitres .etapes {
+html.chapitres .plongee {
+  display: block;
+  position: relative;
+  height: 260vh;
+  height: 260svh;
+}
+html.chapitres .plongee-scene {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+/* une lumière douce derrière l'appareil */
+html.chapitres .plongee-scene::before {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: 20%;
+  height: 80%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+}
+html.chapitres .plongee-objectif {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  will-change: transform;
+}
+html.chapitres .plongee-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  clip-path: circle(0 at 50% 50%);
+  will-change: clip-path, opacity;
+}
+html.chapitres .plongee-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+/* le titre et le choix Particulier / Commerce, posés sur la scène */
+html.chapitres .plongee-scene .etape {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin: 0;
+  padding: calc(var(--entete) + 22px) var(--marge) calc(22px + env(safe-area-inset-bottom, 0px));
+}
+html.chapitres .plongee-scene .etape-bas {
+  margin: 0;
+}
+/* la suite : les étapes, simplement, l'une sous l'autre */
+html.chapitres .etapes {
+  margin: 72px 0 0;
   padding: 0;
   list-style: none;
 }
-html.chapitres .etape {
+html.chapitres .etapes .etape {
   padding: 0 var(--marge);
 }
-html.chapitres .etape + .etape {
-  margin-top: 72px;
+html.chapitres .etapes .etape + .etape {
+  margin-top: 56px;
 }
 html.chapitres .chap-num {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   font-size: 0.76rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1001,46 +1062,18 @@ html.chapitres .chap-num::after {
   height: 1px;
   background: var(--trait);
 }
-html.chapitres .chap-image {
-  display: block;
-  position: relative;
-  margin: 8px calc(-1 * var(--marge)) 0;
+html.chapitres .etapes .grand {
+  font-size: clamp(2rem, 9vw, 3rem);
 }
-/* une lumière douce derrière l'objet, comme sur le plateau de l'ordinateur */
-html.chapitres .chap-image::before {
-  content: "";
-  position: absolute;
-  inset: 6% 0 14%;
-  background: radial-gradient(closest-side, var(--halo), transparent);
-  pointer-events: none;
-}
-html.chapitres .chap-image img {
-  position: relative;
-  width: 100%;
-  height: auto;
-}
-html.chapitres .etape[data-etape="0"] .chap-image {
-  margin-top: -6px;
-}
-html.chapitres .etape-bas {
-  margin-top: 4px;
-}
-html.chapitres .etape[data-etape="0"] .etape-bas {
-  margin-top: -18px;
-  position: relative;
-}
-/* la photo, posée comme un tirage */
-html.chapitres .tirage {
-  --tw: min(74vw, 340px);
-  margin: 28px auto 8px;
-  transform: rotate(-1.6deg);
+html.chapitres .etapes .etape-bas {
+  margin-top: 10px;
 }
 html.chapitres .etiquettes {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 22px 0 0;
-  padding: 0;
+  margin: 36px 0 0;
+  padding: 0 var(--marge);
   list-style: none;
 }
 /* le léger fondu */
@@ -1053,6 +1086,15 @@ html.chapitres .apparait.vu {
   opacity: 1;
   transform: none;
 }
-html.chapitres .tirage.apparait.vu {
-  transform: rotate(-1.6deg);
+/* le texte du bas reste lisible par-dessus l'appareil */
+html.chapitres .plongee-scene .etape-bas {
+  position: relative;
+  margin: 0 calc(-1 * var(--marge)) calc(-22px - env(safe-area-inset-bottom, 0px));
+  padding: 40px var(--marge) calc(22px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, var(--fond) 70%, transparent);
+}
+/* bords gauche et droit de l'image adoucis (l'appareil dépasse du cadre du rendu) */
+html.chapitres .plongee-objectif {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
 }

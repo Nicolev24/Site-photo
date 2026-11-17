@@ -286,21 +286,100 @@
     if (e.key === "Escape" && menu && !menu.hidden) ouvrirMenu(false);
   });
 
-  // ---------- Téléphone : l'histoire en chapitres d'images fixes, avec un léger fondu ----------
+  // ---------- Téléphone : on entre dans l'objectif, puis le site continue ----------
   if (chapitres) {
-    // la photo et ses étiquettes rejoignent le dernier chapitre
-    const dernier = etapes[N - 1];
-    if (dernier) {
-      $(".etape-haut", dernier).after(tirage);
-      dernier.appendChild(listeEtiquettes);
+    const plongee = $("#plongee");
+    const scene = $("#plongee-scene");
+    const objectif = $("#plongee-objectif");
+    const photo = $("#plongee-photo");
+    const ouverture = etapes[0];
+    // le titre et le choix Particulier / Commerce sont posés sur l'objectif
+    if (ouverture) scene.appendChild(ouverture);
+    // pas de tirage sur téléphone : la photo est déjà plein écran ; les étiquettes suivent les étapes
+    if (tirage) tirage.style.display = "none";
+    if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
+    // la photo vue à travers l'objectif (la même que le tirage, selon l'univers)
+    const remplirPhoto = () => {
+      const t = TIRAGE[univers] || TIRAGE.particuliers;
+      photo.innerHTML = image(t.image, 1600, "100vw", "");
+      const img = photo.querySelector("img");
+      if (img) img.style.objectPosition = t.pos;
+    };
+    pret.then(remplirPhoto); // après le manifeste des images (tailles WebP légères)
+    $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPhoto, 0)));
+
+    // où est le verre de l'objectif dans l'image (mesuré sur le rendu)
+    const VERRE = { x: 0.375, y: 0.607, r: 0.175 };
+    const P = { W: 1, H: 1, iy: 0, Lx: 0, Ly: 0, Lr: 1, kFin: 1, haut: 0, course: 1 };
+    function mesurerPlongee() {
+      P.W = scene.clientWidth;
+      P.H = scene.clientHeight;
+      // place libre entre le titre (en haut) et le texte (en bas)
+      const haut = ouverture ? $(".etape-haut", ouverture) : null;
+      const bas = ouverture ? $(".etape-bas", ouverture) : null;
+      const basTitre = haut ? haut.offsetTop + haut.offsetHeight : P.H * 0.28;
+      const hautTexte = bas ? bas.offsetTop + 30 : P.H * 0.72; // le dégradé du texte peut mordre un peu
+      const libre = Math.max(80, hautTexte - basTitre - 8);
+      // l'appareil occupe environ 20 % → 82 % de la hauteur de l'image : on le fait tenir dans la place libre
+      const iw = Math.min(P.W, libre / 0.62 / 1.25);
+      const ih = iw * 1.25;
+      const ix = (P.W - iw) / 2;
+      P.iy = Math.round(basTitre + 4 + (libre - 0.62 * ih) / 2 - 0.2 * ih);
+      objectif.style.width = iw + "px";
+      objectif.style.left = ix + "px";
+      objectif.style.top = P.iy + "px";
+      P.Lx = ix + VERRE.x * iw;
+      P.Ly = P.iy + VERRE.y * ih;
+      P.Lr = VERRE.r * iw;
+      objectif.style.transformOrigin = `${VERRE.x * iw}px ${VERRE.y * ih}px`;
+      // assez grand pour que le cercle couvre tout l'écran une fois centré
+      P.kFin = (Math.hypot(P.W, P.H) * 0.56) / P.Lr;
+      P.haut = plongee.getBoundingClientRect().top + window.scrollY;
+      P.course = Math.max(1, plongee.offsetHeight - P.H);
+      dessinerPlongee();
     }
-    pret.then(() => {
-      if (voile) voile.style.opacity = 0;
+    let dernierP = -1;
+    function dessinerPlongee() {
+      const p = borne((window.scrollY - P.haut) / P.course);
+      if (Math.abs(p - dernierP) < 0.0004) return;
+      dernierP = p;
+      const e = lisse(seg(p, 0, 0.82));
+      const k = Math.exp(Math.log(P.kFin) * e);
+      // le verre glisse vers le centre de l'écran en grandissant
+      const cx = lerp(P.Lx, P.W / 2, e);
+      const cy = lerp(P.Ly, P.H / 2, e);
+      objectif.style.transform = `translate(${(cx - P.Lx).toFixed(1)}px, ${(cy - P.Ly).toFixed(1)}px) scale(${k.toFixed(4)})`;
+      const r = P.Lr * k * 0.97;
+      photo.style.clipPath = `circle(${r.toFixed(1)}px at ${cx.toFixed(1)}px ${cy.toFixed(1)}px)`;
+      // un reflet dans le verre au début, puis la photo prend toute la place
+      photo.style.opacity = lerp(0.32, 1, lisse(seg(p, 0.04, 0.5))).toFixed(3);
+      const pi = photo.firstElementChild;
+      if (pi) pi.style.transform = `scale(${lerp(1.25, 1, e).toFixed(4)})`;
+      if (ouverture) {
+        const o = 1 - seg(p, 0.02, 0.16);
+        ouverture.style.opacity = o.toFixed(3);
+        ouverture.style.visibility = o < 0.01 ? "hidden" : "visible";
+      }
+    }
+    mesurerPlongee();
+    window.addEventListener("scroll", () => requestAnimationFrame(dessinerPlongee), { passive: true });
+    let lPrec = P.W;
+    window.addEventListener("resize", () => {
+      // la barre d'adresse qui se replie ne change que la hauteur : on garde la largeur
+      if (scene.clientWidth === lPrec && Math.abs(scene.clientHeight - P.H) < 120) return;
+      lPrec = scene.clientWidth;
+      dernierP = -1;
+      mesurerPlongee();
     });
-    // fondu à l'arrivée de chaque bloc (sauf l'ouverture, visible tout de suite)
+    window.addEventListener("load", () => {
+      dernierP = -1;
+      mesurerPlongee();
+    });
+
+    // fondu léger à l'arrivée de chaque bloc
     if (!calme && "IntersectionObserver" in window) {
-      const blocs = $$(".etape:not([data-etape='0']) > *, .formules-tete, .moi, .fin");
-      blocs.forEach((b) => b.classList.add("apparait"));
+      const blocs = $$(".etapes > .etape > *, .etiquettes, .formules-tete, .moi, .fin");
+      blocs.forEach((bl) => bl.classList.add("apparait"));
       const obs = new IntersectionObserver(
         (entrees) =>
           entrees.forEach((en) => {
@@ -310,9 +389,8 @@
           }),
         { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
       );
-      blocs.forEach((b) => obs.observe(b));
+      blocs.forEach((bl) => obs.observe(bl));
     }
-    // passage téléphone ↔ ordinateur (rotation d'une tablette, fenêtre agrandie) : on recharge
     try {
       window.matchMedia("(max-width: 899px)").addEventListener("change", () => location.reload());
     } catch (e) {}
