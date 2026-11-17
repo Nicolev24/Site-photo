@@ -422,6 +422,8 @@ function slugDe(url) {
   const reste = url.pathname.slice(RACINE.pathname.length);
   if (reste.includes("/") || (reste && !reste.endsWith(".html"))) return null;
   const slug = !reste || reste === "index.html" ? "index" : reste.replace(/\.html$/, "");
+  // l'accueil (pile de Polaroïds) est une page à part : on y va par un vrai chargement
+  if (slug === "index") return null;
   return PAGES.has(slug) ? slug : null;
 }
 

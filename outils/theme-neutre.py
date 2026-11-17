@@ -75,7 +75,7 @@ r = regles(css)
 entete = """/* Fichier généré par outils/theme-neutre.py — ne pas modifier à la main.
    Les touches dorées de css/style.css, dans les tons du nouveau site. */
 html[data-theme="jour"] { --accent-rvb: 18, 18, 20; }
-html[data-theme="nuit"] { --accent-rvb: 242, 242, 244; }
+html[data-theme="nuit"] { --accent-rvb: 233, 233, 236; }
 .admin-live-editor { --accent-rvb: 18, 18, 20; }
 
 """

@@ -247,7 +247,7 @@
     const nuit = R.getAttribute("data-theme") === "nuit";
     if (boutonTheme) boutonTheme.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
     if (boutonThemeMenu) boutonThemeMenu.textContent = nuit ? "Mode jour" : "Mode nuit";
-    if (metaCouleur) metaCouleur.setAttribute("content", nuit ? "#111113" : "#ededf0");
+    if (metaCouleur) metaCouleur.setAttribute("content", nuit ? "#232326" : "#ededf0");
   }
   function basculerTheme() {
     const t = R.getAttribute("data-theme") === "nuit" ? "jour" : "nuit";

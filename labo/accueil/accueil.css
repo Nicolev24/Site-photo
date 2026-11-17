@@ -37,15 +37,15 @@
   color-scheme: light;
 }
 :root[data-theme="nuit"] {
-  --fond: #111113;
-  --fond-verre: rgba(17, 17, 19, 0.86);
-  --encre: #f2f2f4;
-  --texte: rgba(242, 242, 244, 0.78);
-  --attenue: rgba(242, 242, 244, 0.6);
-  --trait: rgba(242, 242, 244, 0.16);
-  --carte: #1d1d21;
-  --halo: rgba(255, 255, 255, 0.075);
-  --ombre-sol: rgba(0, 0, 0, 0.55);
+  --fond: #232326;
+  --fond-verre: rgba(35, 35, 38, 0.86);
+  --encre: #e9e9ec;
+  --texte: rgba(233, 233, 236, 0.8);
+  --attenue: rgba(233, 233, 236, 0.64);
+  --trait: rgba(233, 233, 236, 0.15);
+  --carte: #2c2c30;
+  --halo: rgba(255, 255, 255, 0.06);
+  --ombre-sol: rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 
