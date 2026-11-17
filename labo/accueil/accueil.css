@@ -344,10 +344,10 @@ a.lien[data-saut]:hover::after {
 }
 
 /* ---------- L'histoire animée (au défilement, libre) ---------- */
-html.js:not(.calme) .histoire {
+html.anime .histoire {
   height: var(--histoire-h, 560svh);
 }
-html.js:not(.calme) .plateau {
+html.anime .plateau {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -355,7 +355,7 @@ html.js:not(.calme) .plateau {
   padding: 0;
   overflow: hidden;
 }
-html.js:not(.calme) .halo {
+html.anime .halo {
   display: block;
   position: absolute;
   left: var(--ox, 50%);
@@ -366,7 +366,7 @@ html.js:not(.calme) .halo {
   background: radial-gradient(closest-side, var(--halo), transparent);
   pointer-events: none;
 }
-html.js:not(.calme) .ombre-sol {
+html.anime .ombre-sol {
   display: block;
   position: absolute;
   left: 0;
@@ -379,7 +379,7 @@ html.js:not(.calme) .ombre-sol {
   pointer-events: none;
   will-change: transform, opacity;
 }
-html.js:not(.calme) .lentille-fixe {
+html.anime .lentille-fixe {
   position: absolute;
   left: 0;
   top: 0;
@@ -389,7 +389,7 @@ html.js:not(.calme) .lentille-fixe {
   transition: opacity 0.6s var(--doux);
   pointer-events: none;
 }
-html.js:not(.calme) .film {
+html.anime .film {
   display: block;
   position: absolute;
   left: 0;
@@ -397,7 +397,7 @@ html.js:not(.calme) .film {
   pointer-events: none;
   will-change: transform, opacity;
 }
-html.js:not(.calme) .toile {
+html.anime .toile {
   display: block;
   position: absolute;
   inset: 0;
@@ -407,11 +407,11 @@ html.js:not(.calme) .toile {
   transition: opacity 0.6s var(--doux);
   pointer-events: none;
 }
-html.js:not(.calme) .toile.est-prete {
+html.anime .toile.est-prete {
   opacity: var(--toile-o, 1);
   transition: none;
 }
-html.js:not(.calme) .eclair {
+html.anime .eclair {
   display: block;
   position: absolute;
   inset: 0;
@@ -429,7 +429,7 @@ html.js .tirage {
   background: #fbfbfa;
   box-shadow: 0 34px 60px -26px rgba(10, 10, 20, 0.45), 0 2px 8px rgba(10, 10, 20, 0.12);
 }
-html.js:not(.calme) .tirage {
+html.anime .tirage {
   position: absolute;
   left: 0;
   top: 0;
@@ -472,7 +472,7 @@ html.calme .lentille-fixe {
 html.js .etiquettes {
   display: block;
 }
-html.js:not(.calme) .etiquettes li {
+html.anime .etiquettes li {
   position: absolute;
   left: 0;
   top: 0;
@@ -500,13 +500,13 @@ html.calme .etiquettes {
 }
 
 /* Les étapes, posées sur le plateau */
-html.js:not(.calme) .etapes {
+html.anime .etapes {
   position: absolute;
   inset: 0;
   z-index: 5;
   pointer-events: none;
 }
-html.js:not(.calme) .etape {
+html.anime .etape {
   position: absolute;
   inset: 0;
   margin: 0;
@@ -514,21 +514,21 @@ html.js:not(.calme) .etape {
   visibility: hidden;
 }
 /* la première étape est lisible tout de suite, avant même le script */
-html.js:not(.calme) .etape[data-etape="0"] {
+html.anime .etape[data-etape="0"] {
   opacity: 1;
   visibility: visible;
 }
-html.js:not(.calme) .etape.est-active a,
-html.js:not(.calme) .etape.est-active button {
+html.anime .etape.est-active a,
+html.anime .etape.est-active button {
   pointer-events: auto;
 }
-html.js:not(.calme) .etape-haut {
+html.anime .etape-haut {
   position: absolute;
   left: var(--marge);
   right: var(--marge);
   top: calc(var(--entete) + 2.6vh);
 }
-html.js:not(.calme) .etape-bas {
+html.anime .etape-bas {
   position: absolute;
   left: var(--marge);
   right: var(--marge);
@@ -564,7 +564,7 @@ html.js:not(.calme) .etape-bas {
 }
 
 /* Indice « faire défiler » */
-html.js:not(.calme) .defiler {
+html.anime .defiler {
   display: block;
   position: absolute;
   right: var(--marge);
@@ -843,7 +843,7 @@ html.js:not(.calme) .defiler {
   }
 
   /* l'étape à gauche, l'objet à droite (comme la vidéo) */
-  html.js:not(.calme) .etape {
+  html.anime .etape {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -851,11 +851,11 @@ html.js:not(.calme) .defiler {
     padding: var(--entete) 0 0 var(--marge);
     width: min(48vw, 760px);
   }
-  html.js:not(.calme) .etape-haut,
-  html.js:not(.calme) .etape-bas {
+  html.anime .etape-haut,
+  html.anime .etape-bas {
     position: static;
   }
-  html.js:not(.calme) .repere {
+  html.anime .repere {
     display: flex;
     align-items: baseline;
     gap: 14px;
@@ -874,7 +874,7 @@ html.js:not(.calme) .defiler {
     letter-spacing: 0;
     color: var(--encre);
   }
-  html.js:not(.calme) .sommaire {
+  html.anime .sommaire {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -909,7 +909,7 @@ html.js:not(.calme) .defiler {
     width: 22px;
     margin-left: 10px;
   }
-  html.js:not(.calme) .defiler {
+  html.anime .defiler {
     left: 50%;
     right: auto;
     bottom: 4.5vh;
@@ -952,4 +952,107 @@ html.js:not(.calme) .defiler {
   .fin {
     padding: 160px var(--marge) 140px;
   }
+}
+
+/* ============================================================
+   Téléphone : l'histoire en chapitres d'images fixes
+   (mêmes textes, même rendu « cinéma », un léger fondu à l'arrivée)
+   ============================================================ */
+.chap-num,
+.chap-image {
+  display: none;
+}
+html.chapitres .plateau {
+  padding: calc(var(--entete) + 28px) 0 24px;
+}
+html.chapitres .lentille-fixe {
+  display: none;
+}
+html.chapitres .etapes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+html.chapitres .etape {
+  padding: 0 var(--marge);
+}
+html.chapitres .etape + .etape {
+  margin-top: 72px;
+}
+html.chapitres .chap-num {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--attenue);
+}
+html.chapitres .chap-num span {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--encre);
+}
+html.chapitres .chap-num::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--trait);
+}
+html.chapitres .chap-image {
+  display: block;
+  position: relative;
+  margin: 8px calc(-1 * var(--marge)) 0;
+}
+/* une lumière douce derrière l'objet, comme sur le plateau de l'ordinateur */
+html.chapitres .chap-image::before {
+  content: "";
+  position: absolute;
+  inset: 6% 0 14%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+}
+html.chapitres .chap-image img {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+html.chapitres .etape[data-etape="0"] .chap-image {
+  margin-top: -6px;
+}
+html.chapitres .etape-bas {
+  margin-top: 4px;
+}
+html.chapitres .etape[data-etape="0"] .etape-bas {
+  margin-top: -18px;
+  position: relative;
+}
+/* la photo, posée comme un tirage */
+html.chapitres .tirage {
+  --tw: min(74vw, 340px);
+  margin: 28px auto 8px;
+  transform: rotate(-1.6deg);
+}
+html.chapitres .etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* le léger fondu */
+html.chapitres .apparait {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.9s var(--doux), transform 0.9s var(--doux);
+}
+html.chapitres .apparait.vu {
+  opacity: 1;
+  transform: none;
+}
+html.chapitres .tirage.apparait.vu {
+  transform: rotate(-1.6deg);
 }

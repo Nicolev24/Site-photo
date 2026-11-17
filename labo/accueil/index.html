@@ -12,7 +12,8 @@
 <link rel="icon" href="../../icones/favicon.svg" type="image/svg+xml" />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
-<link rel="preload" as="image" href="sequence/800/c_0.000.webp" />
+<link rel="preload" as="image" href="sequence/1000/c_0.000.webp" media="(min-width: 900px)" />
+<link rel="preload" as="image" href="chapitres/ouverture-800.webp" imagesrcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" imagesizes="100vw" media="(max-width: 899px)" />
 
 <!-- Univers Particuliers / Commerces : même système que le site (lu, jamais modifié). -->
 <script src="../../js/univers.js"></script>
@@ -23,6 +24,12 @@
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) r.classList.add("calme");
     } catch (e) {}
     r.classList.add("js");
+    // téléphone : l'histoire en chapitres d'images fixes ; ordinateur : le film au défilement
+    var tel = false;
+    try {
+      tel = window.matchMedia("(max-width: 899px)").matches;
+    } catch (e) {}
+    r.classList.add(tel ? "chapitres" : r.classList.contains("calme") ? "pose" : "anime");
     var t = "jour";
     try {
       t = localStorage.getItem("labo-theme") === "nuit" ? "nuit" : "jour";
@@ -72,7 +79,10 @@
     <div class="plateau" id="plateau">
       <div class="halo" aria-hidden="true"></div>
       <div class="ombre-sol" id="ombre-sol" aria-hidden="true"></div>
-      <img class="lentille-fixe" id="lentille-fixe" src="sequence/800/c_0.000.webp" alt="" width="800" height="800" decoding="async" />
+      <picture>
+        <source media="(max-width: 899px)" srcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" sizes="100vw" />
+        <img class="lentille-fixe" id="lentille-fixe" src="sequence/1000/c_0.000.webp" alt="" width="1000" height="1000" decoding="async" />
+      </picture>
       <canvas class="film" id="film" aria-hidden="true"></canvas>
       <canvas class="toile" id="toile" aria-hidden="true"></canvas>
       <div class="eclair" id="eclair" aria-hidden="true"></div>
@@ -92,6 +102,7 @@
           <div class="etape-haut">
             <h1 class="titre"><span class="sur">Photographe à Ath</span><span class="grand">La lumière d'abord.</span></h1>
           </div>
+          <figure class="chap-image"><picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="chapitres/ouverture-800.webp" srcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" sizes="100vw" alt="Appareil photo Leica, gros plan sur l'objectif" width="1200" height="1500" decoding="async" fetchpriority="high" /></figure>
           <div class="etape-bas">
             <p class="texte" data-texte="0">Mariages, couples, portraits : des photos naturelles, une lumière soignée.</p>
             <div class="actions">
@@ -104,21 +115,28 @@
           </div>
         </li>
         <li class="etape" data-etape="1">
+          <p class="chap-num" aria-hidden="true"><span>01</span>La préparation</p>
           <div class="etape-haut"><h2 class="grand">Tout se prépare.</h2></div>
+          <figure class="chap-image"><picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="chapitres/preparation-800.webp" srcset="chapitres/preparation-800.webp 800w, chapitres/preparation-1200.webp 1200w" sizes="100vw" alt="Les bagues de l'objectif viennent se monter autour de la lentille" width="1200" height="1200" decoding="async" loading="lazy" /></picture></figure>
           <div class="etape-bas"><p class="texte" data-texte="1">On parle de vos envies, des lieux et du bon moment. Réponse sous 48 h.</p></div>
         </li>
         <li class="etape" data-etape="2">
+          <p class="chap-num" aria-hidden="true"><span>02</span>La séance</p>
           <div class="etape-haut"><h2 class="grand" data-titre="2">Le jour J.</h2></div>
+          <figure class="chap-image"><picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="chapitres/seance-800.webp" srcset="chapitres/seance-800.webp 800w, chapitres/seance-1200.webp 1200w" sizes="100vw" alt="L'objectif assemblé, prêt à photographier" width="1200" height="1200" decoding="async" loading="lazy" /></picture></figure>
           <div class="etape-bas">
             <p class="texte" data-texte="2">Je vous guide sans vous figer. Vous vivez le moment, je m'occupe du reste.</p>
             <div class="actions"><a class="lien" href="../moi.html" data-lien-univers>Qui suis-je</a></div>
           </div>
         </li>
         <li class="etape" data-etape="3">
+          <p class="chap-num" aria-hidden="true"><span>03</span>Le déclic</p>
           <div class="etape-haut"><h2 class="grand">Le déclic.</h2></div>
+          <figure class="chap-image"><picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="chapitres/declic-800.webp" srcset="chapitres/declic-800.webp 800w, chapitres/declic-1200.webp 1200w" sizes="100vw" alt="Appareil photo Leica complet" width="1200" height="1200" decoding="async" loading="lazy" /></picture></figure>
           <div class="etape-bas"><p class="texte" data-texte="3">Un instant vrai, pas une pose.</p></div>
         </li>
         <li class="etape" data-etape="4">
+          <p class="chap-num" aria-hidden="true"><span>04</span>Vos photos</p>
           <div class="etape-haut"><h2 class="grand" data-titre="4">Rien qu'à vous.</h2></div>
           <div class="etape-bas">
             <p class="texte" data-texte="4">Vos photos retouchées, dans votre galerie privée en ligne.</p>

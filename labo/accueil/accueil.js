@@ -14,6 +14,7 @@
 
   const R = document.documentElement;
   const calme = R.classList.contains("calme");
+  const chapitres = R.classList.contains("chapitres"); // téléphone : chapitres d'images fixes
   const BASE = "../../";
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
@@ -285,8 +286,44 @@
     if (e.key === "Escape" && menu && !menu.hidden) ouvrirMenu(false);
   });
 
+  // ---------- Téléphone : l'histoire en chapitres d'images fixes, avec un léger fondu ----------
+  if (chapitres) {
+    // la photo et ses étiquettes rejoignent le dernier chapitre
+    const dernier = etapes[N - 1];
+    if (dernier) {
+      $(".etape-haut", dernier).after(tirage);
+      dernier.appendChild(listeEtiquettes);
+    }
+    pret.then(() => {
+      if (voile) voile.style.opacity = 0;
+    });
+    // fondu à l'arrivée de chaque bloc (sauf l'ouverture, visible tout de suite)
+    if (!calme && "IntersectionObserver" in window) {
+      const blocs = $$(".etape:not([data-etape='0']) > *, .formules-tete, .moi, .fin");
+      blocs.forEach((b) => b.classList.add("apparait"));
+      const obs = new IntersectionObserver(
+        (entrees) =>
+          entrees.forEach((en) => {
+            if (!en.isIntersecting) return;
+            en.target.classList.add("vu");
+            obs.unobserve(en.target);
+          }),
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+      );
+      blocs.forEach((b) => obs.observe(b));
+    }
+    // passage téléphone ↔ ordinateur (rotation d'une tablette, fenêtre agrandie) : on recharge
+    try {
+      window.matchMedia("(max-width: 899px)").addEventListener("change", () => location.reload());
+    } catch (e) {}
+    return;
+  }
+
   // ---------- Version calme (mouvements réduits) : tout est posé, rien ne bouge ----------
   if (calme) {
+    // l'image de l'ordinateur, pas celle du téléphone
+    const cadre = fixe.closest("picture");
+    if (cadre) $$("source", cadre).forEach((el) => el.parentNode.removeChild(el));
     // une seule image, l'appareil complet (rendu « cinéma »)
     fixe.removeAttribute("srcset");
     fixe.src = "sequence/800/c_2.000.webp";
@@ -689,6 +726,9 @@
     ["scroll", "pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => window.addEventListener(ev, lancer3D, { once: true, passive: true }));
     window.addEventListener("load", () => setTimeout(lancer3D, 2500));
   }
+  try {
+    window.matchMedia("(max-width: 899px)").addEventListener("change", () => location.reload());
+  } catch (e) {}
 
   let largeurPrec = 0;
   let hauteurPrec = 0;
