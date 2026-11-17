@@ -286,110 +286,137 @@
     if (e.key === "Escape" && menu && !menu.hidden) ouvrirMenu(false);
   });
 
-  // ---------- Téléphone : on entre dans l'objectif, puis le site continue ----------
+  // ---------- Téléphone : une pile de Polaroïds s'écarte, place au site ----------
   if (chapitres) {
-    const plongee = $("#plongee");
-    const scene = $("#plongee-scene");
-    const objectif = $("#plongee-objectif");
-    const photo = $("#plongee-photo");
+    const polas = $("#polas");
+    const scene = $("#polas-scene");
+    const cartesPola = $$(".pola", polas);
+    const indice = $("#polas-indice");
     const ouverture = etapes[0];
-    // le titre et le choix Particulier / Commerce sont posés sur l'objectif
-    if (ouverture) scene.appendChild(ouverture);
-    // pas de tirage sur téléphone : la photo est déjà plein écran ; les étiquettes suivent les étapes
+    // le titre, le choix Particulier / Commerce et l'essentiel attendent derrière les photos
+    if (ouverture && !calme) {
+      scene.insertBefore(ouverture, scene.firstChild);
+      $(".etape-bas", ouverture).appendChild(listeEtiquettes);
+    } else if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
     if (tirage) tirage.style.display = "none";
-    if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
-    // la photo vue à travers l'objectif (la même que le tirage, selon l'univers)
-    const remplirPhoto = () => {
-      const t = TIRAGE[univers] || TIRAGE.particuliers;
-      photo.innerHTML = image(t.image, 1600, "100vw", "");
-      const img = photo.querySelector("img");
-      if (img) img.style.objectPosition = t.pos;
+
+    // les photos changent avec Particulier / Commerce
+    const POLAS = {
+      particuliers: [
+        ["mariages/maries-colonnes", "Le oui"],
+        ["mariages/premiere-danse-etincelles", "Première danse"],
+        ["portfolio/couples/img3", "Couple"],
+        ["mariages/baiser-pont-chateau", ""],
+        ["portfolio/portraits/img2", "Portrait"],
+        ["mariages/sortie-confettis", ""],
+        ["mariages/maries-course-jardin", "Mariage"],
+      ],
+      commerces: [
+        ["commerces/barbier-portrait-miroir", "Commerce"],
+        ["commerces/salon-vue-ensemble", "Le salon"],
+        ["commerces/coupe-ciseaux", ""],
+        ["portfolio/entreprises/img2", "Entreprise"],
+        ["commerces/serviette-chaude", ""],
+        ["commerces/outils-miroir", "Détails"],
+        ["commerces/barbier-sourire-client", "Portrait pro"],
+      ],
     };
-    pret.then(remplirPhoto); // après le manifeste des images (tailles WebP légères)
-    $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPhoto, 0)));
+    let uPolas = "particuliers";
+    const remplirPolas = () => {
+      const u = POLAS[univers] ? univers : "particuliers";
+      if (u === uPolas) return;
+      uPolas = u;
+      cartesPola.forEach((f, i) => {
+        const [chemin, leg] = POLAS[u][i % POLAS[u].length];
+        const img = $("img", f);
+        const base = `${BASE}images/tailles/${chemin}`;
+        img.srcset = `${base}-480.webp 480w, ${base}-800.webp 800w`;
+        img.src = `${base}-480.webp`;
+        $("figcaption", f).textContent = leg;
+      });
+    };
+    remplirPolas();
+    $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPolas, 0)));
 
-    // où est le verre de l'objectif dans l'image (mesuré sur le rendu)
-    const VERRE = { x: 0.375, y: 0.607, r: 0.175 };
-    const P = { W: 1, H: 1, iy: 0, Lx: 0, Ly: 0, Lr: 1, kFin: 1, haut: 0, course: 1 };
-    function mesurerPlongee() {
-      P.W = scene.clientWidth;
-      P.H = scene.clientHeight;
-      // place libre entre le titre (en haut) et le texte (en bas)
-      const haut = ouverture ? $(".etape-haut", ouverture) : null;
-      const bas = ouverture ? $(".etape-bas", ouverture) : null;
-      const basTitre = haut ? haut.offsetTop + haut.offsetHeight : P.H * 0.28;
-      const hautTexte = bas ? bas.offsetTop + 30 : P.H * 0.72; // le dégradé du texte peut mordre un peu
-      const libre = Math.max(80, hautTexte - basTitre - 8);
-      // l'appareil occupe environ 20 % → 82 % de la hauteur de l'image : on le fait tenir dans la place libre
-      const iw = Math.min(P.W, libre / 0.62 / 1.25);
-      const ih = iw * 1.25;
-      const ix = (P.W - iw) / 2;
-      P.iy = Math.round(basTitre + 4 + (libre - 0.62 * ih) / 2 - 0.2 * ih);
-      objectif.style.width = iw + "px";
-      objectif.style.left = ix + "px";
-      objectif.style.top = P.iy + "px";
-      P.Lx = ix + VERRE.x * iw;
-      P.Ly = P.iy + VERRE.y * ih;
-      P.Lr = VERRE.r * iw;
-      objectif.style.transformOrigin = `${VERRE.x * iw}px ${VERRE.y * ih}px`;
-      // assez grand pour que le cercle couvre tout l'écran une fois centré
-      P.kFin = (Math.hypot(P.W, P.H) * 0.56) / P.Lr;
-      P.haut = plongee.getBoundingClientRect().top + window.scrollY;
-      P.course = Math.max(1, plongee.offsetHeight - P.H);
-      dessinerPlongee();
-    }
-    let dernierP = -1;
-    function dessinerPlongee() {
-      const p = borne((window.scrollY - P.haut) / P.course);
-      if (Math.abs(p - dernierP) < 0.0004) return;
-      dernierP = p;
-      const e = lisse(seg(p, 0, 0.82));
-      const k = Math.exp(Math.log(P.kFin) * e);
-      // le verre glisse vers le centre de l'écran en grandissant
-      const cx = lerp(P.Lx, P.W / 2, e);
-      const cy = lerp(P.Ly, P.H / 2, e);
-      objectif.style.transform = `translate(${(cx - P.Lx).toFixed(1)}px, ${(cy - P.Ly).toFixed(1)}px) scale(${k.toFixed(4)})`;
-      const r = P.Lr * k * 0.97;
-      photo.style.clipPath = `circle(${r.toFixed(1)}px at ${cx.toFixed(1)}px ${cy.toFixed(1)}px)`;
-      // un reflet dans le verre au début, puis la photo prend toute la place
-      photo.style.opacity = lerp(0.32, 1, lisse(seg(p, 0.04, 0.5))).toFixed(3);
-      const pi = photo.firstElementChild;
-      if (pi) pi.style.transform = `scale(${lerp(1.25, 1, e).toFixed(4)})`;
-      if (ouverture) {
-        const o = 1 - seg(p, 0.02, 0.16);
-        ouverture.style.opacity = o.toFixed(3);
-        ouverture.style.visibility = o < 0.01 ? "hidden" : "visible";
-      }
-    }
-    mesurerPlongee();
-    window.addEventListener("scroll", () => requestAnimationFrame(dessinerPlongee), { passive: true });
-    let lPrec = P.W;
-    window.addEventListener("resize", () => {
-      // la barre d'adresse qui se replie ne change que la hauteur : on garde la largeur
-      if (scene.clientWidth === lPrec && Math.abs(scene.clientHeight - P.H) < 120) return;
-      lPrec = scene.clientWidth;
-      dernierP = -1;
-      mesurerPlongee();
-    });
-    window.addEventListener("load", () => {
-      dernierP = -1;
-      mesurerPlongee();
-    });
-
-    // fondu léger à l'arrivée de chaque bloc
-    if (!calme && "IntersectionObserver" in window) {
-      const blocs = $$(".etapes > .etape > *, .etiquettes, .formules-tete, .moi, .fin");
-      blocs.forEach((bl) => bl.classList.add("apparait"));
-      const obs = new IntersectionObserver(
-        (entrees) =>
-          entrees.forEach((en) => {
-            if (!en.isIntersecting) return;
-            en.target.classList.add("vu");
-            obs.unobserve(en.target);
-          }),
-        { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+    if (!calme) {
+      // chaque photo part de son côté, la plus proche du centre d'abord
+      const D = cartesPola.map((f) => {
+        const dx = parseFloat(f.dataset.dx) || 0;
+        const dy = parseFloat(f.dataset.dy) || 0;
+        const i = parseInt(f.style.getPropertyValue("--i"), 10) || 0;
+        return { f, dx, dy, retard: [0.1, 0.14, 0.04, 0.08, 0.16, 0.2, 0][i] || 0 };
+      });
+      const P = { W: 1, H: 1, haut: 0, course: 1 };
+      const mesurer = () => {
+        P.W = window.innerWidth;
+        P.H = scene.clientHeight;
+        P.haut = polas.getBoundingClientRect().top + window.scrollY;
+        P.course = Math.max(1, polas.offsetHeight - P.H);
+      };
+      let dernier = -1;
+      const dessiner = () => {
+        const p = borne((window.scrollY - P.haut) / P.course);
+        if (p === dernier) return;
+        dernier = p;
+        D.forEach((d) => {
+          const e = lisse(seg(p, d.retard, d.retard + 0.6));
+          const x = d.dx * P.W * 0.95 * e;
+          const y = d.dy * P.H * 0.75 * e;
+          d.f.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${(d.dx * 16 * e).toFixed(2)}deg)`;
+        });
+        if (indice) indice.style.opacity = (1 - seg(p, 0, 0.08)).toFixed(3);
+        if (ouverture) {
+          const o = seg(p, 0.1, 0.55);
+          ouverture.style.opacity = (0.15 + 0.85 * o).toFixed(3);
+          ouverture.style.transform = `scale(${lerp(0.96, 1, o).toFixed(4)})`;
+        }
+      };
+      let attente = false;
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (attente) return;
+          attente = true;
+          requestAnimationFrame(() => {
+            attente = false;
+            dessiner();
+          });
+        },
+        { passive: true }
       );
-      blocs.forEach((bl) => obs.observe(bl));
+      let lPrec = window.innerWidth;
+      window.addEventListener("resize", () => {
+        if (window.innerWidth === lPrec) return; // barre d'adresse : on ne bouge rien
+        lPrec = window.innerWidth;
+        mesurer();
+        dernier = -1;
+        dessiner();
+      });
+      mesurer();
+      dessiner();
+      window.addEventListener("load", () => {
+        mesurer();
+        dernier = -1;
+        dessiner();
+      });
+      // les photos se posent une à une à l'arrivée
+      R.classList.add("polas-arrivee");
+
+      // fondu léger à l'arrivée de chaque bloc, plus bas
+      if ("IntersectionObserver" in window) {
+        const blocs = $$(".etapes > .etape > *, .formules-tete, .moi, .fin");
+        blocs.forEach((bl) => bl.classList.add("apparait"));
+        const obs = new IntersectionObserver(
+          (entrees) =>
+            entrees.forEach((en) => {
+              if (!en.isIntersecting) return;
+              en.target.classList.add("vu");
+              obs.unobserve(en.target);
+            }),
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+        );
+        blocs.forEach((bl) => obs.observe(bl));
+      }
     }
     try {
       window.matchMedia("(max-width: 899px)").addEventListener("change", () => location.reload());
@@ -404,7 +431,7 @@
     if (cadre) $$("source", cadre).forEach((el) => el.parentNode.removeChild(el));
     // une seule image, l'appareil complet (rendu « cinéma »)
     fixe.removeAttribute("srcset");
-    fixe.src = "sequence/800/c_2.000.webp";
+    fixe.src = "sequence/1000/c_2.000.webp";
     fixe.alt = "Appareil photo Leica, objectif monté";
     pret.then(() => {
       if (voile) voile.style.opacity = 0;
@@ -435,8 +462,8 @@
     n: 0, // nombre d'images (lu dans lentille.json)
     pos: null, // position c de chaque image
     cles: null,
-    taille: window.innerWidth < 900 ? 800 : 1000,
-    dossier: window.innerWidth < 900 ? "sequence/800/" : "sequence/1000/",
+    taille: 1000,
+    dossier: "sequence/1000/", // le film ne sert que sur ordinateur
     images: [],
     pret: 0,
     reperes: null,
@@ -677,7 +704,7 @@
   function chargerFilm() {
     if (FILM.lance) return;
     FILM.lance = true;
-    fetch(FILM.dossier + "../lentille.json?v=7")
+    fetch(FILM.dossier + "../lentille.json?v=11")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (!j) return;
@@ -716,7 +743,7 @@
             enCours++;
             const img = new Image();
             img.decoding = "async";
-            img.src = FILM.dossier + "c_" + FILM.cles[i] + ".webp?v=7";
+            img.src = FILM.dossier + "c_" + FILM.cles[i] + ".webp?v=11";
             const fini = () => {
               enCours--;
               suite();

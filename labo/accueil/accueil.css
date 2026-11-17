@@ -955,10 +955,11 @@ html.anime .defiler {
 }
 
 /* ============================================================
-   Téléphone : on entre dans l'objectif, une photo s'ouvre depuis le verre,
+   Téléphone : une pile de Polaroïds couvre l'écran ; au défilement
+   elles s'écartent comme un rideau, place au titre et à l'essentiel,
    puis le site continue (étapes, formules, qui suis-je, réserver)
    ============================================================ */
-.plongee,
+.polas,
 .chap-num {
   display: none;
 }
@@ -968,65 +969,139 @@ html.chapitres .plateau {
 html.chapitres .lentille-fixe {
   display: none;
 }
-html.chapitres .plongee {
+html.chapitres:not(.calme) .polas {
   display: block;
   position: relative;
-  height: 260vh;
-  height: 260svh;
+  height: 175vh;
+  height: 175svh;
 }
-html.chapitres .plongee-scene {
+html.chapitres.calme .etape[data-etape="0"] {
+  padding: calc(var(--entete) + 32px) var(--marge) 0;
+}
+html.chapitres .polas-scene {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
 }
-/* une lumière douce derrière l'appareil */
-html.chapitres .plongee-scene::before {
-  content: "";
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  top: 20%;
-  height: 80%;
-  background: radial-gradient(closest-side, var(--halo), transparent);
-  pointer-events: none;
-}
-html.chapitres .plongee-objectif {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: auto;
-  max-width: none;
-  will-change: transform;
-}
-html.chapitres .plongee-photo {
+/* derrière : le titre, le choix, l'essentiel */
+html.chapitres .polas-scene .etape {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  clip-path: circle(0 at 50% 50%);
-  will-change: clip-path, opacity;
-}
-html.chapitres .plongee-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  will-change: transform;
-}
-/* le titre et le choix Particulier / Commerce, posés sur la scène */
-html.chapitres .plongee-scene .etape {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 22px;
   margin: 0;
-  padding: calc(var(--entete) + 22px) var(--marge) calc(22px + env(safe-area-inset-bottom, 0px));
+  padding: calc(var(--entete) + 12px) var(--marge) calc(24px + env(safe-area-inset-bottom, 0px));
+  opacity: 0.15;
+  transform-origin: 50% 45%;
+  will-change: opacity, transform;
 }
-html.chapitres .plongee-scene .etape-bas {
+html.chapitres .polas-scene .etape-bas {
   margin: 0;
+}
+html.chapitres .polas-scene .etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* devant : la pile de photos */
+html.chapitres .polas-pile {
+  position: absolute;
+  inset: var(--entete) 0 0;
+  z-index: 2;
+  pointer-events: none;
+}
+html.chapitres .pola {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 47vw;
+  max-width: 240px;
+  margin: 0;
+  padding: 2.2vw 2.2vw 0;
+  background: #fbfbfa;
+  box-shadow: 0 22px 40px -18px rgba(10, 10, 20, 0.5), 0 2px 6px rgba(10, 10, 20, 0.14);
+  translate: -50% -50%;
+  rotate: var(--r);
+  will-change: transform;
+}
+html.chapitres .pola:last-child {
+  width: 54vw;
+  max-width: 270px;
+}
+html.chapitres .pola img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #d8d8dc;
+}
+html.chapitres .pola figcaption {
+  height: 10vw;
+  max-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: #3a3a40;
+}
+/* les photos se posent une à une à l'arrivée */
+html.polas-arrivee .pola {
+  animation: pola-pose 0.7s var(--doux) both;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes pola-pose {
+  from {
+    opacity: 0;
+    scale: 1.08;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+html.chapitres .polas-indice {
+  position: absolute;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--fond-verre);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  translate: -50% 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--encre);
+  pointer-events: none;
+}
+html.chapitres .polas-indice span {
+  width: 1px;
+  height: 14px;
+  background: var(--encre);
+  animation: indice 1.6s var(--doux) infinite;
+}
+@keyframes indice {
+  0%,
+  100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
 }
 /* la suite : les étapes, simplement, l'une sous l'autre */
 html.chapitres .etapes {
@@ -1068,7 +1143,8 @@ html.chapitres .etapes .grand {
 html.chapitres .etapes .etape-bas {
   margin-top: 10px;
 }
-html.chapitres .etiquettes {
+html.chapitres .etapes + .etiquettes,
+html.chapitres .etape > .etiquettes {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1085,16 +1161,4 @@ html.chapitres .apparait {
 html.chapitres .apparait.vu {
   opacity: 1;
   transform: none;
-}
-/* le texte du bas reste lisible par-dessus l'appareil */
-html.chapitres .plongee-scene .etape-bas {
-  position: relative;
-  margin: 0 calc(-1 * var(--marge)) calc(-22px - env(safe-area-inset-bottom, 0px));
-  padding: 40px var(--marge) calc(22px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(to top, var(--fond) 70%, transparent);
-}
-/* bords gauche et droit de l'image adoucis (l'appareil dépasse du cadre du rendu) */
-html.chapitres .plongee-objectif {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
 }

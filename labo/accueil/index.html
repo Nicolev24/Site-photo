@@ -13,7 +13,6 @@
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/jost-latin-400-normal.woff2" crossorigin />
 <link rel="preload" as="image" href="sequence/1000/c_0.000.webp" media="(min-width: 900px)" />
-<link rel="preload" as="image" href="chapitres/ouverture-800.webp" imagesrcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" imagesizes="100vw" media="(max-width: 899px)" />
 
 <!-- Univers Particuliers / Commerces : même système que le site (lu, jamais modifié). -->
 <script src="../../js/univers.js"></script>
@@ -37,7 +36,7 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="accueil.css?v=5" />
+<link rel="stylesheet" href="accueil.css?v=6" />
 </head>
 <body>
 
@@ -80,19 +79,46 @@
       <div class="halo" aria-hidden="true"></div>
       <div class="ombre-sol" id="ombre-sol" aria-hidden="true"></div>
       <picture>
-        <source media="(max-width: 899px)" srcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" sizes="100vw" />
+        <source media="(max-width: 899px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
         <img class="lentille-fixe" id="lentille-fixe" src="sequence/1000/c_0.000.webp" alt="" width="1000" height="1000" decoding="async" />
       </picture>
       <canvas class="film" id="film" aria-hidden="true"></canvas>
-      <!-- Téléphone : on entre dans l'objectif, une photo s'ouvre depuis le verre -->
-      <div class="plongee" id="plongee" aria-hidden="true">
-        <div class="plongee-scene" id="plongee-scene">
-          <picture>
-            <source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-            <img class="plongee-objectif" id="plongee-objectif" src="chapitres/ouverture-800.webp" srcset="chapitres/ouverture-800.webp 800w, chapitres/ouverture-1200.webp 1200w" sizes="100vw" alt="" width="1200" height="1500" decoding="async" />
-          </picture>
-          <div class="plongee-photo" id="plongee-photo"></div>
+      <!-- Téléphone : une pile de Polaroïds qui s'écarte au défilement, comme un rideau -->
+      <div class="polas" id="polas" aria-hidden="true">
+        <div class="polas-scene" id="polas-scene">
+          <div class="polas-pile" id="polas-pile">
+          <figure class="pola" style="--x: 27%; --y: 24%; --r: -8deg; --i: 0" data-dx="-1.0" data-dy="-0.45">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/maries-colonnes-480.webp" srcset="../../images/tailles/mariages/maries-colonnes-480.webp 480w, ../../images/tailles/mariages/maries-colonnes-800.webp 800w" sizes="48vw" alt="" decoding="async" /></picture>
+            <figcaption>Le oui</figcaption>
+          </figure>
+          <figure class="pola" style="--x: 74%; --y: 21%; --r: 7deg; --i: 1" data-dx="1.0" data-dy="-0.5">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/premiere-danse-etincelles-480.webp" srcset="../../images/tailles/mariages/premiere-danse-etincelles-480.webp 480w, ../../images/tailles/mariages/premiere-danse-etincelles-800.webp 800w" sizes="48vw" alt="" decoding="async" /></picture>
+            <figcaption>Première danse</figcaption>
+          </figure>
+          <figure class="pola" style="--x: 24%; --y: 52%; --r: 5deg; --i: 2" data-dx="-1.0" data-dy="0.05">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/portfolio/couples/img3-480.webp" srcset="../../images/tailles/portfolio/couples/img3-480.webp 480w, ../../images/tailles/portfolio/couples/img3-800.webp 800w" sizes="48vw" alt="" decoding="async" /></picture>
+            <figcaption>Couple</figcaption>
+          </figure>
+          <figure class="pola" style="--x: 77%; --y: 49%; --r: -6deg; --i: 3" data-dx="1.0" data-dy="0.0">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/baiser-pont-chateau-480.webp" srcset="../../images/tailles/mariages/baiser-pont-chateau-480.webp 480w, ../../images/tailles/mariages/baiser-pont-chateau-800.webp 800w" sizes="48vw" alt="" decoding="async" /></picture>
+            <figcaption></figcaption>
+          </figure>
+          <figure class="pola" style="--x: 30%; --y: 80%; --r: -4deg; --i: 4" data-dx="-1.0" data-dy="0.45">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/portfolio/portraits/img2-480.webp" srcset="../../images/tailles/portfolio/portraits/img2-480.webp 480w, ../../images/tailles/portfolio/portraits/img2-800.webp 800w" sizes="48vw" alt="" decoding="async" loading="lazy" /></picture>
+            <figcaption>Portrait</figcaption>
+          </figure>
+          <figure class="pola" style="--x: 72%; --y: 79%; --r: 8deg; --i: 5" data-dx="1.0" data-dy="0.5">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/sortie-confettis-480.webp" srcset="../../images/tailles/mariages/sortie-confettis-480.webp 480w, ../../images/tailles/mariages/sortie-confettis-800.webp 800w" sizes="48vw" alt="" decoding="async" loading="lazy" /></picture>
+            <figcaption></figcaption>
+          </figure>
+          <figure class="pola" style="--x: 51%; --y: 47%; --r: -2deg; --i: 6" data-dx="0.25" data-dy="1.0">
+            <picture><source media="(min-width: 900px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><img src="../../images/tailles/mariages/maries-course-jardin-480.webp" srcset="../../images/tailles/mariages/maries-course-jardin-480.webp 480w, ../../images/tailles/mariages/maries-course-jardin-800.webp 800w" sizes="48vw" alt="" decoding="async" /></picture>
+            <figcaption>Mariage</figcaption>
+          </figure>
+          </div>
+          <p class="polas-indice" id="polas-indice"><span></span>Faites défiler</p>
         </div>
+      </div>
       </div>
       <canvas class="toile" id="toile" aria-hidden="true"></canvas>
       <div class="eclair" id="eclair" aria-hidden="true"></div>
@@ -207,6 +233,6 @@
 </footer>
 
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="accueil.js?v=10" defer></script>
+<script src="accueil.js?v=11" defer></script>
 </body>
 </html>
