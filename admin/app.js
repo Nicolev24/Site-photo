@@ -1030,6 +1030,22 @@ function renderPageEditor() {
   document.getElementById("seo-og-image").value = page.data.seo.og_image || "";
   majApercuPartage();
   renderEditableSections(document.getElementById("live-editor-root"), page.data.sections);
+  // la barre du site (nom + menu + Réserver), comme sur le vrai site : on voit la page « en situation »
+  (function () {
+    const racine = document.getElementById("live-editor-root");
+    let barre = document.getElementById("editeur-entete");
+    if (!barre) {
+      barre = document.createElement("div");
+      barre.id = "editeur-entete";
+      barre.className = "editeur-entete admin-live-editor theme-sombre";
+      racine.parentNode.insertBefore(barre, racine);
+    }
+    const nav = (state.navigation && state.navigation.data) || {};
+    const esc = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+    barre.innerHTML = `<span class="ee-logo">${esc((state.appearance && state.appearance.data && state.appearance.data.logo_text) || "Nicolas Leveugle")}</span>
+      <span class="ee-liens">${(nav.nav_links || []).map((l) => `<span>${esc(l.label)}</span>`).join("")}</span>
+      ${nav.cta_button ? `<span class="ee-cta">${esc(nav.cta_button.label)}</span>` : ""}`;
+  })();
 }
 
 document.getElementById("seo-title").addEventListener("input", (e) => {

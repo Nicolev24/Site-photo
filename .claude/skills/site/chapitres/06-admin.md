@@ -20,5 +20,11 @@
 - `admin/preview.html` : aperçu d'un brouillon (même style que le site).
 - Thème de l'admin : jour/nuit propre à l'admin (`localStorage` `admin-theme`, attribut `data-theme="dark"`), couleurs accordées au site.
 
+## Apparence (18 novembre 2026)
+- Admin accordé au site : barre latérale claire (anthracite en nuit), titres Cormorant en capitales, boutons pilule, jour/nuit. Dernier bloc de `admin/theme-pro.css`.
+- L'éditeur affiche la page **en situation** : barre du site (nom, menu, Réserver) construite par `admin/app.js` (`#editeur-entete`) + la page dans le style du site, en jour ou en nuit selon le thème de l'admin.
+- Les fichiers de l'admin ont un `?v=` dans `admin/index.html` et `galerie-admin/index.html` : **l'augmenter à chaque changement**, sinon le navigateur de Nicolas garde l'ancienne apparence.
+- Pour tester l'intérieur sans mot de passe : Playwright avec jeton factice dans `localStorage` (`site-photo-admin-token`) et `route` qui sert les fichiers locaux à la place de `api.github.com`.
+
 ---
 [← Table des matières](../SKILL.md)
