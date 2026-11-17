@@ -1133,14 +1133,35 @@ html.chapitres .formules {
 /* « Derrière l'objectif » dans l'ouverture : il apparaît en fondu quand les photos s'écartent */
 html.chapitres .polas-scene .moi {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(var(--entete) + (100svh - var(--entete)) / 2);
+  inset: var(--entete) 0 0;
   z-index: 1;
-  margin: 0 var(--marge);
-  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 14px var(--marge) calc(24px + env(safe-area-inset-bottom, 0px));
+  border: 0;
   opacity: 0;
   visibility: hidden;
+}
+/* la photo prend toute la place libre : pas de vide au-dessus ni en dessous */
+html.chapitres .polas-scene .moi-photo {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: cover;
+  object-position: 50% 28%;
+}
+html.chapitres .polas-scene .moi .moyen {
+  font-size: clamp(1.8rem, 8.4vw, 2.6rem);
+}
+html.chapitres .polas-scene .moi .texte {
+  margin-top: 10px;
+}
+html.chapitres .polas-scene .moi .actions {
+  margin-top: 12px;
 }
 html.polas-css .polas-scene .moi {
   animation: moi-arrive linear both;

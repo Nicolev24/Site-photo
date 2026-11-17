@@ -303,7 +303,15 @@
     const sectionFormules = $("#formules");
     const sectionMoi = $(".moi");
     // « Derrière l'objectif » apparaît en fondu dans l'ouverture, quand les photos s'écartent
-    if (sectionMoi && !calme) scene.appendChild(sectionMoi);
+    if (sectionMoi && !calme) {
+      scene.appendChild(sectionMoi);
+      // la photo est maintenant en grand : la bonne taille d'image
+      const portrait = $(".moi-photo", sectionMoi);
+      if (portrait) {
+        portrait.sizes = "100vw";
+        portrait.loading = "eager";
+      }
+    }
     else if (sectionFormules && sectionMoi) sectionFormules.before(sectionMoi);
     if (sectionFormules && listeEtapes) {
       sectionFormules.after(listeEtapes);
