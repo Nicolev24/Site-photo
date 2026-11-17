@@ -14,7 +14,7 @@
 
   const R = document.documentElement;
   const calme = R.classList.contains("calme");
-  const chapitres = R.classList.contains("chapitres"); // téléphone : chapitres d'images fixes
+  const chapitres = R.classList.contains("chapitres"); // téléphone (ou ?version=polaroids) : les Polaroïds
   const BASE = "../../";
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
@@ -291,6 +291,13 @@
     const polas = $("#polas");
     const scene = $("#polas-scene");
     const cartesPola = $$(".pola", polas);
+    // version Polaroïds sur ordinateur : les photos se chargent aussi sur grand écran
+    if (R.classList.contains("large")) {
+      cartesPola.forEach((f) => {
+        $$("source", f).forEach((el) => el.parentNode.removeChild(el));
+        $("img", f).sizes = "(min-width: 900px) 28vw, 62vw";
+      });
+    }
     const ouverture = etapes[0];
     // l'ouverture : le titre en haut, les photos au milieu, l'essentiel en bas
     if (ouverture) {
@@ -308,7 +315,7 @@
       // la photo est maintenant en grand : la bonne taille d'image
       const portrait = $(".moi-photo", sectionMoi);
       if (portrait) {
-        portrait.sizes = "62vw";
+        portrait.sizes = "(min-width: 900px) 30vw, 62vw";
         portrait.loading = "eager";
       }
     }

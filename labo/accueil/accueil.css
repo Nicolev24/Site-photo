@@ -1045,7 +1045,7 @@ html.polas-css .pola {
 }
 @keyframes pola-sortie {
   to {
-    transform: translate3d(calc(var(--dx) * 95vw), calc(var(--dy) * 80svh), 0) rotate(calc(var(--dx) * 12deg));
+    transform: translate3d(calc(var(--dx) * var(--sortie-x, 95vw)), calc(var(--dy) * 80svh), 0) rotate(calc(var(--dx) * 12deg));
   }
 }
 /* la suite : les étapes, simplement, l'une sous l'autre */
@@ -1204,5 +1204,91 @@ html.polas-css .polas-scene .etape {
   100% {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+/* ============================================================
+   Version Polaroïds sur ordinateur (essai : ?version=polaroids)
+   le titre à gauche, la pile de photos à droite, même ouverture
+   ============================================================ */
+@media (min-width: 900px) {
+  html.chapitres.large .polas-scene .etape {
+    right: 48%;
+    justify-content: center;
+    gap: 44px;
+    padding: calc(var(--entete) + 24px) 0 48px max(48px, 7vw);
+  }
+  html.chapitres.large .polas-scene .etape .grand {
+    font-size: clamp(3.4rem, 6.4vw, 6.6rem);
+  }
+  html.chapitres.large .polas-scene .etape .texte {
+    font-size: 1.08rem;
+  }
+  html.chapitres.large .polas-pile {
+    left: 50%;
+    right: 3vw;
+    top: calc(var(--entete) + 3vh);
+    bottom: 4vh;
+  }
+  /* sur grand écran, les photos doivent aller plus loin pour sortir */
+  html.chapitres.large .polas-pile {
+    --sortie-x: 150vw;
+  }
+  html.chapitres.large .pola {
+    width: min(21vw, 36vh);
+    max-width: 380px;
+    padding: 0.9vw 0.9vw 4.4vw;
+  }
+  html.chapitres.large .pola:last-child {
+    width: min(25vw, 44vh);
+    max-width: 440px;
+    padding-bottom: 5.2vw;
+  }
+  /* « Derrière l'objectif » : la photo à gauche, le texte à droite */
+  html.chapitres.large .polas-scene .moi {
+    flex-direction: row;
+    justify-content: center;
+    gap: max(48px, 6vw);
+    padding: 24px 8vw 48px;
+    text-align: left;
+  }
+  html.chapitres.large .polas-scene .moi-photo {
+    width: min(26vw, 52vh);
+    max-width: 420px;
+  }
+  html.chapitres.large .polas-scene .moi-texte {
+    max-width: 460px;
+  }
+  html.chapitres.large .polas-scene .moi .moyen {
+    font-size: clamp(2.6rem, 4.2vw, 4rem);
+  }
+  html.chapitres.large .polas-scene .moi .texte {
+    margin: 16px 0 0;
+    max-width: 34ch;
+    font-size: 1.08rem;
+  }
+  html.chapitres.large .polas-scene .moi .actions {
+    justify-content: flex-start;
+  }
+  /* les étapes, en colonne lisible au centre */
+  html.chapitres.large .etapes {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-top: 64px !important;
+  }
+  html.chapitres.large .etapes .etape {
+    padding: 0 48px;
+  }
+  html.chapitres.large .etapes .etape + .etape {
+    margin-top: 88px;
+  }
+  html.chapitres.large .etapes .grand {
+    font-size: clamp(2.6rem, 4.4vw, 4.2rem);
+  }
+  html.chapitres.large .etiquettes {
+    max-width: 1080px;
+    margin: 56px auto 0;
+    padding: 0 48px;
+    justify-content: center;
   }
 }

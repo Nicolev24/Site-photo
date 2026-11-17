@@ -28,7 +28,10 @@
     try {
       tel = window.matchMedia("(max-width: 899px)").matches;
     } catch (e) {}
-    r.classList.add(tel ? "chapitres" : r.classList.contains("calme") ? "pose" : "anime");
+    // essai : ?version=polaroids montre la version Polaroïds aussi sur ordinateur
+    var pola = /[?&]version=polaroids\b/.test(location.search);
+    r.classList.add(tel || pola ? "chapitres" : r.classList.contains("calme") ? "pose" : "anime");
+    if (pola && !tel) r.classList.add("large");
     var t = "jour";
     try {
       t = localStorage.getItem("labo-theme") === "nuit" ? "nuit" : "jour";
@@ -36,7 +39,7 @@
     r.setAttribute("data-theme", t);
   })();
 </script>
-<link rel="stylesheet" href="accueil.css?v=13" />
+<link rel="stylesheet" href="accueil.css?v=15" />
 </head>
 <body>
 
@@ -213,6 +216,6 @@
 </footer>
 
 <script src="../vendor/lenis.min.js" defer></script>
-<script src="accueil.js?v=18" defer></script>
+<script src="accueil.js?v=19" defer></script>
 </body>
 </html>
