@@ -1,0 +1,197 @@
+/* En-tête et menu des pages du site et de l'espace client : les mêmes que sur l'accueil.
+   (Chargé après css/style.css ; utilise les couleurs du site ou de la galerie.) */
+
+/* ============================================================
+   En-tête et menu : les mêmes que sur l'accueil
+   ============================================================ */
+html[data-theme] .site-header .container {
+  height: 64px;
+}
+html[data-theme] .site-header .logo {
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+html[data-theme] .site-header .header-nav {
+  gap: 22px;
+}
+html[data-theme] .site-header #header-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+}
+html[data-theme] .bouton-theme {
+  width: 36px;
+  height: 36px;
+}
+/* le bouton jour/nuit du menu (téléphone) : caché sur ordinateur */
+.menu-theme {
+  display: none;
+}
+/* le choix Particulier / Commerce : une fine ligne au-dessus */
+html[data-theme] .univers-barre-inner {
+  min-height: 36px;
+}
+
+@media (max-width: 860px) {
+  html[data-theme] .site-header .container {
+    height: 56px;
+  }
+  html[data-theme] .site-header .logo {
+    font-size: 1.2rem;
+  }
+  html[data-theme] .site-header .header-nav {
+    gap: 14px;
+  }
+
+  /* comme l'accueil : le jour/nuit est dans le menu, pas dans la barre */
+  html[data-theme] .site-header .bouton-theme {
+    display: none;
+  }
+  /* « Menu » écrit en toutes lettres, comme l'accueil */
+  html[data-theme] .nav-toggle {
+    min-height: 44px;
+    padding: 0 2px;
+    color: var(--couleur-texte);
+  }
+  html[data-theme] .nav-toggle span {
+    display: none;
+  }
+  html[data-theme] .nav-toggle::before {
+    content: "Menu";
+    font-family: var(--police-texte);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  html[data-theme] .nav-toggle[aria-expanded="true"]::before {
+    content: "Fermer";
+  }
+  /* le menu ouvert : plein écran, à la couleur du site (plus de voile sombre transparent) */
+  html[data-theme] .site-header .logo,
+  html[data-theme] .site-header .nav-toggle,
+  html[data-theme] .site-header #header-cta {
+    position: relative;
+    z-index: 1;
+  }
+  html[data-theme] .nav-links {
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+    max-height: none;
+    padding: calc(var(--bas-entete, 93px) + 12px) 24px calc(96px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    background: var(--couleur-fond);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+  }
+  html[data-theme] .nav-links.open {
+    max-height: none;
+    border-bottom: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+  html[data-theme] .nav-links a {
+    display: flex;
+    align-items: center;
+    min-height: 62px;
+    padding: 0;
+    border-bottom: 1px solid var(--couleur-bordure);
+    font-family: var(--police-titres);
+    font-size: 1.85rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--couleur-texte);
+  }
+  html[data-theme] .nav-links a[aria-current="page"] {
+    border-bottom-color: var(--couleur-bordure);
+    color: var(--couleur-texte-attenue);
+  }
+  /* menu ouvert : la barre devient pleine, la page ne défile plus */
+  html[data-theme]:has(.nav-links.open) {
+    overflow: hidden;
+  }
+  html[data-theme]:has(.nav-links.open) .univers-barre {
+    visibility: hidden;
+  }
+  html[data-theme] .site-header:has(.nav-links.open)::before {
+    opacity: 1;
+    background: var(--couleur-fond);
+  }
+  html[data-theme] .site-header:has(.nav-links.open) {
+    color: var(--couleur-texte);
+  }
+  /* « Mode nuit / Mode jour », en bas du menu ouvert */
+  html[data-theme] .nav-links.open ~ .menu-theme {
+    display: block;
+    position: fixed;
+    left: 24px;
+    bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    z-index: 2;
+    padding: 12px 0;
+    border: 0;
+    border-bottom: 1px solid var(--couleur-bordure);
+    background: none;
+    color: var(--couleur-texte);
+    font-family: var(--police-texte);
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+}
+
+/* ============================================================
+   Téléphone : quand la page s'ouvre sur une grande photo (Mon travail),
+   la barre du haut est incrustée dans la photo
+   ============================================================ */
+@media (max-width: 860px) {
+  html.photo-en-tete #sections-root > .ouverture:first-child {
+    margin-top: calc(-1 * (var(--h-entete, 56px) + var(--h-barre, 37px)));
+  }
+  html.photo-en-tete #sections-root > .ouverture:first-child .ouverture-grille {
+    height: 100svh;
+    max-height: none;
+  }
+  /* un léger voile en haut de la photo, pour lire la barre */
+  html.photo-en-tete #sections-root > .ouverture:first-child .ouverture-grille::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    height: 28%;
+    background: linear-gradient(to bottom, rgba(10, 10, 12, 0.5), rgba(10, 10, 12, 0));
+    pointer-events: none;
+  }
+  html.photo-en-tete .univers-barre {
+    position: relative;
+    z-index: 51;
+    background: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+  }
+  html.photo-en-tete .univers-barre .univers-libelle,
+  html.photo-en-tete .univers-barre button {
+    color: rgba(255, 255, 255, 0.78);
+  }
+  html.photo-en-tete .univers-barre button[aria-pressed="true"] {
+    color: #fff;
+  }
+  html[data-theme] .site-header.sur-photo:not(:has(.nav-links.open)) .logo,
+  html[data-theme] .site-header.sur-photo:not(:has(.nav-links.open)) .nav-toggle {
+    color: #fff;
+  }
+  html[data-theme] .site-header.sur-photo:not(:has(.nav-links.open)) #header-cta {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.75);
+  }
+}

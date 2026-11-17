@@ -89,8 +89,9 @@ html.galerie-claire body {
   border-color: rgba(245, 241, 234, 0.7);
 }
 @media (max-width: 860px) {
-  .galerie-claire .nav-links {
-    background: var(--g-papier);
+  /* menu ouvert : plein écran, à la couleur de la page (voir css/entete.css) */
+  html.galerie-claire .nav-links {
+    background: var(--couleur-fond);
   }
 }
 
@@ -255,4 +256,12 @@ html.galerie-claire.espace-neutre .espace-photo {
 }
 html.galerie-claire.espace-neutre[data-theme="nuit"] .espace-photo {
   background: #2e2e33;
+}
+
+/* menu ouvert sur la couverture : la barre reprend les couleurs de la page */
+html.galerie-claire .site-header.sur-photo:has(.nav-links.open) .logo,
+html.galerie-claire .site-header.sur-photo:has(.nav-links.open) .nav-toggle,
+html.galerie-claire .site-header.sur-photo:has(.nav-links.open) #header-cta {
+  color: var(--couleur-texte);
+  border-color: var(--couleur-texte);
 }

@@ -22,6 +22,9 @@
     document.querySelectorAll(".bouton-theme").forEach(function (b) {
       b.setAttribute("aria-label", nuit ? "Passer en mode jour" : "Passer en mode nuit");
     });
+    document.querySelectorAll(".menu-theme").forEach(function (b) {
+      b.textContent = nuit ? "Mode jour" : "Mode nuit";
+    });
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", nuit ? "#1c1c1f" : "#ededf0");
   }
@@ -39,6 +42,15 @@
     b.addEventListener("click", changer);
     var cta = place.querySelector("#header-cta");
     place.insertBefore(b, cta || null);
+    // sur téléphone, comme sur l'accueil : « Mode nuit » en bas du menu ouvert
+    var liens = place.querySelector(".nav-links");
+    if (liens) {
+      var m = document.createElement("button");
+      m.type = "button";
+      m.className = "menu-theme";
+      m.addEventListener("click", changer);
+      liens.after(m);
+    }
     maj();
   });
 })();

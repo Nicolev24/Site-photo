@@ -60,8 +60,15 @@ function initEntete() {
     // Sur l'accueil, la grande photo passe sous le menu : il reste transparent tant que
     // la photo est derrière lui, puis reprend son fond (verre) une fois la photo passée.
     const hauteur = entete.offsetHeight;
+    document.documentElement.style.setProperty("--bas-entete", `${Math.round(entete.getBoundingClientRect().bottom)}px`);
     document.documentElement.style.setProperty("--h-entete", `${hauteur}px`);
-    const photo = document.querySelector(".polaroids.avec-fond, .galerie-couverture:not([hidden])");
+    // Téléphone : une page qui s'ouvre sur une grande photo (« ouverture ») la passe sous la barre.
+    const premiere = document.querySelector("#sections-root > :first-child");
+    const photoTete = !!premiere && premiere.matches(".ouverture:not(.sans-photo)") && window.matchMedia("(max-width: 860px)").matches;
+    document.documentElement.classList.toggle("photo-en-tete", photoTete);
+    const barre = document.querySelector(".univers-barre");
+    document.documentElement.style.setProperty("--h-barre", `${barre ? barre.offsetHeight : 0}px`);
+    const photo = photoTete ? premiere : document.querySelector(".polaroids.avec-fond, .galerie-couverture:not([hidden])");
     const surPhoto = !!photo && photo.getBoundingClientRect().bottom > hauteur + 2;
     entete.classList.toggle("sur-photo", surPhoto);
     entete.classList.toggle("est-defile", y > 24 && !surPhoto);

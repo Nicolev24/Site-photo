@@ -1309,3 +1309,12 @@ html.polas-css .polas-scene .etape {
 .pied-legal a {
   color: inherit;
 }
+
+/* « Réserver » dans la barre : le même bouton fin, en pilule, que sur les autres pages */
+.entete .bouton-petit {
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+}

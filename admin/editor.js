@@ -1740,7 +1740,7 @@ function buildEditableApercuFormules(data) {
   container.appendChild(boutonEditable(data, "btn btn-fantome"));
   const hint = document.createElement("p");
   hint.className = "admin-hint";
-  hint.textContent = "Les noms des formules et leurs prix sont lus automatiquement depuis la page Services & tarifs : ils se mettent à jour tout seuls. Ici tu règles seulement le titre et le texte du bouton.";
+  hint.textContent = "Les noms des formules et leurs prix sont lus automatiquement depuis la page Tarifs : ils se mettent à jour tout seuls. Ici tu règles seulement le titre et le texte du bouton.";
   container.appendChild(hint);
   sectionEl.appendChild(container);
   return sectionEl;
@@ -2171,7 +2171,7 @@ function buildEditableOngletsTarifs(data) {
 
   const hint = document.createElement("p");
   hint.className = "admin-hint";
-  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Choisis des photos différentes de celles de l'accueil et de « À propos », pour varier d'une page à l'autre.";
+  hint.textContent = "Une photo et une phrase d'introduction par univers. Le visiteur voit celles de l'univers choisi (Particulier / Commerce en haut du site). Choisis des photos différentes de celles de l'accueil et de « Qui suis-je », pour varier d'une page à l'autre.";
   container.appendChild(hint);
 
   const NOMS = { particuliers: "Particuliers", commerces: "Commerces" };

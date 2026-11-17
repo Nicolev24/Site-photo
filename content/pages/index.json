@@ -57,7 +57,7 @@
         "invitation": "Entrez, faites un tour…",
         "items": [
           {
-            "title": "À propos",
+            "title": "Qui suis-je",
             "text": "Mon univers",
             "href": "moi.html",
             "image": "images/mariages/premiere-danse-etincelles.jpg",
@@ -65,7 +65,7 @@
             "position": "50% 45%"
           },
           {
-            "title": "Services & tarifs",
+            "title": "Tarifs",
             "text": "Les formules",
             "href": "services.html",
             "image": "images/mariages/baiser-pont-chateau.jpg",

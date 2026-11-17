@@ -9,6 +9,8 @@
 <title>Essai — Espace client</title>
 <link rel="stylesheet" href="../css/style.css" />
 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="../css/entete.css?v=3" />
+<link rel="stylesheet" href="theme.css?v=2" />
 <script>
   // ESSAI (labo) : une galerie d'exemple faite avec les photos du site. Aucune donnée réelle,
   // aucun appel au serveur des galeries.
@@ -17,13 +19,6 @@
     if (!p.get("g")) {
       p.set("g", "exemple");
       history.replaceState(null, "", "?" + p.toString());
-    }
-    var actuel = p.get("style") === "actuel";
-    if (!actuel) {
-      document.write('<link rel="stylesheet" href="../labo/galerie/nouveau.css" />');
-      var t = "jour";
-      try { t = localStorage.getItem("theme") === "nuit" ? "nuit" : "jour"; } catch (e) {}
-      document.documentElement.setAttribute("data-theme", t);
     }
     var GALERIE = {
       name: "Léa & Thomas",
@@ -46,11 +41,16 @@
   })();
 </script>
 
+<script>
+  // « Espace client » ouvert depuis le menu (pas de galerie dans l'adresse) : les tons du site.
+  if (!new URLSearchParams(location.search).get("g")) document.documentElement.classList.add("espace-neutre");
+</script>
+<script src="../js/theme.js?v=4"></script>
 <link rel="icon" href="../favicon.ico" sizes="48x48" />
 <link rel="icon" href="../icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="../icones/apple-touch-icon.png" />
 <link rel="manifest" href="../site.webmanifest" />
-<meta name="theme-color" content="#f6f2ea" />
+<meta name="theme-color" content="#ededf0" />
 </head>
 <body>
 
@@ -200,16 +200,13 @@
   </div>
 </div>
 
-<script src="../js/main.js"></script>
+<script src="../js/main.js?v=3"></script>
 <script src="app.js"></script>
 <script>
   // les photos de l'exemple viennent du site (tailles WebP)
   photoUrl = function (token, filename, variant) {
     return "../images/tailles/" + filename + (variant === "thumb" ? "-800" : "-1200") + ".webp";
   };
-</script>
-<script>
-  if (new URLSearchParams(location.search).get("style") !== "actuel") document.write('<script src="../js/theme.js"><\/script>');
 </script>
 
 </body>

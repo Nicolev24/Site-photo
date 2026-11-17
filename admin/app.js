@@ -70,7 +70,7 @@ const SECTION_TYPES = [
     value: "onglets_tarifs",
     label: "Tarifs : en-tête (photo + texte pour particuliers / commerces)",
     defaultData: () => ({
-      eyebrow: "Services & tarifs", title: "",
+      eyebrow: "Tarifs", title: "",
       tabs: [
         { id: "particuliers", label: "Particuliers", image: "", alt: "", position: "50% 50%", text: "" },
         { id: "commerces", label: "Commerces", image: "", alt: "", position: "50% 50%", text: "" },
@@ -93,8 +93,8 @@ const SECTION_TYPES = [
     defaultData: () => ({
       invitation: "Entrez, faites un tour…",
       items: [
-        { title: "À propos", text: "", href: "a-propos.html", image: "", alt: "", position: "50% 50%" },
-        { title: "Services & tarifs", text: "", href: "services.html", image: "", alt: "", position: "50% 50%" },
+        { title: "Qui suis-je", text: "", href: "moi.html", image: "", alt: "", position: "50% 50%" },
+        { title: "Tarifs", text: "", href: "services.html", image: "", alt: "", position: "50% 50%" },
       ],
     }),
   },
@@ -103,7 +103,7 @@ const SECTION_TYPES = [
     label: "Plan du site (liens vers les pages)",
     defaultData: () => ({
       eyebrow: "Explorer", title: "Par où commencer ?",
-      items: [{ title: "À propos", text: "", href: "a-propos.html" }, { title: "Services & tarifs", text: "", href: "services.html" }],
+      items: [{ title: "Qui suis-je", text: "", href: "moi.html" }, { title: "Tarifs", text: "", href: "services.html" }],
     }),
   },
   {
@@ -1067,7 +1067,7 @@ document.getElementById("seo-og-choisir").addEventListener("click", () => {
 });
 
 document.getElementById("sidebar-add-page").addEventListener("click", () => {
-  const title = prompt("Titre de la nouvelle page (ex : À propos) :");
+  const title = prompt("Titre de la nouvelle page (ex : Qui suis-je) :");
   if (!title || !title.trim()) return;
   const slug = slugify(title.trim());
   if (!slug || slug === "admin") {
@@ -1249,7 +1249,7 @@ function renderLinksList(containerId, links, rerender) {
     card.innerHTML = `
       <div class="admin-field-row">
         <div class="admin-field"><label>Texte affiché</label><input type="text" class="f-label" value="${escapeHtml(link.label || "")}" /></div>
-        <div class="admin-field"><label>Lien (ex : a-propos.html)</label><input type="text" class="f-href" value="${escapeHtml(link.href || "")}" /></div>
+        <div class="admin-field"><label>Lien (ex : moi.html)</label><input type="text" class="f-href" value="${escapeHtml(link.href || "")}" /></div>
       </div>
       <div class="admin-card-toolbar">
         <div class="admin-card-toolbar-left">
