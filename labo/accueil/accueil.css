@@ -513,6 +513,11 @@ html.js:not(.calme) .etape {
   opacity: 0;
   visibility: hidden;
 }
+/* la première étape est lisible tout de suite, avant même le script */
+html.js:not(.calme) .etape[data-etape="0"] {
+  opacity: 1;
+  visibility: visible;
+}
 html.js:not(.calme) .etape.est-active a,
 html.js:not(.calme) .etape.est-active button {
   pointer-events: auto;
