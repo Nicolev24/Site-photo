@@ -3,6 +3,7 @@
 Source de vérité des règles fixées par Nicolas. Ajouter les nouvelles en haut, avec la date.
 
 **17 novembre 2026**
+- **Nouveaux tarifs (validés par Nicolas, cohérence avec l'app de gestion)** : particuliers découverte 120 €, complète 240 € ; commerces séance photo 250 €, site vitrine 1 page 1 000 €, pack Photo + Site 1 150 € (au lieu de 1 250 €). Prix dans `content/pages/services.json` (et les `<head>` de `services.html`) ; `outils/version-texte.mjs` recopie la version texte et la fiche Google (accueil).
 - Le site entier suit le style de l'accueil (jour/nuit, en-tête et menu identiques partout, plus de doré). Admin accordé au site.
 - Mode nuit ni noir ni trop clair : `#1c1c1f`. Mode jour pas blanc pur : `#ededf0`.
 - Une seule icône jour/nuit (lune en jour, soleil en nuit).

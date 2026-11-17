@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Tarifs photographe à Ath – Séance photo dès 100€ | Nicolas Leveugle",
-    "description": "Tarifs photo clairs : séance découverte 100€, formule complète 200€, devis mariage et événements. Commerces : séance photo, site vitrine, pack. Ath, Wallonie, Bruxelles.",
+    "title": "Tarifs photographe à Ath – Séance photo dès 120€ | Nicolas Leveugle",
+    "description": "Tarifs photo clairs : séance découverte 120€, formule complète 240€, devis mariage et événements. Commerces : séance photo, site vitrine, pack. Ath, Wallonie, Bruxelles.",
     "og_image": "images/mariages/premiere-danse-etincelles.jpg"
   },
   "sections": [
@@ -56,7 +56,7 @@
         "plans": [
           {
             "title": "Formule découverte",
-            "price": "100€",
+            "price": "120€",
             "price_suffix": "",
             "highlight": false,
             "badge": "",
@@ -72,7 +72,7 @@
           },
           {
             "title": "Formule complète",
-            "price": "200€",
+            "price": "240€",
             "price_suffix": "",
             "highlight": true,
             "badge": "Le plus demandé",
@@ -218,7 +218,7 @@
         "plans": [
           {
             "title": "Séance photo commerce",
-            "price": "100€",
+            "price": "250€",
             "price_suffix": "",
             "highlight": false,
             "badge": "",
@@ -234,7 +234,7 @@
           },
           {
             "title": "Site vitrine 1 page",
-            "price": "490€",
+            "price": "1000€",
             "price_suffix": "",
             "highlight": false,
             "badge": "",
@@ -267,14 +267,14 @@
           },
           {
             "title": "Pack Photo + Site",
-            "price": "500€",
-            "price_suffix": "au lieu de 590€",
+            "price": "1150€",
+            "price_suffix": "au lieu de 1250€",
             "highlight": true,
             "badge": "Le plus choisi",
             "features": [
               "Séance photo commerce incluse",
               "Site vitrine 1 page inclus",
-              "90€ d'économie"
+              "100€ d'économie"
             ],
             "cta_label": "Choisir cette formule",
             "visuel": "pack",
