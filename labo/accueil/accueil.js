@@ -320,7 +320,8 @@
     n: 0, // nombre d'images (lu dans lentille.json)
     pos: null, // position c de chaque image
     cles: null,
-    dossier: (window.innerWidth < 900 ? "sequence/800/" : "sequence/1000/"),
+    taille: window.innerWidth < 900 ? 800 : 1000,
+    dossier: window.innerWidth < 900 ? "sequence/800/" : "sequence/1000/",
     images: [],
     pret: 0,
     reperes: null,
@@ -359,10 +360,18 @@
     M.fx = M.x;
     M.fy = M.y;
     if (film) {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      film.width = film.height = Math.round(M.S * dpr);
-      film.style.width = film.style.height = M.S + "px";
-      film.style.transform = `translate(${(M.fx - M.S / 2).toFixed(1)}px, ${(M.fy - M.S / 2).toFixed(1)}px)`;
+      // au pixel près : si la taille voulue est proche de celle des images, on les affiche 1:1
+      // (sinon le navigateur les retaille de quelques pixels et tout devient mou)
+      const dpr = window.devicePixelRatio || 1;
+      let px = Math.round(M.S * dpr);
+      if (Math.abs(px / FILM.taille - 1) < 0.15) px = FILM.taille;
+      film.width = film.height = px;
+      const css = px / dpr;
+      M.S = css; // la lentille et l image d attente suivent la taille réellement affichée
+      film.style.width = film.style.height = css + "px";
+      const ax = Math.round((M.fx - css / 2) * dpr) / dpr;
+      const ay = Math.round((M.fy - css / 2) * dpr) / dpr;
+      film.style.transform = `translate(${ax}px, ${ay}px)`;
       FILM.dernier = -1;
     }
     plateau.style.setProperty("--ox", M.x + "px");
@@ -563,15 +572,32 @@
         FILM.n = FILM.cles.length;
         forcer = true;
         // d'abord une image sur huit (on voit tout de suite le mouvement), puis on comble
+        // en partant de l'endroit où l'on est, vers l'avant d'abord (là où l'on va défiler)
         const ordre = [];
-        const vu = new Set();
-        [8, 4, 2, 1].forEach((p) => {
-          for (let i = 0; i < FILM.n; i += p) if (!vu.has(i)) vu.add(i) && ordre.push(i);
-        });
+        for (let i = 0; i < FILM.n; i += 8) ordre.push(i);
+        const demande = new Uint8Array(FILM.n);
+        ordre.forEach((i) => (demande[i] = 1));
+        const prochaine = () => {
+          if (ordre.length) return ordre.shift();
+          const ici = indiceFilm(cLisse === null ? 0 : borne(cLisse, 0, N))[0];
+          let meilleur = -1;
+          let score = Infinity;
+          for (let i = 0; i < FILM.n; i++) {
+            if (demande[i]) continue;
+            const d = i >= ici ? i - ici : (ici - i) * 3;
+            if (d < score) {
+              score = d;
+              meilleur = i;
+            }
+          }
+          return meilleur;
+        };
         let enCours = 0;
         const suite = () => {
-          while (enCours < 6 && ordre.length) {
-            const i = ordre.shift();
+          while (enCours < 6) {
+            const i = prochaine();
+            if (i < 0) return;
+            demande[i] = 1;
             enCours++;
             const img = new Image();
             img.decoding = "async";
@@ -622,6 +648,7 @@
     if (!im || im === FILM.dernier) return;
     FILM.dernier = im;
     const ctx = film.getContext("2d");
+    ctx.imageSmoothingQuality = "high";
     ctx.clearRect(0, 0, film.width, film.height);
     ctx.drawImage(im, 0, 0, film.width, film.height);
   }
