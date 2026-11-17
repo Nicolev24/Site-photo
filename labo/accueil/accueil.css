@@ -972,9 +972,8 @@ html.chapitres .lentille-fixe {
 html.chapitres:not(.calme) .polas {
   display: block;
   position: relative;
-  height: 100vh;
-  height: 100svh;
-  min-height: 560px;
+  height: 175vh;
+  height: 175svh;
   view-timeline-name: --polas;
   view-timeline-axis: block;
 }
@@ -982,8 +981,11 @@ html.chapitres.calme .etape[data-etape="0"] {
   padding: calc(var(--entete) + 32px) var(--marge) 0;
 }
 html.chapitres .polas-scene {
-  position: relative;
-  height: 100%;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
 }
 /* derrière : le titre, le choix, l'essentiel */
 html.chapitres .polas-scene .etape {

@@ -349,18 +349,20 @@
     $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPolas, 0)));
 
     if (!calme) {
-      // quand on défile, l'ouverture monte avec la page et les deux photos de derrière
-      // s'écartent sur les côtés : la suite du site apparaît
-      const D = cartesPola
-        .map((f) => {
-          const dx = parseFloat(f.dataset.dx) || 0;
-          const dy = parseFloat(f.dataset.dy) || 0;
-          f.style.setProperty("--dx", dx);
-          f.style.setProperty("--dy", dy);
-          f.style.animationRange = "exit 0% exit 60%";
-          return { f, dx, dy };
-        })
-        .filter((d) => d.dx || d.dy);
+      // l'ouverture reste à l'écran : la photo de devant monte à la vitesse du doigt,
+      // les deux de derrière s'écartent ; dès qu'elles sont sorties, place à « Derrière l'objectif »
+      // (plages en % du défilement de l'ouverture)
+      const D = cartesPola.map((f) => {
+        const dx = parseFloat(f.dataset.dx) || 0;
+        const dy = parseFloat(f.dataset.dy) || 0;
+        const devant = (parseFloat(f.dataset.retard) || 0) === 0;
+        const de = devant ? 0 : 10;
+        const a = 100;
+        f.style.setProperty("--dx", dx);
+        f.style.setProperty("--dy", dy);
+        f.style.animationRange = `contain ${de}% contain ${a}%`;
+        return { f, dx, dy, de: de / 100, a: a / 100 };
+      });
       // Le navigateur fait bouger les photos lui-même, au rythme exact du défilement (aucun retard).
       let auNavigateur = false;
       try {
@@ -369,14 +371,21 @@
       if (auNavigateur) R.classList.add("polas-css");
       else {
         // secours pour les anciens navigateurs : même mouvement, calculé ici
-        let H = scene.clientHeight || window.innerHeight;
+        const P = { W: 1, H: 1, haut: 0, course: 1 };
+        const mesurer = () => {
+          P.W = window.innerWidth;
+          P.H = scene.clientHeight;
+          P.haut = polas.getBoundingClientRect().top + window.scrollY;
+          P.course = Math.max(1, polas.offsetHeight - P.H);
+        };
         let dernier = -1;
         const dessiner = () => {
-          const p = borne((window.scrollY - polas.offsetTop) / (H * 0.6));
+          const p = borne((window.scrollY - P.haut) / P.course);
           if (p === dernier) return;
           dernier = p;
           D.forEach((d) => {
-            d.f.style.transform = `translate3d(${(d.dx * window.innerWidth * 0.95 * p).toFixed(1)}px, ${(d.dy * H * 0.8 * p).toFixed(1)}px, 0) rotate(${(d.dx * 12 * p).toFixed(2)}deg)`;
+            const e = seg(p, d.de, d.a);
+            d.f.style.transform = `translate3d(${(d.dx * P.W * 0.95 * e).toFixed(1)}px, ${(d.dy * P.H * 0.8 * e).toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
           });
         };
         let attente = false;
@@ -392,12 +401,21 @@
           },
           { passive: true }
         );
+        let lPrec = window.innerWidth;
         window.addEventListener("resize", () => {
-          H = scene.clientHeight || window.innerHeight;
+          if (window.innerWidth === lPrec) return; // barre d'adresse : on ne bouge rien
+          lPrec = window.innerWidth;
+          mesurer();
           dernier = -1;
           dessiner();
         });
+        mesurer();
         dessiner();
+        window.addEventListener("load", () => {
+          mesurer();
+          dernier = -1;
+          dessiner();
+        });
       }
 
       // fondu léger à l'arrivée de chaque bloc, plus bas
