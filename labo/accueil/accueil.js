@@ -289,7 +289,7 @@
   if (calme) {
     // une seule image, l'appareil complet (rendu « cinéma »)
     fixe.removeAttribute("srcset");
-    fixe.src = "sequence/640/c_2.000.webp";
+    fixe.src = "sequence/800/c_2.000.webp";
     fixe.alt = "Appareil photo Leica, objectif monté";
     pret.then(() => {
       if (voile) voile.style.opacity = 0;
@@ -320,7 +320,7 @@
     n: 0, // nombre d'images (lu dans lentille.json)
     pos: null, // position c de chaque image
     cles: null,
-    dossier: (window.innerWidth < 900 ? "sequence/640/" : "sequence/1000/"),
+    dossier: (window.innerWidth < 900 ? "sequence/800/" : "sequence/1000/"),
     images: [],
     pret: 0,
     reperes: null,
