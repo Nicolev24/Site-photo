@@ -308,7 +308,7 @@
       // la photo est maintenant en grand : la bonne taille d'image
       const portrait = $(".moi-photo", sectionMoi);
       if (portrait) {
-        portrait.sizes = "100vw";
+        portrait.sizes = "62vw";
         portrait.loading = "eager";
       }
     }

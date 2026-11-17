@@ -1137,31 +1137,40 @@ html.chapitres .polas-scene .moi {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
   margin: 0;
-  padding: 14px var(--marge) calc(24px + env(safe-area-inset-bottom, 0px));
+  padding: 12px var(--marge) calc(28px + env(safe-area-inset-bottom, 0px));
   border: 0;
+  text-align: center;
   opacity: 0;
   visibility: hidden;
 }
-/* la photo prend toute la place libre : pas de vide au-dessus ni en dessous */
+/* la photo entière, à taille raisonnable, au centre */
 html.chapitres .polas-scene .moi-photo {
-  flex: 1 1 0;
-  min-height: 0;
-  width: 100%;
+  flex: none;
+  width: min(62vw, 32svh, 270px);
   height: auto;
-  aspect-ratio: auto;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: 50% 28%;
+  object-position: 50% 30%;
+  box-shadow: 0 24px 44px -26px rgba(10, 10, 20, 0.45);
+}
+html.chapitres .polas-scene .moi .sur {
+  margin-bottom: 10px;
 }
 html.chapitres .polas-scene .moi .moyen {
-  font-size: clamp(1.8rem, 8.4vw, 2.6rem);
+  font-size: clamp(1.9rem, 8.6vw, 2.6rem);
 }
 html.chapitres .polas-scene .moi .texte {
-  margin-top: 10px;
+  max-width: 30ch;
+  margin: 12px auto 0;
+  font-size: 1rem;
 }
 html.chapitres .polas-scene .moi .actions {
-  margin-top: 12px;
+  justify-content: center;
+  margin-top: 14px;
 }
 html.polas-css .polas-scene .moi {
   animation: moi-arrive linear both;
