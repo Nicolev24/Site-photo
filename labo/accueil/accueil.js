@@ -291,13 +291,41 @@
     const polas = $("#polas");
     const scene = $("#polas-scene");
     const cartesPola = $$(".pola", polas);
-    const indice = $("#polas-indice");
     const ouverture = etapes[0];
-    // le titre, le choix Particulier / Commerce et l'essentiel attendent derrière les photos
-    if (ouverture && !calme) scene.insertBefore(ouverture, scene.firstChild);
-    // les trois points forts, plus bas, après les étapes (l'ouverture reste épurée)
-    if (etapes[N - 1]) etapes[N - 1].after(listeEtiquettes);
+    // l'ouverture : le titre en haut, les photos au milieu, l'essentiel en bas
+    if (ouverture) {
+      if (calme) polas.before(ouverture);
+      else scene.insertBefore(ouverture, scene.firstChild);
+    }
     if (tirage) tirage.style.display = "none";
+    // l'ordre sur téléphone : qui suis-je → les formules → les étapes → réserver
+    const listeEtapes = $(".etapes");
+    const sectionFormules = $("#formules");
+    const sectionMoi = $(".moi");
+    if (sectionFormules && sectionMoi) sectionFormules.before(sectionMoi);
+    if (sectionFormules && listeEtapes) {
+      sectionFormules.after(listeEtapes);
+      listeEtapes.after(listeEtiquettes);
+    }
+    // les photos se placent entre le titre et l'essentiel, quelle que soit la taille de l'écran
+    const placerPile = () => {
+      if (!ouverture || calme) return;
+      const h = $(".etape-haut", ouverture);
+      const b = $(".etape-bas", ouverture);
+      const H = scene.clientHeight;
+      scene.style.setProperty("--pile-haut", h.offsetTop + h.offsetHeight + 10 + "px");
+      scene.style.setProperty("--pile-bas", H - b.offsetTop + 10 + "px");
+      scene.style.setProperty("--pile-h", Math.max(120, b.offsetTop - h.offsetTop - h.offsetHeight - 20) + "px");
+    };
+    placerPile();
+    window.addEventListener("load", placerPile);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placerPile);
+    let lPile = window.innerWidth;
+    window.addEventListener("resize", () => {
+      if (window.innerWidth === lPile) return;
+      lPile = window.innerWidth;
+      placerPile();
+    });
 
     // les photos changent avec Particulier / Commerce
     const POLAS = {
@@ -321,19 +349,18 @@
     $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPolas, 0)));
 
     if (!calme) {
-      // chaque photo part de son côté : celle de devant monte à la vitesse du doigt,
-      // les deux de derrière s'écartent ensuite (plages en % du défilement de l'ouverture)
-      const D = cartesPola.map((f) => {
-        const dx = parseFloat(f.dataset.dx) || 0;
-        const dy = parseFloat(f.dataset.dy) || 0;
-        const devant = (parseFloat(f.dataset.retard) || 0) === 0;
-        const de = devant ? 0 : 18;
-        const a = devant ? 75 : 92;
-        f.style.setProperty("--dx", dx);
-        f.style.setProperty("--dy", dy);
-        f.style.animationRange = `contain ${de}% contain ${a}%`;
-        return { f, dx, dy, de: de / 100, a: a / 100 };
-      });
+      // quand on défile, l'ouverture monte avec la page et les deux photos de derrière
+      // s'écartent sur les côtés : la suite du site apparaît
+      const D = cartesPola
+        .map((f) => {
+          const dx = parseFloat(f.dataset.dx) || 0;
+          const dy = parseFloat(f.dataset.dy) || 0;
+          f.style.setProperty("--dx", dx);
+          f.style.setProperty("--dy", dy);
+          f.style.animationRange = "exit 0% exit 60%";
+          return { f, dx, dy };
+        })
+        .filter((d) => d.dx || d.dy);
       // Le navigateur fait bouger les photos lui-même, au rythme exact du défilement (aucun retard).
       let auNavigateur = false;
       try {
@@ -342,28 +369,15 @@
       if (auNavigateur) R.classList.add("polas-css");
       else {
         // secours pour les anciens navigateurs : même mouvement, calculé ici
-        const P = { W: 1, H: 1, haut: 0, course: 1 };
-        const mesurer = () => {
-          P.W = window.innerWidth;
-          P.H = scene.clientHeight;
-          P.haut = polas.getBoundingClientRect().top + window.scrollY;
-          P.course = Math.max(1, polas.offsetHeight - P.H);
-        };
+        let H = scene.clientHeight || window.innerHeight;
         let dernier = -1;
         const dessiner = () => {
-          const p = borne((window.scrollY - P.haut) / P.course);
+          const p = borne((window.scrollY - polas.offsetTop) / (H * 0.6));
           if (p === dernier) return;
           dernier = p;
           D.forEach((d) => {
-            const e = seg(p, d.de, d.a);
-            d.f.style.transform = `translate3d(${(d.dx * P.W * 0.95 * e).toFixed(1)}px, ${(d.dy * P.H * 0.8 * e).toFixed(1)}px, 0) rotate(${(d.dx * 12 * e).toFixed(2)}deg)`;
+            d.f.style.transform = `translate3d(${(d.dx * window.innerWidth * 0.95 * p).toFixed(1)}px, ${(d.dy * H * 0.8 * p).toFixed(1)}px, 0) rotate(${(d.dx * 12 * p).toFixed(2)}deg)`;
           });
-          if (indice) indice.style.opacity = (1 - seg(p, 0, 0.08)).toFixed(3);
-          if (ouverture) {
-            const o = seg(p, 0.25, 0.72);
-            ouverture.style.opacity = o.toFixed(3);
-            ouverture.style.transform = `scale(${lerp(0.96, 1, o).toFixed(4)})`;
-          }
         };
         let attente = false;
         window.addEventListener(
@@ -378,21 +392,12 @@
           },
           { passive: true }
         );
-        let lPrec = window.innerWidth;
         window.addEventListener("resize", () => {
-          if (window.innerWidth === lPrec) return; // barre d'adresse : on ne bouge rien
-          lPrec = window.innerWidth;
-          mesurer();
+          H = scene.clientHeight || window.innerHeight;
           dernier = -1;
           dessiner();
         });
-        mesurer();
         dessiner();
-        window.addEventListener("load", () => {
-          mesurer();
-          dernier = -1;
-          dessiner();
-        });
       }
 
       // fondu léger à l'arrivée de chaque bloc, plus bas

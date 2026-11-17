@@ -972,8 +972,9 @@ html.chapitres .lentille-fixe {
 html.chapitres:not(.calme) .polas {
   display: block;
   position: relative;
-  height: 215vh;
-  height: 215svh;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
   view-timeline-name: --polas;
   view-timeline-axis: block;
 }
@@ -981,11 +982,8 @@ html.chapitres.calme .etape[data-etape="0"] {
   padding: calc(var(--entete) + 32px) var(--marge) 0;
 }
 html.chapitres .polas-scene {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
-  overflow: hidden;
+  position: relative;
+  height: 100%;
 }
 /* derrière : le titre, le choix, l'essentiel */
 html.chapitres .polas-scene .etape {
@@ -993,13 +991,12 @@ html.chapitres .polas-scene .etape {
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 22px;
+  justify-content: space-between;
   margin: 0;
-  padding: calc(var(--entete) + 12px) var(--marge) calc(24px + env(safe-area-inset-bottom, 0px));
-  opacity: 0;
-  transform-origin: 50% 45%;
-  will-change: opacity, transform;
+  padding: calc(var(--entete) + 18px) var(--marge) calc(26px + env(safe-area-inset-bottom, 0px));
+}
+html.chapitres .polas-scene .etape-bas .texte {
+  margin: 0;
 }
 html.chapitres .polas-scene .etape-bas {
   margin: 0;
@@ -1007,7 +1004,10 @@ html.chapitres .polas-scene .etape-bas {
 /* devant : la pile de photos */
 html.chapitres .polas-pile {
   position: absolute;
-  inset: var(--entete) 0 0;
+  left: 0;
+  right: 0;
+  top: var(--pile-haut, 30%);
+  bottom: var(--pile-bas, 30%);
   z-index: 2;
   pointer-events: none;
 }
@@ -1015,8 +1015,8 @@ html.chapitres .pola {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 52vw;
-  max-width: 260px;
+  width: min(50vw, calc(var(--pile-h, 400px) * 0.7));
+  max-width: 250px;
   margin: 0;
   padding: 2.4vw 2.4vw 11vw;
   background: #fbfbfa;
@@ -1026,8 +1026,8 @@ html.chapitres .pola {
   will-change: transform;
 }
 html.chapitres .pola:last-child {
-  width: 62vw;
-  max-width: 310px;
+  width: min(60vw, calc(var(--pile-h, 400px) * 0.8));
+  max-width: 300px;
   padding-bottom: 13vw;
 }
 html.chapitres .pola img {
@@ -1046,53 +1046,10 @@ html.polas-css .pola {
     transform: translate3d(calc(var(--dx) * 95vw), calc(var(--dy) * 80svh), 0) rotate(calc(var(--dx) * 12deg));
   }
 }
-html.polas-css .polas-scene .etape {
-  animation: polas-texte linear both;
-  animation-timeline: --polas;
-  animation-range: contain 25% contain 72%;
-}
-@keyframes polas-texte {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-html.polas-css .polas-indice {
-  animation: polas-indice linear both;
-  animation-timeline: --polas;
-  animation-range: contain 0% contain 8%;
-}
-@keyframes polas-indice {
-  to {
-    opacity: 0;
-  }
-}
-html.chapitres .polas-indice {
-  position: absolute;
-  left: 50%;
-  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
-  z-index: 3;
-  width: 1px;
-  height: 44px;
-  overflow: hidden;
-  background: var(--trait);
-  translate: -50% 0;
-  pointer-events: none;
-}
-html.chapitres .polas-indice span {
-  display: block;
-  width: 1px;
-  height: 18px;
-  background: var(--encre);
-  animation: defiler 1.8s var(--doux) infinite;
-}
 /* la suite : les étapes, simplement, l'une sous l'autre */
 html.chapitres .etapes {
-  margin: 8px 0 0;
+  margin: 0;
+  padding-top: 24px !important;
   padding: 0;
   list-style: none;
 }
@@ -1148,4 +1105,25 @@ html.chapitres .apparait {
 html.chapitres .apparait.vu {
   opacity: 1;
   transform: none;
+}
+
+/* les étapes 2 et 4 alignées à droite */
+html.chapitres .etapes .etape:nth-child(even) {
+  text-align: right;
+}
+html.chapitres .etapes .etape:nth-child(even) .chap-num {
+  flex-direction: row-reverse;
+}
+html.chapitres .etapes .etape:nth-child(even) .texte {
+  margin-left: auto;
+}
+html.chapitres .etapes .etape:nth-child(even) .actions {
+  justify-content: flex-end;
+}
+/* ordre sur téléphone : qui suis-je juste après l'ouverture */
+html.chapitres .moi {
+  margin-top: 8px;
+}
+html.chapitres .formules {
+  padding-bottom: 32px;
 }
