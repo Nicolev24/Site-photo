@@ -15,7 +15,7 @@
 - Chaque enregistrement = un commit sur `main` → en ligne ~1 min, puis passage du robot.
 
 ## À savoir
-- L'**accueil** n'est pas dans l'admin (textes dans le code, chapitre 4). La page « Accueil » de l'admin modifie un ancien contenu non affiché. À proposer plus tard : relier l'accueil à l'admin.
+- La page **« Accueil »** de l'admin est un formulaire propre (`openAccueilEditor` dans `admin/app.js`) qui écrit `content/accueil.json` (chapitre 4), avec la vue actuelle du site en dessous. L'ancien `content/pages/index.json` n'est plus affiché.
 - La **couleur d'accent** (`appearance.json`) n'a plus d'effet.
 - `admin/preview.html` : aperçu d'un brouillon (même style que le site).
 - Thème de l'admin : jour/nuit propre à l'admin (`localStorage` `admin-theme`, attribut `data-theme="dark"`), couleurs accordées au site.

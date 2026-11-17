@@ -1,0 +1,42 @@
+{
+  "textes": {
+    "particuliers": {
+      "0": "Mariages, couples, portraits : des photos naturelles, une lumière soignée.",
+      "1": "On parle de vos envies, des lieux et du bon moment. Réponse sous 48 h.",
+      "2": "Je vous guide sans vous figer. Vous vivez le moment, je m'occupe du reste.",
+      "3": "Un instant vrai, pas une pose.",
+      "4": "Vos photos retouchées, dans votre galerie privée en ligne.",
+      "titre2": "Le jour J.",
+      "titre4": "Rien qu'à vous."
+    },
+    "commerces": {
+      "0": "Commerces et indépendants : votre lieu, votre équipe, votre savoir-faire.",
+      "1": "On fixe un créneau qui vous arrange et la liste des photos utiles.",
+      "2": "Je viens sur place, sans bloquer votre journée. Vous travaillez, je photographie.",
+      "3": "Votre métier, sur le vif.",
+      "4": "Retouchées, prêtes pour Google, vos réseaux et votre site.",
+      "titre2": "La séance.",
+      "titre4": "Prêtes à servir."
+    }
+  },
+  "polas": {
+    "particuliers": [
+      "mariages/premiere-danse-etincelles",
+      "portfolio/portraits/img2",
+      "mariages/maries-colonnes"
+    ],
+    "commerces": [
+      "commerces/salon-vue-ensemble",
+      "commerces/coupe-ciseaux",
+      "commerces/barbier-portrait-miroir"
+    ]
+  },
+  "moi": {
+    "titre": "Je suis Nicolas.",
+    "texte": "Photographe indépendant basé à Ath. J'aime photographier les gens tels qu'ils sont, sans mise en scène."
+  },
+  "fin": {
+    "titre": "À vous de passer devant l'objectif.",
+    "note": "Réponse sous 48 h · Ath, Wallonie & Bruxelles"
+  }
+}

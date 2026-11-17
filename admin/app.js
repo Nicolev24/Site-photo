@@ -998,7 +998,7 @@ function renderSidebarPagesList() {
     btn.className = "admin-sidebar-item";
     btn.textContent = p.title;
     btn.dataset.slug = p.slug;
-    btn.addEventListener("click", () => openPageEditor(p.slug, p.title));
+    btn.addEventListener("click", () => (p.slug === "index" ? openAccueilEditor(btn) : openPageEditor(p.slug, p.title)));
     list.appendChild(btn);
   });
 }
@@ -1502,3 +1502,103 @@ async function startLoginFlow() {
 }
 
 startLoginFlow();
+
+
+// ========================================================================
+// Accueil (pile de Polaroïds) : textes et photos dans content/accueil.json
+// ========================================================================
+
+const ACCUEIL_CHAMPS = [
+  ["0", "Phrase d'ouverture (sous le titre)"],
+  ["1", "01 · La préparation : texte"],
+  ["titre2", "02 · Titre"],
+  ["2", "02 · Texte"],
+  ["3", "03 · Le déclic : texte"],
+  ["titre4", "04 · Titre"],
+  ["4", "04 · Texte"],
+];
+let accueilEtat = null;
+
+function accueilChemin(photo) {
+  return photo.chemin.replace(/^images\//, "").replace(/\.[a-z]+$/i, "");
+}
+
+async function openAccueilEditor(btn) {
+  try {
+    showStatus("Chargement de l'accueil…", "loading");
+    const { data } = await getJsonFile("content/accueil.json");
+    accueilEtat = data;
+    statusEl.hidden = true;
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+    return;
+  }
+  showView("view-accueil");
+  setActiveSidebarItem(btn);
+  renderAccueilForm();
+}
+
+function renderAccueilForm() {
+  const d = accueilEtat;
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const champ = (cle, label, valeur, lignes) =>
+    `<div class="admin-field"><label>${label}</label><textarea rows="${lignes || 2}" data-cle="${cle}">${esc(valeur)}</textarea></div>`;
+  const univers = (u, nom) => `
+    <div class="admin-card accueil-colonne">
+      <h3>${nom}</h3>
+      ${ACCUEIL_CHAMPS.map(([k, l]) => champ(`textes.${u}.${k}`, l, d.textes[u][k], k.startsWith("titre") ? 1 : 2)).join("")}
+      <label class="admin-label-photos">Les 3 photos Polaroïd de l'ouverture (la 3e est devant)</label>
+      <div class="accueil-polas">
+        ${[0, 1, 2]
+          .map(
+            (i) => `<button type="button" class="accueil-pola" data-u="${u}" data-i="${i}" title="Changer cette photo">
+              <img src="../images/tailles/${esc(d.polas[u][i])}-480.webp" alt="" /><span>Changer</span></button>`
+          )
+          .join("")}
+      </div>
+    </div>`;
+  document.getElementById("accueil-form").innerHTML = `
+    <div class="accueil-grille">${univers("particuliers", "Pour les particuliers")}${univers("commerces", "Pour les commerces")}</div>
+    <div class="admin-card">
+      <h3>« Derrière l'objectif »</h3>
+      ${champ("moi.titre", "Titre", d.moi.titre, 1)}
+      ${champ("moi.texte", "Texte", d.moi.texte, 3)}
+      <h3>Fin de page</h3>
+      ${champ("fin.titre", "Titre", d.fin.titre, 2)}
+      ${champ("fin.note", "Petite ligne sous le bouton", d.fin.note, 1)}
+    </div>`;
+  document.querySelectorAll("#accueil-form [data-cle]").forEach((el) => {
+    el.addEventListener("input", () => {
+      const parts = el.dataset.cle.split(".");
+      let o = accueilEtat;
+      parts.slice(0, -1).forEach((p) => (o = o[p]));
+      o[parts[parts.length - 1]] = el.value;
+    });
+  });
+  document.querySelectorAll("#accueil-form .accueil-pola").forEach((b) => {
+    b.addEventListener("click", () =>
+      ouvrirPhototheque({
+        surChoix: ([photo]) => {
+          const c = accueilChemin(photo);
+          accueilEtat.polas[b.dataset.u][Number(b.dataset.i)] = c;
+          b.querySelector("img").src = `../images/tailles/${c}-480.webp`;
+        },
+        surFichiers: () => showStatus("Pour une nouvelle photo, importe-la d'abord dans la photothèque (Mon travail), puis choisis-la ici.", "error"),
+      })
+    );
+  });
+}
+
+document.getElementById("accueil-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  btn.disabled = true;
+  try {
+    showStatus("Enregistrement…", "loading");
+    await putJsonFileWithRetry("content/accueil.json", accueilEtat, "Mise à jour de l'accueil (admin)");
+    showStatus("Accueil enregistré ✓ — visible sur le site dans environ 1 minute.", "success");
+  } catch (err) {
+    showStatus(`Erreur : ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});

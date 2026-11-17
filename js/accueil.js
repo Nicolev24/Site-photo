@@ -39,6 +39,9 @@
     return reperes[reperes.length - 1][1];
   }
 
+  // Contenu modifiable depuis l'admin (content/accueil.json) : remplace les valeurs ci-dessous.
+  let PERSO = {};
+
   // ---------- Textes (un mot par étape, deux lignes au plus) ----------
   const TEXTES = {
     particuliers: {
@@ -127,6 +130,12 @@
     const t = TEXTES[u];
     $$("[data-texte]").forEach((el) => (el.textContent = t[el.dataset.texte] || ""));
     $$("[data-titre]").forEach((el) => (el.textContent = t["titre" + el.dataset.titre] || el.textContent));
+    const moi = PERSO.moi || {};
+    const fin = PERSO.fin || {};
+    if (moi.titre && $("#moi-titre")) $("#moi-titre").textContent = moi.titre;
+    if (moi.texte && $(".moi .texte")) $(".moi .texte").textContent = moi.texte;
+    if (fin.titre && $("#fin-titre")) $("#fin-titre").textContent = fin.titre;
+    if (fin.note && $(".fin-note")) $(".fin-note").textContent = fin.note;
     $$("button[data-univers]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.univers === u)));
     $$("[data-lien-univers]").forEach((a) => {
       if (!a.dataset.base) a.dataset.base = a.getAttribute("href");
@@ -210,7 +219,13 @@
   // ---------- Données du site (admin) ----------
   function chargerDonnees() {
     const lire = (f) => fetch(BASE + f, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    return Promise.all([lire("content/pages/services.json"), lire("content/contact.json"), lire("content/images.json")]).then(([services, contact, images]) => {
+    return Promise.all([lire("content/pages/services.json"), lire("content/contact.json"), lire("content/images.json"), lire("content/accueil.json")]).then(([services, contact, images, perso]) => {
+      if (perso) {
+        PERSO = perso;
+        ["particuliers", "commerces"].forEach((u) => {
+          if (perso.textes && perso.textes[u]) Object.keys(perso.textes[u]).forEach((k) => perso.textes[u][k] && (TEXTES[u][k] = perso.textes[u][k]));
+        });
+      }
       manifeste = (images && images.images) || {};
       const d = { plans: { particuliers: [], commerces: [] } };
       ((services && services.sections) || []).forEach((s) => {
@@ -355,7 +370,8 @@
       if (u === uPolas) return;
       uPolas = u;
       cartesPola.forEach((f, i) => {
-        const chemin = POLAS[u][i % POLAS[u].length];
+        const liste = (PERSO.polas && PERSO.polas[u] && PERSO.polas[u].length ? PERSO.polas[u] : POLAS[u]);
+        const chemin = liste[i % liste.length];
         const img = $("img", f);
         const base = `${BASE}images/tailles/${chemin}`;
         img.srcset = `${base}-480.webp 480w, ${base}-800.webp 800w`;
@@ -363,6 +379,10 @@
       });
     };
     remplirPolas();
+    pret.then(() => {
+      uPolas = "";
+      remplirPolas();
+    });
     $$("button[data-univers]").forEach((bt) => bt.addEventListener("click", () => setTimeout(remplirPolas, 0)));
 
     if (!calme) {

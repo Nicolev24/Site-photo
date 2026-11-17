@@ -16,13 +16,11 @@ Fichiers : `index.html`, `css/accueil.css`, `js/accueil.js` (autonomes : n'utili
 - Sur téléphone, `js/accueil.js` **déplace** des blocs : la section `.moi` dans la scène, la liste des étapes après les formules.
 - **Ne jamais** animer un `clip-path` ou une grande image recalculée au défilement : ça accroche sur téléphone (essai abandonné, chapitre 13).
 
-## Changer les textes et photos (écrits dans le code, pas dans l'admin)
-- Titres et textes visibles : directement dans `index.html` (étapes, ouverture, fin).
-- Textes qui changent selon Particulier/Commerce : `const TEXTES` (~ligne 43 de `js/accueil.js`).
-- Photos des 3 Polaroïds : `const POLAS` (deux listes de 3 chemins `images/tailles/<chemin>-480|800.webp`, sans extension) **et** les `<img>` de `index.html` (version particuliers chargée d'emblée).
-- Photo de Nicolas : section `.moi` de `index.html` (`images/tailles/nicolas-leveugle-portrait-*.webp`).
-- Formules de secours si `services.json` est vide : `const FORMULES`.
-- Après modification : augmenter `?v=` de `css/accueil.css` / `js/accueil.js` dans `index.html`.
+## Changer les textes et photos (depuis l'admin : page « Accueil »)
+- **Admin → Accueil** modifie `content/accueil.json` : phrases et titres des étapes (particuliers et commerces), les 3 photos Polaroïd de chaque univers, « Derrière l'objectif » (titre, texte), fin de page. `js/accueil.js` lit ce fichier (`PERSO`) et remplace les valeurs par défaut du code (`TEXTES`, `POLAS`). Les photos y sont notées `dossier/nom` (sans `images/` ni extension).
+- Ce qui reste dans le code : titre « La lumière d'abord. », « Photographe à Ath », liens, photo de Nicolas, formules de secours (`FORMULES`).
+- Pour ajouter un champ : l'ajouter dans `content/accueil.json`, dans `ACCUEIL_CHAMPS`/le formulaire de `admin/app.js`, et le lire dans `js/accueil.js`.
+- Après modification du code : augmenter `?v=` de `css/accueil.css` / `js/accueil.js` dans `index.html`.
 - Le menu de l'accueil est écrit dans `index.html` (garder les mêmes liens que `content/navigation.json`).
 
 ---

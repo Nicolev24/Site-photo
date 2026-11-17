@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../css/style.css" />
 <link rel="stylesheet" href="../css/theme-site-auto.css?v=3" />
 <link rel="stylesheet" href="admin.css?v=2" />
-<link rel="stylesheet" href="theme-pro.css?v=3" />
+<link rel="stylesheet" href="theme-pro.css?v=4" />
 <link rel="icon" href="../favicon.ico" sizes="48x48" />
 <link rel="icon" href="../icones/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="../icones/apple-touch-icon.png" />
@@ -244,6 +244,21 @@
       </div>
     </div>
 
+    <!-- Vue Accueil (la pile de Polaroïds) -->
+    <div id="view-accueil" class="admin-view" hidden>
+      <div class="admin-editor-topbar">
+        <h2>Accueil</h2>
+        <div class="admin-editor-topbar-actions">
+          <a class="btn-outline btn-small" href="../index.html" target="_blank" rel="noopener">Voir le site ↗</a>
+          <button id="accueil-save" class="btn btn-primary btn-small" type="button">Enregistrer</button>
+        </div>
+      </div>
+      <p class="admin-hint">Modifie les textes et les photos de la page d'accueil. Après « Enregistrer », compte environ 1 minute avant de les voir sur le site.</p>
+      <div id="accueil-form"></div>
+      <h3>Vue actuelle de l'accueil</h3>
+      <div class="accueil-apercu"><iframe id="accueil-iframe" title="Accueil du site" src="../index.html" loading="lazy"></iframe></div>
+    </div>
+
     <!-- Vue éditeur de page (mode construction) -->
     <div id="view-page-editor" class="admin-view" hidden>
       <div class="admin-editor-topbar">
@@ -279,7 +294,7 @@
 
 </div>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="editor.js?v=2"></script>
 <script src="theme-toggle.js?v=2"></script>
 </body>
