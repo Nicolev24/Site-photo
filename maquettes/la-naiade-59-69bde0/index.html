@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>La Naïade – Centre de beauté et de bien-être à Ath (maquette)</title>
+<meta name="description" content="Maquette de page d'accueil pour La Naïade, institut de beauté à Ath.">
+<style>
+:root{--bleu:#003399;--azur:#0693e3;--vert:#1dcf06;--menthe:#00d084;--pomme:#81d742;--encre:#0b2150;--texte:#2b3a55;--fond:#f4faf8;--blanc:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--texte);background:var(--fond);line-height:1.6;font-size:17px}
+img{max-width:100%;height:auto}
+a{color:inherit}
+.wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 20px}
+.bandeau-maquette{background:#0b2150;color:#cfe3ff;font-size:12.5px;text-align:center;padding:6px 12px}
+header{background:var(--bleu);color:#fff;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px rgba(0,30,90,.25)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.nav img{height:42px;width:auto;display:block}
+.nav a.tel{background:var(--vert);color:#06330a;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:999px;font-size:15px;white-space:nowrap}
+.nav ul{display:none;list-style:none;gap:24px}
+.nav ul a{text-decoration:none;font-size:15px;opacity:.9}
+.nav ul a:hover{opacity:1;text-decoration:underline}
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(160deg,var(--bleu) 0%,#0a64c4 55%,var(--azur) 100%);padding:64px 0 96px}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.28),rgba(255,255,255,0) 70%)}
+.hero::before{width:320px;height:320px;right:-90px;top:-80px}
+.hero::after{width:220px;height:220px;left:-70px;bottom:20px;background:radial-gradient(circle at 30% 30%,rgba(129,215,66,.45),rgba(129,215,66,0) 70%)}
+.hero .wrap{position:relative;z-index:1}
+.etiquette{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:999px;font-size:14px;margin-bottom:18px}
+h1{font-size:clamp(32px,8vw,56px);line-height:1.12;font-weight:800;max-width:15ch;letter-spacing:-.01em}
+h1 span{color:var(--pomme)}
+.hero p.lead{margin-top:18px;font-size:18px;max-width:34em;color:#e6f0ff}
+.boutons{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;padding:15px 24px;border-radius:999px;font-size:16px;text-align:center}
+.btn-vert{background:var(--vert);color:#06330a}
+.btn-vert:hover{background:var(--pomme)}
+.btn-ligne{border:2px solid rgba(255,255,255,.7);color:#fff}
+.btn-ligne:hover{background:rgba(255,255,255,.12)}
+.note-hero{margin-top:26px;display:flex;align-items:center;gap:10px;font-size:15px;color:#e6f0ff}
+.note-hero b{font-size:22px;color:#fff}
+.vague{position:absolute;left:0;right:0;bottom:-1px;height:48px;background:var(--fond);clip-path:ellipse(75% 100% at 50% 100%)}
+section{padding:56px 0}
+.kicker{color:var(--azur);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.12em}
+h2{color:var(--encre);font-size:clamp(26px,6vw,38px);line-height:1.2;margin:8px 0 12px}
+.intro{max-width:38em;margin-bottom:28px}
+.grille{display:grid;gap:16px}
+.carte{background:#fff;border-radius:20px;padding:24px;box-shadow:0 6px 24px rgba(0,51,153,.08);border:1px solid #e3eef0}
+.carte .ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;margin-bottom:14px;background:linear-gradient(135deg,var(--menthe),var(--azur));color:#fff}
+.carte h3{color:var(--encre);font-size:20px;margin-bottom:6px}
+.carte p{font-size:16px}
+.note-ex{margin-top:18px;font-size:14px;color:#5b6b86}
+.pourquoi{background:linear-gradient(180deg,#fff,#eaf6f3)}
+.points{display:grid;gap:14px;list-style:none}
+.points li{display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;padding:18px;border:1px solid #e3eef0}
+.points .pastille{flex:none;width:34px;height:34px;border-radius:50%;background:var(--vert);color:#06330a;font-weight:800;display:grid;place-items:center}
+.points strong{color:var(--encre);display:block}
+.avis{background:var(--bleu);color:#fff;text-align:center;position:relative;overflow:hidden}
+.avis::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;left:-100px;top:-100px;background:radial-gradient(circle,rgba(6,147,227,.5),transparent 70%)}
+.avis .wrap{position:relative}
+.avis h2{color:#fff}
+.score{font-size:72px;font-weight:800;line-height:1;margin:12px 0 4px}
+.score small{font-size:28px;font-weight:600;color:#bcd3ff}
+.etoiles{color:#ffd24a;font-size:30px;letter-spacing:4px}
+.avis p{max-width:34em;margin:12px auto 24px;color:#d8e6ff}
+.contact{background:var(--fond)}
+.contact-grille{display:grid;gap:16px}
+.contact dl dt{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--azur);font-weight:700;margin-top:16px}
+.contact dl dt:first-child{margin-top:0}
+.contact dl dd{font-size:18px;color:var(--encre);word-break:break-word}
+.contact dd a{text-decoration:none;border-bottom:2px solid var(--pomme)}
+.rdv{background:linear-gradient(150deg,var(--bleu),var(--azur));color:#fff;border:0}
+.rdv h3{color:#fff;font-size:24px;margin-bottom:10px}
+.rdv p{color:#e6f0ff;margin-bottom:20px}
+.rdv .btn{display:block;margin-bottom:10px}
+footer{background:#0b2150;color:#bcd0f0;padding:32px 0;font-size:14.5px}
+footer a{color:#fff}
+.maq{margin-top:14px;font-size:12.5px;opacity:.75}
+@media(min-width:700px){
+.grille.trois{grid-template-columns:repeat(2,1fr)}
+.points{grid-template-columns:repeat(2,1fr)}
+.contact-grille{grid-template-columns:1.1fr 1fr;align-items:start}
+.rdv .btn{display:inline-block;margin-right:8px}
+}
+@media(min-width:960px){
+body{font-size:18px}
+.nav ul{display:flex}
+.hero{padding:104px 0 128px}
+.grille.trois{grid-template-columns:repeat(3,1fr)}
+section{padding:80px 0}
+.carte{padding:28px}
+}
+</style>
+</head>
+<body>
+<div class="bandeau-maquette">Maquette de présentation — ce n'est pas un site publié</div>
+<header>
+<div class="wrap nav">
+<a href="#haut" aria-label="La Naïade, accueil"><img src="http://www.lanaiade-ath.be/wp-content/uploads/2019/01/nav-logo-blanc-1.png" alt="La Naïade"></a>
+<ul>
+<li><a href="#soins">Nos soins</a></li>
+<li><a href="#pourquoi">Pourquoi nous</a></li>
+<li><a href="#avis">Avis</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+<a class="tel" href="tel:+3268334988">📞 068 33 49 88</a>
+</div>
+</header>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<span class="etiquette">Centre de beauté et de bien-être · Ath</span>
+<h1>Offrez-vous un moment de <span>bien-être</span></h1>
+<p class="lead">À La Naïade, on prend le temps de vous accueillir, de vous détendre et de prendre soin de vous, dans un cadre apaisant, à deux pas du centre d'Ath.</p>
+<div class="boutons">
+<a class="btn btn-vert" href="tel:+3268334988">Prendre rendez-vous</a>
+<a class="btn btn-ligne" href="#soins">Découvrir nos soins</a>
+</div>
+<p class="note-hero"><b>4,8/5</b> <span>sur Google · 175 avis</span></p>
+</div>
+<div class="vague"></div>
+</div>
+
+<section id="soins">
+<div class="wrap">
+<span class="kicker">Nos soins</span>
+<h2>Une grande variété de soins, pour vous</h2>
+<p class="intro">Visage, corps, mains, pieds, détente… Retrouvez l'essentiel de l'institut en un coup d'œil, avec des tarifs clairs à portée de main.</p>
+<div class="grille trois">
+<article class="carte"><div class="ico">✨</div><h3>Soins du visage</h3><p>Nettoyage, hydratation, éclat : des soins adaptés à votre peau et à vos envies.</p></article>
+<article class="carte"><div class="ico">💧</div><h3>Soins du corps</h3><p>Gommages, enveloppements et soins pour retrouver une peau douce et confortable.</p></article>
+<article class="carte"><div class="ico">🌿</div><h3>Relaxation et détente</h3><p>Un vrai moment de pause, au calme, pour relâcher les tensions du quotidien.</p></article>
+<article class="carte"><div class="ico">💅</div><h3>Mains et pieds</h3><p>Soins des mains et des pieds, pour une finition soignée de la tête aux pieds.</p></article>
+<article class="carte"><div class="ico">🌸</div><h3>Épilation</h3><p>Un service soigné, dans le respect de votre confort et de votre peau.</p></article>
+<article class="carte"><div class="ico">🎁</div><h3>Offres et moments à offrir</h3><p>Une idée pour faire plaisir ou vous faire plaisir : renseignez-vous auprès de l'institut.</p></article>
+</div>
+<p class="note-ex">Texte d'exemple : la liste exacte des soins et les tarifs seront repris de l'institut et présentés dans un tableau lisible, soin par soin.</p>
+</div>
+</section>
+
+<section id="pourquoi" class="pourquoi">
+<div class="wrap">
+<span class="kicker">Pourquoi La Naïade</span>
+<h2>Un institut en qui on a confiance</h2>
+<ul class="points">
+<li><span class="pastille">1</span><div><strong>Une clientèle très satisfaite</strong>Une note de 4,8/5 sur Google, sur la base de 175 avis.</div></li>
+<li><span class="pastille">2</span><div><strong>Un centre de beauté et de bien-être</strong>Une large palette de soins réunie au même endroit, à Ath.</div></li>
+<li><span class="pastille">3</span><div><strong>Facile d'accès</strong>Chaussée de Mons 338, 7800 Ath.</div></li>
+<li><span class="pastille">4</span><div><strong>Un contact simple</strong>Un coup de téléphone ou un e-mail suffit pour poser vos questions ou réserver.</div></li>
+</ul>
+</div>
+</section>
+
+<section id="avis" class="avis">
+<div class="wrap">
+<span class="kicker" style="color:var(--pomme)">Avis Google</span>
+<h2>Vos clientes en parlent mieux que nous</h2>
+<div class="score">4,8<small>/5</small></div>
+<div class="etoiles" aria-hidden="true">★★★★★</div>
+<p>175 avis publiés sur Google. Lisez-les directement sur la fiche de l'institut.</p>
+<a class="btn btn-vert" href="https://maps.google.com/?cid=7422265986308711008&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA" target="_blank" rel="noopener">Voir les avis sur Google</a>
+</div>
+</section>
+
+<section id="contact" class="contact">
+<div class="wrap">
+<span class="kicker">Contact</span>
+<h2>Prenez rendez-vous</h2>
+<div class="contact-grille">
+<div class="carte">
+<dl>
+<dt>Adresse</dt><dd>La Naïade<br>Chau. de Mons 338<br>7800 Ath</dd>
+<dt>Téléphone</dt><dd><a href="tel:+3268334988">068 33 49 88</a></dd>
+<dt>E-mail</dt><dd><a href="mailto:lanaiade-ath@hotmail.com">lanaiade-ath@hotmail.com</a></dd>
+<dt>Facebook</dt><dd><a href="https://www.facebook.com/polletmel" target="_blank" rel="noopener">Suivre La Naïade</a></dd>
+<dt>Google</dt><dd><a href="https://maps.google.com/?cid=7422265986308711008&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA" target="_blank" rel="noopener">Itinéraire et fiche Google</a></dd>
+</dl>
+</div>
+<div class="carte rdv">
+<h3>Un moment rien qu'à vous</h3>
+<p>Appelez-nous ou écrivez-nous : nous vous répondrons avec plaisir pour choisir le soin qui vous convient et convenir d'un rendez-vous.</p>
+<a class="btn btn-vert" href="tel:+3268334988">Appeler</a>
+<a class="btn btn-ligne" href="mailto:lanaiade-ath@hotmail.com">Écrire un e-mail</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<strong style="color:#fff">La Naïade</strong> — Centre de beauté et de bien-être · Chau. de Mons 338, 7800 Ath · <a href="tel:+3268334988">068 33 49 88</a>
+<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+</div>
+</footer>
+</body>
+</html>
