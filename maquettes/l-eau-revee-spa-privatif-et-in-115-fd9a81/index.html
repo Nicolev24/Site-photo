@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>L'Eau Rêvée – Spa privatif et institut de beauté à Lens (maquette)</title>
+<meta name="description" content="Maquette de page d'accueil pour L'Eau Rêvée, spa privatif et institut de beauté à Lens.">
+<style>
+:root{--turq:#68ccd1;--turq-d:#2f9ea4;--brun:#1e1306;--creme:#fbf7f1;--or:#b8934a;--texte:#2b2319}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Georgia,"Times New Roman",serif;color:var(--texte);background:var(--creme);line-height:1.65;font-size:17px}
+a{color:inherit}
+h1,h2,h3{font-weight:normal;line-height:1.2;color:var(--brun)}
+.sans{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:var(--brun);color:#fff;position:sticky;top:0;z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+header img{height:46px;width:auto;display:block}
+.nom{font-size:1.15rem;letter-spacing:.04em;color:#fff}
+nav{display:none}
+nav a{text-decoration:none;color:#e9e2d6;font-size:.95rem;margin-left:22px}
+nav a:hover{color:var(--turq)}
+.btn{display:inline-block;padding:13px 24px;border-radius:999px;background:var(--turq);color:var(--brun);text-decoration:none;font-weight:600;font-size:1rem;font-family:system-ui,sans-serif;border:2px solid var(--turq)}
+.btn:hover{background:#8adadd}
+.btn.contour{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+.btn.contour:hover{background:rgba(255,255,255,.12)}
+header .btn{padding:9px 16px;font-size:.9rem}
+.hero{position:relative;color:#fff;background:linear-gradient(135deg,#0f4c52,#1e1306);background-image:linear-gradient(180deg,rgba(30,19,6,.55),rgba(30,19,6,.8)),url("https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A0571+copie-1920w.jpg");background-size:cover;background-position:center;padding:84px 0 72px}
+.hero h1{color:#fff;font-size:2.15rem;max-width:660px;margin-bottom:16px}
+.hero p{max-width:560px;font-size:1.08rem;color:#f1ece3;margin-bottom:26px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:12px}
+.etiq{display:inline-block;font-family:system-ui,sans-serif;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--turq);margin-bottom:14px}
+.avis-pill{display:inline-block;margin-top:26px;font-family:system-ui,sans-serif;font-size:.92rem;background:rgba(255,255,255,.14);padding:8px 16px;border-radius:999px}
+.note{background:#e8f6f6;border-left:4px solid var(--turq);padding:14px 18px;font-family:system-ui,sans-serif;font-size:.93rem;margin:-1px 0 0;color:#1d4b4e}
+section{padding:60px 0}
+h2{font-size:1.75rem;margin-bottom:12px}
+.intro{max-width:620px;margin-bottom:32px;color:#5a4e3e}
+.grille{display:grid;gap:16px;grid-template-columns:1fr}
+.carte{background:#fff;border-radius:18px;padding:26px 24px;box-shadow:0 2px 14px rgba(30,19,6,.07);border-top:4px solid var(--turq)}
+.carte h3{font-size:1.3rem;margin-bottom:8px}
+.carte p{font-size:.97rem;color:#5a4e3e}
+.icone{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--turq),#a7e6e9);margin-bottom:14px}
+.sombre{background:var(--brun);color:#e9e2d6}
+.sombre h2,.sombre h3{color:#fff}
+.sombre .intro{color:#cfc6b6}
+.pourquoi{display:grid;gap:18px}
+.pourquoi div{border-left:3px solid var(--turq);padding-left:16px}
+.pourquoi h3{font-size:1.15rem;margin-bottom:4px}
+.pourquoi p{font-size:.96rem;color:#cfc6b6}
+.avis{text-align:center}
+.score{font-size:4rem;color:var(--turq-d);line-height:1}
+.etoiles{color:var(--or);letter-spacing:.2em;font-size:1.3rem;margin:6px 0}
+.contact-grille{display:grid;gap:20px}
+.bloc{background:#fff;border-radius:18px;padding:26px 24px;box-shadow:0 2px 14px rgba(30,19,6,.07)}
+.bloc p{margin-bottom:10px}
+.bloc a{color:var(--turq-d);font-weight:600}
+.liens a{display:inline-block;margin:4px 14px 0 0}
+footer{background:#120a02;color:#bdb3a2;padding:30px 0;font-size:.9rem;text-align:center}
+footer a{color:var(--turq)}
+.maq{margin-top:12px;font-size:.8rem;opacity:.75}
+@media(min-width:700px){
+nav{display:block}
+.hero{padding:140px 0 120px}
+.hero h1{font-size:3.1rem}
+.grille{grid-template-columns:repeat(2,1fr)}
+.pourquoi{grid-template-columns:repeat(2,1fr)}
+.contact-grille{grid-template-columns:1.2fr 1fr}
+}
+@media(min-width:1000px){
+.grille{grid-template-columns:repeat(3,1fr)}
+section{padding:80px 0}
+h2{font-size:2.1rem}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<a href="#haut" aria-label="L'Eau Rêvée"><img src="https://irp-cdn.multiscreensite.com/4ca931dc/dms3rep/multi/desktop/logogouttegoldnotyp.png" alt="Logo L'Eau Rêvée"></a>
+<nav class="sans"><a href="#soins">Soins</a><a href="#spa">Spa privatif</a><a href="#pourquoi">Pourquoi nous</a><a href="#contact">Contact</a></nav>
+<a class="btn sans" href="tel:+32492311191">Appeler</a>
+</div>
+</header>
+<div class="note">Accès uniquement sur rendez-vous. La piscine extérieure est actuellement en hivernage.</div>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<span class="etiq">Institut de beauté &amp; spa privatif · Lens</span>
+<h1>Un moment pour vous, rien que pour vous.</h1>
+<p>Sauna, hammam, jacuzzi et terrasse avec piscine chauffée en espace privatif, soins du visage et du corps dans un cadre calme et relaxant.</p>
+<div class="actions">
+<a class="btn" href="tel:+32492311191">Réserver : 0492 31 11 91</a>
+<a class="btn contour" href="#spa">Découvrir le spa</a>
+</div>
+<span class="avis-pill">★ 4,9/5 sur Google · 78 avis</span>
+</div>
+</div>
+
+<section id="spa">
+<div class="wrap">
+<span class="etiq" style="color:var(--turq-d)">Spa privatif</span>
+<h2>Votre espace de détente, en toute intimité</h2>
+<p class="intro">Un espace entièrement privatif, accessible sur rendez-vous, pour vous ressourcer seul(e), à deux ou entre proches.</p>
+<div class="grille">
+<div class="carte"><div class="icone"></div><h3>Sauna</h3><p>Un sauna traditionnel pour se réchauffer, se détendre et relâcher les tensions.</p></div>
+<div class="carte"><div class="icone"></div><h3>Hammam</h3><p>La douce chaleur humide du hammam, dans une ambiance apaisante.</p></div>
+<div class="carte"><div class="icone"></div><h3>Jacuzzi</h3><p>Un jacuzzi intérieur pour un vrai moment de bien-être.</p></div>
+<div class="carte"><div class="icone"></div><h3>Piscine extérieure</h3><p>Une terrasse avec piscine chauffée. Actuellement en hivernage : renseignez-vous pour sa réouverture.</p></div>
+</div>
+</div>
+</section>
+
+<section id="soins" style="background:#f2ebdf">
+<div class="wrap">
+<span class="etiq" style="color:var(--turq-d)">Institut</span>
+<h2>Nos soins et nos produits</h2>
+<p class="intro">L'institut dispose de deux salles de soins pour prendre soin de votre peau et de votre corps.</p>
+<div class="grille">
+<div class="carte"><div class="icone"></div><h3>Soins du visage et du corps</h3><p>Des soins personnalisés pour vous détendre et révéler votre éclat.</p></div>
+<div class="carte"><div class="icone"></div><h3>Massages</h3><p>Des massages relaxants pour offrir une vraie parenthèse à votre corps et à votre esprit.</p></div>
+<div class="carte"><div class="icone"></div><h3>Gamme CELESTETIC</h3><p>Une gamme de produits de soin utilisée et proposée à l'institut.</p></div>
+</div>
+</div>
+</section>
+
+<section id="pourquoi" class="sombre">
+<div class="wrap">
+<span class="etiq">Pourquoi nous choisir</span>
+<h2>Le calme, tout simplement</h2>
+<p class="intro">Ce qui fait le charme de L'Eau Rêvée.</p>
+<div class="pourquoi">
+<div><h3>Un espace privatif</h3><p>Sauna, hammam, jacuzzi et terrasse pour vous seul(e) ou votre petit groupe.</p></div>
+<div><h3>Sur rendez-vous</h3><p>Un accueil sans file d'attente, pensé pour votre tranquillité.</p></div>
+<div><h3>Spa et institut réunis</h3><p>Deux salles de soins et un espace bien-être au même endroit.</p></div>
+<div><h3>Très bien notée</h3><p>4,9/5 sur Google, sur la base de 78 avis.</p></div>
+</div>
+</div>
+</section>
+
+<section class="avis">
+<div class="wrap">
+<div class="score">4,9</div>
+<div class="etoiles" aria-hidden="true">★★★★★</div>
+<p class="sans">Note moyenne sur Google, sur 78 avis</p>
+<p style="margin-top:18px"><a class="btn" href="https://maps.google.com/?cid=2571921127402069962&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a></p>
+</div>
+</section>
+
+<section id="contact" style="background:#f2ebdf">
+<div class="wrap">
+<span class="etiq" style="color:var(--turq-d)">Contact</span>
+<h2>Prenez rendez-vous</h2>
+<p class="intro">L'accès se fait uniquement sur rendez-vous : contactez-nous par téléphone ou par e-mail.</p>
+<div class="contact-grille">
+<div class="bloc sans">
+<p><strong>L'Eau Rêvée</strong><br>Rue d'Erbaut 60<br>7870 Lens</p>
+<p>Téléphone : <a href="tel:+32492311191">0492 31 11 91</a></p>
+<p>E-mail : <a href="mailto:contact@leaurevee.be">contact@leaurevee.be</a></p>
+</div>
+<div class="bloc sans liens">
+<p><strong>Suivez-nous</strong></p>
+<a href="http://instagram.com/leaurevee">Instagram</a><a href="https://facebook.com/leaurevee">Facebook</a><a href="https://maps.google.com/?cid=2571921127402069962&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Fiche Google</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="sans">
+<div class="wrap">
+<p>© L'Eau Rêvée · Rue d'Erbaut 60, 7870 Lens</p>
+<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+</div>
+</footer>
+</body>
+</html>
