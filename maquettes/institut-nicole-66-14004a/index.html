@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Institut Nicole — Institut de beauté à Ath (maquette)</title>
+<meta name="description" content="Institut Nicole, institut de beauté à Ath : soins du visage, massages, épilation à la cire, soins Babor.">
+<style>
+:root{--rose:#dc044f;--rose-fonce:#a80339;--rose-pale:#fdeef3;--encre:#2a1d23;--gris:#6b5a62;--creme:#fffaf8;--r:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--encre);background:var(--creme);line-height:1.6;font-size:17px}
+h1,h2,h3,.serif{font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.2}
+a{color:inherit}
+.wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 20px}
+.ruban{background:var(--encre);color:#fff;font-size:13px;text-align:center;padding:6px 12px}
+header{background:#fff;border-bottom:1px solid #f1dfe5;position:sticky;top:0;z-index:5}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;max-width:1100px;margin:0 auto}
+.logo{text-decoration:none;display:flex;flex-direction:column;line-height:1}
+.logo b{font-family:Georgia,serif;font-weight:400;font-size:26px;color:var(--rose);letter-spacing:.5px}
+.logo small{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gris);margin-top:4px}
+nav{display:none}
+nav a{text-decoration:none;font-size:15px;margin-left:24px;color:var(--gris)}
+nav a:hover{color:var(--rose)}
+.btn{display:inline-block;background:var(--rose);color:#fff;text-decoration:none;padding:13px 24px;border-radius:999px;font-weight:600;font-size:16px;min-height:44px;text-align:center;border:2px solid var(--rose)}
+.btn:hover{background:var(--rose-fonce);border-color:var(--rose-fonce)}
+.btn.clair{background:transparent;color:#fff;border-color:#fff}
+.btn.clair:hover{background:#fff;color:var(--rose)}
+.btn.petit{padding:9px 18px;font-size:14px;min-height:40px}
+.hero{position:relative;color:#fff;background:linear-gradient(135deg,#dc044f,#7a0231);background-image:linear-gradient(180deg,rgba(42,10,22,.55),rgba(90,4,35,.75)),url("https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/jpg/banner.jpg");background-size:cover;background-position:center}
+.hero .wrap{padding-top:72px;padding-bottom:80px}
+.hero .kicker{text-transform:uppercase;letter-spacing:3px;font-size:13px;opacity:.9}
+.hero h1{font-size:38px;margin:14px 0 16px;max-width:620px}
+.hero p{max-width:540px;font-size:18px;opacity:.95}
+.actions{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+.note{display:inline-flex;align-items:center;gap:8px;margin-top:26px;background:rgba(255,255,255,.15);padding:8px 16px;border-radius:999px;font-size:15px}
+section{padding:60px 0}
+.titre{text-align:center;margin-bottom:34px}
+.titre span{display:block;color:var(--rose);text-transform:uppercase;letter-spacing:3px;font-size:12px;margin-bottom:8px}
+.titre h2{font-size:30px}
+.titre p{color:var(--gris);max-width:560px;margin:10px auto 0}
+.grille{display:grid;gap:16px}
+.carte{background:#fff;border-radius:var(--r);padding:26px;border:1px solid #f1dfe5;position:relative;overflow:hidden}
+.carte::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--rose),#f58aac)}
+.carte .ico{width:48px;height:48px;border-radius:50%;background:var(--rose-pale);color:var(--rose);display:grid;place-items:center;font-size:22px;margin-bottom:14px}
+.carte h3{font-size:22px;margin-bottom:8px}
+.carte p{color:var(--gris);font-size:16px}
+.babor{background:linear-gradient(135deg,var(--rose-pale),#fff);}
+.duo{display:grid;gap:26px;align-items:center}
+.duo .bloc{background:var(--rose);color:#fff;border-radius:var(--r);padding:34px 26px;background-image:radial-gradient(circle at 85% 15%,rgba(255,255,255,.22),transparent 45%)}
+.duo .bloc .serif{font-size:34px}
+.duo .bloc p{opacity:.92;margin-top:8px}
+.duo ul{list-style:none;margin-top:16px}
+.duo li{padding:8px 0 8px 28px;position:relative}
+.duo li::before{content:"✓";position:absolute;left:0;color:var(--rose);font-weight:700}
+.pourquoi{background:#fff}
+.faits{display:grid;gap:18px}
+.fait{padding:22px;border-radius:var(--r);background:var(--creme);border:1px solid #f1dfe5}
+.fait h3{font-size:20px;color:var(--rose);margin-bottom:6px}
+.fait p{color:var(--gris);font-size:16px}
+.avis{text-align:center}
+.score{display:inline-block;background:#fff;border:1px solid #f1dfe5;border-radius:var(--r);padding:32px 36px}
+.score .n{font-family:Georgia,serif;font-size:64px;color:var(--rose);line-height:1}
+.score .n small{font-size:24px;color:var(--gris)}
+.etoiles{color:#f5a623;font-size:24px;letter-spacing:4px;margin:8px 0}
+.avis p.sous{color:var(--gris);margin:16px auto 20px;max-width:480px}
+.rdv{background:linear-gradient(135deg,var(--rose),#8b0233);color:#fff;text-align:center}
+.rdv h2{font-size:30px;margin-bottom:12px}
+.rdv p{max-width:560px;margin:0 auto 24px;opacity:.95}
+.rdv .actions{align-items:center}
+.rdv .btn{background:#fff;color:var(--rose);border-color:#fff}
+.rdv .btn.clair{background:transparent;color:#fff}
+.rdv small{display:block;margin-top:22px;opacity:.8;font-size:14px}
+.contact .grille{gap:14px}
+.info{background:#fff;border:1px solid #f1dfe5;border-radius:var(--r);padding:22px}
+.info h3{font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--rose);font-family:inherit;font-weight:700;margin-bottom:6px}
+.info a{color:var(--encre);font-size:18px;word-break:break-word;text-decoration-color:var(--rose)}
+.info p{font-size:18px}
+.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;justify-content:center}
+footer{background:var(--encre);color:#d9c9cf;padding:34px 0;font-size:14px;text-align:center}
+footer .serif{color:#fff;font-size:22px;margin-bottom:6px}
+footer a{color:#fff}
+.maq{margin-top:18px;font-size:12px;opacity:.7}
+@media(min-width:700px){
+.hero h1{font-size:50px}.actions{flex-direction:row}
+.grille.trois{grid-template-columns:repeat(2,1fr)}
+.faits{grid-template-columns:repeat(2,1fr)}
+.contact .grille{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:960px){
+nav{display:block}
+.hero .wrap{padding-top:120px;padding-bottom:130px}.hero h1{font-size:60px}
+.grille.trois{grid-template-columns:repeat(3,1fr)}
+.duo{grid-template-columns:1fr 1fr;gap:56px}
+.faits{grid-template-columns:repeat(4,1fr)}
+.contact .grille{grid-template-columns:repeat(4,1fr)}
+section{padding:84px 0}
+}
+</style>
+</head>
+<body>
+<div class="ruban">Maquette de démonstration — ce site n'est pas encore publié</div>
+<header>
+<div class="bar">
+<a class="logo" href="#haut" id="haut"><b>Institut Nicole</b><small>Grain d'élégance · Ath</small></a>
+<nav><a href="#soins">Nos soins</a><a href="#babor">Babor</a><a href="#pourquoi">L'institut</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
+<a class="btn petit" href="tel:+32497996769">Appeler</a>
+</div>
+</header>
+
+<main>
+<div class="hero">
+<div class="wrap">
+<p class="kicker">Institut de beauté · Ath</p>
+<h1>Un espace pour prendre soin de vous, en toute élégance</h1>
+<p>Soins du visage, massages, épilation à la cire… Bienvenue à l'Institut Nicole, un lieu pensé pour votre bien-être complet.</p>
+<div class="actions">
+<a class="btn" href="#rdv">Prendre rendez-vous</a>
+<a class="btn clair" href="#soins">Découvrir nos soins</a>
+</div>
+<div class="note"><span style="color:#ffd36b">★</span> 4,9/5 sur Google · 8 avis</div>
+</div>
+</div>
+
+<section id="soins">
+<div class="wrap">
+<div class="titre"><span>Nos soins</span><h2>Le bien-être, sous toutes ses formes</h2><p>Un aperçu de ce que l'institut vous propose. Contactez-nous pour connaître le détail des prestations.</p></div>
+<div class="grille trois">
+<article class="carte"><div class="ico">✿</div><h3>Soins du visage</h3><p>Des soins adaptés à votre type de peau pour retrouver éclat, douceur et confort.</p></article>
+<article class="carte"><div class="ico">☾</div><h3>Massages</h3><p>Un moment de détente pour relâcher les tensions et se ressourcer pleinement.</p></article>
+<article class="carte"><div class="ico">❀</div><h3>Épilation à la cire</h3><p>Une épilation soignée, dans un cadre agréable et à l'écoute de votre confort.</p></article>
+<article class="carte"><div class="ico">✦</div><h3>Permanente</h3><p>Pour sublimer votre regard au quotidien. Renseignez-vous auprès de l'institut sur les options proposées.</p></article>
+<article class="carte"><div class="ico">❖</div><h3>Soins Babor</h3><p>Des soins professionnels de la marque Babor, pour une expérience beauté de qualité.</p></article>
+<article class="carte"><div class="ico">♡</div><h3>Un espace bien-être</h3><p>Un institut accueillant, pensé pour que vous vous sentiez bien dès l'entrée.</p></article>
+</div>
+</div>
+</section>
+
+<section id="babor" class="babor">
+<div class="wrap duo">
+<div class="bloc"><div class="serif">Babor</div><p>Des soins de beauté professionnels, proposés à l'Institut Nicole.</p></div>
+<div>
+<div class="titre" style="text-align:left;margin-bottom:10px"><span>Notre marque</span><h2>Une beauté exigeante, un accueil chaleureux</h2></div>
+<p style="color:var(--gris)">L'institut travaille avec la marque Babor pour ses soins. Demandez conseil : nous vous aiguillerons vers le soin qui correspond à votre peau et à vos envies.</p>
+<ul><li>Conseils personnalisés</li><li>Soins visage et corps</li><li>Un moment rien que pour vous</li></ul>
+</div>
+</div>
+</section>
+
+<section id="pourquoi" class="pourquoi">
+<div class="wrap">
+<div class="titre"><span>Pourquoi nous choisir</span><h2>Une adresse de confiance à Ath</h2></div>
+<div class="faits">
+<div class="fait"><h3>4,9/5 sur Google</h3><p>Une excellente note, sur 8 avis de clientes et clients.</p></div>
+<div class="fait"><h3>Bien-être complet</h3><p>Visage, massages, épilation, permanente : tout au même endroit.</p></div>
+<div class="fait"><h3>Soins Babor</h3><p>Une marque professionnelle de soins de beauté.</p></div>
+<div class="fait"><h3>Au cœur d'Ath</h3><p>Rue Isidore Hoton 57, facile à joindre par téléphone ou par e-mail.</p></div>
+</div>
+</div>
+</section>
+
+<section id="avis" class="avis">
+<div class="wrap">
+<div class="titre"><span>Avis</span><h2>Ce que disent vos clientes sur Google</h2></div>
+<div class="score"><div class="n">4,9<small>/5</small></div><div class="etoiles" aria-hidden="true">★★★★★</div><div>8 avis Google</div></div>
+<p class="sous">Retrouvez tous les avis directement sur la fiche Google de l'institut.</p>
+<a class="btn" href="https://maps.google.com/?cid=7294770159414820733&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
+</div>
+</section>
+
+<section id="rdv" class="rdv">
+<div class="wrap">
+<h2>Réservez votre moment de détente</h2>
+<p>Sur le futur site, vos clientes pourraient choisir leur soin et réserver leur créneau en ligne, à toute heure. En attendant, un simple appel ou e-mail suffit.</p>
+<div class="actions">
+<a class="btn" href="tel:+32497996769">Appeler le 0497 99 67 69</a>
+<a class="btn clair" href="mailto:nicole-ath@hotmail.com">Écrire un e-mail</a>
+</div>
+<small>Idée proposée dans la maquette : système de rendez-vous en ligne (à définir ensemble).</small>
+</div>
+</section>
+
+<section id="contact" class="contact">
+<div class="wrap">
+<div class="titre"><span>Contact</span><h2>Venez nous rencontrer</h2></div>
+<div class="grille">
+<div class="info"><h3>Adresse</h3><p>Rue Isidore Hoton 57<br>7800 Ath</p></div>
+<div class="info"><h3>Téléphone</h3><a href="tel:+32497996769">0497 99 67 69</a></div>
+<div class="info"><h3>E-mail</h3><a href="mailto:nicole-ath@hotmail.com">nicole-ath@hotmail.com</a></div>
+<div class="info"><h3>Suivez-nous</h3><a href="https://www.facebook.com/pages/category/Beauty-Salon/Institut-Nicole-781815848692041/">Page Facebook</a></div>
+</div>
+<div class="liens">
+<a class="btn" href="https://maps.google.com/?cid=7294770159414820733&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Voir sur Google Maps</a>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<div class="serif">Institut Nicole</div>
+<p>Rue Isidore Hoton 57 · 7800 Ath · <a href="tel:+32497996769">0497 99 67 69</a></p>
+<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+</div>
+</footer>
+</body>
+</html>
