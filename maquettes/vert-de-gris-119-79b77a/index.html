@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Vert de Gris et Toque — Restaurant à Enghien (maquette)</title>
+<meta name="description" content="Maquette de site pour le restaurant Vert de Gris et Toque, place du Vieux Marché à Enghien.">
+<style>
+:root{--vert:#5f8a7e;--vert-fonce:#2f4a43;--nuit:#1f2f2b;--creme:#f7f3ea;--sable:#e9e1cf;--or:#c8a45a;--texte:#26332f;--blanc:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;color:var(--texte);background:var(--creme);line-height:1.6;font-size:17px}
+a{color:inherit}
+.sans{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:var(--nuit);color:var(--creme);position:sticky;top:0;z-index:10}
+header .wrap{display:flex;align-items:center;justify-content:space-between;min-height:60px;gap:12px}
+.marque{font-size:1.1rem;letter-spacing:.02em;text-decoration:none;line-height:1.2}
+.marque b{color:var(--or);font-weight:normal}
+.btn{display:inline-block;padding:13px 22px;border-radius:999px;background:var(--or);color:var(--nuit);text-decoration:none;font-weight:700;font-size:.95rem;border:2px solid var(--or)}
+.btn.clair{background:transparent;color:var(--creme);border-color:rgba(255,255,255,.6)}
+header .btn{padding:9px 16px;font-size:.85rem}
+nav{display:none}
+.hero{background:linear-gradient(160deg,var(--vert-fonce),var(--nuit));color:var(--creme);overflow:hidden}
+.hero .wrap{display:grid;gap:28px;padding-top:44px;padding-bottom:48px}
+.etiquette{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--or)}
+h1{font-size:2.1rem;line-height:1.15;font-weight:normal;margin:10px 0 16px}
+h1 em{color:var(--or)}
+.hero p{opacity:.92;max-width:34em}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.photo{border-radius:200px 200px 18px 18px;overflow:hidden;border:6px solid rgba(200,164,90,.45);aspect-ratio:4/5;background:var(--vert);max-width:420px;width:100%;margin:0 auto}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.note{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:10px 16px;border:1px solid rgba(255,255,255,.25);border-radius:12px;font-size:.92rem}
+.note strong{font-size:1.4rem;color:var(--or)}
+section{padding:56px 0}
+h2{font-size:1.7rem;font-weight:normal;line-height:1.25;margin:8px 0 14px;color:var(--vert-fonce)}
+.intro{max-width:36em;margin-bottom:28px}
+.cartes{display:grid;gap:16px}
+.carte{background:var(--blanc);border-radius:16px;padding:24px;border-top:4px solid var(--vert);box-shadow:0 2px 12px rgba(31,47,43,.07)}
+.carte .num{font-size:2rem;color:var(--or);line-height:1}
+.carte h3{font-size:1.2rem;font-weight:normal;margin:8px 0 6px;color:var(--vert-fonce)}
+.carte p{font-size:.97rem}
+.pourquoi{background:var(--sable)}
+.liste{display:grid;gap:14px;list-style:none}
+.liste li{background:var(--creme);border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.liste .pt{flex:none;width:12px;height:12px;border-radius:50%;background:var(--vert);margin-top:8px}
+.liste strong{display:block;color:var(--vert-fonce)}
+.avis{background:var(--nuit);color:var(--creme);text-align:center}
+.avis h2{color:var(--creme)}
+.gros{font-size:4rem;color:var(--or);line-height:1}
+.etoiles{color:var(--or);letter-spacing:.2em;font-size:1.3rem;margin:6px 0}
+.avis p{max-width:32em;margin:10px auto}
+.avis .btn{margin-top:14px}
+.contact .grille{display:grid;gap:16px}
+.bloc{background:var(--blanc);border-radius:16px;padding:24px}
+.bloc h3{font-size:1rem;font-weight:normal;color:var(--vert);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.bloc a{color:var(--vert-fonce);font-weight:700;word-break:break-word}
+.bloc p+p{margin-top:8px}
+footer{background:var(--nuit);color:rgba(247,243,234,.75);padding:28px 0;font-size:.88rem;text-align:center}
+footer .maq{margin-top:10px;font-size:.78rem;opacity:.7}
+@media(min-width:760px){
+body{font-size:18px}
+nav{display:flex;gap:24px;font-size:.92rem}
+nav a{text-decoration:none;opacity:.85}
+nav a:hover{opacity:1;color:var(--or)}
+.hero .wrap{grid-template-columns:1.2fr .8fr;align-items:center;padding-top:80px;padding-bottom:80px;gap:56px}
+h1{font-size:3.2rem}
+h2{font-size:2.2rem}
+section{padding:84px 0}
+.cartes{grid-template-columns:repeat(3,1fr)}
+.liste{grid-template-columns:1fr 1fr}
+.contact .grille{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap sans">
+<a class="marque" href="#haut">Vert de Gris <b>&amp; Toque</b></a>
+<nav><a href="#carte">La cuisine</a><a href="#pourquoi">Pourquoi nous</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
+<a class="btn" href="tel:+3223955310">Réserver</a>
+</div>
+</header>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<div>
+<p class="etiquette sans">Restaurant · Enghien</p>
+<h1>La saveur des saisons, <em>au cœur d’Enghien.</em></h1>
+<p>Installé place du Vieux Marché, Vert de Gris et Toque vous accueille pour une cuisine de saison, à savourer en menu 3 services.</p>
+<div class="actions sans">
+<a class="btn" href="tel:+3223955310">Réserver une table</a>
+<a class="btn clair" href="#carte">Découvrir la cuisine</a>
+</div>
+<div class="note sans"><strong>4,5/5</strong><span>sur 79 avis Google</span></div>
+</div>
+<div class="photo">
+<img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/700/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Une assiette du restaurant Vert de Gris et Toque">
+</div>
+</div>
+</div>
+
+<section id="carte">
+<div class="wrap">
+<p class="etiquette sans" style="color:var(--vert)">À la table</p>
+<h2>Une cuisine qui suit les saisons</h2>
+<p class="intro">Quelques-unes des façons de profiter de la maison. Les détails de la carte et des menus vous sont communiqués par le restaurant.</p>
+<div class="cartes">
+<article class="carte"><div class="num">1</div><h3>Le menu 3 services</h3><p>Entrée, plat et dessert : une formule complète, pensée autour des produits de saison.</p></article>
+<article class="carte"><div class="num">2</div><h3>Les menus de fête</h3><p>À chaque grande occasion, une proposition spéciale, comme le week-end de la Fête des Mères.</p></article>
+<article class="carte"><div class="num">3</div><h3>Les repas entre proches</h3><p>Un déjeuner ou un dîner en famille ou entre amis, sur la place du Vieux Marché.</p></article>
+</div>
+</div>
+</section>
+
+<section class="pourquoi" id="pourquoi">
+<div class="wrap">
+<p class="etiquette sans" style="color:var(--vert)">Pourquoi nous choisir</p>
+<h2>Une adresse sincère, au centre d’Enghien</h2>
+<ul class="liste">
+<li><span class="pt"></span><div><strong>Un menu 3 services</strong>Une formule claire, mise en avant par le restaurant.</div></li>
+<li><span class="pt"></span><div><strong>Appréciée de ses clients</strong>4,5/5 sur 79 avis Google.</div></li>
+<li><span class="pt"></span><div><strong>Une cuisine de saison</strong>« La saveur des saisons, au cœur d’Enghien. »</div></li>
+<li><span class="pt"></span><div><strong>Une situation centrale</strong>Place du Vieux Marché, facile à retrouver.</div></li>
+</ul>
+</div>
+</section>
+
+<section class="avis" id="avis">
+<div class="wrap">
+<p class="etiquette sans">Vos avis comptent</p>
+<h2>Ils ont goûté, ils l’ont dit</h2>
+<div class="gros">4,5</div>
+<div class="etoiles" aria-hidden="true">★★★★★</div>
+<p>Note moyenne sur Google, basée sur 79 avis.</p>
+<a class="btn sans" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<div class="wrap">
+<p class="etiquette sans" style="color:var(--vert)">Contact</p>
+<h2>Réservez votre table</h2>
+<div class="grille sans">
+<div class="bloc"><h3>Adresse</h3><p>Pl. du Vieux Marché 9<br>7850 Enghien</p></div>
+<div class="bloc"><h3>Téléphone</h3><p><a href="tel:+3223955310">02 395 53 10</a></p></div>
+<div class="bloc"><h3>E-mail</h3><p><a href="mailto:vertdegrisettoque@gmail.com">vertdegrisettoque@gmail.com</a></p><p><a href="https://www.facebook.com/profile.php?id=100065095748663">Facebook</a></p></div>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="sans">
+<div class="wrap">
+<p>Vert de Gris et Toque · Pl. du Vieux Marché 9, 7850 Enghien</p>
+<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+</div>
+</footer>
+</body>
+</html>
