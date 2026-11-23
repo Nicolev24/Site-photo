@@ -1,157 +1,220 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-BE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Le Coureur des Bois — Bistro gourmand à Beloeil (maquette)</title>
 <style>
-:root{--bleu:#003388;--bleu2:#00255f;--creme:#e3e9d4;--rouge:#cf2e2e;--gris:#abb8c3;--texte:#1b2233;--blanc:#fff}
+:root{--lin:#f6f1e6;--sauge:#e3e9d4;--brun:#33231a;--bleu:#003388;--brun-doux:#6b5645;--filet:rgba(51,35,26,.16);
+--serif:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;
+--sans:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:Georgia,"Times New Roman",serif;color:var(--texte);background:var(--blanc);line-height:1.6;font-size:17px}
+body{font-family:var(--sans);color:var(--brun);background:var(--lin);line-height:1.6;font-size:17px;overflow-x:hidden;-webkit-text-size-adjust:100%}
+img{display:block;max-width:100%}
 a{color:inherit}
-h1,h2,h3{line-height:1.2;font-weight:700}
-.sans{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-header{background:var(--blanc);border-bottom:3px solid var(--bleu);position:sticky;top:0;z-index:5}
-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
-.logo{font-size:1.15rem;color:var(--bleu);text-decoration:none;font-weight:700;letter-spacing:.01em}
-.logo small{display:block;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--rouge)}
-nav{display:none}
-nav a{text-decoration:none;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem;margin-left:22px;color:var(--bleu)}
-.btn{display:inline-block;background:var(--rouge);color:#fff;text-decoration:none;padding:13px 22px;border-radius:999px;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-weight:600;font-size:.95rem;border:2px solid var(--rouge)}
-.btn.clair{background:transparent;color:#fff;border-color:#fff}
-.btn.petit{padding:9px 16px;font-size:.85rem}
-.hero{background:radial-gradient(circle at 85% 15%,rgba(247,141,167,.25),transparent 40%),linear-gradient(160deg,var(--bleu) 0%,var(--bleu2) 100%);color:#fff;padding:56px 0 64px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-90px;bottom:-90px;width:260px;height:260px;border-radius:50%;border:34px solid rgba(227,233,212,.12)}
-.etiq{font-family:-apple-system,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:.72rem;color:var(--creme);margin-bottom:14px}
-.hero h1{font-size:2.3rem;margin-bottom:16px}
-.hero p{max-width:540px;color:#e8edf7;margin-bottom:26px}
-.actions{display:flex;flex-wrap:wrap;gap:12px}
-.note{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:rgba(255,255,255,.1);padding:10px 16px;border-radius:12px;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem}
-.note b{font-size:1.4rem;color:var(--creme)}
-section{padding:56px 0}
-.titre{margin-bottom:28px}
-.titre h2{font-size:1.7rem;color:var(--bleu)}
-.titre p{color:#4a5568;margin-top:6px;max-width:560px}
-.trait{width:54px;height:4px;background:var(--rouge);border-radius:2px;margin-bottom:12px}
-.grille{display:grid;gap:16px}
-.carte{background:var(--creme);border-radius:16px;padding:24px;border-top:5px solid var(--bleu)}
-.carte:nth-child(2){border-top-color:var(--rouge)}
-.carte:nth-child(3){border-top-color:var(--gris)}
-.carte h3{color:var(--bleu);font-size:1.25rem;margin-bottom:8px}
-.carte .ico{font-size:1.6rem;margin-bottom:8px}
-.fond-creme{background:var(--creme)}
-.fond-creme .carte{background:#fff}
-.pourquoi li{list-style:none;background:#fff;border-radius:14px;padding:18px 20px 18px 58px;position:relative;border:1px solid #dbe2c8}
-.pourquoi li::before{content:"✓";position:absolute;left:18px;top:16px;width:28px;height:28px;border-radius:50%;background:var(--bleu);color:#fff;text-align:center;line-height:28px;font-family:sans-serif;font-size:.9rem}
-.pourquoi strong{display:block;color:var(--bleu)}
-.avis{background:var(--bleu);color:#fff;text-align:center}
-.avis .gros{font-size:4rem;font-weight:700;color:var(--creme);line-height:1}
-.etoiles{color:#f7c948;letter-spacing:.2em;font-size:1.3rem;margin:8px 0}
-.avis p{max-width:520px;margin:10px auto 22px;color:#e8edf7}
-.contact .grille{gap:14px}
-.bloc{border:1px solid #dbe2c8;border-radius:14px;padding:20px;background:#fff}
-.bloc h3{font-size:1rem;color:var(--rouge);font-family:-apple-system,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.bloc a{color:var(--bleu);font-weight:600;word-break:break-word}
-.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.liens a{color:var(--bleu);border:2px solid var(--bleu);padding:9px 16px;border-radius:999px;text-decoration:none;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem;font-weight:600}
-footer{background:var(--bleu2);color:#c9d3ea;padding:30px 0;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.85rem;text-align:center}
-footer .maq{margin-top:12px;font-size:.75rem;opacity:.7}
-@media(min-width:760px){
-body{font-size:18px}
-nav{display:block}
-.hero{padding:96px 0 110px}
-.hero h1{font-size:3.4rem;max-width:720px}
-.grille.trois{grid-template-columns:repeat(3,1fr)}
-.grille.deux{grid-template-columns:repeat(2,1fr)}
-.grille.quatre{grid-template-columns:repeat(2,1fr)}
-section{padding:80px 0}
+.maq{background:var(--brun);color:var(--lin);font-size:12.5px;text-align:center;padding:6px 12px;letter-spacing:.02em}
+.wrap{width:min(1120px,100% - 40px);margin-inline:auto}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;text-decoration:none;letter-spacing:.01em}
+.logo small{display:block;font-family:var(--sans);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--brun-doux);font-weight:500}
+.tel-top{display:none;text-decoration:none;font-weight:600;border-bottom:1px solid var(--bleu);color:var(--bleu);padding:10px 0}
+.hero{display:grid;gap:34px;padding:18px 0 64px}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.9rem,12vw,5.6rem);line-height:.98;letter-spacing:-.01em}
+h1 .l{display:block;overflow:hidden;padding-bottom:.08em}
+h1 .l span{display:block}
+h1 em{font-style:italic;color:var(--bleu)}
+.lede{font-size:1.1rem;color:var(--brun-doux);max-width:30em;margin-top:22px}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;text-decoration:none;font-weight:600;font-size:.98rem;transition:transform .25s,background .25s,color .25s}
+.btn.p{background:var(--bleu);color:#fff}
+.btn.p:hover{transform:translateY(-2px);background:#00266a}
+.btn.s{border:1.5px solid var(--brun);color:var(--brun)}
+.btn.s:hover{background:var(--brun);color:var(--lin)}
+.note{margin-top:22px;font-size:.92rem;color:var(--brun-doux)}
+.note b{font-family:var(--serif);font-size:1.5rem;color:var(--brun)}
+.photo{position:relative;border-radius:200px 200px 22px 22px;overflow:hidden;background:linear-gradient(160deg,var(--sauge),#cfd8b8);aspect-ratio:1040/1055;box-shadow:0 30px 60px -30px rgba(51,35,26,.5)}
+.photo img{width:100%;height:100%;object-fit:cover}
+.strip{background:var(--brun);color:var(--lin);overflow:hidden;padding:16px 0;white-space:nowrap}
+.strip div{display:inline-block;animation:defile 38s linear infinite;font-family:var(--serif);font-size:1.5rem;font-style:italic}
+.strip span{padding:0 22px}
+.strip i{color:#9fb0d6;font-style:normal}
+@keyframes defile{to{transform:translateX(-50%)}}
+section{padding:72px 0}
+h2{font-family:var(--serif);font-weight:500;font-size:clamp(2.1rem,7vw,3.4rem);line-height:1.05;margin-bottom:18px}
+h2 em{color:var(--bleu)}
+.hor{background:var(--sauge);background-image:radial-gradient(circle at 12% 0,rgba(255,255,255,.55),transparent 55%)}
+.hor .grid{display:grid;gap:36px}
+.tbl{background:var(--lin);border-radius:22px;padding:10px 22px;box-shadow:0 18px 40px -28px rgba(51,35,26,.55)}
+.row{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--filet);font-size:1.02rem}
+.row:last-child{border:0}
+.row b{font-family:var(--serif);font-size:1.3rem;font-weight:600}
+.row span{text-align:right}
+.row.f{color:var(--brun-doux)}
+.row.f span{font-style:italic}
+.petit{font-size:.92rem;color:var(--brun-doux);margin-top:14px}
+.galerie{display:grid;gap:18px;margin-top:30px}
+figure{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(150deg,#ece4d2,#d9cdb3);aspect-ratio:4/3}
+figure img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s ease}
+figure:hover img{transform:scale(1.04)}
+figcaption{position:absolute;left:12px;bottom:10px;font-size:.72rem;color:#fff;background:rgba(51,35,26,.55);padding:3px 10px;border-radius:99px}
+.aff{aspect-ratio:auto;background:var(--sauge)}
+.aff img{height:auto;object-fit:contain}
+.avis{background:var(--brun);color:var(--lin)}
+.avis h2 em{color:#b8c8ee}
+.cit{display:grid;gap:30px;margin-top:30px}
+blockquote{font-family:var(--serif);font-size:1.45rem;line-height:1.35;border-left:2px solid #b8c8ee;padding-left:20px}
+blockquote cite{display:block;font-family:var(--sans);font-style:normal;font-size:.85rem;margin-top:12px;opacity:.75;letter-spacing:.02em}
+.venir{display:grid;gap:30px}
+.carte-adr{background:#fff8;border:1px solid var(--filet);border-radius:22px;padding:28px}
+.carte-adr p{margin-bottom:6px}
+.carte-adr .gros{font-family:var(--serif);font-size:1.7rem;line-height:1.2;margin-bottom:14px}
+.carte-adr a.l{color:var(--bleu);font-weight:600}
+.liens{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px}
+.liens a{min-height:44px;display:inline-flex;align-items:center}
+footer{background:var(--sauge);padding:34px 0 40px;font-size:.88rem;text-align:center;color:var(--brun-doux)}
+footer p+p{margin-top:6px}
+.bar{display:none}
+@media(min-width:860px){
+.tel-top{display:inline-flex}
+.hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:60px;padding:30px 0 90px}
+.hor .grid,.venir{grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.galerie{grid-template-columns:1fr 1fr 1fr}
+.cit{grid-template-columns:1fr 1fr;gap:60px}
+section{padding:100px 0}
 }
-@media(min-width:1000px){.grille.quatre{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:859px){
+body{padding-bottom:84px}
+.bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--lin);border-top:1px solid var(--filet)}
+.bar a{min-height:50px;display:flex;align-items:center;justify-content:center;border-radius:999px;font-weight:600;text-decoration:none}
+.bar .a{background:var(--bleu);color:#fff}
+.bar .b{border:1.5px solid var(--brun)}
+}
+/* ouverture */
+@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
+@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
+@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+@keyframes apparait{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1 .l span{animation:monte .9s cubic-bezier(.2,.7,.2,1) both}
+h1 .l:nth-child(2) span{animation-delay:.12s}
+h1 .l:nth-child(3) span{animation-delay:.24s}
+.photo{animation:devoile 1.4s cubic-bezier(.7,0,.2,1) .2s both}
+.photo img{animation:zoom 7s ease-out .2s both}
+.lede,.btns,.note{animation:apparait .8s ease .7s both}
+.btns{animation-delay:.9s}.note{animation-delay:1.1s}
+@supports (animation-timeline:view()){
+@keyframes revele{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+.rv{animation:revele linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+}
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.strip{white-space:normal}
+}
 </style>
 </head>
 <body>
-<header>
+<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
+
 <div class="wrap">
-<a class="logo" href="#haut">Le Coureur des Bois<small>Bistro gourmand · Beloeil</small></a>
-<nav><a href="#carte">Notre table</a><a href="#pourquoi">Pourquoi nous</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
-<a class="btn petit" href="tel:+15148825629">Appeler</a>
-</div>
+<header class="top">
+<a class="logo" href="#">Le Coureur des Bois<small>Bistro gourmand · Beloeil</small></a>
+<a class="tel-top" href="tel:+15148825629">(514) 882-5629</a>
 </header>
 
-<main id="haut">
 <div class="hero">
-<div class="wrap">
-<p class="etiq">Bistro gourmand · Beloeil</p>
-<h1>Une table chaleureuse, au cœur de Beloeil</h1>
-<p>Au Coureur des Bois, on vient s'attabler pour un dîner entre collègues, un souper en famille ou une soirée entre amis. Une cuisine de bistro gourmand, servie dans une ambiance conviviale.</p>
-<div class="actions">
-<a class="btn" href="tel:+15148825629">Réserver par téléphone</a>
-<a class="btn clair" href="#contact">Nous trouver</a>
+<div>
+<h1><span class="l"><span>Table de bistro,</span></span><span class="l"><span>cuisine <em>soignée,</em></span></span><span class="l"><span>rue Richelieu.</span></span></h1>
+<p class="lede">Un bistro gourmand à Beloeil, pour le dîner du midi comme pour la soirée. Les plats sont recherchés, l’ambiance reste décontractée.</p>
+<div class="btns">
+<a class="btn p" href="tel:+15148825629">Réserver une table</a>
+<a class="btn s" href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
 </div>
-<div class="note"><b>4,7/5</b><span>sur Google<br>1 305 avis</span></div>
+<p class="note"><b>4,7 / 5</b> sur Google, d’après 1 305 avis.</p>
+</div>
+<div class="photo"><img src="https://restaurantcoureurdesbois.com/wp-content/uploads/2025/05/coureurdesbois_20250501_©Audrey-Eve_Beauchamp_0028_promo-1040x1055.jpg" alt="Photo du restaurant Le Coureur des Bois à Beloeil" width="1040" height="1055"></div>
 </div>
 </div>
 
-<section id="carte">
-<div class="wrap">
-<div class="titre"><div class="trait"></div><h2>Notre table</h2><p>Du dîner à la soirée, une cuisine de bistro pensée pour se régaler sans chichi.</p></div>
-<div class="grille trois">
-<article class="carte"><div class="ico">🍽️</div><h3>Le dîner</h3><p>Une pause gourmande en milieu de journée : des plats de bistro généreux, servis avec le sourire.</p></article>
-<article class="carte"><div class="ico">🌙</div><h3>Le soir</h3><p>Pour souper en amoureux, en famille ou entre amis, une ambiance plus posée et des assiettes à partager.</p></article>
-<article class="carte"><div class="ico">🥂</div><h3>Le bistro gourmand</h3><p>L'esprit du Coureur des Bois : une cuisine soignée, sans prétention, dans un cadre convivial.</p></article>
+<div class="strip" aria-hidden="true"><div>
+<span>Bistro gourmand</span><i>•</i><span>Beloeil</span><i>•</i><span>Dîner</span><i>•</i><span>Soir</span><i>•</i><span>4,7 sur Google</span><i>•</i><span>Bistro gourmand</span><i>•</i><span>Beloeil</span><i>•</i><span>Dîner</span><i>•</i><span>Soir</span><i>•</i><span>4,7 sur Google</span><i>•</i>
+<span>Bistro gourmand</span><i>•</i><span>Beloeil</span><i>•</i><span>Dîner</span><i>•</i><span>Soir</span><i>•</i><span>4,7 sur Google</span><i>•</i><span>Bistro gourmand</span><i>•</i><span>Beloeil</span><i>•</i><span>Dîner</span><i>•</i><span>Soir</span><i>•</i><span>4,7 sur Google</span><i>•</i>
+</div></div>
+
+<section class="hor" id="horaires">
+<div class="wrap grid">
+<div class="rv">
+<h2>Midi ou soir, <em>on vous attend.</em></h2>
+<p>Le dîner se sert le midi, du lundi au vendredi. Le soir, la table est ouverte du mardi au samedi. Le dimanche, nous sommes fermés.</p>
+<p class="petit">Pour réserver, un coup de fil suffit : <a href="tel:+15148825629"><b>(514) 882-5629</b></a></p>
+<div class="btns"><a class="btn p" href="tel:+15148825629">Appeler pour réserver</a></div>
 </div>
-<p class="sans" style="margin-top:18px;font-size:.85rem;color:#667">Texte d'exemple : le menu complet sera ajouté à partir de la carte réelle du restaurant.</p>
+<div class="tbl rv">
+<div class="row"><b>Lundi</b><span>11 h 30 – 14 h</span></div>
+<div class="row"><b>Mardi</b><span>11 h 30 – 14 h<br>17 h – 21 h</span></div>
+<div class="row"><b>Mercredi</b><span>11 h 30 – 14 h<br>17 h – 21 h</span></div>
+<div class="row"><b>Jeudi</b><span>11 h 30 – 14 h<br>17 h – 21 h</span></div>
+<div class="row"><b>Vendredi</b><span>11 h 30 – 14 h<br>17 h – 21 h 30</span></div>
+<div class="row"><b>Samedi</b><span>17 h – 21 h 30</span></div>
+<div class="row f"><b>Dimanche</b><span>Fermé</span></div>
+</div>
 </div>
 </section>
 
-<section id="pourquoi" class="fond-creme">
+<section id="images">
 <div class="wrap">
-<div class="titre"><div class="trait"></div><h2>Pourquoi choisir Le Coureur des Bois</h2></div>
-<ul class="grille deux pourquoi">
-<li><strong>Une réputation solide</strong>Une note de 4,7/5 sur Google, basée sur 1 305 avis.</li>
-<li><strong>Un bistro gourmand</strong>Une cuisine de bistro, pour le dîner comme pour le soir.</li>
-<li><strong>Bien situé</strong>Sur la rue Richelieu, à Beloeil, facile à trouver.</li>
-<li><strong>Simple à joindre</strong>Un coup de fil ou un e-mail suffit pour poser vos questions.</li>
-</ul>
+<div class="rv">
+<h2>La table, <em>la salle,</em> la soirée.</h2>
+<p style="max-width:34em;color:var(--brun-doux)">Quelques images du bistro. Ici, vos photos prendront bien plus de place : les plats, la salle, la terrasse.</p>
+</div>
+<div class="galerie">
+<figure class="aff rv"><img src="https://restaurantcoureurdesbois.com/wp-content/uploads/2026/09/soiree-des-recoltes.png" alt="Visuel de la Soirée des récoltes au restaurant Le Coureur des Bois" loading="lazy"></figure>
+<figure class="rv"><img src="https://lh3.googleusercontent.com/grass-cs/AABkmLfjv1A4D0hxI-eJGMOPTu43vljrL_FSRNuENE1IPQYp_MQAV7mTgtcDCI0N_xSk9FYVHl8XuUGY7ABy9Ei4uHz8kK7CeD6XhvI3k7A_o0vCIYMoStfgGeGQ0xvQYHVid_QWGR_AA4AG2_k=s4800-w1400" alt="Photo de la fiche Google du restaurant Le Coureur des Bois" loading="lazy"><figcaption>Photo : Restaurant Le Coureur des Bois</figcaption></figure>
+<figure class="rv"><img src="https://lh3.googleusercontent.com/grass-cs/AABkmLfvaM00-THmEWzoXCLCUC-voiDa-izm4eDUkQE6hCaE-q1PNF2FupnIryOQHOBqwv4uM3C-SWK8EZbdqmFgozfImFdN3UDRUkKHj9zx0rP-evhOduLt7KjQ8FrmIEbqpI4Uxxak66vO5c9w=s4800-w1400" alt="Autre photo de la fiche Google du restaurant Le Coureur des Bois" loading="lazy"><figcaption>Photo : Restaurant Le Coureur des Bois</figcaption></figure>
+</div>
 </div>
 </section>
 
-<section id="avis" class="avis">
+<section class="avis">
 <div class="wrap">
-<h2 style="color:#fff;margin-bottom:18px">Ils en parlent sur Google</h2>
-<div class="gros">4,7<span style="font-size:1.6rem">/5</span></div>
-<div class="etoiles" aria-hidden="true">★★★★★</div>
-<p>1 305 clients ont laissé leur avis sur la fiche Google du restaurant. Lisez-les directement, tels qu'ils ont été écrits.</p>
-<a class="btn" href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
+<h2 class="rv">Ce qu’en disent <em>ceux qui sont venus.</em></h2>
+<div class="cit">
+<blockquote class="rv">« Superbe expérience culinaire avec accords mets vins! Une atmosphère chic décontractée avec des plats recherchés et que dire des belles découvertes du sommelier! Le personnel est exceptionnel, nous avons passé une soirée inoubliable, je recommande fortement! »<cite>Caroline Bleau, 5/5 — avis Google</cite></blockquote>
+<blockquote class="rv">« Les accords mets et vins étaient bien nous avons prit le menu 6 services avec accord sommelier. Super service par toute l’équipe! »<cite>SoGadou, 5/5 — avis Google</cite></blockquote>
+</div>
 </div>
 </section>
 
-<section id="contact" class="contact">
-<div class="wrap">
-<div class="titre"><div class="trait"></div><h2>Venez nous voir</h2><p>Les heures d'ouverture à jour se confirment par téléphone ou sur la fiche Google.</p></div>
-<div class="grille quatre">
-<div class="bloc"><h3>Adresse</h3>1810 Rue Richelieu<br>Beloeil, QC J3G 4S4<br>Canada</div>
-<div class="bloc"><h3>Téléphone</h3><a href="tel:+15148825629">(514) 882-5629</a></div>
-<div class="bloc"><h3>E-mail</h3><a href="mailto:info@restaurantcoureurdesbois.ca">info@restaurantcoureurdesbois.ca</a></div>
-<div class="bloc"><h3>Heures</h3>À confirmer avec le restaurant (dîner et soir).</div>
+<section id="venir">
+<div class="wrap venir">
+<div class="rv">
+<h2>Venir <em>nous voir.</em></h2>
+<p style="color:var(--brun-doux);max-width:30em">Le bistro est rue Richelieu, à Beloeil. Touchez « Itinéraire » : votre téléphone vous guide jusqu’à la porte.</p>
+</div>
+<div class="carte-adr rv">
+<p class="gros">1810 Rue Richelieu<br>Beloeil, QC J3G 4S4</p>
+<p>Téléphone : <a class="l" href="tel:+15148825629">(514) 882-5629</a></p>
+<p>Courriel : <a class="l" href="mailto:info@restaurantcoureurdesbois.ca">info@restaurantcoureurdesbois.ca</a></p>
+<div class="btns">
+<a class="btn p" href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+<a class="btn s" href="tel:+15148825629">Réserver</a>
 </div>
 <div class="liens">
-<a href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Fiche Google</a>
-<a href="https://www.facebook.com/restaurantcoureurdesbois/">Facebook</a>
 <a href="https://www.instagram.com/restaurantcoureurdesbois/">Instagram</a>
+<a href="https://www.facebook.com/restaurantcoureurdesbois/">Facebook</a>
+</div>
 </div>
 </div>
 </section>
-</main>
 
 <footer>
-<div class="wrap">
-<strong>Le Coureur des Bois</strong> · 1810 Rue Richelieu, Beloeil, QC
-<div class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</div>
-</div>
+<p>Restaurant Le Coureur des Bois · 1810 Rue Richelieu, Beloeil</p>
+<p>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
 </footer>
+
+<nav class="bar" aria-label="Actions rapides">
+<a class="a" href="tel:+15148825629">Réserver</a>
+<a class="b" href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+</nav>
 </body>
 </html>
