@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Le Coureur des Bois — Bistro gourmand à Beloeil (maquette)</title>
+<style>
+:root{--bleu:#003388;--bleu2:#00255f;--creme:#e3e9d4;--rouge:#cf2e2e;--gris:#abb8c3;--texte:#1b2233;--blanc:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Georgia,"Times New Roman",serif;color:var(--texte);background:var(--blanc);line-height:1.6;font-size:17px}
+a{color:inherit}
+h1,h2,h3{line-height:1.2;font-weight:700}
+.sans{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:var(--blanc);border-bottom:3px solid var(--bleu);position:sticky;top:0;z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+.logo{font-size:1.15rem;color:var(--bleu);text-decoration:none;font-weight:700;letter-spacing:.01em}
+.logo small{display:block;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--rouge)}
+nav{display:none}
+nav a{text-decoration:none;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem;margin-left:22px;color:var(--bleu)}
+.btn{display:inline-block;background:var(--rouge);color:#fff;text-decoration:none;padding:13px 22px;border-radius:999px;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-weight:600;font-size:.95rem;border:2px solid var(--rouge)}
+.btn.clair{background:transparent;color:#fff;border-color:#fff}
+.btn.petit{padding:9px 16px;font-size:.85rem}
+.hero{background:radial-gradient(circle at 85% 15%,rgba(247,141,167,.25),transparent 40%),linear-gradient(160deg,var(--bleu) 0%,var(--bleu2) 100%);color:#fff;padding:56px 0 64px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-90px;bottom:-90px;width:260px;height:260px;border-radius:50%;border:34px solid rgba(227,233,212,.12)}
+.etiq{font-family:-apple-system,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:.72rem;color:var(--creme);margin-bottom:14px}
+.hero h1{font-size:2.3rem;margin-bottom:16px}
+.hero p{max-width:540px;color:#e8edf7;margin-bottom:26px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.note{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:rgba(255,255,255,.1);padding:10px 16px;border-radius:12px;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem}
+.note b{font-size:1.4rem;color:var(--creme)}
+section{padding:56px 0}
+.titre{margin-bottom:28px}
+.titre h2{font-size:1.7rem;color:var(--bleu)}
+.titre p{color:#4a5568;margin-top:6px;max-width:560px}
+.trait{width:54px;height:4px;background:var(--rouge);border-radius:2px;margin-bottom:12px}
+.grille{display:grid;gap:16px}
+.carte{background:var(--creme);border-radius:16px;padding:24px;border-top:5px solid var(--bleu)}
+.carte:nth-child(2){border-top-color:var(--rouge)}
+.carte:nth-child(3){border-top-color:var(--gris)}
+.carte h3{color:var(--bleu);font-size:1.25rem;margin-bottom:8px}
+.carte .ico{font-size:1.6rem;margin-bottom:8px}
+.fond-creme{background:var(--creme)}
+.fond-creme .carte{background:#fff}
+.pourquoi li{list-style:none;background:#fff;border-radius:14px;padding:18px 20px 18px 58px;position:relative;border:1px solid #dbe2c8}
+.pourquoi li::before{content:"✓";position:absolute;left:18px;top:16px;width:28px;height:28px;border-radius:50%;background:var(--bleu);color:#fff;text-align:center;line-height:28px;font-family:sans-serif;font-size:.9rem}
+.pourquoi strong{display:block;color:var(--bleu)}
+.avis{background:var(--bleu);color:#fff;text-align:center}
+.avis .gros{font-size:4rem;font-weight:700;color:var(--creme);line-height:1}
+.etoiles{color:#f7c948;letter-spacing:.2em;font-size:1.3rem;margin:8px 0}
+.avis p{max-width:520px;margin:10px auto 22px;color:#e8edf7}
+.contact .grille{gap:14px}
+.bloc{border:1px solid #dbe2c8;border-radius:14px;padding:20px;background:#fff}
+.bloc h3{font-size:1rem;color:var(--rouge);font-family:-apple-system,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.bloc a{color:var(--bleu);font-weight:600;word-break:break-word}
+.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.liens a{color:var(--bleu);border:2px solid var(--bleu);padding:9px 16px;border-radius:999px;text-decoration:none;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.9rem;font-weight:600}
+footer{background:var(--bleu2);color:#c9d3ea;padding:30px 0;font-family:-apple-system,"Segoe UI",Arial,sans-serif;font-size:.85rem;text-align:center}
+footer .maq{margin-top:12px;font-size:.75rem;opacity:.7}
+@media(min-width:760px){
+body{font-size:18px}
+nav{display:block}
+.hero{padding:96px 0 110px}
+.hero h1{font-size:3.4rem;max-width:720px}
+.grille.trois{grid-template-columns:repeat(3,1fr)}
+.grille.deux{grid-template-columns:repeat(2,1fr)}
+.grille.quatre{grid-template-columns:repeat(2,1fr)}
+section{padding:80px 0}
+}
+@media(min-width:1000px){.grille.quatre{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<a class="logo" href="#haut">Le Coureur des Bois<small>Bistro gourmand · Beloeil</small></a>
+<nav><a href="#carte">Notre table</a><a href="#pourquoi">Pourquoi nous</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
+<a class="btn petit" href="tel:+15148825629">Appeler</a>
+</div>
+</header>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<p class="etiq">Bistro gourmand · Beloeil</p>
+<h1>Une table chaleureuse, au cœur de Beloeil</h1>
+<p>Au Coureur des Bois, on vient s'attabler pour un dîner entre collègues, un souper en famille ou une soirée entre amis. Une cuisine de bistro gourmand, servie dans une ambiance conviviale.</p>
+<div class="actions">
+<a class="btn" href="tel:+15148825629">Réserver par téléphone</a>
+<a class="btn clair" href="#contact">Nous trouver</a>
+</div>
+<div class="note"><b>4,7/5</b><span>sur Google<br>1 305 avis</span></div>
+</div>
+</div>
+
+<section id="carte">
+<div class="wrap">
+<div class="titre"><div class="trait"></div><h2>Notre table</h2><p>Du dîner à la soirée, une cuisine de bistro pensée pour se régaler sans chichi.</p></div>
+<div class="grille trois">
+<article class="carte"><div class="ico">🍽️</div><h3>Le dîner</h3><p>Une pause gourmande en milieu de journée : des plats de bistro généreux, servis avec le sourire.</p></article>
+<article class="carte"><div class="ico">🌙</div><h3>Le soir</h3><p>Pour souper en amoureux, en famille ou entre amis, une ambiance plus posée et des assiettes à partager.</p></article>
+<article class="carte"><div class="ico">🥂</div><h3>Le bistro gourmand</h3><p>L'esprit du Coureur des Bois : une cuisine soignée, sans prétention, dans un cadre convivial.</p></article>
+</div>
+<p class="sans" style="margin-top:18px;font-size:.85rem;color:#667">Texte d'exemple : le menu complet sera ajouté à partir de la carte réelle du restaurant.</p>
+</div>
+</section>
+
+<section id="pourquoi" class="fond-creme">
+<div class="wrap">
+<div class="titre"><div class="trait"></div><h2>Pourquoi choisir Le Coureur des Bois</h2></div>
+<ul class="grille deux pourquoi">
+<li><strong>Une réputation solide</strong>Une note de 4,7/5 sur Google, basée sur 1 305 avis.</li>
+<li><strong>Un bistro gourmand</strong>Une cuisine de bistro, pour le dîner comme pour le soir.</li>
+<li><strong>Bien situé</strong>Sur la rue Richelieu, à Beloeil, facile à trouver.</li>
+<li><strong>Simple à joindre</strong>Un coup de fil ou un e-mail suffit pour poser vos questions.</li>
+</ul>
+</div>
+</section>
+
+<section id="avis" class="avis">
+<div class="wrap">
+<h2 style="color:#fff;margin-bottom:18px">Ils en parlent sur Google</h2>
+<div class="gros">4,7<span style="font-size:1.6rem">/5</span></div>
+<div class="etoiles" aria-hidden="true">★★★★★</div>
+<p>1 305 clients ont laissé leur avis sur la fiche Google du restaurant. Lisez-les directement, tels qu'ils ont été écrits.</p>
+<a class="btn" href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
+</div>
+</section>
+
+<section id="contact" class="contact">
+<div class="wrap">
+<div class="titre"><div class="trait"></div><h2>Venez nous voir</h2><p>Les heures d'ouverture à jour se confirment par téléphone ou sur la fiche Google.</p></div>
+<div class="grille quatre">
+<div class="bloc"><h3>Adresse</h3>1810 Rue Richelieu<br>Beloeil, QC J3G 4S4<br>Canada</div>
+<div class="bloc"><h3>Téléphone</h3><a href="tel:+15148825629">(514) 882-5629</a></div>
+<div class="bloc"><h3>E-mail</h3><a href="mailto:info@restaurantcoureurdesbois.ca">info@restaurantcoureurdesbois.ca</a></div>
+<div class="bloc"><h3>Heures</h3>À confirmer avec le restaurant (dîner et soir).</div>
+</div>
+<div class="liens">
+<a href="https://maps.google.com/?cid=10876296389357263951&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Fiche Google</a>
+<a href="https://www.facebook.com/restaurantcoureurdesbois/">Facebook</a>
+<a href="https://www.instagram.com/restaurantcoureurdesbois/">Instagram</a>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<strong>Le Coureur des Bois</strong> · 1810 Rue Richelieu, Beloeil, QC
+<div class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</div>
+</div>
+</footer>
+</body>
+</html>
