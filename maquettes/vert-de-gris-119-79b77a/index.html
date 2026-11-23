@@ -5,158 +5,272 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Vert de Gris et Toque — Restaurant à Enghien (maquette)</title>
-<meta name="description" content="Maquette de site pour le restaurant Vert de Gris et Toque, place du Vieux Marché à Enghien.">
+<meta name="description" content="Maquette d'une page d'accueil pour Vert de Gris et Toque, restaurant place du Vieux Marché à Enghien.">
 <style>
-:root{--vert:#5f8a7e;--vert-fonce:#2f4a43;--nuit:#1f2f2b;--creme:#f7f3ea;--sable:#e9e1cf;--or:#c8a45a;--texte:#26332f;--blanc:#fff}
+:root{
+  --vert:#4e7a6e;
+  --vert-fonce:#2f4d45;
+  --creme:#f7f1e5;
+  --lin:#ece2cf;
+  --brun:#3b2d23;
+  --serif:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;
+  --sans:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;color:var(--texte);background:var(--creme);line-height:1.6;font-size:17px}
+body{font-family:var(--sans);background:var(--creme);color:var(--brun);line-height:1.6;font-size:17px;overflow-x:hidden}
+img{display:block;max-width:100%}
 a{color:inherit}
-.sans{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 20px}
-header{background:var(--nuit);color:var(--creme);position:sticky;top:0;z-index:10}
-header .wrap{display:flex;align-items:center;justify-content:space-between;min-height:60px;gap:12px}
-.marque{font-size:1.1rem;letter-spacing:.02em;text-decoration:none;line-height:1.2}
-.marque b{color:var(--or);font-weight:normal}
-.btn{display:inline-block;padding:13px 22px;border-radius:999px;background:var(--or);color:var(--nuit);text-decoration:none;font-weight:700;font-size:.95rem;border:2px solid var(--or)}
-.btn.clair{background:transparent;color:var(--creme);border-color:rgba(255,255,255,.6)}
-header .btn{padding:9px 16px;font-size:.85rem}
-nav{display:none}
-.hero{background:linear-gradient(160deg,var(--vert-fonce),var(--nuit));color:var(--creme);overflow:hidden}
-.hero .wrap{display:grid;gap:28px;padding-top:44px;padding-bottom:48px}
-.etiquette{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--or)}
-h1{font-size:2.1rem;line-height:1.15;font-weight:normal;margin:10px 0 16px}
-h1 em{color:var(--or)}
-.hero p{opacity:.92;max-width:34em}
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
-.photo{border-radius:200px 200px 18px 18px;overflow:hidden;border:6px solid rgba(200,164,90,.45);aspect-ratio:4/5;background:var(--vert);max-width:420px;width:100%;margin:0 auto}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.note{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:10px 16px;border:1px solid rgba(255,255,255,.25);border-radius:12px;font-size:.92rem}
-.note strong{font-size:1.4rem;color:var(--or)}
-section{padding:56px 0}
-h2{font-size:1.7rem;font-weight:normal;line-height:1.25;margin:8px 0 14px;color:var(--vert-fonce)}
-.intro{max-width:36em;margin-bottom:28px}
-.cartes{display:grid;gap:16px}
-.carte{background:var(--blanc);border-radius:16px;padding:24px;border-top:4px solid var(--vert);box-shadow:0 2px 12px rgba(31,47,43,.07)}
-.carte .num{font-size:2rem;color:var(--or);line-height:1}
-.carte h3{font-size:1.2rem;font-weight:normal;margin:8px 0 6px;color:var(--vert-fonce)}
-.carte p{font-size:.97rem}
-.pourquoi{background:var(--sable)}
-.liste{display:grid;gap:14px;list-style:none}
-.liste li{background:var(--creme);border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
-.liste .pt{flex:none;width:12px;height:12px;border-radius:50%;background:var(--vert);margin-top:8px}
-.liste strong{display:block;color:var(--vert-fonce)}
-.avis{background:var(--nuit);color:var(--creme);text-align:center}
-.avis h2{color:var(--creme)}
-.gros{font-size:4rem;color:var(--or);line-height:1}
-.etoiles{color:var(--or);letter-spacing:.2em;font-size:1.3rem;margin:6px 0}
-.avis p{max-width:32em;margin:10px auto}
-.avis .btn{margin-top:14px}
-.contact .grille{display:grid;gap:16px}
-.bloc{background:var(--blanc);border-radius:16px;padding:24px}
-.bloc h3{font-size:1rem;font-weight:normal;color:var(--vert);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
-.bloc a{color:var(--vert-fonce);font-weight:700;word-break:break-word}
-.bloc p+p{margin-top:8px}
-footer{background:var(--nuit);color:rgba(247,243,234,.75);padding:28px 0;font-size:.88rem;text-align:center}
-footer .maq{margin-top:10px;font-size:.78rem;opacity:.7}
-@media(min-width:760px){
-body{font-size:18px}
-nav{display:flex;gap:24px;font-size:.92rem}
-nav a{text-decoration:none;opacity:.85}
-nav a:hover{opacity:1;color:var(--or)}
-.hero .wrap{grid-template-columns:1.2fr .8fr;align-items:center;padding-top:80px;padding-bottom:80px;gap:56px}
-h1{font-size:3.2rem}
-h2{font-size:2.2rem}
-section{padding:84px 0}
-.cartes{grid-template-columns:repeat(3,1fr)}
-.liste{grid-template-columns:1fr 1fr}
-.contact .grille{grid-template-columns:repeat(3,1fr)}
+.maq{background:var(--brun);color:var(--lin);font-size:12px;text-align:center;padding:6px 12px;letter-spacing:.02em}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.05}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;background:var(--vert);color:#fff;text-decoration:none;font-weight:600;border:2px solid var(--vert);transition:transform .25s,background .25s}
+.btn:hover{transform:translateY(-2px);background:var(--vert-fonce)}
+.btn.clair{background:transparent;color:var(--brun);border-color:var(--brun)}
+.btn.clair:hover{background:var(--brun);color:var(--creme)}
+
+/* Haut */
+header.nav{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;max-width:1120px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--serif);font-size:22px;font-weight:700;line-height:1}
+.logo img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--vert)}
+.nav a.tel{font-weight:600;text-decoration:none;min-height:44px;display:none;align-items:center}
+
+/* Hero */
+.hero{display:grid;gap:26px;padding:10px 22px 40px;max-width:1120px;margin:0 auto}
+.hero h1{font-size:clamp(46px,13vw,104px);color:var(--vert-fonce)}
+.hero h1 span{display:block;overflow:hidden}
+.hero h1 span i{display:block;font-style:normal;animation:monte .9s cubic-bezier(.2,.7,.2,1) both}
+.hero h1 span:nth-child(2) i{animation-delay:.12s;font-style:italic;color:var(--brun)}
+.hero h1 span:nth-child(3) i{animation-delay:.24s}
+@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
+.hero p.acc{font-size:19px;max-width:30em;animation:fond .8s .5s both}
+.hero .acts{display:flex;flex-wrap:wrap;gap:12px;animation:fond .8s .7s both}
+@keyframes fond{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.photo-h{border-radius:200px 200px 24px 24px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--lin),#d9ccb2);animation:devoile 1.4s cubic-bezier(.2,.7,.2,1) both}
+.photo-h img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
+@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+
+/* Bande */
+.bande{background:var(--vert-fonce);color:var(--lin);overflow:hidden;white-space:nowrap;padding:14px 0;font-family:var(--serif);font-size:24px;font-style:italic}
+.bande div{display:inline-block;animation:defile 40s linear infinite;padding-left:0}
+.bande span{margin:0 22px}
+@keyframes defile{to{transform:translateX(-50%)}}
+
+/* Horaires */
+.ouvert{padding:60px 0 20px}
+.ouvert .grille{display:grid;gap:30px}
+.ouvert h2{font-size:clamp(34px,8vw,56px);margin-bottom:10px}
+.heures{list-style:none;border-top:1px solid rgba(59,45,35,.25)}
+.heures li{display:flex;justify-content:space-between;gap:14px;padding:13px 2px;border-bottom:1px solid rgba(59,45,35,.25);font-size:18px}
+.heures li.ferme{opacity:.5}
+.heures li b{font-weight:600}
+.note{font-size:14px;opacity:.75;margin-top:12px}
+
+/* Jardin */
+.jardin{padding:60px 0}
+.jardin .grille{display:grid;gap:22px}
+.jardin h2{font-size:clamp(36px,9vw,64px);color:var(--vert-fonce)}
+.jardin p{max-width:34em;margin-top:14px}
+.cadre{border-radius:22px;overflow:hidden;background:linear-gradient(150deg,var(--lin),#d6c8ad);aspect-ratio:4/3}
+.cadre img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s}
+.cadre:hover img{transform:scale(1.04)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.duo .cadre{aspect-ratio:1/1}
+
+/* Menu */
+.menu{background:var(--lin);padding:70px 0;background-image:linear-gradient(180deg,rgba(255,255,255,.4),transparent)}
+.menu .grille{display:grid;gap:30px;align-items:center}
+.menu h2{font-size:clamp(36px,9vw,64px)}
+.menu h2 em{color:var(--vert)}
+.menu p{margin-top:14px;max-width:33em}
+.menu .cadre{aspect-ratio:1/1;border-radius:50% 50% 22px 22px}
+.fete{margin-top:22px;padding:18px 20px;border-left:4px solid var(--vert);background:var(--creme);border-radius:0 14px 14px 0}
+
+/* Avis */
+.avis{padding:70px 0}
+.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+.score b{font-family:var(--serif);font-size:72px;color:var(--vert);line-height:1}
+.score span{font-size:17px}
+.avis blockquote{font-family:var(--serif);font-size:clamp(24px,5.5vw,38px);line-height:1.25;max-width:26em;color:var(--vert-fonce)}
+.avis cite{display:block;font-family:var(--sans);font-style:normal;font-size:14px;margin-top:12px;color:var(--brun);opacity:.8}
+.petits{display:grid;gap:18px;margin-top:40px}
+.petits blockquote{font-family:var(--sans);font-size:16px;color:var(--brun);background:var(--lin);padding:22px;border-radius:18px;line-height:1.55}
+
+/* Venir */
+.venir{background:var(--vert-fonce);color:var(--creme);padding:70px 0}
+.venir .grille{display:grid;gap:28px}
+.venir h2{font-size:clamp(36px,9vw,60px)}
+.venir address{font-style:normal;font-size:20px;margin:14px 0 22px}
+.venir .btn{background:var(--creme);color:var(--vert-fonce);border-color:var(--creme)}
+.venir .btn.clair{background:transparent;color:var(--creme)}
+.venir .btn.clair:hover{background:var(--creme);color:var(--vert-fonce)}
+.venir .acts{display:flex;flex-wrap:wrap;gap:12px}
+.venir a.lien{color:var(--lin)}
+.venir .cadre{aspect-ratio:4/3}
+
+footer{padding:26px 22px 40px;text-align:center;font-size:13px;opacity:.8}
+body{padding-bottom:76px}
+
+/* Barre mobile */
+.barre{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(247,241,229,.96);border-top:1px solid rgba(59,45,35,.2);z-index:10}
+.barre .btn{min-height:48px;padding:0 10px}
+
+@media(min-width:861px){
+  body{padding-bottom:0}
+  .barre{display:none}
+  .nav a.tel{display:inline-flex}
+  .hero{grid-template-columns:1.15fr 1fr;align-items:center;gap:60px;padding-top:30px}
+  .ouvert .grille{grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+  .jardin .grille{grid-template-columns:1fr 1fr;align-items:center;gap:50px}
+  .menu .grille{grid-template-columns:1fr 1fr;gap:70px}
+  .petits{grid-template-columns:1fr 1fr}
+  .venir .grille{grid-template-columns:1fr 1fr;align-items:center;gap:60px}
+}
+
+/* Défilement */
+@supports (animation-timeline: view()){
+  .rev{animation:apparait linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  @keyframes apparait{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 </style>
 </head>
 <body>
-<header>
-<div class="wrap sans">
-<a class="marque" href="#haut">Vert de Gris <b>&amp; Toque</b></a>
-<nav><a href="#carte">La cuisine</a><a href="#pourquoi">Pourquoi nous</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
-<a class="btn" href="tel:+3223955310">Réserver</a>
-</div>
+<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
+
+<header class="nav">
+  <a class="logo" href="#haut">
+    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000000-18a6a18a6c/1951_1-1-300x300.jpeg?ph=71db933bed" alt="Logo de Vert de Gris et Toque" width="46" height="46">
+    <span>Vert de Gris<br>et Toque</span>
+  </a>
+  <a class="tel" href="tel:+3223955310">02 395 53 10</a>
 </header>
 
 <main id="haut">
-<div class="hero">
-<div class="wrap">
-<div>
-<p class="etiquette sans">Restaurant · Enghien</p>
-<h1>La saveur des saisons, <em>au cœur d’Enghien.</em></h1>
-<p>Installé place du Vieux Marché, Vert de Gris et Toque vous accueille pour une cuisine de saison, à savourer en menu 3 services.</p>
-<div class="actions sans">
-<a class="btn" href="tel:+3223955310">Réserver une table</a>
-<a class="btn clair" href="#carte">Découvrir la cuisine</a>
-</div>
-<div class="note sans"><strong>4,5/5</strong><span>sur 79 avis Google</span></div>
-</div>
-<div class="photo">
-<img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/700/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Une assiette du restaurant Vert de Gris et Toque">
-</div>
-</div>
-</div>
-
-<section id="carte">
-<div class="wrap">
-<p class="etiquette sans" style="color:var(--vert)">À la table</p>
-<h2>Une cuisine qui suit les saisons</h2>
-<p class="intro">Quelques-unes des façons de profiter de la maison. Les détails de la carte et des menus vous sont communiqués par le restaurant.</p>
-<div class="cartes">
-<article class="carte"><div class="num">1</div><h3>Le menu 3 services</h3><p>Entrée, plat et dessert : une formule complète, pensée autour des produits de saison.</p></article>
-<article class="carte"><div class="num">2</div><h3>Les menus de fête</h3><p>À chaque grande occasion, une proposition spéciale, comme le week-end de la Fête des Mères.</p></article>
-<article class="carte"><div class="num">3</div><h3>Les repas entre proches</h3><p>Un déjeuner ou un dîner en famille ou entre amis, sur la place du Vieux Marché.</p></article>
-</div>
-</div>
+<section class="hero">
+  <div>
+    <h1><span><i>La saveur</i></span><span><i>des saisons,</i></span><span><i>à Enghien.</i></span></h1>
+    <p class="acc" style="margin-top:22px">Une cuisine de produits frais, faite par les patrons eux-mêmes, dans un petit jardin cosy à deux pas du Vieux Marché.</p>
+    <div class="acts" style="margin-top:22px">
+      <a class="btn" href="tel:+3223955310">Réserver une table</a>
+      <a class="btn clair" href="#horaires">Voir les horaires</a>
+    </div>
+  </div>
+  <div class="photo-h">
+    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Une assiette de la cuisine de Vert de Gris et Toque">
+  </div>
 </section>
 
-<section class="pourquoi" id="pourquoi">
-<div class="wrap">
-<p class="etiquette sans" style="color:var(--vert)">Pourquoi nous choisir</p>
-<h2>Une adresse sincère, au centre d’Enghien</h2>
-<ul class="liste">
-<li><span class="pt"></span><div><strong>Un menu 3 services</strong>Une formule claire, mise en avant par le restaurant.</div></li>
-<li><span class="pt"></span><div><strong>Appréciée de ses clients</strong>4,5/5 sur 79 avis Google.</div></li>
-<li><span class="pt"></span><div><strong>Une cuisine de saison</strong>« La saveur des saisons, au cœur d’Enghien. »</div></li>
-<li><span class="pt"></span><div><strong>Une situation centrale</strong>Place du Vieux Marché, facile à retrouver.</div></li>
-</ul>
-</div>
+<div class="bande" aria-hidden="true"><div>
+  <span>Produits de saison</span>·<span>Menu 3 services</span>·<span>Petit jardin</span>·<span>Cuisine généreuse</span>·<span>Place du Vieux Marché</span>·
+  <span>Produits de saison</span>·<span>Menu 3 services</span>·<span>Petit jardin</span>·<span>Cuisine généreuse</span>·<span>Place du Vieux Marché</span>·
+</div></div>
+
+<section class="ouvert" id="horaires">
+  <div class="wrap grille">
+    <div class="rev">
+      <h2>Quand venir&nbsp;?</h2>
+      <p>Ouvert du mercredi au samedi. Pour une table, le plus simple est d'appeler.</p>
+      <p style="margin-top:20px"><a class="btn" href="tel:+3223955310">Appeler le 02 395 53 10</a></p>
+    </div>
+    <div class="rev">
+      <ul class="heures">
+        <li class="ferme"><span>Lundi</span><b>Fermé</b></li>
+        <li class="ferme"><span>Mardi</span><b>Fermé</b></li>
+        <li><span>Mercredi</span><b>10 h – 19 h</b></li>
+        <li><span>Jeudi</span><b>Ouvert 24 h/24</b></li>
+        <li><span>Vendredi</span><b>10 h – 19 h</b></li>
+        <li><span>Samedi</span><b>10 h – 19 h</b></li>
+        <li class="ferme"><span>Dimanche</span><b>Fermé</b></li>
+      </ul>
+      <p class="note">Horaires tels qu'indiqués sur la fiche Google. Celui du jeudi est à confirmer avec vous.</p>
+    </div>
+  </div>
 </section>
 
-<section class="avis" id="avis">
-<div class="wrap">
-<p class="etiquette sans">Vos avis comptent</p>
-<h2>Ils ont goûté, ils l’ont dit</h2>
-<div class="gros">4,5</div>
-<div class="etoiles" aria-hidden="true">★★★★★</div>
-<p>Note moyenne sur Google, basée sur 79 avis.</p>
-<a class="btn sans" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
-</div>
+<section class="jardin">
+  <div class="wrap grille">
+    <div class="rev">
+      <h2>Un petit jardin, une cuisine ouverte sur les saisons.</h2>
+      <p>« Petit jardin hyper sympa, cosy », écrit une cliente. Les patrons sont aux fourneaux, l'équipe en salle est discrète et efficace. Et quand le soleil revient, la terrasse reprend ses tables.</p>
+      <p>Une tablée d'amis pour un anniversaire&nbsp;? Le restaurant sait aussi installer un groupe dans un cadre privatisé.</p>
+    </div>
+    <div class="rev">
+      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000028-e3e75e3e77/image-crop-200000024-5.jpeg?ph=71db933bed" alt="Ambiance de Vert de Gris et Toque" loading="lazy"></div>
+    </div>
+  </div>
 </section>
 
-<section class="contact" id="contact">
-<div class="wrap">
-<p class="etiquette sans" style="color:var(--vert)">Contact</p>
-<h2>Réservez votre table</h2>
-<div class="grille sans">
-<div class="bloc"><h3>Adresse</h3><p>Pl. du Vieux Marché 9<br>7850 Enghien</p></div>
-<div class="bloc"><h3>Téléphone</h3><p><a href="tel:+3223955310">02 395 53 10</a></p></div>
-<div class="bloc"><h3>E-mail</h3><p><a href="mailto:vertdegrisettoque@gmail.com">vertdegrisettoque@gmail.com</a></p><p><a href="https://www.facebook.com/profile.php?id=100065095748663">Facebook</a></p></div>
-</div>
-</div>
+<section class="menu" id="menu">
+  <div class="wrap grille">
+    <div class="rev">
+      <h2>Le menu <em>3 services</em></h2>
+      <p>C'est la formule que la maison met en avant. Une entrée, un plat, un dessert, avec des produits de saison. Du côté des clients, on parle de tagliata de bœuf bien cuite et d'une lasagne « un délice ».</p>
+      <div class="fete">
+        <b>Week-end de la Fête des Mères</b><br>
+        Un menu 3 services est proposé pour l'occasion. Demandez le détail au 02 395 53 10.
+      </div>
+      <p style="margin-top:22px"><a class="btn" href="tel:+3223955310">Réserver une table</a></p>
+    </div>
+    <div class="rev duo" style="grid-template-columns:1fr">
+      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000287-a36c5a36c7/120449463_3097258530378319_5077988625432003069_n.jpeg?ph=71db933bed" alt="Plat servi chez Vert de Gris et Toque" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="jardin" style="padding-top:60px">
+  <div class="wrap grille">
+    <div class="rev">
+      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000174-0d6d40d6d5/487886193_1056049063241609_4311803030892363573_n.jpeg?ph=71db933bed" alt="Table et cuisine de Vert de Gris et Toque" loading="lazy"></div>
+    </div>
+    <div class="rev">
+      <h2>Christophe et son équipe.</h2>
+      <p>Les clients le disent : « tous aux petits soins ». Une cuisine généreuse, un accueil simple, et l'envie de revenir.</p>
+    </div>
+  </div>
+</section>
+
+<section class="avis">
+  <div class="wrap">
+    <div class="score rev"><b>4,5/5</b><span>sur 79 avis Google</span></div>
+    <blockquote class="rev">« Petit jardin hyper sympa, cosy. Personnel discret mais efficace. Que dire des plats…. Succulents, produits frais. Franchement les 5 étoiles sont plus que méritées. »
+      <cite>Sylvie Demolie — 5/5, avis Google</cite></blockquote>
+    <div class="petits">
+      <blockquote class="rev">« Nous sommes venus ce 02 décembre avec un groupe d’amis pour un anniversaire. Service au top. Ils nous ont placé dans un chouette cadre privatisé!Le patron Christophe et son équipe étaient tous aux petits soins! La serveuse Victoria au top également! Je recommande à 100% ce restaurant! Cadre chaleureux et la nourriture est bonne! Merci à vous pour l’accueil. »
+        <cite>Laurent Loop — 5/5, avis Google</cite></blockquote>
+      <blockquote class="rev">« Première expérience hier très agréable. Personnel super sympathique en salle, les patrons aux fourneaux, une bonne cuisine avec des produits de saison et généreuse. Très bonne cuisson pour le tagliata de bœuf. La lasagne un délice. Nous reviendrons avec plaisir tester la terrasse en juillet. »
+        <cite>La vie est belle — 4/5, avis Google</cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<section class="venir" id="venir">
+  <div class="wrap grille">
+    <div class="rev">
+      <h2>Place du Vieux Marché.</h2>
+      <address>Pl. du Vieux Marché 9<br>7850 Enghien</address>
+      <div class="acts">
+        <a class="btn" href="tel:+3223955310">Appeler</a>
+        <a class="btn clair" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+      </div>
+      <p style="margin-top:20px">02 395 53 10<br><a class="lien" href="mailto:vertdegrisettoque@gmail.com">vertdegrisettoque@gmail.com</a><br><a class="lien" href="https://www.facebook.com/profile.php?id=100065095748663">Page Facebook</a></p>
+    </div>
+    <div class="rev">
+      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/700/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Un plat de Vert de Gris et Toque" loading="lazy"></div>
+    </div>
+  </div>
 </section>
 </main>
 
-<footer class="sans">
-<div class="wrap">
-<p>Vert de Gris et Toque · Pl. du Vieux Marché 9, 7850 Enghien</p>
-<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
-</div>
-</footer>
+<footer>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+
+<nav class="barre" aria-label="Actions rapides">
+  <a class="btn" href="tel:+3223955310">Appeler</a>
+  <a class="btn clair" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+</nav>
 </body>
 </html>
