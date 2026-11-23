@@ -4,205 +4,188 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Institut Nicole — Institut de beauté à Ath (maquette)</title>
-<meta name="description" content="Institut Nicole, institut de beauté à Ath : soins du visage, massages, épilation à la cire, soins Babor.">
+<title>Institut Nicole — Institut de beauté à Ath</title>
+<meta name="description" content="Institut Nicole, institut de beauté rue Isidore Hoton 57 à Ath : soins du visage, massages, épilation à la cire.">
 <style>
-:root{--rose:#dc044f;--rose-fonce:#a80339;--rose-pale:#fdeef3;--encre:#2a1d23;--gris:#6b5a62;--creme:#fffaf8;--r:18px}
+:root{--papier:#fbf5ee;--vin:#33091b;--rose:#dc044f;--filet:rgba(51,9,27,.28);--serif:"Didot","Bodoni 72","Bodoni MT","Hoefler Text",Georgia,serif;--sans:"Gill Sans","Gill Sans MT",Optima,Candara,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--encre);background:var(--creme);line-height:1.6;font-size:17px}
-h1,h2,h3,.serif{font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.2}
+body{background:var(--papier);color:var(--vin);font-family:var(--serif);font-size:18px;line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%}
 a{color:inherit}
-.wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 20px}
-.ruban{background:var(--encre);color:#fff;font-size:13px;text-align:center;padding:6px 12px}
-header{background:#fff;border-bottom:1px solid #f1dfe5;position:sticky;top:0;z-index:5}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;max-width:1100px;margin:0 auto}
-.logo{text-decoration:none;display:flex;flex-direction:column;line-height:1}
-.logo b{font-family:Georgia,serif;font-weight:400;font-size:26px;color:var(--rose);letter-spacing:.5px}
-.logo small{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gris);margin-top:4px}
-nav{display:none}
-nav a{text-decoration:none;font-size:15px;margin-left:24px;color:var(--gris)}
-nav a:hover{color:var(--rose)}
-.btn{display:inline-block;background:var(--rose);color:#fff;text-decoration:none;padding:13px 24px;border-radius:999px;font-weight:600;font-size:16px;min-height:44px;text-align:center;border:2px solid var(--rose)}
-.btn:hover{background:var(--rose-fonce);border-color:var(--rose-fonce)}
-.btn.clair{background:transparent;color:#fff;border-color:#fff}
-.btn.clair:hover{background:#fff;color:var(--rose)}
-.btn.petit{padding:9px 18px;font-size:14px;min-height:40px}
-.hero{position:relative;color:#fff;background:linear-gradient(135deg,#dc044f,#7a0231);background-image:linear-gradient(180deg,rgba(42,10,22,.55),rgba(90,4,35,.75)),url("https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/jpg/banner.jpg");background-size:cover;background-position:center}
-.hero .wrap{padding-top:72px;padding-bottom:80px}
-.hero .kicker{text-transform:uppercase;letter-spacing:3px;font-size:13px;opacity:.9}
-.hero h1{font-size:38px;margin:14px 0 16px;max-width:620px}
-.hero p{max-width:540px;font-size:18px;opacity:.95}
-.actions{display:flex;flex-direction:column;gap:12px;margin-top:28px}
-.note{display:inline-flex;align-items:center;gap:8px;margin-top:26px;background:rgba(255,255,255,.15);padding:8px 16px;border-radius:999px;font-size:15px}
-section{padding:60px 0}
-.titre{text-align:center;margin-bottom:34px}
-.titre span{display:block;color:var(--rose);text-transform:uppercase;letter-spacing:3px;font-size:12px;margin-bottom:8px}
-.titre h2{font-size:30px}
-.titre p{color:var(--gris);max-width:560px;margin:10px auto 0}
-.grille{display:grid;gap:16px}
-.carte{background:#fff;border-radius:var(--r);padding:26px;border:1px solid #f1dfe5;position:relative;overflow:hidden}
-.carte::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--rose),#f58aac)}
-.carte .ico{width:48px;height:48px;border-radius:50%;background:var(--rose-pale);color:var(--rose);display:grid;place-items:center;font-size:22px;margin-bottom:14px}
-.carte h3{font-size:22px;margin-bottom:8px}
-.carte p{color:var(--gris);font-size:16px}
-.babor{background:linear-gradient(135deg,var(--rose-pale),#fff);}
-.duo{display:grid;gap:26px;align-items:center}
-.duo .bloc{background:var(--rose);color:#fff;border-radius:var(--r);padding:34px 26px;background-image:radial-gradient(circle at 85% 15%,rgba(255,255,255,.22),transparent 45%)}
-.duo .bloc .serif{font-size:34px}
-.duo .bloc p{opacity:.92;margin-top:8px}
-.duo ul{list-style:none;margin-top:16px}
-.duo li{padding:8px 0 8px 28px;position:relative}
-.duo li::before{content:"✓";position:absolute;left:0;color:var(--rose);font-weight:700}
-.pourquoi{background:#fff}
-.faits{display:grid;gap:18px}
-.fait{padding:22px;border-radius:var(--r);background:var(--creme);border:1px solid #f1dfe5}
-.fait h3{font-size:20px;color:var(--rose);margin-bottom:6px}
-.fait p{color:var(--gris);font-size:16px}
-.avis{text-align:center}
-.score{display:inline-block;background:#fff;border:1px solid #f1dfe5;border-radius:var(--r);padding:32px 36px}
-.score .n{font-family:Georgia,serif;font-size:64px;color:var(--rose);line-height:1}
-.score .n small{font-size:24px;color:var(--gris)}
-.etoiles{color:#f5a623;font-size:24px;letter-spacing:4px;margin:8px 0}
-.avis p.sous{color:var(--gris);margin:16px auto 20px;max-width:480px}
-.rdv{background:linear-gradient(135deg,var(--rose),#8b0233);color:#fff;text-align:center}
-.rdv h2{font-size:30px;margin-bottom:12px}
-.rdv p{max-width:560px;margin:0 auto 24px;opacity:.95}
-.rdv .actions{align-items:center}
-.rdv .btn{background:#fff;color:var(--rose);border-color:#fff}
-.rdv .btn.clair{background:transparent;color:#fff}
-.rdv small{display:block;margin-top:22px;opacity:.8;font-size:14px}
-.contact .grille{gap:14px}
-.info{background:#fff;border:1px solid #f1dfe5;border-radius:var(--r);padding:22px}
-.info h3{font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--rose);font-family:inherit;font-weight:700;margin-bottom:6px}
-.info a{color:var(--encre);font-size:18px;word-break:break-word;text-decoration-color:var(--rose)}
-.info p{font-size:18px}
-.liens{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;justify-content:center}
-footer{background:var(--encre);color:#d9c9cf;padding:34px 0;font-size:14px;text-align:center}
-footer .serif{color:#fff;font-size:22px;margin-bottom:6px}
-footer a{color:#fff}
-.maq{margin-top:18px;font-size:12px;opacity:.7}
-@media(min-width:700px){
-.hero h1{font-size:50px}.actions{flex-direction:row}
-.grille.trois{grid-template-columns:repeat(2,1fr)}
-.faits{grid-template-columns:repeat(2,1fr)}
-.contact .grille{grid-template-columns:repeat(2,1fr)}
-}
-@media(min-width:960px){
-nav{display:block}
-.hero .wrap{padding-top:120px;padding-bottom:130px}.hero h1{font-size:60px}
-.grille.trois{grid-template-columns:repeat(3,1fr)}
-.duo{grid-template-columns:1fr 1fr;gap:56px}
-.faits{grid-template-columns:repeat(4,1fr)}
-.contact .grille{grid-template-columns:repeat(4,1fr)}
-section{padding:84px 0}
-}
+.maquette{background:var(--vin);color:var(--papier);font:12px/1.4 var(--sans);text-align:center;padding:7px 12px;letter-spacing:.04em}
+.petit{font-family:var(--sans);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose)}
+.page{max-width:920px;margin:0 auto;padding:0 20px}
+.cadre{border:1px solid var(--vin);padding:6px;margin:22px 0}
+.cadre>.int{border:1px solid var(--filet);padding:44px 22px 40px;text-align:center}
+.ornement{display:flex;align-items:center;gap:14px;justify-content:center;color:var(--rose);margin:18px auto;max-width:260px}
+.ornement::before,.ornement::after{content:"";flex:1;height:1px;background:var(--filet)}
+.ornement i{width:7px;height:7px;background:var(--rose);transform:rotate(45deg)}
+h1{font-weight:400;font-size:clamp(54px,15vw,112px);line-height:.95;letter-spacing:.01em;margin:14px 0 6px}
+h1 span{display:block;overflow:hidden}
+h1 span b{display:block;font-weight:400}
+h1 em{color:var(--rose);font-style:italic}
+.devise{font-style:italic;font-size:21px;max-width:30ch;margin:0 auto}
+.adresse{font-family:var(--sans);font-size:14px;letter-spacing:.08em;margin-top:14px}
+.boutons{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;font:14px var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border:1px solid var(--vin);transition:background .3s,color .3s,border-color .3s}
+.btn.plein{background:var(--rose);border-color:var(--rose);color:#fff}
+.btn:hover{background:var(--vin);color:var(--papier);border-color:var(--vin)}
+.hero-photo{margin:0 -1px;border:1px solid var(--vin);padding:6px}
+.hero-photo div{overflow:hidden;aspect-ratio:16/10}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.bande{overflow:hidden;border-block:1px solid var(--vin);margin:34px -20px;padding:10px 0;font-style:italic;font-size:22px;white-space:nowrap}
+.bande div{display:inline-block;animation:defile 40s linear infinite}
+.bande span{padding:0 20px}.bande span::after{content:"\25C6";color:var(--rose);font-size:10px;margin-left:40px;vertical-align:middle}
+@keyframes defile{to{transform:translateX(-50%)}}
+section{padding:34px 0}
+h2{font-weight:400;font-size:clamp(32px,7vw,48px);line-height:1.1;margin-top:10px}
+.intro{max-width:46ch;margin:14px auto 0}
+.carte{max-width:640px;margin:34px auto 0;text-align:left}
+.soin{padding:22px 0;border-top:1px solid var(--filet)}
+.soin:first-child{border-top:0}
+.soin h3{font-weight:400;font-size:27px;display:flex;align-items:baseline;gap:10px}
+.soin h3::after{content:"";flex:1;border-bottom:1px dotted var(--vin);opacity:.5;order:1}
+.soin h3 small{order:2;font:12px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--rose)}
+.soin p{margin-top:4px;font-size:17px}
+.note{font-family:var(--sans);font-size:14px;margin-top:18px;opacity:.85;text-align:center}
+.marque{max-width:560px;margin:0 auto}
+.marque .nom{font-size:clamp(46px,12vw,76px);font-style:italic;color:var(--rose);line-height:1.1;margin-top:8px}
+.galerie{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}
+.galerie figure{border:1px solid var(--vin);padding:6px;background:var(--papier)}
+.galerie figure div{overflow:hidden;aspect-ratio:4/5}
+.galerie figure:nth-child(3n+1){grid-column:span 2}
+.galerie figure:nth-child(3n+1) div{aspect-ratio:16/10}
+.galerie img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s ease}
+.galerie figure:hover img{transform:scale(1.04)}
+blockquote{max-width:34ch;margin:26px auto 0;font-size:24px;font-style:italic;line-height:1.4}
+blockquote+blockquote{padding-top:26px;border-top:1px solid var(--filet);margin-top:26px}
+cite{display:block;font:13px var(--sans);letter-spacing:.14em;text-transform:uppercase;font-style:normal;margin-top:10px;color:var(--rose)}
+.noteg{font:14px var(--sans);letter-spacing:.1em;margin-top:6px}
+.horaires{max-width:420px;margin:26px auto 0;border-collapse:collapse;width:100%;font-size:20px}
+.horaires td{padding:11px 0;border-bottom:1px dotted var(--filet);text-align:left}
+.horaires td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.horaires .ferme{opacity:.5;font-style:italic}
+.coord{margin-top:26px;font-size:20px}
+.coord a{color:var(--rose);text-underline-offset:4px}
+footer{text-align:center;font:13px var(--sans);padding:26px 20px 40px;border-top:1px solid var(--vin);margin-top:30px}
+.barre{display:none}
+@media(max-width:860px){body{padding-bottom:84px}
+.barre{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--papier);border-top:1px solid var(--vin);gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.barre a{min-height:48px;display:flex;align-items:center;justify-content:center;font:14px var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--vin)}
+.barre a:first-child{background:var(--rose);border-color:var(--rose);color:#fff}}
+@media(min-width:861px){.cadre>.int{padding:64px 60px 56px}.galerie{grid-template-columns:repeat(3,1fr)}.galerie figure:nth-child(3n+1){grid-column:auto}.galerie figure:nth-child(3n+1) div{aspect-ratio:4/5}.galerie figure:first-child{grid-column:span 3}.galerie figure:first-child div{aspect-ratio:21/9}}
+h1 span b{animation:monte 1.1s cubic-bezier(.2,.8,.2,1) both}
+h1 span:nth-child(2) b{animation-delay:.18s}
+.devise,.adresse,.petit.haut{animation:fondu 1s .5s both}
+.boutons .btn{animation:fondu .9s both}.boutons .btn:nth-child(1){animation-delay:.8s}.boutons .btn:nth-child(2){animation-delay:.95s}
+.hero-photo div{animation:devoile 1.8s .3s cubic-bezier(.7,0,.2,1) both}
+.hero-photo img{animation:zoom 14s .3s ease-out both}
+@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
+@keyframes fondu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes zoom{from{transform:scale(1.15)}to{transform:scale(1)}}
+@supports (animation-timeline:view()){
+.revele{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+.galerie figure{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% entry 50%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bande div{transform:none}.bande{overflow-x:auto}}
 </style>
 </head>
 <body>
-<div class="ruban">Maquette de démonstration — ce site n'est pas encore publié</div>
-<header>
-<div class="bar">
-<a class="logo" href="#haut" id="haut"><b>Institut Nicole</b><small>Grain d'élégance · Ath</small></a>
-<nav><a href="#soins">Nos soins</a><a href="#babor">Babor</a><a href="#pourquoi">L'institut</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
-<a class="btn petit" href="tel:+32497996769">Appeler</a>
-</div>
-</header>
+<div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
 
-<main>
-<div class="hero">
-<div class="wrap">
-<p class="kicker">Institut de beauté · Ath</p>
-<h1>Un espace pour prendre soin de vous, en toute élégance</h1>
-<p>Soins du visage, massages, épilation à la cire… Bienvenue à l'Institut Nicole, un lieu pensé pour votre bien-être complet.</p>
-<div class="actions">
-<a class="btn" href="#rdv">Prendre rendez-vous</a>
-<a class="btn clair" href="#soins">Découvrir nos soins</a>
-</div>
-<div class="note"><span style="color:#ffd36b">★</span> 4,9/5 sur Google · 8 avis</div>
-</div>
-</div>
+<main class="page">
 
-<section id="soins">
-<div class="wrap">
-<div class="titre"><span>Nos soins</span><h2>Le bien-être, sous toutes ses formes</h2><p>Un aperçu de ce que l'institut vous propose. Contactez-nous pour connaître le détail des prestations.</p></div>
-<div class="grille trois">
-<article class="carte"><div class="ico">✿</div><h3>Soins du visage</h3><p>Des soins adaptés à votre type de peau pour retrouver éclat, douceur et confort.</p></article>
-<article class="carte"><div class="ico">☾</div><h3>Massages</h3><p>Un moment de détente pour relâcher les tensions et se ressourcer pleinement.</p></article>
-<article class="carte"><div class="ico">❀</div><h3>Épilation à la cire</h3><p>Une épilation soignée, dans un cadre agréable et à l'écoute de votre confort.</p></article>
-<article class="carte"><div class="ico">✦</div><h3>Permanente</h3><p>Pour sublimer votre regard au quotidien. Renseignez-vous auprès de l'institut sur les options proposées.</p></article>
-<article class="carte"><div class="ico">❖</div><h3>Soins Babor</h3><p>Des soins professionnels de la marque Babor, pour une expérience beauté de qualité.</p></article>
-<article class="carte"><div class="ico">♡</div><h3>Un espace bien-être</h3><p>Un institut accueillant, pensé pour que vous vous sentiez bien dès l'entrée.</p></article>
+<div class="cadre"><div class="int">
+<p class="petit haut">Institut de beauté · Ath</p>
+<h1><span><b>Institut</b></span><span><b><em>Nicole</em></b></span></h1>
+<div class="ornement"><i></i></div>
+<p class="devise">Grain d'élégance. Soins du visage, massages, épilation à la cire.</p>
+<p class="adresse">Rue Isidore Hoton 57 · 7800 Ath</p>
+<div class="boutons">
+<a class="btn plein" href="tel:+32497996769">Réserver un soin</a>
+<a class="btn" href="#horaires">Les horaires</a>
 </div>
+</div></div>
+
+<div class="hero-photo"><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/banner.jpg" alt="L'ambiance de l'Institut Nicole à Ath" width="1200" height="750"></div></div>
+
+<div class="bande" aria-hidden="true"><div><span>Soins du visage</span><span>Massages</span><span>Épilation à la cire</span><span>Babor</span><span>Soins du visage</span><span>Massages</span><span>Épilation à la cire</span><span>Babor</span><span>Soins du visage</span><span>Massages</span><span>Épilation à la cire</span><span>Babor</span><span>Soins du visage</span><span>Massages</span><span>Épilation à la cire</span><span>Babor</span></div></div>
+
+<section class="revele" style="text-align:center">
+<p class="petit">La carte des soins</p>
+<h2>Choisissez selon votre envie</h2>
+<p class="intro">Un espace calme, pensé pour le bien-être complet. Dites à Nicole ce dont vous avez envie, elle vous conseille.</p>
+<div class="carte">
+<div class="soin"><h3>Le visage<small>Soins</small></h3><p>Des soins du visage pour retrouver une peau reposée, avec les produits Babor.</p></div>
+<div class="soin"><h3>Le corps<small>Massages</small></h3><p>Un massage pour relâcher les tensions et prendre un vrai moment de détente.</p></div>
+<div class="soin"><h3>La peau lisse<small>Épilation</small></h3><p>Épilation à la cire, et épilation permanente.</p></div>
+</div>
+<p class="note">Durées et tarifs : demandez-les à l'institut, au 0497 99 67 69.</p>
+</section>
+
+<div class="cadre revele"><div class="int">
+<p class="petit">Notre marque</p>
+<div class="marque"><p class="nom">Babor</p>
+<div class="ornement"><i></i></div>
+<p>La marque que Nicole utilise pour ses soins du visage.</p></div>
+</div></div>
+
+<section class="revele" style="text-align:center">
+<p class="petit">L'institut</p>
+<h2>Un lieu pour souffler</h2>
+<div class="galerie">
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/over.jpg" alt="Intérieur de l'Institut Nicole" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/0.jpg" alt="Photo de l'institut, premier détail" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/1.jpg" alt="Photo de l'institut, deuxième détail" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/2.jpg" alt="Photo de l'institut, troisième détail" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/3.jpg" alt="Photo de l'institut, quatrième détail" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/4.jpg" alt="Photo de l'institut, cinquième détail" loading="lazy"></div></figure>
+<figure><div><img src="https://de.cdn-website.com/4a3bd520517140bf934f0ddb52bf3cfb/DESKTOP/images/5.jpg" alt="Photo de l'institut, sixième détail" loading="lazy"></div></figure>
 </div>
 </section>
 
-<section id="babor" class="babor">
-<div class="wrap duo">
-<div class="bloc"><div class="serif">Babor</div><p>Des soins de beauté professionnels, proposés à l'Institut Nicole.</p></div>
-<div>
-<div class="titre" style="text-align:left;margin-bottom:10px"><span>Notre marque</span><h2>Une beauté exigeante, un accueil chaleureux</h2></div>
-<p style="color:var(--gris)">L'institut travaille avec la marque Babor pour ses soins. Demandez conseil : nous vous aiguillerons vers le soin qui correspond à votre peau et à vos envies.</p>
-<ul><li>Conseils personnalisés</li><li>Soins visage et corps</li><li>Un moment rien que pour vous</li></ul>
-</div>
-</div>
+<div class="cadre revele"><div class="int">
+<p class="petit">Elles en parlent</p>
+<h2>4,9 sur 5</h2>
+<p class="noteg">8 avis Google</p>
+<blockquote>« J'ai passé un excellent moment détente chez Nicole. Elle sait mettre à l'aise et vous offre un soin de qualité ! Je la recommande »<cite>Audrey Strebelle · avis Google · 5/5</cite></blockquote>
+<blockquote>« Je suis super contente du résultat à chaque fois que j'ai l'occasion d'aller me détente à l'institut! Très bon boulot »<cite>Océane · avis Google · 5/5</cite></blockquote>
+</div></div>
+
+<section id="horaires" class="revele" style="text-align:center">
+<p class="petit">Horaires</p>
+<h2>Quand venir</h2>
+<table class="horaires">
+<tr class="ferme"><td>Lundi</td><td>Fermé</td></tr>
+<tr><td>Mardi</td><td>13 h – 18 h</td></tr>
+<tr><td>Mercredi</td><td>9 h – 18 h</td></tr>
+<tr><td>Jeudi</td><td>9 h – 18 h</td></tr>
+<tr><td>Vendredi</td><td>9 h – 18 h</td></tr>
+<tr><td>Samedi</td><td>9 h – 17 h</td></tr>
+<tr class="ferme"><td>Dimanche</td><td>Fermé</td></tr>
+</table>
 </section>
 
-<section id="pourquoi" class="pourquoi">
-<div class="wrap">
-<div class="titre"><span>Pourquoi nous choisir</span><h2>Une adresse de confiance à Ath</h2></div>
-<div class="faits">
-<div class="fait"><h3>4,9/5 sur Google</h3><p>Une excellente note, sur 8 avis de clientes et clients.</p></div>
-<div class="fait"><h3>Bien-être complet</h3><p>Visage, massages, épilation, permanente : tout au même endroit.</p></div>
-<div class="fait"><h3>Soins Babor</h3><p>Une marque professionnelle de soins de beauté.</p></div>
-<div class="fait"><h3>Au cœur d'Ath</h3><p>Rue Isidore Hoton 57, facile à joindre par téléphone ou par e-mail.</p></div>
+<div class="cadre revele"><div class="int">
+<p class="petit">Prendre rendez-vous</p>
+<h2>Un soin, un bon cadeau ?</h2>
+<p class="intro">Appelez Nicole ou écrivez-lui. Pour offrir un soin, demandez-lui comment faire.</p>
+<p class="coord"><a href="tel:+32497996769">0497 99 67 69</a><br><a href="mailto:nicole-ath@hotmail.com">nicole-ath@hotmail.com</a><br>Rue Isidore Hoton 57, 7800 Ath</p>
+<div class="boutons">
+<a class="btn plein" href="tel:+32497996769">Appeler</a>
+<a class="btn" href="https://maps.google.com/?cid=7294770159414820733">Itinéraire</a>
+<a class="btn" href="https://www.facebook.com/pages/category/Beauty-Salon/Institut-Nicole-781815848692041/">Facebook</a>
 </div>
-</div>
-</section>
+</div></div>
 
-<section id="avis" class="avis">
-<div class="wrap">
-<div class="titre"><span>Avis</span><h2>Ce que disent vos clientes sur Google</h2></div>
-<div class="score"><div class="n">4,9<small>/5</small></div><div class="etoiles" aria-hidden="true">★★★★★</div><div>8 avis Google</div></div>
-<p class="sous">Retrouvez tous les avis directement sur la fiche Google de l'institut.</p>
-<a class="btn" href="https://maps.google.com/?cid=7294770159414820733&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis sur Google</a>
-</div>
-</section>
-
-<section id="rdv" class="rdv">
-<div class="wrap">
-<h2>Réservez votre moment de détente</h2>
-<p>Sur le futur site, vos clientes pourraient choisir leur soin et réserver leur créneau en ligne, à toute heure. En attendant, un simple appel ou e-mail suffit.</p>
-<div class="actions">
-<a class="btn" href="tel:+32497996769">Appeler le 0497 99 67 69</a>
-<a class="btn clair" href="mailto:nicole-ath@hotmail.com">Écrire un e-mail</a>
-</div>
-<small>Idée proposée dans la maquette : système de rendez-vous en ligne (à définir ensemble).</small>
-</div>
-</section>
-
-<section id="contact" class="contact">
-<div class="wrap">
-<div class="titre"><span>Contact</span><h2>Venez nous rencontrer</h2></div>
-<div class="grille">
-<div class="info"><h3>Adresse</h3><p>Rue Isidore Hoton 57<br>7800 Ath</p></div>
-<div class="info"><h3>Téléphone</h3><a href="tel:+32497996769">0497 99 67 69</a></div>
-<div class="info"><h3>E-mail</h3><a href="mailto:nicole-ath@hotmail.com">nicole-ath@hotmail.com</a></div>
-<div class="info"><h3>Suivez-nous</h3><a href="https://www.facebook.com/pages/category/Beauty-Salon/Institut-Nicole-781815848692041/">Page Facebook</a></div>
-</div>
-<div class="liens">
-<a class="btn" href="https://maps.google.com/?cid=7294770159414820733&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Voir sur Google Maps</a>
-</div>
-</div>
-</section>
 </main>
 
-<footer>
-<div class="wrap">
-<div class="serif">Institut Nicole</div>
-<p>Rue Isidore Hoton 57 · 7800 Ath · <a href="tel:+32497996769">0497 99 67 69</a></p>
-<p class="maq">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
-</div>
-</footer>
+<footer>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+
+<nav class="barre" aria-label="Actions rapides">
+<a href="tel:+32497996769">Appeler</a>
+<a href="https://maps.google.com/?cid=7294770159414820733">Itinéraire</a>
+</nav>
 </body>
 </html>
