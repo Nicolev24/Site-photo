@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dolce Italia Jurbise — Restaurant, pizzeria, grill (maquette)</title>
+<meta name="description" content="Maquette de page d'accueil pour Dolce Italia, restaurant, pizzeria et grill à Jurbise.">
+<style>
+:root{--bleu:#003388;--bleu-fonce:#00225c;--or:#af9972;--rouge:#cf2e2e;--creme:#faf6ee;--texte:#1d2433;--gris:#5b6475}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;color:var(--texte);background:var(--creme);line-height:1.6;font-size:17px}
+h1,h2,h3,.nav,.btn,.badge,.etiquette{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{line-height:1.15;margin:0 0 .5em}
+a{color:var(--bleu)}
+.tricolore{height:6px;background:linear-gradient(90deg,var(--bleu) 0 33.3%,#fff 33.3% 66.6%,var(--rouge) 66.6%)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:#fff;position:sticky;top:0;z-index:10;box-shadow:0 1px 8px rgba(0,0,0,.08)}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 20px;max-width:1080px;margin:0 auto}
+.marque{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--bleu);font-weight:700;font-family:system-ui,sans-serif}
+.marque img{height:44px;width:auto;max-width:150px;object-fit:contain}
+.marque span{font-size:1.05rem}
+.nav{display:none;gap:22px;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--texte);font-weight:600}
+.nav a:hover{color:var(--rouge)}
+.btn{display:inline-block;padding:13px 22px;border-radius:999px;background:var(--rouge);color:#fff;text-decoration:none;font-weight:700;font-size:1rem;border:2px solid var(--rouge);text-align:center}
+.btn.clair{background:transparent;border-color:#fff;color:#fff}
+.btn.petit{padding:9px 16px;font-size:.9rem}
+.hero{background:radial-gradient(circle at 85% 15%,rgba(175,153,114,.35),transparent 45%),linear-gradient(160deg,var(--bleu) 0%,var(--bleu-fonce) 100%);color:#fff;padding:56px 0 64px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-90px;bottom:-90px;width:300px;height:300px;border-radius:50%;border:34px solid rgba(255,255,255,.07)}
+.etiquette{display:inline-block;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;color:var(--or);font-weight:700;margin-bottom:14px}
+.hero h1{font-size:2.2rem;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--or)}
+.hero p{font-size:1.1rem;max-width:560px;color:#e6ebf6}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.note{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:rgba(255,255,255,.12);padding:10px 16px;border-radius:14px;font-family:system-ui,sans-serif;font-size:.95rem}
+.note b{font-size:1.4rem;color:var(--or)}
+section{padding:56px 0}
+h2{font-size:1.8rem;color:var(--bleu);font-weight:800}
+.intro{color:var(--gris);max-width:620px}
+.grille{display:grid;gap:16px;margin-top:28px}
+.carte{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 14px rgba(0,34,92,.08);border-top:4px solid var(--or)}
+.carte:nth-child(3n+1){border-top-color:var(--bleu)}
+.carte:nth-child(3n+2){border-top-color:var(--rouge)}
+.carte .ico{width:48px;height:48px;border-radius:50%;background:var(--creme);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:12px}
+.carte h3{color:var(--bleu);font-size:1.2rem}
+.carte p{margin:0;color:var(--gris);font-size:.98rem}
+.pourquoi{background:#fff}
+.liste{display:grid;gap:18px;margin-top:26px}
+.fait{display:flex;gap:14px;align-items:flex-start}
+.fait .pt{flex:none;width:34px;height:34px;border-radius:50%;background:var(--bleu);color:#fff;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;font-weight:700}
+.fait h3{font-size:1.05rem;margin:0 0 2px;color:var(--bleu)}
+.fait p{margin:0;color:var(--gris);font-size:.97rem}
+.avis{background:linear-gradient(160deg,var(--or),#8f7a54);color:#fff;text-align:center}
+.avis h2{color:#fff}
+.gros{font-family:system-ui,sans-serif;font-size:4rem;font-weight:800;line-height:1}
+.etoiles{color:#fff;font-size:1.6rem;letter-spacing:4px;margin:6px 0}
+.avis p{max-width:520px;margin:10px auto 22px}
+.avis .btn{background:#fff;color:var(--bleu);border-color:#fff}
+.contact .grille{margin-top:24px}
+.contact .carte p{color:var(--texte);font-size:1.05rem}
+.contact .carte a{font-weight:700;word-break:break-word}
+.reseaux{margin-top:20px;display:flex;gap:14px;flex-wrap:wrap;font-family:system-ui,sans-serif}
+footer{background:var(--bleu-fonce);color:#c9d3ea;padding:30px 0;font-family:system-ui,sans-serif;font-size:.9rem;text-align:center}
+footer strong{color:#fff}
+.maquette{margin-top:14px;font-size:.78rem;opacity:.7}
+@media(min-width:700px){
+.grille.trois{grid-template-columns:repeat(2,1fr)}
+.liste{grid-template-columns:repeat(2,1fr)}
+.hero h1{font-size:3rem}
+}
+@media(min-width:960px){
+.nav{display:flex}
+.hero{padding:96px 0 104px}
+.hero h1{font-size:3.6rem;max-width:760px}
+.grille.trois{grid-template-columns:repeat(3,1fr)}
+.marque img{height:54px}
+h2{font-size:2.2rem}
+section{padding:80px 0}
+}
+</style>
+</head>
+<body>
+<div class="tricolore"></div>
+<header>
+<div class="barre">
+<a class="marque" href="#haut"><img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2017/08/logo-appetito-side-area-2.png" alt="Logo Dolce Italia"><span>Dolce Italia</span></a>
+<nav class="nav"><a href="#cuisine">La carte</a><a href="#pourquoi">Pourquoi nous</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
+<a class="btn petit" href="tel:+3265595795">Appeler</a>
+</div>
+</header>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<span class="etiquette">Jurbise · Route d'Ath</span>
+<h1>Restaurant, pizzeria et grill, <em>inspirés d'Italie et de France</em></h1>
+<p>Bienvenue chez Dolce Italia : une table conviviale où les saveurs italiennes et la cuisine française se rencontrent. Venez partager un bon moment, en famille ou entre amis.</p>
+<div class="actions">
+<a class="btn" href="tel:+3265595795">Réserver : 065 59 57 95</a>
+<a class="btn clair" href="#cuisine">Découvrir la cuisine</a>
+</div>
+<div class="note"><b>4,2/5</b><span>sur Google<br>1 203 avis</span></div>
+</div>
+</div>
+
+<section id="cuisine">
+<div class="wrap">
+<h2>Un petit avant-goût</h2>
+<p class="intro">Une cuisine généreuse qui fait voyager de l'Italie à la France. Voici de quoi vous mettre en appétit (exemples de présentation, la carte complète se découvre sur place).</p>
+<div class="grille trois">
+<article class="carte"><div class="ico" aria-hidden="true">🍕</div><h3>Les pizzas</h3><p>La pizzeria, un classique italien qui plaît à toute la table, des recettes traditionnelles aux compositions de la maison.</p></article>
+<article class="carte"><div class="ico" aria-hidden="true">🥩</div><h3>Le grill</h3><p>Des viandes grillées pour les amateurs de plats copieux et savoureux.</p></article>
+<article class="carte"><div class="ico" aria-hidden="true">🍝</div><h3>La cuisine italienne</h3><p>Des plats inspirés de la tradition italienne, à partager ou à savourer pour soi.</p></article>
+<article class="carte"><div class="ico" aria-hidden="true">🥖</div><h3>Les touches françaises</h3><p>Un clin d'œil à la cuisine française pour varier les plaisirs et contenter chaque convive.</p></article>
+<article class="carte"><div class="ico" aria-hidden="true">🍨</div><h3>Les douceurs</h3><p>Pour finir le repas sur une note sucrée, à la manière du « dolce » italien.</p></article>
+</div>
+</div>
+</section>
+
+<section class="pourquoi" id="pourquoi">
+<div class="wrap">
+<h2>Pourquoi choisir Dolce Italia ?</h2>
+<div class="liste">
+<div class="fait"><div class="pt">1</div><div><h3>Une table appréciée</h3><p>Une note de 4,2/5 sur Google, basée sur 1 203 avis de clients.</p></div></div>
+<div class="fait"><div class="pt">2</div><div><h3>Trois univers, une adresse</h3><p>Restaurant, pizzeria et grill réunis : chacun y trouve son bonheur.</p></div></div>
+<div class="fait"><div class="pt">3</div><div><h3>Italie et France à table</h3><p>Une cuisine inspirée des deux traditions, pour des repas variés.</p></div></div>
+<div class="fait"><div class="pt">4</div><div><h3>Facile à trouver</h3><p>Installé Route d'Ath 331, à Jurbise (Erbisoeul), au cœur du Hainaut.</p></div></div>
+</div>
+</div>
+</section>
+
+<section class="avis" id="avis">
+<div class="wrap">
+<h2>Ils en parlent sur Google</h2>
+<div class="gros">4,2<span style="font-size:1.6rem">/5</span></div>
+<div class="etoiles" aria-hidden="true">★★★★☆</div>
+<p>1 203 avis laissés par des clients. Lisez-les directement sur la fiche Google du restaurant.</p>
+<a class="btn" href="https://maps.google.com/?cid=4506882314369520274&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Voir les avis sur Google</a>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<div class="wrap">
+<h2>Réserver ou nous rendre visite</h2>
+<p class="intro">Un coup de téléphone suffit pour réserver ou vous renseigner sur les horaires d'ouverture.</p>
+<div class="grille trois">
+<div class="carte"><h3>Adresse</h3><p>Dolce Italia<br>Rte d'Ath 331<br>7050 Jurbise</p></div>
+<div class="carte"><h3>Téléphone</h3><p><a href="tel:+3265595795">065 59 57 95</a></p></div>
+<div class="carte"><h3>E-mail</h3><p><a href="mailto:appetito@mikado-themes.com">appetito@mikado-themes.com</a></p></div>
+</div>
+<div class="actions">
+<a class="btn" href="tel:+3265595795">Appeler maintenant</a>
+<a class="btn" style="background:var(--bleu);border-color:var(--bleu)" href="https://maps.google.com/?cid=4506882314369520274&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire / fiche Google</a>
+</div>
+<div class="reseaux"><a href="https://instagram.com/">Instagram</a><a href="https://facebook.com">Facebook</a></div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<strong>Dolce Italia Jurbise</strong><br>Rte d'Ath 331, 7050 Jurbise · 065 59 57 95
+<div class="maquette">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</div>
+</div>
+</footer>
+</body>
+</html>
