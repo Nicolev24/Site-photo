@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Concept Beauté by Lisa — Institut de beauté à Tournai (maquette)</title>
+<meta name="description" content="Maquette : Concept Beauté by Lisa, institut de beauté et centre de bien-être à Tournai.">
+<style>
+:root{--rose:#c97b8f;--rose-d:#9c4a64;--prune:#4a2433;--creme:#fbf4f1;--sable:#f2e3dd;--or:#b98b5e;--txt:#3a2a30}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;color:var(--txt);background:var(--creme);line-height:1.6;font-size:17px}
+h1,h2,h3{font-weight:400;line-height:1.2;margin:0 0 .5em;color:var(--prune)}
+a{color:var(--rose-d)}
+.sans{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{background:#fff;border-bottom:1px solid var(--sable);position:sticky;top:0;z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+.marque{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--prune)}
+.marque img{height:40px;width:auto;max-width:90px;object-fit:contain}
+.marque b{font-size:1.05rem;font-weight:400;letter-spacing:.04em}
+.marque small{display:block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--rose-d)}
+.btn{display:inline-block;padding:13px 24px;border-radius:999px;background:var(--rose-d);color:#fff;text-decoration:none;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;font-size:.95rem;font-weight:600}
+.btn.clair{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.7)}
+header .btn{padding:9px 16px;font-size:.85rem}
+.hero{background:radial-gradient(circle at 85% 10%,rgba(201,123,143,.55),transparent 55%),linear-gradient(160deg,#4a2433,#7b3a52 70%,#a35c72);color:#fff;padding:64px 0 72px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-90px;bottom:-110px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.25)}
+.hero h1{color:#fff;font-size:2.2rem;max-width:560px}
+.hero p{max-width:520px;color:#f6e6ea;font-size:1.05rem}
+.etiq{font-family:-apple-system,"Segoe UI",sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:.72rem;color:#f0c9d3;margin-bottom:14px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.note{display:inline-flex;align-items:center;gap:8px;margin-top:26px;background:rgba(255,255,255,.12);padding:8px 16px;border-radius:999px;font-family:-apple-system,"Segoe UI",sans-serif;font-size:.88rem}
+section{padding:56px 0}
+.titre{text-align:center;margin-bottom:30px}
+.titre .etiq{color:var(--rose-d)}
+.titre h2{font-size:1.8rem}
+.grille{display:grid;gap:16px}
+.carte{background:#fff;border-radius:18px;padding:26px 22px;border:1px solid var(--sable);box-shadow:0 6px 20px rgba(74,36,51,.05)}
+.carte .ico{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--sable),#f0c9d3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--rose-d);font-size:1.3rem}
+.carte h3{font-size:1.2rem}
+.carte p{margin:0;font-size:.97rem}
+.vedette{background:linear-gradient(150deg,var(--prune),var(--rose-d));color:#fff;border:0}
+.vedette h3,.vedette p{color:#fff}
+.vedette .ico{background:rgba(255,255,255,.18);color:#fff}
+.alt{background:var(--sable)}
+.liste{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.liste li{background:#fff;border-radius:14px;padding:16px 18px 16px 52px;position:relative}
+.liste li:before{content:"✓";position:absolute;left:16px;top:14px;width:24px;height:24px;border-radius:50%;background:var(--rose);color:#fff;text-align:center;font-size:.85rem;line-height:24px;font-family:sans-serif}
+.liste b{color:var(--prune);font-weight:600}
+.avis{text-align:center}
+.score{font-size:3.4rem;color:var(--rose-d);line-height:1}
+.etoiles{color:var(--or);letter-spacing:.15em;font-size:1.3rem}
+.contact .grille{gap:14px}
+.contact .carte p{word-break:break-word}
+.contact h3{font-size:1.05rem}
+footer{background:var(--prune);color:#e9d3da;padding:34px 0 26px;font-family:-apple-system,"Segoe UI",sans-serif;font-size:.9rem;text-align:center}
+footer a{color:#fff}
+.mq{margin-top:18px;font-size:.78rem;opacity:.7}
+@media(min-width:720px){
+body{font-size:18px}
+.hero{padding:110px 0 120px}
+.hero h1{font-size:3.2rem}
+section{padding:80px 0}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.liste{grid-template-columns:1fr 1fr}
+.titre h2{font-size:2.3rem}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<a class="marque" href="#haut"><img src="https://www.conceptbeautebylisa.be/img/logo-lpg-endermologie.png" alt="Logo Concept Beauté"><span><b>Concept Beauté</b><small>by Lisa</small></span></a>
+<a class="btn" href="tel:+3269213477">Appeler</a>
+</div>
+</header>
+
+<main id="haut">
+<div class="hero">
+<div class="wrap">
+<div class="etiq">Institut de beauté · Centre de bien-être · Tournai</div>
+<h1>Un cadre paisible et féminin, pour prendre soin de vous</h1>
+<p>Bien-être et beauté s'allient chez Concept Beauté. Nos professionnelles expérimentées vous chouchoutent et vous conseillent à chaque visite.</p>
+<div class="actions">
+<a class="btn" href="tel:+3269213477">Prendre rendez-vous</a>
+<a class="btn clair" href="#prestations">Découvrir les soins</a>
+</div>
+<div class="note"><span style="color:#f1cf9c">★</span> 4,8/5 sur Google · 68 avis</div>
+</div>
+</div>
+
+<section id="prestations">
+<div class="wrap">
+<div class="titre"><div class="etiq">Prestations</div><h2>Nos univers de soins</h2></div>
+<div class="grille g3">
+<div class="carte vedette"><div class="ico">✦</div><h3>Endermologie</h3><p>Une technique de soin du corps que l'institut met à l'honneur. Lisa et son équipe vous expliquent le déroulement et ce que vous pouvez en attendre.</p></div>
+<div class="carte vedette"><div class="ico">❀</div><h3>Abonnement lipo</h3><p>12 séances + 1 offerte : une formule pour suivre votre programme en toute sérénité.</p></div>
+<div class="carte"><div class="ico">❁</div><h3>Soins esthétiques</h3><p>Des soins réalisés par des professionnelles expérimentées, dans une ambiance douce et détendue.</p></div>
+<div class="carte"><div class="ico">☾</div><h3>Bien-être</h3><p>Un moment rien que pour vous, pour relâcher la pression et vous sentir bien dans votre peau.</p></div>
+<div class="carte"><div class="ico">✧</div><h3>Conseils personnalisés</h3><p>Chaque peau et chaque besoin sont différents : nous vous conseillons avec attention.</p></div>
+</div>
+<p class="sans" style="text-align:center;font-size:.85rem;color:#7a6168;margin-top:22px">Le détail des soins et des tarifs s'obtient auprès de l'institut.</p>
+</div>
+</section>
+
+<section class="alt">
+<div class="wrap">
+<div class="titre"><div class="etiq">Pourquoi Concept Beauté</div><h2>Le plaisir d'être chouchoutée</h2></div>
+<ul class="liste">
+<li><b>Un cadre paisible et féminin</b> pensé pour que vous vous sentiez bien dès l'arrivée.</li>
+<li><b>Des professionnelles expérimentées</b> qui réalisent vos soins et vous conseillent.</li>
+<li><b>Une adresse bien notée</b> : 4,8/5 sur Google, d'après 68 avis.</li>
+<li><b>Facile d'accès</b> à Tournai, sur la chaussée de Bruxelles.</li>
+</ul>
+</div>
+</section>
+
+<section class="avis">
+<div class="wrap">
+<div class="titre"><div class="etiq">Avis</div><h2>Elles en parlent sur Google</h2></div>
+<div class="score">4,8<span style="font-size:1.4rem">/5</span></div>
+<div class="etoiles">★★★★★</div>
+<p class="sans">68 avis publiés sur la fiche Google de l'institut.</p>
+<a class="btn" href="https://maps.google.com/?cid=15267087302928085469&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Lire les avis</a>
+</div>
+</section>
+
+<section class="alt contact" id="contact">
+<div class="wrap">
+<div class="titre"><div class="etiq">Contact</div><h2>Venez nous rencontrer</h2></div>
+<div class="grille g2">
+<div class="carte"><h3>Adresse</h3><p>Chau. de Bruxelles 92<br>7500 Tournai</p></div>
+<div class="carte"><h3>Téléphone</h3><p><a href="tel:+3269213477">069 21 34 77</a></p></div>
+<div class="carte"><h3>E-mail</h3><p><a href="mailto:lisa@concept-beaute.be">lisa@concept-beaute.be</a></p></div>
+<div class="carte"><h3>En ligne</h3><p><a href="https://www.facebook.com/conceptbeautebyLisa/">Facebook</a> · <a href="https://www.instagram.com/p/Bfqn_Cahv_k/?igshid=199vwl91jmbtd">Instagram</a> · <a href="https://maps.google.com/?cid=15267087302928085469&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Fiche Google</a></p></div>
+</div>
+<div class="actions" style="justify-content:center"><a class="btn" href="tel:+3269213477">Appeler maintenant</a></div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<strong>Concept Beauté by Lisa</strong><br>Chau. de Bruxelles 92, 7500 Tournai
+<div class="mq">Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></div>
+</div>
+</footer>
+</body>
+</html>
