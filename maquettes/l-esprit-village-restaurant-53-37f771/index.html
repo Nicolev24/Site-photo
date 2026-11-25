@@ -4,241 +4,367 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>L'Esprit Village — restaurant à Silly</title>
-<meta name="description" content="Maquette de page d'accueil pour L'Esprit Village, restaurant à Silly.">
-<style>
-:root{--marine:#0b1f5c;--bleu:#003399;--ciel:#4992bc;--ivoire:#f6f2ea;--encre:#14183a;--filet:rgba(11,31,92,.22);--serif:"Didot","Bodoni 72","Bodoni MT",Georgia,serif;--sans:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--ivoire);color:var(--encre);font-family:var(--sans);font-size:17px;line-height:1.6;overflow-x:hidden}
-img{display:block;max-width:100%;height:auto}
+<title>L'Esprit Village — restaurant à Silly · By Christine &amp; Pascal</title>
+<style>@font-face{font-family:"Playfair Display";src:url("/maquettes/_polices/playfair-display.woff2") format("woff2");font-weight:400 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Playfair Display";src:url("/maquettes/_polices/playfair-display-italic.woff2") format("woff2");font-weight:400 900;font-style:italic;font-display:swap}
+@font-face{font-family:"Manrope";src:url("/maquettes/_polices/manrope.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+
+:root{
+  --papier:#f5f0e6;
+  --papier-2:#ebe3d3;
+  --encre:#0d1838;
+  --bleu:#003388;
+  --rouge:#ba0b2f;
+  --texte:#23222b;
+  --doux:#57556a;
+  --filet:#cfc4ad;
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;--s8:128px;
+  --col:34rem;
+  --large:72rem;
+  --coin:0;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--papier);color:var(--texte);font-family:"Manrope",sans-serif;font-size:17px;line-height:1.65;overflow-x:hidden}
+@media (min-width:860px){body{font-size:18px}}
+img{display:block;max-width:100%}
 a{color:inherit}
-.maq{background:var(--marine);color:#dfe7fb;font-size:12px;text-align:center;padding:6px 12px;letter-spacing:.04em}
-.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--filet)}
-.marque{font-family:var(--serif);font-size:20px;letter-spacing:.02em;text-decoration:none}
-.marque small{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--bleu)}
-nav.liens{display:none;gap:28px;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
-nav.liens a{text-decoration:none;padding:10px 0}
-nav.liens a:hover{color:var(--bleu)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;background:var(--bleu);color:#fff;text-decoration:none;font-size:14px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--bleu);transition:background .3s,color .3s}
-.btn:hover{background:var(--marine)}
-.btn.vide{background:transparent;color:var(--marine);border-color:var(--marine)}
-.btn.vide:hover{background:var(--marine);color:#fff}
-.hero{display:grid;gap:32px;padding:44px 0 64px}
-.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--bleu);margin-bottom:18px}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,13vw,104px);line-height:.98;letter-spacing:-.01em;color:var(--marine)}
-h1 span{display:block;overflow:hidden}
-h1 span i{display:block;font-style:normal;animation:monte 1s cubic-bezier(.2,.7,.2,1) both}
-h1 span:nth-child(2) i{animation-delay:.15s;font-style:italic;color:var(--bleu)}
-h1 span:nth-child(3) i{animation-delay:.3s}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-.intro{margin-top:26px;max-width:30em;font-size:18px;animation:fond .9s .6s both}
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;animation:fond .9s .8s both}
-@keyframes fond{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.vert{position:relative;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--marine),var(--ciel));animation:devoile 1.4s .2s cubic-bezier(.7,0,.2,1) both}
-.vert img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
-@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
-.legende{font-size:12px;letter-spacing:.06em;color:#5a6188;margin-top:8px}
-section{padding:72px 0;border-top:1px solid var(--filet)}
-h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,8vw,60px);line-height:1.05;color:var(--marine);margin-bottom:12px}
-h2 em{color:var(--bleu)}
-.num{font-family:var(--serif);font-style:italic;color:var(--ciel);font-size:18px;display:block;margin-bottom:10px}
-.duo{display:grid;gap:36px}
-.texte p+p{margin-top:14px}
-.horaires{list-style:none;margin-top:20px}
-.horaires li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--filet)}
-.horaires b{font-family:var(--serif);font-weight:400;font-size:26px;color:var(--marine);min-width:5.5em}
-.horaires span{text-align:right;font-size:17px}
-.horaires .ferme{opacity:.5}
-.horaires .ferme span{font-style:italic}
-.note{margin-top:16px;font-size:15px;color:#454c78}
-.galerie{display:grid;gap:14px;margin-top:34px}
-.galerie figure{overflow:hidden;background:linear-gradient(160deg,var(--marine),var(--ciel))}
-.galerie img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s ease}
-.galerie figure:hover img{transform:scale(1.04)}
-.g1{aspect-ratio:3/2}.g2{aspect-ratio:4/5}.g3{aspect-ratio:4/5}.g4{aspect-ratio:3/2}
-.rien{display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;min-height:220px;border:1px solid var(--filet);font-family:var(--serif);font-style:italic;color:var(--bleu);background:linear-gradient(160deg,#fff,#e6ecf8)}
-.carte{background:var(--marine);color:#eaf0ff;border:0}
-.carte h2{color:#fff}.carte h2 em{color:#9ec9e3}
-.carte .num{color:#9ec9e3}
-.etapes{list-style:none;margin-top:30px;counter-reset:e}
-.etapes li{counter-increment:e;display:grid;grid-template-columns:48px 1fr;gap:12px;padding:20px 0;border-top:1px solid rgba(255,255,255,.22)}
-.etapes li::before{content:"0" counter(e);font-family:var(--serif);font-style:italic;font-size:28px;color:#9ec9e3}
-.etapes strong{font-family:var(--serif);font-weight:400;font-size:24px;display:block;color:#fff}
-.carte .btn{background:#fff;color:var(--marine);border-color:#fff;margin-top:26px}
-.carte .btn:hover{background:#dbe7f7}
-.avis{list-style:none;margin-top:30px}
-.avis li{padding:30px 0;border-top:1px solid var(--filet)}
-blockquote{font-family:var(--serif);font-size:clamp(21px,5vw,30px);line-height:1.3;color:var(--marine)}
-blockquote::before{content:"« "}blockquote::after{content:" »"}
-cite{display:block;margin-top:12px;font-style:normal;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#454c78}
-.score{display:flex;align-items:baseline;gap:12px;margin-top:6px}
-.score b{font-family:var(--serif);font-weight:400;font-size:64px;color:var(--bleu);line-height:1}
-.dist{display:flex;flex-wrap:wrap;align-items:center;gap:28px;margin-top:28px}
-.dist img{border-radius:50%;background:#fff}
-.dist .gm{background:#111;padding:6px;border-radius:0}
-.adresse{font-family:var(--serif);font-size:clamp(26px,6vw,38px);line-height:1.2;color:var(--marine);font-style:normal}
-.contacts{list-style:none;margin-top:22px}
-.contacts li{border-bottom:1px solid var(--filet)}
-.contacts a{display:block;padding:14px 0;text-decoration:none;min-height:48px;overflow-wrap:anywhere}
-.contacts small{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--bleu)}
-.contacts a:hover{color:var(--bleu)}
-footer{border-top:1px solid var(--filet);padding:40px 0 120px;font-size:14px;color:#454c78}
-footer .wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
-footer img{width:72px;height:72px;object-fit:contain}
-.barre{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:1fr 1fr;background:var(--ivoire);border-top:1px solid var(--marine);padding-bottom:env(safe-area-inset-bottom)}
-.barre a{display:flex;align-items:center;justify-content:center;min-height:56px;text-decoration:none;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--marine)}
-.barre a:first-child{background:var(--bleu);color:#fff}
-@media(min-width:860px){
- nav.liens{display:flex}
- .barre{display:none}
- footer{padding-bottom:40px}
- .hero{grid-template-columns:1.15fr .85fr;align-items:end;gap:60px;padding:70px 0 90px}
- .duo{grid-template-columns:.8fr 1.2fr;gap:80px}
- .galerie{grid-template-columns:repeat(6,1fr)}
- .g1{grid-column:1/5;aspect-ratio:auto;min-height:420px}
- .g2{grid-column:5/7;aspect-ratio:auto}
- .g3{grid-column:1/3;aspect-ratio:auto;min-height:420px}
- .g4{grid-column:3/7;aspect-ratio:auto}
- .etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:0 36px}
- .avis{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
- .avis li{border-top:1px solid var(--marine)}
+:focus-visible{outline:2px solid var(--rouge);outline-offset:3px}
+h1,h2,h3{font-family:"Playfair Display",serif;font-weight:400;line-height:1.08;text-wrap:balance;margin:0;color:var(--encre)}
+p{margin:0 0 var(--s2)}
+
+.bandeau{background:var(--encre);color:#e9e3d6;font-size:13px;text-align:center;padding:6px var(--s2);letter-spacing:.02em}
+
+/* bouton unique */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 28px;border:1px solid currentColor;border-radius:var(--coin);font-family:"Manrope",sans-serif;font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;background:transparent;transition:background-color .4s ease,color .4s ease,border-color .4s ease}
+.btn--clair{color:var(--papier)}
+.btn--clair:hover{background:var(--papier);color:var(--encre);border-color:var(--papier)}
+.btn--encre{color:var(--encre)}
+.btn--encre:hover{background:var(--encre);color:var(--papier);border-color:var(--encre)}
+
+/* ouverture */
+.ouverture{position:relative;min-height:100svh;min-height:max(600px,100svh);display:flex;flex-direction:column;color:var(--papier);overflow:hidden;background:var(--encre)}
+.ouverture__photo{position:absolute;inset:0;overflow:hidden}
+.ouverture__photo img{width:100%;height:100%;object-fit:cover;object-position:60% 50%;animation:zoom 9s cubic-bezier(.2,.6,.2,1) both}
+.ouverture__photo{animation:devoile 1.8s cubic-bezier(.6,0,.2,1) both}
+.ouverture::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,24,56,.55) 0%,rgba(13,24,56,.25) 38%,rgba(13,24,56,.82) 100%)}
+.entete{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:var(--s3) clamp(var(--s3),5vw,var(--s6))}
+.marque{text-decoration:none;line-height:1.1}
+.marque b{display:block;font-family:"Playfair Display",serif;font-weight:400;font-size:22px;letter-spacing:.01em}
+.marque span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+.entete nav{display:none;gap:var(--s4);font-size:14px}
+.entete nav a{text-decoration:none;padding:var(--s1) 0;border-bottom:1px solid transparent;transition:border-color .4s}
+.entete nav a:hover{border-color:currentColor}
+@media (min-width:860px){.entete nav{display:flex}}
+.ouverture__texte{position:relative;z-index:2;margin-top:auto;padding:0 clamp(var(--s3),5vw,var(--s6)) clamp(var(--s6),10vh,var(--s8));max-width:60rem;animation:fondu 1.2s ease .5s both}
+.ouverture h1{color:var(--papier);font-size:clamp(3rem,10vw,7.5rem);line-height:1;letter-spacing:-.01em}
+.ouverture h1 i{font-style:italic}
+.ouverture__ligne{font-size:clamp(1.05rem,2.2vw,1.3rem);max-width:30rem;margin:var(--s3) 0 var(--s4);opacity:.92}
+.ouverture__bas{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3)}
+.badge{position:absolute;z-index:2;right:clamp(var(--s3),5vw,var(--s6));bottom:clamp(var(--s6),10vh,var(--s8));width:92px;animation:fondu 1.2s ease 1.2s both}
+.badge img{width:100%;height:auto}
+@media (max-width:859px){.badge{top:84px;bottom:auto;width:72px}}
+
+/* colonne de carte imprimée */
+.col{width:min(var(--col),100% - 2*var(--s3));margin-inline:auto}
+.large{width:min(var(--large),100% - 2*var(--s3));margin-inline:auto}
+.orne{display:flex;align-items:center;justify-content:center;gap:var(--s2);color:var(--filet);margin:var(--s5) auto}
+.orne::before,.orne::after{content:"";height:1px;width:64px;background:currentColor}
+.orne span{width:7px;height:7px;border:1px solid var(--rouge);transform:rotate(45deg)}
+
+.cuisine{padding:var(--s8) 0 var(--s7)}
+.cuisine h2{font-size:clamp(2.1rem,5.5vw,3.4rem);margin-bottom:var(--s4)}
+.cuisine h2 i{color:var(--bleu)}
+.lettrine::first-letter{float:left;font-family:"Playfair Display",serif;font-size:4.6em;line-height:.82;padding:6px 12px 0 0;color:var(--rouge)}
+.sommelier{border-left:1px solid var(--rouge);padding-left:var(--s3);margin:var(--s4) 0 0;font-family:"Playfair Display",serif;font-style:italic;font-size:1.2rem;line-height:1.45;color:var(--encre)}
+.sommelier small{display:block;font-family:"Manrope",sans-serif;font-style:normal;font-size:14px;color:var(--doux);margin-top:var(--s1)}
+
+.assiettes{display:grid;gap:var(--s2);margin-top:var(--s6)}
+.assiettes figure{margin:0}
+.assiettes .pain img{width:100%;aspect-ratio:3/2;object-fit:cover}
+figcaption{font-size:14px;color:var(--doux);padding-top:var(--s1)}
+.cadre{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;aspect-ratio:4/5;background:var(--papier-2);outline:1px solid var(--filet);outline-offset:-12px;padding:var(--s4)}
+.cadre p{font-family:"Playfair Display",serif;font-style:italic;font-size:1.35rem;color:var(--encre);margin:0 0 var(--s1)}
+.cadre small{font-size:14px;color:var(--doux);max-width:16rem}
+@media (min-width:860px){
+  .assiettes{grid-template-columns:1.6fr 1fr 1fr;align-items:end;gap:var(--s3)}
+  .assiettes .pain img{aspect-ratio:4/5}
+  .assiettes .decale{margin-bottom:var(--s7)}
 }
-@media(max-width:859px){body{padding-bottom:64px}}
+
+/* menu */
+.menu{padding:var(--s7) 0}
+.carte{background:#fbf8f1;border:1px solid var(--filet);outline:1px solid var(--filet);outline-offset:6px;padding:clamp(var(--s4),6vw,var(--s6)) clamp(var(--s3),5vw,var(--s6));text-align:center}
+.carte h2{font-size:clamp(2.4rem,6vw,3.6rem)}
+.carte .sous{font-family:"Playfair Display",serif;font-style:italic;color:var(--doux);margin:var(--s1) 0 0}
+.carte ol{list-style:none;margin:0;padding:0}
+.carte li{font-family:"Playfair Display",serif;font-size:clamp(1.12rem,2.6vw,1.3rem);line-height:1.4;color:var(--encre);padding:var(--s3) 0}
+.carte li+li{border-top:1px solid var(--papier-2)}
+.prix{margin:var(--s4) 0 0;font-size:15px;letter-spacing:.04em;color:var(--texte)}
+.prix span{white-space:nowrap}
+.prix span+span::before{content:"·";margin:0 var(--s1);color:var(--rouge)}
+
+/* fêtes */
+.fetes{background:var(--encre);color:#e6e0d3;padding:var(--s8) 0}
+.fetes h2{color:var(--papier);font-size:clamp(2.2rem,6vw,4.2rem);max-width:14ch}
+.fetes h2 i{color:#e9b9c3}
+.fetes__intro{max-width:36rem;margin:var(--s3) 0 var(--s6)}
+.fetes__grille{display:grid;gap:var(--s6)}
+@media (min-width:860px){.fetes__grille{grid-template-columns:1fr 1fr;gap:var(--s7)}}
+.fetes h3{color:var(--papier);font-size:1.7rem;padding-bottom:var(--s2);border-bottom:1px solid rgba(233,227,214,.3);margin-bottom:var(--s2)}
+.fetes h3 small{display:block;font-family:"Manrope",sans-serif;font-size:14px;letter-spacing:.08em;color:#c9c2b3;margin-top:var(--s1)}
+.fetes ul{list-style:none;margin:0;padding:0}
+.fetes li{padding:12px 0;border-bottom:1px solid rgba(233,227,214,.12);line-height:1.5}
+.fetes .note{font-size:15px;color:#c9c2b3;margin-top:var(--s5)}
+.fetes a{color:var(--papier)}
+
+/* salle */
+.salle{padding:var(--s8) 0 var(--s7)}
+.salle__tete{display:grid;gap:var(--s3);margin-bottom:var(--s5)}
+.salle h2{font-size:clamp(2.2rem,5.5vw,3.6rem)}
+@media (min-width:860px){.salle__tete{grid-template-columns:1fr 1fr;align-items:end;gap:var(--s6)}}
+.mosaique{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.mosaique img{width:100%;height:100%;object-fit:cover}
+.mosaique .m1{grid-column:1/-1;aspect-ratio:3/2}
+.mosaique .m2,.mosaique .m3{aspect-ratio:4/5}
+.mosaique .m4{grid-column:1/-1;aspect-ratio:16/9}
+@media (min-width:860px){
+  .mosaique{grid-template-columns:repeat(12,1fr);gap:var(--s3)}
+  .mosaique .m1{grid-column:1/8;grid-row:1/3;aspect-ratio:auto}
+  .mosaique .m2{grid-column:8/13;aspect-ratio:3/2}
+  .mosaique .m3{grid-column:8/13;aspect-ratio:3/2}
+  .mosaique .m4{grid-column:3/11;aspect-ratio:21/9}
+}
+.mosaique figure{margin:0;overflow:hidden}
+.mosaique figure img{transition:transform 1.6s cubic-bezier(.2,.6,.2,1)}
+.mosaique figure:hover img{transform:scale(1.03)}
+.distinctions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s4);margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--filet)}
+.distinctions img.michelin{width:88px;height:88px}
+.distinctions img.gm{width:180px;height:auto}
+.distinctions p{margin:0;max-width:22rem;font-size:15px;color:var(--doux)}
+
+/* avis */
+.avis{background:var(--papier-2);padding:var(--s7) 0}
+.avis__tete{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:var(--s2);margin-bottom:var(--s4)}
+.avis__tete h2{font-size:clamp(1.9rem,4.5vw,2.6rem)}
+.avis__tete p{margin:0;color:var(--doux);font-size:15px}
+.defile{display:grid;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--filet) transparent}
+.defile blockquote{scroll-snap-align:start;margin:0;padding:0 var(--s1) var(--s4) 0}
+.defile blockquote p{font-family:"Playfair Display",serif;font-style:italic;font-size:clamp(1.35rem,3.4vw,2.1rem);line-height:1.35;color:var(--encre);max-width:40rem;text-wrap:pretty}
+.defile blockquote p::before{content:"« ";color:var(--rouge)}
+.defile blockquote p::after{content:" »";color:var(--rouge)}
+.defile footer{font-size:14px;color:var(--doux);letter-spacing:.04em}
+.defile__aide{font-size:14px;color:var(--doux);margin:var(--s1) 0 0}
+
+/* infos */
+.venir{padding:var(--s8) 0 var(--s7)}
+.venir__grille{display:grid;gap:var(--s6)}
+@media (min-width:860px){.venir__grille{grid-template-columns:1.1fr 1fr;gap:var(--s7)}}
+.venir h2{font-size:clamp(2.4rem,6vw,4rem);margin-bottom:var(--s3)}
+.venir address{font-style:normal;margin-bottom:var(--s3)}
+.venir .liens{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4)}
+.horaires{width:100%;border-collapse:collapse;font-size:16px}
+.horaires caption{text-align:left;font-family:"Playfair Display",serif;font-size:1.5rem;color:var(--encre);padding-bottom:var(--s2)}
+.horaires th,.horaires td{text-align:left;padding:12px 0;border-bottom:1px solid var(--filet);vertical-align:top;font-weight:400}
+.horaires th{width:38%;color:var(--encre)}
+.horaires .ferme td{color:var(--doux);font-style:italic}
+
+.pied{border-top:1px solid var(--filet);padding:var(--s4) 0 var(--s5);font-size:14px;color:var(--doux)}
+.pied .large{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s2)}
+
+/* barre téléphone */
+.pouce{display:none}
+@media (max-width:859px){
+  body{padding-bottom:72px}
+  .pouce{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--encre);border-top:1px solid rgba(245,240,230,.2)}
+  .pouce a{display:flex;align-items:center;justify-content:center;min-height:56px;color:var(--papier);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .pouce a+a{border-left:1px solid rgba(245,240,230,.2)}
+  .pouce a:first-child{background:var(--rouge)}
+}
+
+@keyframes fondu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes devoile{from{clip-path:inset(10% 10% 10% 10%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.09)}to{transform:scale(1.01)}}
+@keyframes monte{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 @supports (animation-timeline: view()){
- section .wrap>*{animation:fond linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
- .galerie figure{animation:devoile linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+  .rv{animation:monte linear both;animation-timeline:view();animation-range:entry 5% entry 55%}
 }
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
-<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
-<div class="wrap">
-<header class="top">
- <a class="marque" href="#haut">L'Esprit Village<small>Silly</small></a>
- <nav class="liens" aria-label="Navigation">
-  <a href="#horaires">Horaires</a><a href="#table">La table</a><a href="#avis">Avis</a><a href="#venir">Venir</a>
- </nav>
- <a class="btn" href="tel:+3267850029" style="min-height:44px;padding:0 18px">Réserver</a>
+<div class="bandeau">Maquette — une proposition de nouveau site, pas le site publié</div>
+
+<header class="ouverture">
+  <div class="ouverture__photo"><img src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8787-scaled.jpg" alt="La salle de L'Esprit Village, une sculpture de bois au premier plan" fetchpriority="high"></div>
+  <div class="entete">
+    <a class="marque" href="#"><b>L'Esprit Village</b><span>By Christine &amp; Pascal</span></a>
+    <nav aria-label="Navigation principale">
+      <a href="#cuisine">La cuisine</a>
+      <a href="#menu">Le menu</a>
+      <a href="#fetes">Les fêtes</a>
+      <a href="#venir">Horaires &amp; adresse</a>
+    </nav>
+  </div>
+  <div class="badge"><img src="https://www.lespritdevillage.be/wp-content/uploads/2026/05/logo_site_internet_footer_Selection_Restaurant_2026_rouge-1024x1024.png" alt="Restaurant Selection — Guide Michelin 2026" width="92" height="92"></div>
+  <div class="ouverture__texte">
+    <h1>L'Esprit <i>Village</i></h1>
+    <p class="ouverture__ligne">Une cuisine franche, sincère et sans artifices, au rythme des saisons et du marché. Place Obert de Thieusies, à Silly.</p>
+    <div class="ouverture__bas">
+      <a class="btn btn--clair" href="tel:+3267850029">Réserver une table</a>
+    </div>
+  </div>
 </header>
 
-<div class="hero" id="haut">
- <div>
-  <p class="kicker">Restaurant · Place Obert de Thieusies, Silly</p>
-  <h1><span><i>Une table</i></span><span><i>de village,</i></span><span><i>soignée.</i></span></h1>
-  <p class="intro">Christine et Pascal vous reçoivent du jeudi midi au dimanche midi. Un menu unique, décliné en plusieurs services, et des vins choisis pour l'accompagner.</p>
-  <div class="actions">
-   <a class="btn" href="tel:+3267850029">Réserver au 067 85 00 29</a>
-   <a class="btn vide" href="#horaires">Voir les horaires</a>
-  </div>
- </div>
- <div>
-  <div class="vert"><img src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8787-scaled.jpg" alt="L'Esprit Village, restaurant à Silly" fetchpriority="high"></div>
-  <p class="legende">Photo : L'Esprit Village</p>
- </div>
-</div>
-</div>
+<main>
+  <section class="cuisine" id="cuisine">
+    <div class="col rv">
+      <h2>Le marché décide. <i>La cuisine suit.</i></h2>
+      <p class="lettrine">L'Esprit Village est un restaurant qui se veut convivial et chaleureux. Dans l'assiette : la truite saumonée de Wallonie de la pisciculture Mathonet, en gravlax et fumée par nos soins. La volaille de Pol, à Gibecq. Le safran du Mont Panisel. Des produits d'ici, des gens qu'on connaît.</p>
+      <p>Un menu unique, décliné en trois, quatre ou cinq services. Et le pain maison, sur le comptoir.</p>
+      <blockquote class="sommelier">Notre sommelier et ami Eddy Dandrimont se fera une joie de sélectionner les meilleurs vins pour accompagner vos plats.<small>Christine &amp; Pascal</small></blockquote>
+    </div>
+    <div class="large assiettes">
+      <figure class="pain rv"><img src="https://www.lespritdevillage.be/wp-content/uploads/2021/05/DSC_9641-scaled.jpg" alt="Le pain maison de L'Esprit Village, ardoise « Pain maison »" loading="lazy"><figcaption>Le pain maison.</figcaption></figure>
+      <div class="cadre decale rv"><p>Ici, vos photos — par Nicolas</p><small>Le cœur de cabillaud, au moment où il part en salle.</small></div>
+      <div class="cadre rv"><p>Ici, vos photos — par Nicolas</p><small>Les cèpes, la caille, le jus. En lumière naturelle.</small></div>
+    </div>
+  </section>
 
-<section id="horaires">
- <div class="wrap duo">
-  <div class="texte">
-   <span class="num">I.</span>
-   <h2>Quand<br><em>venir&nbsp;?</em></h2>
-   <p>Le restaurant ouvre du jeudi au dimanche. Le dimanche, on s'arrête après le service de midi.</p>
-   <p class="note">Pour une table, le plus simple reste un coup de fil : <a href="tel:+3267850029"><strong>067 85 00 29</strong></a>.</p>
-  </div>
-  <ul class="horaires">
-   <li class="ferme"><b>Lundi</b><span>Fermé</span></li>
-   <li class="ferme"><b>Mardi</b><span>Fermé</span></li>
-   <li class="ferme"><b>Mercredi</b><span>Fermé</span></li>
-   <li><b>Jeudi</b><span>12:00 – 14:00 · 19:00 – 21:30</span></li>
-   <li><b>Vendredi</b><span>12:00 – 14:00 · 19:00 – 21:30</span></li>
-   <li><b>Samedi</b><span>12:00 – 14:00 · 19:00 – 21:30</span></li>
-   <li><b>Dimanche</b><span>12:00 – 14:00</span></li>
-  </ul>
- </div>
-</section>
+  <section class="menu" id="menu" aria-labelledby="titre-menu">
+    <div class="col">
+      <div class="carte rv">
+        <h2 id="titre-menu">Le menu</h2>
+        <p class="sous">selon le marché du moment</p>
+        <div class="orne" aria-hidden="true"><span></span></div>
+        <ol>
+          <li>Gaspacho de poireaux de jardin, foie gras de canard, coquilles Saint-Jacques</li>
+          <li>Cœur de cabillaud, risotto de topinambours truffé, mousseuse de parmesan</li>
+          <li>Poêlée de cèpes en persillade, filet de caille d'Anjou caramélisé</li>
+          <li>Du bœuf Charolais, dans le contrefilet, au goût BBQ et du paleron confit, le jus</li>
+          <li>Crème brûlée au safran du Mont Panisel, clémentines de Corse, sorbet</li>
+        </ol>
+        <div class="orne" aria-hidden="true"><span></span></div>
+        <p class="prix"><span>3 services : 63 €</span><span>4 services : 75 €</span><span>5 services : 85 €</span></p>
+      </div>
+    </div>
+  </section>
 
-<section id="table" style="padding-top:0;border-top:0">
- <div class="wrap">
-  <span class="num">II.</span>
-  <h2>La salle,<br><em>la cuisine.</em></h2>
-  <div class="galerie">
-   <figure class="g1"><img loading="lazy" src="https://www.lespritdevillage.be/wp-content/uploads/2021/05/DSC_9641-scaled.jpg" alt="Ambiance et cuisine à L'Esprit Village"></figure>
-   <figure class="g2"><img loading="lazy" src="https://www.lespritdevillage.be/wp-content/uploads/2021/05/DSC_9666-scaled.jpg" alt="Un coin du restaurant L'Esprit Village"></figure>
-   <figure class="g3"><img loading="lazy" src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8822-scaled.jpg" alt="Salle du restaurant L'Esprit Village"></figure>
-   <figure class="g4"><img loading="lazy" src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8821-1-768x510.jpg" alt="Table dressée à L'Esprit Village"></figure>
-  </div>
-  <p class="legende">Photos : L'Esprit Village</p>
-  <div class="galerie" style="margin-top:14px">
-   <div class="rien" style="grid-column:1/-1">Ici, vos photos de plats — par Nicolas Leveugle</div>
-  </div>
- </div>
-</section>
+  <section class="fetes" id="fetes">
+    <div class="large">
+      <h2 class="rv">Les fêtes, <i>à emporter.</i></h2>
+      <p class="fetes__intro rv">Deux menus pour la maison. Enlèvement des commandes de 13h à 17h30, place Obert de Thieusies. Les garnitures sont encore à définir selon l'inspiration des marchés du moment.</p>
+      <div class="fetes__grille">
+        <div class="rv">
+          <h3>Noël<small>24 décembre 2026</small></h3>
+          <ul>
+            <li>Notre terrine de foie gras de canard du Gers au naturel — 23 €/100 gr</li>
+            <li>Truite saumonée de Wallonie (pisciculture Mathonet) en gravlax et fumé par nos soins</li>
+            <li>Coquilles Saint-Jacques de pêche, en papillote, risotto de céleri rave, beurre truffé</li>
+            <li>La volaille de fête de Pol à Gibecq, cuisinée au vin jaune et morilles</li>
+            <li>Choux fourré, crème de nougat et insert agrumes et safran du Mont Panisel</li>
+          </ul>
+        </div>
+        <div class="rv">
+          <h3>Nouvel An<small>31 décembre 2026</small></h3>
+          <ul>
+            <li>Coquilles Saint-Jacques de pêche, foie gras et anguille fumée</li>
+            <li>Wellington de cerf, gâteau de céleri rave, châtaignes et oignons</li>
+            <li>Choux fourré, crème de nougat et insert agrumes, safran du Mont Panisel</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Pour en parler : <a href="tel:+3267850029">067 85 00 29</a> · <a href="mailto:lespritdevillage@gmail.com">lespritdevillage@gmail.com</a></p>
+    </div>
+  </section>
 
-<section class="carte">
- <div class="wrap">
-  <span class="num">III.</span>
-  <h2>Un menu unique,<br><em>plusieurs services.</em></h2>
-  <p style="max-width:34em">Pas de longue carte à parcourir : la cuisine propose un seul menu, servi en plusieurs étapes. Les vins sont accordés aux plats.</p>
-  <ol class="etapes">
-   <li><div><strong>Le menu</strong>Un seul menu, décliné en services, au rythme de la cuisine.</div></li>
-   <li><div><strong>Les vins</strong>Un accord mets et vins pensé pour le menu du jour.</div></li>
-   <li><div><strong>La salle</strong>Un cadre chaleureux, une ambiance discrète.</div></li>
-  </ol>
-  <a class="btn" href="tel:+3267850029">Réserver une table</a>
- </div>
-</section>
+  <section class="salle" id="salle">
+    <div class="large">
+      <div class="salle__tete rv">
+        <h2>Sur la place, à Silly.</h2>
+        <p>Une salle calme, du bois brut, de la lumière. On s'y sent bien, on y prend son temps. Le midi du jeudi au dimanche, le soir du jeudi au samedi.</p>
+      </div>
+      <div class="mosaique">
+        <figure class="m1 rv"><img src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8822-scaled.jpg" alt="L'intérieur de L'Esprit Village" loading="lazy"></figure>
+        <figure class="m2 rv"><img src="https://www.lespritdevillage.be/wp-content/uploads/2020/01/DSC_8821-1-768x510.jpg" alt="Un détail de la salle" loading="lazy"></figure>
+        <figure class="m3 rv"><img src="https://www.lespritdevillage.be/wp-content/uploads/2025/05/DSCN4296-768x610.jpg" alt="L'Esprit Village" loading="lazy"></figure>
+        <figure class="m4 rv"><img src="https://www.lespritdevillage.be/wp-content/uploads/2021/05/DSC_9666-scaled.jpg" alt="La vitrine gravée de la boutique" loading="lazy"></figure>
+      </div>
+      <div class="distinctions rv">
+        <img class="michelin" src="https://www.lespritdevillage.be/wp-content/uploads/2026/05/logo_site_internet_footer_Selection_Restaurant_2026_rouge-1024x1024.png" alt="Restaurant Selection — Guide Michelin 2026" loading="lazy" width="88" height="88">
+        <img class="gm" src="https://www.lespritdevillage.be/wp-content/uploads/2026/02/135_POINTS_GM_BLACK-1-1024x576.png" alt="Distinction Gault&amp;Millau" loading="lazy" width="180" height="101">
+        <p>Sélectionné par le Guide Michelin 2026.</p>
+      </div>
+    </div>
+  </section>
 
-<section id="avis">
- <div class="wrap">
-  <span class="num">IV.</span>
-  <h2>Ce qu'on en<br><em>dit.</em></h2>
-  <div class="score"><b>4,8</b><span>sur 5 · 174 avis Google</span></div>
-  <ul class="avis">
-   <li><blockquote>Chouette expérience dans une ambiance chaleureuse. On s’y sent bien, l’accueil est sympa et la cuisine est délicate et très agréable. L’accord avec les vins fonctionne très bien. Un bon moment passé sur place.</blockquote><cite>Thibaut G. · 5/5 · avis Google</cite></li>
-   <li><blockquote>Une magnifique découverte culinaire. Service impeccable, ambiance discrète et cuisine qui ne peut que ravir vos papilles. A découvrir, à savourer, à recommander ❤️ Vous ne pourrez qu'être comblé.s par cette escapade culinaire !</blockquote><cite>Gisèle Place-Arnould · 5/5 · avis Google</cite></li>
-   <li><blockquote>Super restaurant, menu unique décliné en plusieurs services. Cadre agréable et convivial, superbe expérience.</blockquote><cite>Kevin Barant · 5/5 · avis Google</cite></li>
-  </ul>
-  <div class="dist">
-   <img src="https://www.lespritdevillage.be/wp-content/uploads/2025/05/MICHELIN-2024-rond-768x768.jpg" alt="Michelin 2024" width="110" height="110" loading="lazy">
-   <img class="gm" src="https://www.lespritdevillage.be/wp-content/uploads/2026/02/135_POINTS_GM_BLACK-1-300x169.png" alt="135 points" width="200" height="113" loading="lazy">
+  <section class="avis" aria-labelledby="titre-avis">
+    <div class="large">
+      <div class="avis__tete">
+        <h2 id="titre-avis">Ils en parlent.</h2>
+        <p>4,8/5 · 174 avis Google</p>
+      </div>
+      <div class="defile" tabindex="0" aria-label="Avis de clients, faites glisser">
+        <blockquote>
+          <p>Chouette expérience dans une ambiance chaleureuse. On s’y sent bien, l’accueil est sympa et la cuisine est délicate et très agréable. L’accord avec les vins fonctionne très bien. Un bon moment passé sur place.</p>
+          <footer>Thibaut G. — avis Google</footer>
+        </blockquote>
+        <blockquote>
+          <p>Super restaurant, menu unique décliné en plusieurs services. Cadre agréable et convivial, superbe expérience.</p>
+          <footer>Kevin Barant — avis Google</footer>
+        </blockquote>
+        <blockquote>
+          <p>Une magnifique découverte culinaire. Service impeccable, ambiance discrète et cuisine qui ne peut que ravir vos papilles. A découvrir, à savourer, à recommander…</p>
+          <footer>Gisèle Place-Arnould — avis Google</footer>
+        </blockquote>
+      </div>
+      <p class="defile__aide">Faites glisser pour lire l'avis suivant.</p>
+    </div>
+  </section>
+
+  <section class="venir" id="venir">
+    <div class="large venir__grille">
+      <div class="rv">
+        <h2>Réserver une table.</h2>
+        <address>
+          L'Esprit Village<br>
+          Place Obert de Thieusies 10<br>
+          7830 Silly
+        </address>
+        <p><a href="tel:+3267850029">067 85 00 29</a><br><a href="mailto:lespritdevillage@gmail.com">lespritdevillage@gmail.com</a></p>
+        <div class="liens">
+          <a class="btn btn--encre" href="tel:+3267850029">Réserver une table</a>
+          <a class="btn btn--encre" href="https://maps.google.com/?cid=15436524746150567085">Itinéraire</a>
+        </div>
+      </div>
+      <div class="rv">
+        <table class="horaires">
+          <caption>Horaires</caption>
+          <tbody>
+            <tr><th scope="row">Jeudi</th><td>12:00 – 14:00<br>19:00 – 21:30</td></tr>
+            <tr><th scope="row">Vendredi</th><td>12:00 – 14:00<br>19:00 – 21:30</td></tr>
+            <tr><th scope="row">Samedi</th><td>12:00 – 14:00<br>19:00 – 21:30</td></tr>
+            <tr><th scope="row">Dimanche</th><td>12:00 – 14:00</td></tr>
+            <tr class="ferme"><th scope="row">Lundi, mardi, mercredi</th><td>Fermé</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="large">
+    <span>L'Esprit Village — By Christine &amp; Pascal · Silly</span>
+    <span>Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></span>
   </div>
-  <div style="margin-top:28px;max-width:640px"><img loading="lazy" src="https://www.lespritdevillage.be/wp-content/uploads/2026/02/135_POINTS_GM_BLACK-1-1024x576.png" alt="Distinction 135 points"></div>
- </div>
-</section>
-
-<section id="venir">
- <div class="wrap duo">
-  <div>
-   <span class="num">V.</span>
-   <h2>Pour<br><em>venir.</em></h2>
-   <address class="adresse">Place Obert de Thieusies 10<br>7830 Silly</address>
-   <div class="actions" style="animation:none">
-    <a class="btn" href="https://maps.google.com/?cid=15436524746150567085&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-   </div>
-  </div>
-  <ul class="contacts">
-   <li><a href="tel:+3267850029"><small>Téléphone</small>067 85 00 29</a></li>
-   <li><a href="mailto:lespritdevillage@gmail.com"><small>E-mail</small>lespritdevillage@gmail.com</a></li>
-   <li><a href="http://www.lespritdevillage.be/"><small>Site actuel</small>lespritdevillage.be</a></li>
-  </ul>
- </div>
-</section>
-
-<footer>
- <div class="wrap">
-  <img src="https://www.lespritdevillage.be/wp-content/uploads/2026/05/logo_site_internet_footer_Selection_Restaurant_2026_rouge-1024x1024.png" alt="Logo L'Esprit Village" loading="lazy">
-  <p>L'Esprit Village · By Christine &amp; Pascal<br>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
- </div>
 </footer>
 
-<div class="barre">
- <a href="tel:+3267850029">Appeler</a>
- <a href="https://maps.google.com/?cid=15436524746150567085&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-</div>
+<nav class="pouce" aria-label="Actions rapides">
+  <a href="tel:+3267850029">Réserver</a>
+  <a href="https://maps.google.com/?cid=15436524746150567085">Itinéraire</a>
+</nav>
 </body>
 </html>
