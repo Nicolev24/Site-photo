@@ -5,224 +5,438 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Concept Beauté by Lisa — Institut de beauté à Tournai (maquette)</title>
-<style>
-:root{--creme:#faf5ee;--sable:#efe4d4;--encre:#2a201b;--orange:#c4673a;--filet:rgba(42,32,27,.22);
---serif:"Didot","Bodoni 72","Bodoni MT","Hoefler Text",Baskerville,Georgia,serif;
---sans:"Gill Sans","Gill Sans MT",Optima,Candara,"Segoe UI",sans-serif}
+<style>@font-face{font-family:"Italiana";src:url("/maquettes/polices/italiana.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Manrope";src:url("/maquettes/polices/manrope.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+
+:root{
+  --rose:#fbe7ea;
+  --poudre:#f6d6dc;
+  --creme:#fff8f6;
+  --brique:#9b3633;
+  --sauge:#406348;
+  --sauge-fonce:#2f4a36;
+  --encre:#3a2a2c;
+  --gris:#6a5557;
+  --filet:rgba(155,54,51,.28);
+  --rayon:999px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--creme);color:var(--encre);font-family:var(--sans);font-size:17px;line-height:1.65;overflow-x:hidden}
-img{max-width:100%;display:block}
+body{font-family:"Manrope",sans-serif;font-size:17px;line-height:1.65;color:var(--encre);background:var(--creme);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
 a{color:inherit}
-.maq{background:var(--encre);color:var(--creme);font-size:12px;text-align:center;padding:6px 12px;letter-spacing:.04em}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--filet)}
-.marque{font-family:var(--serif);font-size:20px;letter-spacing:.02em}
-.marque small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--orange)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 26px;background:var(--orange);color:#fff;text-decoration:none;font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:background .3s,transform .3s}
-.btn:hover{background:var(--encre);transform:translateY(-2px)}
-.btn.ligne{background:transparent;color:var(--encre);border:1px solid var(--encre)}
-.btn.ligne:hover{background:var(--encre);color:var(--creme)}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding:56px 0 72px}
-.kicker{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);margin-bottom:22px}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,8vw,104px);line-height:.98;letter-spacing:-.02em}
-h1 span{display:block;overflow:hidden}
-h1 span i{display:block;font-style:italic;color:var(--orange);animation:monte 1s cubic-bezier(.2,.8,.2,1) both}
-h1 span:nth-child(1) i{font-style:normal;color:inherit;animation-delay:.1s}
-h1 span:nth-child(2) i{animation-delay:.25s}
-h1 span:nth-child(3) i{font-style:normal;color:inherit;animation-delay:.4s}
-.lead{max-width:460px;margin:28px 0 30px;font-size:18px}
-.actions{display:flex;flex-wrap:wrap;gap:12px;animation:fondu .9s .8s both}
-.photo-v{aspect-ratio:3/4;background:linear-gradient(160deg,var(--sable),#e3cdb2);overflow:hidden;animation:devoile 1.4s .2s cubic-bezier(.7,0,.2,1) both;position:relative}
-.photo-v img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
-.legende{font-size:12px;letter-spacing:.08em;color:#6b5a4f;margin-top:10px}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
+h1,h2,h3{font-family:"Italiana",serif;font-weight:400;line-height:1.05;text-wrap:balance;letter-spacing:.01em}
+:focus-visible{outline:2px solid var(--brique);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(1160px,100% - 48px);margin-inline:auto}
+
+.maquette{background:var(--sauge-fonce);color:#f3ece6;font-size:13px;text-align:center;padding:6px 16px;letter-spacing:.02em}
+
+.tete{position:sticky;top:0;z-index:20;background:rgba(255,248,246,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(155,54,51,.12)}
+.tete .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:72px}
+.marque{text-decoration:none;display:flex;flex-direction:column;line-height:1}
+.marque b{font-family:"Italiana",serif;font-weight:400;font-size:28px;color:var(--brique)}
+.marque small{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--sauge);margin-top:4px}
+.nav{display:flex;gap:32px;font-size:15px}
+.nav a{text-decoration:none;position:relative;padding:8px 0}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:var(--brique);transform:scaleX(0);transform-origin:left;transition:transform .5s ease}
+.nav a:hover::after{transform:scaleX(1)}
+.tete-actions{display:flex;align-items:center;gap:16px}
+.tel{text-decoration:none;font-size:15px;color:var(--sauge);font-weight:600;white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border-radius:var(--rayon);background:var(--brique);color:#fff;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.02em;border:1px solid var(--brique);transition:background .4s ease,color .4s ease}
+.btn:hover{background:transparent;color:var(--brique)}
+.lien{display:inline-flex;align-items:center;font-weight:600;font-size:15px;color:var(--sauge);text-decoration:none;border-bottom:1px solid currentColor;line-height:1.2;padding:12px 0 4px}
+.lien:hover{color:var(--brique)}
+
+.ouverture{background:linear-gradient(180deg,var(--creme) 0%,var(--rose) 100%);padding:64px 0 96px;position:relative;overflow:hidden}
+.ouverture .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.lieu{font-size:14px;color:var(--sauge);font-weight:600;letter-spacing:.04em;margin-bottom:24px}
+.ouverture h1{font-size:clamp(56px,9vw,124px);color:var(--brique);animation:monte 1.4s cubic-bezier(.2,.7,.2,1) both}
+.ouverture h1 em{display:block;font-family:"Manrope",sans-serif;font-style:normal;font-size:clamp(13px,1.4vw,15px);letter-spacing:.4em;text-transform:uppercase;color:var(--sauge);margin-top:16px}
+.chapeau{font-size:clamp(18px,2vw,21px);max-width:30ch;margin:32px 0 40px;color:var(--encre);animation:monte 1.4s .25s cubic-bezier(.2,.7,.2,1) both}
+.actions{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;animation:monte 1.4s .45s cubic-bezier(.2,.7,.2,1) both}
+.note{margin-top:40px;font-size:14px;color:var(--gris);display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
+.note strong{font-family:"Italiana",serif;font-weight:400;font-size:32px;color:var(--brique)}
+.note .sep{width:1px;height:20px;background:var(--filet)}
+
+.arche{position:relative;justify-self:center;width:min(440px,100%)}
+.arche-cadre{aspect-ratio:3/4;border-radius:999px 999px 8px 8px;overflow:hidden;background:var(--poudre);animation:devoile 1.8s .2s cubic-bezier(.65,0,.25,1) both}
+.arche-cadre img{width:100%;height:100%;object-fit:cover;object-position:40% 60%;animation:zoom 9s ease-out both}
+.arche svg{position:absolute;top:-16px;left:-16px;width:calc(100% + 32px);height:calc(100% + 32px);max-width:none;pointer-events:none;overflow:visible}
+.arche svg path{fill:none;stroke:var(--sauge);stroke-width:1;stroke-dasharray:2000;stroke-dashoffset:2000;animation:trace 3.2s .8s ease-in-out forwards}
+.arche figcaption{position:absolute;left:-32px;bottom:48px;background:var(--creme);padding:16px 24px;font-family:"Italiana",serif;font-size:22px;color:var(--sauge-fonce);max-width:220px;line-height:1.2}
+
+@keyframes monte{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.14)}to{transform:scale(1)}}
+@keyframes trace{to{stroke-dashoffset:0}}
 @keyframes fondu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
-.bande{border-block:1px solid var(--filet);overflow:hidden;white-space:nowrap;padding:14px 0;font-family:var(--serif);font-style:italic;font-size:22px;color:var(--orange)}
-.bande div{display:inline-block;animation:defile 38s linear infinite}
-.bande span{margin:0 22px}
-@keyframes defile{to{transform:translateX(-50%)}}
-section{padding:88px 0}
-.sec-t{display:grid;grid-template-columns:140px 1fr;gap:24px;margin-bottom:48px;align-items:end}
-.sec-t .n{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);padding-bottom:12px}
-h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5.4vw,60px);line-height:1.05;letter-spacing:-.01em}
-h2 em{color:var(--orange)}
-.soin{display:grid;grid-template-columns:90px 1fr 280px;gap:28px;padding:36px 0;border-top:1px solid var(--filet);align-items:start}
-.soin:last-child{border-bottom:1px solid var(--filet)}
-.soin .num{font-family:var(--serif);font-size:54px;line-height:1;color:var(--orange)}
-.soin h3{font-family:var(--serif);font-weight:400;font-size:32px;margin-bottom:8px}
-.soin ul{list-style:none;margin-top:12px}
-.soin li{padding:7px 0;border-bottom:1px dotted var(--filet)}
-.soin .vis{background:var(--sable);padding:14px;display:flex;align-items:center;justify-content:center;min-height:150px}
-.soin .vis img{max-height:200px;width:auto;object-fit:contain}
-.salon{background:var(--sable)}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.duo .cadre{overflow:hidden;background:#e3cdb2}
-.duo .cadre img{width:100%;height:auto}
-.fleurs{aspect-ratio:4/5;overflow:hidden;background:#e3cdb2}
-.fleurs img{width:100%;height:100%;object-fit:cover}
-.duo p{margin-bottom:16px;max-width:470px}
-.marques{display:flex;flex-wrap:wrap;gap:36px;align-items:center;margin-top:26px}
-.marques img{max-height:70px;width:auto;background:#fff;padding:10px}
-.avis blockquote{border-top:1px solid var(--filet);padding:34px 0;display:grid;grid-template-columns:140px 1fr;gap:24px}
-.avis blockquote:last-of-type{border-bottom:1px solid var(--filet)}
-.avis p{font-family:var(--serif);font-size:clamp(20px,2.6vw,27px);line-height:1.4}
-.avis cite{display:block;margin-top:14px;font-family:var(--sans);font-style:normal;font-size:13px;letter-spacing:.08em;color:#6b5a4f}
-.note{font-family:var(--serif);font-size:60px;line-height:1;color:var(--orange)}
-.note small{display:block;font-family:var(--sans);font-size:12px;letter-spacing:.1em;color:#6b5a4f;margin-top:6px}
-.pratique{background:var(--encre);color:var(--creme)}
-.pratique h2 em{color:#e89a70}
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
-table{width:100%;border-collapse:collapse}
-td{padding:13px 0;border-bottom:1px solid rgba(250,245,238,.2);font-size:18px}
-td:last-child{text-align:right}
-tr.ferme td{opacity:.5}
-.pratique a{text-decoration:none;border-bottom:1px solid #e89a70}
-.pratique .btn{border:0;color:#fff;margin-top:14px;margin-right:8px}
-.pratique .btn.ligne{border:1px solid var(--creme);color:var(--creme)}
-.pratique .btn.ligne:hover{background:var(--creme);color:var(--encre)}
-.coord p{margin-bottom:12px;font-size:18px}
-.cadeau{border:1px solid rgba(250,245,238,.3);padding:22px;margin-top:26px}
-footer{background:var(--encre);color:rgba(250,245,238,.7);font-size:13px;text-align:center;padding:22px 22px 30px;border-top:1px solid rgba(250,245,238,.15)}
+
+.soins{padding:120px 0 112px;background:var(--creme)}
+.soins-tete{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:56px}
+.soins h2{font-size:clamp(44px,6vw,80px);color:var(--brique)}
+.soins-tete p{max-width:46ch;color:var(--gris)}
+.onglets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px;border-bottom:1px solid var(--filet);padding-bottom:24px}
+.onglets label{cursor:pointer;min-height:44px;display:inline-flex;align-items:center;padding:0 22px;border-radius:var(--rayon);border:1px solid var(--filet);font-size:15px;font-weight:500;color:var(--encre);transition:background .4s,color .4s,border-color .4s;user-select:none}
+.onglets label:hover{border-color:var(--brique);color:var(--brique)}
+.panneau{display:none;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:64px;align-items:start}
+#t1:checked~.onglets label[for=t1],#t2:checked~.onglets label[for=t2],#t3:checked~.onglets label[for=t3],#t4:checked~.onglets label[for=t4],#t5:checked~.onglets label[for=t5],#t6:checked~.onglets label[for=t6]{background:var(--sauge);border-color:var(--sauge);color:#fff}
+#t1:focus-visible~.onglets label[for=t1],#t2:focus-visible~.onglets label[for=t2],#t3:focus-visible~.onglets label[for=t3],#t4:focus-visible~.onglets label[for=t4],#t5:focus-visible~.onglets label[for=t5],#t6:focus-visible~.onglets label[for=t6]{outline:2px solid var(--brique);outline-offset:3px}
+#t1:checked~.panneaux .p1,#t2:checked~.panneaux .p2,#t3:checked~.panneaux .p3,#t4:checked~.panneaux .p4,#t5:checked~.panneaux .p5,#t6:checked~.panneaux .p6{display:grid;animation:fondu .9s ease both}
+.liste{list-style:none}
+.liste li{padding:24px 0;border-bottom:1px solid var(--filet)}
+.liste li:first-child{padding-top:0}
+.ligne{display:flex;align-items:baseline;gap:16px}
+.ligne h3{font-size:clamp(26px,3vw,34px);color:var(--encre)}
+.ligne::after{content:"";flex:1;border-bottom:1px dotted rgba(64,99,72,.55);transform:translateY(-6px);order:2}
+.ligne span{order:3;font-size:13px;letter-spacing:.06em;color:var(--sauge);font-weight:600;white-space:nowrap}
+.liste p{margin-top:8px;color:var(--gris);max-width:58ch;font-size:16px}
+.aparte{background:var(--rose);padding:40px 32px;border-radius:999px 999px 8px 8px;text-align:center;min-height:320px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.aparte p{font-family:"Italiana",serif;font-size:clamp(24px,2.6vw,30px);line-height:1.25;color:var(--sauge-fonce)}
+.aparte small{font-size:14px;color:var(--gris)}
+
+.silhouette{background:var(--sauge-fonce);color:#f4ede8;padding:112px 0}
+.silhouette .wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;align-items:center}
+.medaillon{aspect-ratio:1;border-radius:50%;background:var(--creme);display:grid;place-items:center;width:min(340px,100%);justify-self:center;position:relative}
+.medaillon::before{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(244,237,232,.35)}
+.medaillon img{width:68%;height:auto;object-fit:contain}
+.silhouette h2{font-size:clamp(40px,5.4vw,72px);margin-bottom:32px;color:#fff}
+.silhouette p{max-width:60ch;color:#e7ddd6}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:48px;padding-top:40px;border-top:1px solid rgba(244,237,232,.25)}
+.duo h3{font-size:28px;color:#fff;margin-bottom:12px}
+.duo p{font-size:16px}
+.abo{margin-top:40px;display:inline-block;border:1px solid rgba(244,237,232,.5);border-radius:var(--rayon);padding:12px 24px;font-size:15px;color:#fff}
+
+.institut{padding:128px 0 96px;background:var(--rose)}
+.institut .wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.cadre-nicolas{aspect-ratio:4/5;border-radius:999px 999px 8px 8px;border:1px dashed rgba(64,99,72,.6);display:grid;place-items:center;text-align:center;padding:32px;color:var(--sauge);font-family:"Italiana",serif;font-size:26px;line-height:1.2;width:min(400px,100%);justify-self:center;background:rgba(255,248,246,.5)}
+.cadre-nicolas small{display:block;font-family:"Manrope",sans-serif;font-size:14px;color:var(--gris);margin-top:12px}
+.institut h2{font-size:clamp(44px,6vw,80px);color:var(--brique);margin-bottom:32px}
+.institut p{max-width:58ch;margin-bottom:20px}
+.institut blockquote{margin-top:40px;padding-left:24px;border-left:1px solid var(--brique);font-family:"Italiana",serif;font-size:clamp(26px,3vw,34px);line-height:1.2;color:var(--sauge-fonce)}
+.institut cite{display:block;font-family:"Manrope",sans-serif;font-style:normal;font-size:14px;color:var(--gris);margin-top:12px}
+
+.avis{padding:112px 0;background:var(--creme)}
+.avis-grille{display:grid;grid-template-columns:1.3fr 1fr;gap:48px 80px}
+.avis h2{font-size:clamp(40px,5vw,64px);color:var(--brique);grid-column:1/-1;max-width:16ch}
+.avis figure{border-top:1px solid var(--filet);padding-top:32px}
+.avis .grand{grid-row:span 2}
+.avis .grand blockquote{font-family:"Italiana",serif;font-size:clamp(26px,3.2vw,38px);line-height:1.25;color:var(--encre)}
+.avis blockquote{font-size:17px;color:var(--encre)}
+.avis figcaption{margin-top:20px;font-size:14px;color:var(--gris)}
+.avis figcaption b{color:var(--sauge);font-weight:600}
+
+.cadeau{background:var(--poudre);padding:72px 0}
+.cadeau .wrap{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+.cadeau h2{font-size:clamp(34px,4.4vw,56px);color:var(--brique)}
+.cadeau p{max-width:44ch;margin-top:12px}
+
+.venir{padding:112px 0 96px;background:var(--creme)}
+.venir .wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.venir h2{font-size:clamp(44px,6vw,80px);color:var(--brique);margin-bottom:32px}
+.horaires{width:100%;border-collapse:collapse;font-size:16px}
+.horaires th,.horaires td{padding:14px 0;border-bottom:1px solid var(--filet);text-align:left;font-weight:400}
+.horaires td{text-align:right;color:var(--sauge-fonce);font-weight:600}
+.horaires tr.ferme td{color:var(--gris);font-weight:400}
+.coord{font-size:18px;margin-bottom:32px}
+.coord a{text-decoration:none;border-bottom:1px solid var(--filet)}
+.coord a:hover{color:var(--brique)}
+.coord p+p{margin-top:8px}
+.reseaux{display:flex;gap:24px;margin-top:32px;font-size:15px}
+.reseaux a{min-height:44px;display:inline-flex;align-items:center}
+
+.pied{background:var(--sauge-fonce);color:#e7ddd6;padding:40px 0;font-size:14px}
+.pied .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.pied a{color:#fff}
+
 .barre{display:none}
-@supports (animation-timeline:view()){
- section .sec-t,.soin,.duo>*,.avis blockquote,.pgrid>*{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+
+@supports (animation-timeline: view()){
+  .revele{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+  .medaillon{animation:tourne linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+  @keyframes tourne{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
 }
-@media(max-width:860px){
- body{padding-bottom:84px;font-size:16px}
- .hero{grid-template-columns:1fr;gap:34px;padding:34px 0 52px}
- .photo-v{aspect-ratio:4/5;max-width:420px}
- section{padding:58px 0}
- .sec-t,.avis blockquote{grid-template-columns:1fr;gap:8px}
- .soin{grid-template-columns:56px 1fr;gap:16px}
- .soin .num{font-size:38px}
- .soin .vis{grid-column:1/-1}
- .duo,.pgrid{grid-template-columns:1fr;gap:34px}
- .top .btn{display:none}
- .barre{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--creme);border-top:1px solid var(--filet);padding:10px;gap:10px}
- .barre a{min-height:48px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--orange);color:#fff}
- .barre a+a{background:transparent;color:var(--encre);border:1px solid var(--encre)}
+
+@media (max-width:980px){
+  .nav{display:none}
 }
-@media(prefers-reduced-motion:reduce){
- *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media (max-width:860px){
+  body{padding-bottom:88px}
+  .tete .wrap{min-height:64px}
+  .tete-actions .btn{display:none}
+  .ouverture{padding:32px 0 64px}
+  .ouverture .wrap,.soins-tete,.panneau,.silhouette .wrap,.institut .wrap,.venir .wrap,.avis-grille{grid-template-columns:1fr;gap:48px}
+  .ouverture .wrap{gap:40px}
+  .arche{width:min(270px,70%);order:-1}
+  .arche-cadre{aspect-ratio:4/5}
+  .arche figcaption{left:-28px;bottom:20px;font-size:17px;padding:10px 14px;max-width:180px}
+  .lieu{margin-bottom:16px}
+  .ouverture h1{font-size:clamp(52px,15vw,72px)}
+  .chapeau{margin:24px 0 32px}
+  .note{margin-top:32px}
+  .soins,.silhouette,.institut,.avis,.venir{padding:80px 0}
+  .onglets label{padding:0 16px;font-size:14px;min-height:42px}
+  .aparte{min-height:0;padding:48px 24px 32px}
+  .duo{grid-template-columns:1fr;gap:32px}
+  .avis .grand{grid-row:auto}
+  .institut .wrap>div:last-child{order:-1}
+  .cadre-nicolas{aspect-ratio:auto;min-height:220px;width:min(300px,100%);font-size:22px;padding:48px 24px 32px}
+  .barre{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(255,248,246,.96);border-top:1px solid var(--filet)}
+  .barre a{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:var(--rayon);text-decoration:none;font-weight:600;font-size:15px}
+  .barre .b1{background:var(--brique);color:#fff}
+  .barre .b2{border:1px solid var(--sauge);color:var(--sauge)}
+}
+@media (max-width:420px){
+  .wrap{width:calc(100% - 40px)}
+  .ligne{flex-wrap:wrap}
+  .ligne::after{display:none}
+  .ligne span{flex-basis:100%;white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .arche svg path{stroke-dashoffset:0}
 }
 </style>
-</head>
+<style>html,body{max-width:100%;overflow-x:clip}img,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
 <body>
-<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
-<div class="wrap">
-<header class="top">
- <div class="marque">Concept Beauté<small>by Lisa · Tournai</small></div>
- <a class="btn" href="tel:069213477">Réserver un soin</a>
+
+<div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
+
+<header class="tete">
+  <div class="wrap">
+    <a class="marque" href="#haut" aria-label="Concept Beauté by Lisa, retour en haut">
+      <b>Concept Beauté</b><small>by Lisa</small>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#soins">Les soins</a>
+      <a href="#endermologie">Endermologie</a>
+      <a href="#institut">L'institut</a>
+      <a href="#venir">Horaires</a>
+    </nav>
+    <div class="tete-actions">
+      <a class="tel" href="tel:+3269213477">069 21 34 77</a>
+      <a class="btn" href="tel:+3269213477">Réserver un soin</a>
+    </div>
+  </div>
 </header>
 
-<div class="hero">
- <div>
-  <p class="kicker">Institut de beauté · Tournai</p>
-  <h1><span><i>Beauté</i></span><span><i>et calme,</i></span><span><i>au même endroit.</i></span></h1>
-  <p class="lead">Un salon paisible et lumineux, chaussée de Bruxelles. Lisa et son équipe prennent le temps de vous écouter, puis de vous chouchouter.</p>
-  <div class="actions">
-   <a class="btn" href="tel:069213477">Réserver un soin</a>
-   <a class="btn ligne" href="#soins">Voir les soins</a>
+<main id="haut">
+
+<section class="ouverture">
+  <div class="wrap">
+    <div>
+      <p class="lieu">Institut de beauté · Chaussée de Bruxelles, Tournai</p>
+      <h1>Concept Beauté <em>— by Lisa —</em></h1>
+      <p class="chapeau">Un cadre paisible et féminin où bien-être et beauté s'allient.</p>
+      <div class="actions">
+        <a class="btn" href="tel:+3269213477">Réserver un soin</a>
+        <a class="lien" href="#soins">Voir la carte des soins</a>
+      </div>
+      <p class="note"><strong>4,8/5</strong> 68 avis Google <span class="sep" aria-hidden="true"></span> <a href="#venir" style="text-decoration:none">Du mardi au vendredi, 9 h – 18 h</a></p>
+    </div>
+    <figure class="arche">
+      <div class="arche-cadre">
+        <img src="https://www.conceptbeautebylisa.be/img/Salon-concept-beaute.jpeg.webp" alt="L'institut Concept Beauté : murs rose poudré, étagères en arche, parquet clair baigné de soleil" width="800" height="1067">
+      </div>
+      <svg viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M2 131 V50 A48 48 0 0 1 98 50 V131 Z"/></svg>
+      <figcaption>Soins visage et corps, endermologie, épilations…</figcaption>
+    </figure>
   </div>
- </div>
- <div>
-  <div class="photo-v"><img src="https://www.conceptbeautebylisa.be/img/Salon-concept-beaute.jpeg.webp" alt="Le salon de l’institut Concept Beauté à Tournai"></div>
-  <p class="legende">Le salon, chaussée de Bruxelles 92.</p>
- </div>
-</div>
-</div>
+</section>
 
-<div class="bande" aria-hidden="true"><div>
-<span>Endermologie</span>·<span>Soins du visage</span>·<span>Massages</span>·<span>Épilations</span>·<span>Cils &amp; maquillage</span>·<span>Cryo &amp; HIFU</span>·
-<span>Endermologie</span>·<span>Soins du visage</span>·<span>Massages</span>·<span>Épilations</span>·<span>Cils &amp; maquillage</span>·<span>Cryo &amp; HIFU</span>·</div></div>
+<section class="soins" id="soins" aria-labelledby="titre-soins">
+  <div class="wrap">
+    <div class="soins-tete revele">
+      <h2 id="titre-soins">La carte des soins</h2>
+      <p>Une analyse complète de votre peau est faite avant chaque soin, pour associer vos envies et vos besoins aux conseils de votre esthéticienne.</p>
+    </div>
 
-<section id="soins"><div class="wrap">
- <div class="sec-t"><div class="n">Les soins</div><h2>Choisissez selon <em>votre envie</em></h2></div>
+    <div class="carte">
+      <input class="sr" type="radio" name="envie" id="t1" checked>
+      <input class="sr" type="radio" name="envie" id="t2">
+      <input class="sr" type="radio" name="envie" id="t3">
+      <input class="sr" type="radio" name="envie" id="t4">
+      <input class="sr" type="radio" name="envie" id="t5">
+      <input class="sr" type="radio" name="envie" id="t6">
+      <div class="onglets">
+        <label for="t1">Visage</label>
+        <label for="t2">Corps</label>
+        <label for="t3">Regard</label>
+        <label for="t4">Mains &amp; pieds</label>
+        <label for="t5">Épilation</label>
+        <label for="t6">Silhouette</label>
+      </div>
 
- <div class="soin">
-  <div class="num">01</div>
-  <div><h3>Silhouette</h3><p>Pour redessiner et raffermir, avec les appareils de l’institut.</p>
-   <ul><li>Endermologie</li><li>Abonnement lipo : 12 séances + 1 offerte</li><li>Cryo &amp; HIFU</li></ul></div>
-  <div class="vis"><img src="https://www.conceptbeautebylisa.be/img/lpg-alpha.png" alt="Appareil d’endermologie LPG Alpha utilisé à l’institut"></div>
- </div>
+      <div class="panneaux">
+        <div class="panneau p1">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Soin hydratant</h3><span>Après analyse de peau</span></div><p>Pour une peau qui a soif, choisi après l'analyse de votre peau.</p></li>
+            <li><div class="ligne"><h3>Coup d'éclat</h3><span>Après analyse de peau</span></div><p>Quand le teint a besoin de retrouver de la lumière.</p></li>
+            <li><div class="ligne"><h3>Soin purifiant</h3><span>Après analyse de peau</span></div><p>Pour les peaux qui ont besoin d'être assainies.</p></li>
+            <li><div class="ligne"><h3>Soin anti&#8209;âge</h3><span>Après analyse de peau</span></div><p>Et d'autres soins encore, selon les conseils de votre esthéticienne.</p></li>
+          </ul>
+          <div class="aparte"><p>« Produits de qualité adaptés à nos besoins du moment »</p><small>Caroline Denys, avis Google</small></div>
+        </div>
 
- <div class="soin">
-  <div class="num">02</div>
-  <div><h3>Visage</h3><p>Des soins adaptés à ce dont votre peau a besoin en ce moment, avec conseils à la clé.</p>
-   <ul><li>Soins du visage</li><li>Cryo &amp; HIFU</li></ul></div>
-  <div class="vis"><img src="https://www.conceptbeautebylisa.be/img/cryo_hifu_titre.png" alt="Soin cryo et HIFU"></div>
- </div>
+        <div class="panneau p2">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Gommage</h3><span>Corps</span></div><p>Le temps d'un instant rien qu'à vous.</p></li>
+            <li><div class="ligne"><h3>Massage</h3><span>Corps</span></div><p>Évadez-vous dans une bulle de bien-être.</p></li>
+          </ul>
+          <div class="aparte"><p>« J'affectionne tout particulièrement ses massages »</p><small>Caroline Denys, avis Google</small></div>
+        </div>
 
- <div class="soin">
-  <div class="num">03</div>
-  <div><h3>Regard</h3><p>Cils, maquillage, contour de l’œil.</p>
-   <ul><li>Cils &amp; maquillage</li><li>Soin du contour de l’œil</li></ul></div>
-  <div class="vis"><img src="https://www.conceptbeautebylisa.be/img/cils_maquillage_titre.png" alt="Cils et maquillage à l’institut"></div>
- </div>
+        <div class="panneau p3">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Teinture des cils</h3><span>Seule ou avec épilation</span></div><p>Relevez votre regard grâce aux conseils de votre esthéticienne.</p></li>
+            <li><div class="ligne"><h3>Teinture des sourcils</h3><span>Seule ou avec épilation</span></div><p>Une ligne nette, dessinée pour votre visage.</p></li>
+          </ul>
+          <div class="aparte"><p>Relevez votre regard.</p><small>Cils et sourcils, à l'institut</small></div>
+        </div>
 
- <div class="soin">
-  <div class="num">04</div>
-  <div><h3>Douceur</h3><p>Les rendez-vous que l’on prend chaque mois, et ceux que l’on s’offre.</p>
-   <ul><li>Épilations</li><li>Massages</li></ul></div>
-  <div class="vis"><img src="https://www.conceptbeautebylisa.be/img/after_oeil.png" alt="Résultat d’un soin du regard, après"></div>
- </div>
- <p style="margin-top:26px;font-size:15px;color:#6b5a4f">Durées et tarifs : demandez-les à l’institut au 069 21 34 77.</p>
-</div></section>
+        <div class="panneau p4">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Manucure</h3><span>Mains</span></div><p>Prenez soin de vos mains.</p></li>
+            <li><div class="ligne"><h3>Pédicure</h3><span>Pieds</span></div><p>Et de vos pieds, toute l'année.</p></li>
+            <li><div class="ligne"><h3>Vernis semi&#8209;permanent</h3><span>Mains &amp; pieds</span></div><p>Une couleur qui tient.</p></li>
+            <li><div class="ligne"><h3>Spa manucure, spa pédicure</h3><span>Mains &amp; pieds</span></div><p>La version cocooning, pour aller plus loin.</p></li>
+          </ul>
+          <div class="aparte"><p>« Douceur et conseils professionnels »</p><small>Caroline Denys, avis Google</small></div>
+        </div>
 
-<section class="salon"><div class="wrap duo">
- <div class="fleurs"><span class="logo-texte">Fleurs orange, l’ambiance de l’institut</span></div>
- <div>
-  <p class="kicker">L’ambiance</p>
-  <h2>Un cadre <em>paisible et féminin</em></h2>
-  <p style="margin-top:22px">Ici, bien-être et beauté vont ensemble. Les soins sont réalisés par des professionnelles expérimentées, qui vous conseillent selon vos besoins du moment.</p>
-  <p>Pour offrir un soin, appelez l’institut : on s’occupe du bon cadeau avec vous.</p>
-  <div class="marques">
-   <img src="https://www.conceptbeautebylisa.be/img/brand_lat_vect-x300.png" alt="Marque utilisée à l’institut">
-   <img src="https://www.conceptbeautebylisa.be/img/logo-lpg-endermologie.png" alt="Logo LPG Endermologie">
+        <div class="panneau p5">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Jambes</h3><span>Cire naturelle</span></div><p>Épilez-vous sans risque, même les peaux très sensibles.</p></li>
+            <li><div class="ligne"><h3>Aisselles</h3><span>Cire naturelle</span></div><p>Et les autres zones, à demander à l'institut.</p></li>
+          </ul>
+          <div class="aparte"><p>Une cire naturelle, même pour les peaux très sensibles.</p><small>Épilations à l'institut</small></div>
+        </div>
+
+        <div class="panneau p6">
+          <ul class="liste">
+            <li><div class="ligne"><h3>Endermologie LPG</h3><span>Programme sur mesure</span></div><p>Aide à lisser la cellulite, déstocker les amas graisseux et raffermir la peau.</p></li>
+            <li><div class="ligne"><h3>Cryo aspiration</h3><span>Par le froid</span></div><p>L'amincissement localisé, non invasif et indolore.</p></li>
+            <li><div class="ligne"><h3>Abonnement lipo</h3><span>12 séances + 1 offerte</span></div><p>Un suivi sérieux et professionnel pour atteindre vos objectifs.</p></li>
+          </ul>
+          <div class="aparte"><p>Besoin de vous reprendre en main ?</p><small><a class="lien" href="#endermologie">En savoir plus</a></small></div>
+        </div>
+      </div>
+    </div>
   </div>
- </div>
-</div></section>
+</section>
 
-<section class="avis"><div class="wrap">
- <div class="sec-t"><div class="note">4,8/5<small>68 avis Google</small></div><h2>Ce que disent <em>celles qui reviennent</em></h2></div>
- <blockquote><div></div><div><p>« Concept beauté by Lisa est un endroit chaleureux et lumineux dans lequel on se sent bien et apaisé 🧘🏽‍♀️. Lisa est une praticienne professionnelle, bienveillante et à l’écoute. »</p><cite>Lou Ann Picavet — 5/5, avis Google</cite></div></blockquote>
- <blockquote><div></div><div><p>« Prestations toujours au top ! Cet institut est un incontournable pour moi depuis plus de 10 ans. Le lieu est accueillant et chaleureux. Lisa, la patronne, est très professionnelle et à l’écoute. Elle prend le temps de vous satisfaire et se montre soucieuse de répondre à vos attentes. Je recommande les yeux fermés ! »</p><cite>Jean Tassiana — 5/5, avis Google</cite></div></blockquote>
- <blockquote><div></div><div><p>« Cela fait plus de 7 ans que je me rends chaque mois chez concept beauté pour mes épilations, un soin visage et/ ou des massages… Produits de qualité adaptés à nos besoins du moment, douceur et conseils professionnels caractérisent bien l institut. Lisa est une vraie perle! J affectionne tout particulièrement ses massages qui sont un véritable moment de bonheur ! Bref, je recommande les yeux fermés !!! »</p><cite>Caroline Denys — 5/5, avis Google</cite></div></blockquote>
-</div></section>
+<section class="silhouette" id="endermologie" aria-labelledby="titre-lpg">
+  <div class="wrap">
+    <div class="medaillon">
+      <img src="https://www.conceptbeautebylisa.be/img/logo-lpg-endermologie.png" alt="LPG endermologie" width="575" height="400">
+    </div>
+    <div class="revele">
+      <h2 id="titre-lpg">Cellulite installée, centimètres en trop ?</h2>
+      <p>Problème de circulation, peau qui se relâche… À l'institut, les programmes sont établis sur mesure, en fonction de vos problèmes. Un suivi sérieux et professionnel vous aide à atteindre vos objectifs.</p>
+      <div class="duo">
+        <div>
+          <h3>Endermologie</h3>
+          <p>La technique LPG aide à lisser la cellulite, déstocker les amas graisseux et raffermir la peau.</p>
+        </div>
+        <div>
+          <h3>Cryo aspiration</h3>
+          <p>Non invasive, indolore, la cryo redessine le corps et réduit les graisses localisées. Effet visible 3 semaines après la première séance du traitement.</p>
+        </div>
+      </div>
+      <p class="abo">Abonnement lipo : 12 séances + 1 offerte</p>
+    </div>
+  </div>
+</section>
 
-<section class="pratique" id="venir"><div class="wrap pgrid">
- <div>
-  <h2>Les <em>horaires</em></h2>
-  <table style="margin-top:28px">
-   <tr class="ferme"><td>Lundi</td><td>Fermé</td></tr>
-   <tr><td>Mardi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Mercredi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Jeudi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Vendredi</td><td>9 h – 18 h</td></tr>
-   <tr class="ferme"><td>Samedi</td><td>Fermé</td></tr>
-   <tr class="ferme"><td>Dimanche</td><td>Fermé</td></tr>
-  </table>
- </div>
- <div class="coord">
-  <h2>Pour <em>venir</em></h2>
-  <p style="margin-top:28px">Concept Beauté by Lisa<br>Chau. de Bruxelles 92<br>7500 Tournai</p>
-  <p><a href="tel:069213477">069 21 34 77</a><br><a href="mailto:lisa@concept-beaute.be">lisa@concept-beaute.be</a></p>
-  <a class="btn" href="tel:069213477">Réserver un soin</a>
-  <a class="btn ligne" href="https://maps.google.com/?cid=15267087302928085469&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-  <div class="cadeau"><img src="https://www.conceptbeautebylisa.be/img/tel.png" alt="Téléphone" style="height:30px;width:auto;margin-bottom:10px;filter:invert(1)">
-   <p style="font-size:16px;margin:0">Le plus simple pour réserver : un coup de fil, du mardi au vendredi.</p>
-   <p style="font-size:15px;margin:10px 0 0"><a href="https://www.facebook.com/conceptbeautebyLisa/">Facebook</a> · <a href="https://www.instagram.com/p/Bfqn_Cahv_k/?igshid=199vwl91jmbtd">Instagram</a></p></div>
- </div>
-</div></section>
+<section class="institut" id="institut" aria-labelledby="titre-institut">
+  <div class="wrap">
+    <div class="revele">
+      <h2 id="titre-institut">Chez Lisa</h2>
+      <p>Des murs rose poudré, un parquet clair, beaucoup de lumière. Concept Beauté, c'est un lieu calme, chaussée de Bruxelles, où l'on vient se faire chouchouter.</p>
+      <p>Les soins sont réalisés par des professionnelles expérimentées, qui prennent le temps de vous écouter et de vous conseiller.</p>
+      <blockquote>« Lisa est une vraie perle ! »<cite>Caroline Denys, avis Google</cite></blockquote>
+    </div>
+    <div class="cadre-nicolas" role="img" aria-label="Emplacement réservé à un portrait de Lisa">
+      <div>Ici, vos photos — par Nicolas<small>Lisa, ses mains, un soin en cours</small></div>
+    </div>
+  </div>
+</section>
 
-<footer>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+<section class="avis" aria-labelledby="titre-avis">
+  <div class="wrap avis-grille">
+    <h2 id="titre-avis" class="revele">Elles reviennent depuis des années</h2>
+    <figure class="grand revele">
+      <blockquote>« Prestations toujours au top ! Cet institut est un incontournable pour moi depuis plus de 10 ans. Le lieu est accueillant et chaleureux. Lisa, la patronne, est très professionnelle et à l’écoute. Elle prend le temps de vous satisfaire et se montre soucieuse de répondre à vos attentes. Je recommande les yeux fermés ! »</blockquote>
+      <figcaption><b>Jean Tassiana</b> · 5/5, avis Google</figcaption>
+    </figure>
+    <figure class="revele">
+      <blockquote>« Concept beauté by Lisa est un endroit chaleureux et lumineux dans lequel on se sent bien et apaisé 🧘🏽‍♀️. Lisa est une praticienne professionnelle, bienveillante et à l’écoute. »</blockquote>
+      <figcaption><b>Lou Ann Picavet</b> · 5/5, avis Google</figcaption>
+    </figure>
+    <figure class="revele">
+      <blockquote>« Cela fait plus de 7 ans que je me rends chaque mois chez concept beauté pour mes épilations, un soin visage et/ ou des massages… Produits de qualité adaptés à nos besoins du moment, douceur et conseils professionnels caractérisent bien l institut. »</blockquote>
+      <figcaption><b>Caroline Denys</b> · 5/5, avis Google</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="cadeau" aria-labelledby="titre-cadeau">
+  <div class="wrap">
+    <div>
+      <h2 id="titre-cadeau">Offrir un soin</h2>
+      <p>Un bon cadeau Concept Beauté, pour l'anniversaire d'une maman, d'une amie, d'une sœur. Demandez-le par téléphone ou à l'institut.</p>
+    </div>
+    <a class="btn" href="tel:+3269213477">Commander un bon cadeau</a>
+  </div>
+</section>
+
+<section class="venir" id="venir" aria-labelledby="titre-venir">
+  <div class="wrap">
+    <div>
+      <h2 id="titre-venir">Prendre rendez-vous</h2>
+      <div class="coord">
+        <p>Chaussée de Bruxelles 92<br>7500 Tournai</p>
+        <p><a href="tel:+3269213477">069 21 34 77</a></p>
+        <p><a href="mailto:lisa@concept-beaute.be">lisa@concept-beaute.be</a></p>
+      </div>
+      <div class="actions" style="animation:none">
+        <a class="btn" href="tel:+3269213477">Réserver un soin</a>
+        <a class="lien" href="https://maps.google.com/?cid=15267087302928085469">Itinéraire</a>
+      </div>
+      <div class="reseaux">
+        <a class="lien" href="https://www.facebook.com/conceptbeautebyLisa/">Facebook</a>
+        <a class="lien" href="https://www.instagram.com/p/Bfqn_Cahv_k/">Instagram</a>
+      </div>
+    </div>
+    <div>
+      <table class="horaires">
+        <caption class="sr">Horaires d'ouverture</caption>
+        <tr class="ferme"><th scope="row">Lundi</th><td>Fermé</td></tr>
+        <tr><th scope="row">Mardi</th><td>9 h – 18 h</td></tr>
+        <tr><th scope="row">Mercredi</th><td>9 h – 18 h</td></tr>
+        <tr><th scope="row">Jeudi</th><td>9 h – 18 h</td></tr>
+        <tr><th scope="row">Vendredi</th><td>9 h – 18 h</td></tr>
+        <tr class="ferme"><th scope="row">Samedi</th><td>Fermé</td></tr>
+        <tr class="ferme"><th scope="row">Dimanche</th><td>Fermé</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="wrap">
+    <span>Concept Beauté by Lisa · Institut de beauté à Tournai</span>
+    <span>Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></span>
+  </div>
+</footer>
 
 <nav class="barre" aria-label="Actions rapides">
- <a href="tel:069213477">Appeler</a>
- <a href="https://maps.google.com/?cid=15267087302928085469&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+  <a class="b1" href="tel:+3269213477">Réserver un soin</a>
+  <a class="b2" href="https://maps.google.com/?cid=15267087302928085469">Itinéraire</a>
 </nav>
+
 </body>
 </html>
