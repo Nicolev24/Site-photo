@@ -4,260 +4,430 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Salon Rodolphe Delbove — Coiffeur visagiste à Mons (maquette)</title>
-<meta name="description" content="Maquette d'une page d'accueil pour le salon Rodolphe Delbove, coiffeur à Mons.">
+<title>Salon Rodolphe Delbove — Coiffeur visagiste à Mons</title>
 <style>
+@font-face{font-family:"Bodoni Moda";src:url("/maquettes/polices/bodoni-moda.woff2") format("woff2");font-weight:400 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Bodoni Moda";src:url("/maquettes/polices/bodoni-moda-italic.woff2") format("woff2");font-weight:400 900;font-style:italic;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("/maquettes/polices/montserrat.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
 :root{
-  --lin:#f6efe5;
-  --lin2:#ece0d0;
-  --brun:#3b2a22;
-  --teal:#176b77;
-  --teal-fonce:#0f4e58;
-  --serif:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;
-  --sans:"Gill Sans","Gill Sans MT",Optima,Candara,"Segoe UI",sans-serif;
+  --noir:#0d0d0d;
+  --encre:#1a1917;
+  --ivoire:#f5f2ec;
+  --papier:#ffffff;
+  --or:#c6a46a;
+  --or-fonce:#7a5c2a;
+  --gris:#58544e;
+  --filet:rgba(13,13,13,.14);
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s6:48px;--s8:64px;--s12:96px;--s16:128px;
+  --coin:0;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--lin);color:var(--brun);font-size:17px;line-height:1.6;overflow-x:hidden}
+body{margin:0;background:var(--ivoire);color:var(--encre);font-family:"Montserrat", sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit}
-.maquette{background:var(--brun);color:var(--lin);text-align:center;font-size:12.5px;padding:7px 12px;letter-spacing:.02em}
-header.top{background:var(--teal);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-header.top img{width:190px;height:auto}
-header.top a.tel{color:#fff;text-decoration:none;font-size:15px;min-height:44px;display:inline-flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.4)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border-radius:999px;text-decoration:none;font-size:16px;letter-spacing:.02em;transition:transform .25s,background .25s,color .25s}
-.btn.plein{background:var(--teal);color:#fff}
-.btn.plein:hover{background:var(--teal-fonce);transform:translateY(-2px)}
-.btn.vide{border:1px solid var(--brun);color:var(--brun)}
-.btn.vide:hover{background:var(--brun);color:var(--lin)}
+:focus-visible{outline:2px solid var(--or);outline-offset:3px}
+h1,h2,h3{font-family:"Bodoni Moda", serif;font-weight:400;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0 0 var(--s2);max-width:62ch}
+.sc{font-family:"Montserrat", sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+.wrap{width:min(1240px,100% - 2*var(--s3));margin-inline:auto}
 
-/* Hero */
-.hero{display:grid;gap:28px;padding:36px 0 56px}
-.hero .txt{align-self:center}
-.kicker{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
-h1{font-family:var(--serif);font-weight:500;font-size:clamp(42px,11vw,84px);line-height:1;letter-spacing:-.01em}
-h1 span{display:block;overflow:hidden}
-h1 span i{display:block;font-style:normal;animation:monte 1s cubic-bezier(.2,.7,.2,1) both}
-h1 span:nth-child(2) i{animation-delay:.12s;font-style:italic;color:var(--teal)}
-h1 span:nth-child(3) i{animation-delay:.24s}
-.hero p.lead{margin:22px 0 26px;max-width:30em;font-size:18px}
-.actions{display:flex;flex-wrap:wrap;gap:12px}
-.actions .btn{animation:fondu .8s .7s both}
-.actions .btn+.btn{animation-delay:.85s}
-.hero figure{border-radius:200px 200px 22px 22px;overflow:hidden;aspect-ratio:4/4.6;background:var(--lin2);animation:devoile 1.4s cubic-bezier(.7,0,.2,1) both}
-.hero figure img{width:100%;height:100%;object-fit:cover;animation:zoom 9s ease-out both}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-@keyframes fondu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.15)}to{transform:scale(1)}}
+.maquette{background:var(--or);color:var(--noir);text-align:center;font-size:12px;letter-spacing:.08em;padding:6px var(--s2);font-weight:600}
 
-/* Bande */
-.bande{background:var(--brun);color:var(--lin);overflow:hidden;white-space:nowrap;padding:14px 0}
-.bande div{display:inline-block;font-family:var(--serif);font-size:26px;font-style:italic;animation:defile 38s linear infinite}
-.bande span{margin:0 22px}
-.bande span::after{content:"·";margin-left:44px;color:#c9a27a}
-@keyframes defile{to{transform:translateX(-50%)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s1);min-height:48px;padding:0 var(--s3);border:1px solid currentColor;border-radius:var(--coin);font-family:"Montserrat", sans-serif;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;transition:background .3s,color .3s,border-color .3s}
+.btn:hover{background:var(--or);border-color:var(--or);color:var(--noir)}
 
-section{padding:64px 0}
-h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,7vw,56px);line-height:1.05;margin-bottom:14px}
-h2 em{color:var(--teal)}
-.intro{max-width:34em;margin-bottom:30px}
+header{background:var(--noir);color:var(--ivoire);position:relative;z-index:5}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding-block:var(--s3)}
+.barre img{width:220px;height:auto}
+.barre nav{display:flex;gap:var(--s4);align-items:center}
+.barre nav a{font-size:12px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;font-weight:600;padding:12px 0;border-bottom:1px solid transparent;transition:border-color .3s,color .3s}
+.barre nav a:hover{color:var(--or);border-color:var(--or)}
+.barre nav a.btn{color:var(--or);border:1px solid var(--or);padding:0 var(--s3)}
+.barre nav a.btn:hover{color:var(--noir)}
 
-/* Mosaïque */
-.mosaic{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.mosaic figure{overflow:hidden;border-radius:18px;background:var(--lin2);position:relative}
-.mosaic img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s ease}
-.mosaic figure:hover img{transform:scale(1.05)}
-.m-a,.m-d{grid-column:span 2;aspect-ratio:2/1}
-.m-b,.m-c{aspect-ratio:1/2}
-@media(min-width:860px){
-  .mosaic{grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(110px,13vw,170px);gap:14px}
-  .mosaic figure{aspect-ratio:auto!important}
-  .m-a{grid-column:1/3;grid-row:1/3}
-  .m-b{grid-column:3;grid-row:1/5}
-  .m-c{grid-column:4;grid-row:1/5}
-  .m-d{grid-column:1/3;grid-row:3/5}
-}
+.cover{background:var(--noir);color:var(--ivoire);position:relative;overflow:hidden;padding-bottom:var(--s8)}
+.cover-grid{display:grid;grid-template-columns:5fr 7fr;align-items:end;position:relative}
+.cover-photo{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;overflow:hidden;clip-path:inset(0 0 0 100%);animation:volet 1.4s cubic-bezier(.7,0,.2,1) .2s forwards}
+.cover-photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);animation:zoom 9s ease-out .2s forwards}
+.cover-txt{grid-column:1 / span 2;grid-row:1;align-self:end;position:relative;z-index:2;padding-bottom:var(--s6)}
+.cover h1{font-size:clamp(3.6rem,13.5vw,12.5rem);line-height:.92;letter-spacing:-.02em;font-style:italic;opacity:0;transform:translateY(40px);animation:glisse 1s cubic-bezier(.2,.7,.2,1) .9s forwards}
+.cover h1 span{display:block;font-style:normal}
+.cover h1 .or{color:var(--or)}
+.cover-meta{display:flex;justify-content:space-between;align-items:center;gap:var(--s3);padding-block:var(--s3);border-bottom:1px solid rgba(245,242,236,.2);margin-bottom:var(--s4)}
+.cover-meta .sc{color:rgba(245,242,236,.75)}
+.cover-meta .num{font-family:"Bodoni Moda", serif;font-size:clamp(2rem,4vw,3rem);line-height:1;color:var(--or)}
+.cover-bas{display:grid;grid-template-columns:5fr 7fr;gap:var(--s4);margin-top:var(--s4);align-items:start}
+.cover-bas p{font-size:18px;color:rgba(245,242,236,.88);opacity:0;animation:fondu .8s ease 1.5s forwards}
+.cover-bas .actions{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.cover-bas .btn{color:var(--or)}
+.note{font-size:14px;color:rgba(245,242,236,.75)}
+.note b{color:var(--ivoire);font-weight:600}
 
-/* Prestations */
-.presta{background:linear-gradient(180deg,var(--lin2),var(--lin))}
-.liste{list-style:none;border-top:1px solid rgba(59,42,34,.25)}
-.liste li{display:grid;gap:4px;padding:20px 0;border-bottom:1px solid rgba(59,42,34,.25);transition:padding-left .3s}
-.liste li:hover{padding-left:12px}
-.liste b{font-family:var(--serif);font-weight:500;font-size:34px;line-height:1.1}
-.liste span{max-width:32em}
-@media(min-width:860px){.liste li{grid-template-columns:240px 1fr;align-items:baseline;gap:24px}}
+.book{padding-block:var(--s16) var(--s12)}
+.book-grid{display:grid;grid-template-columns:4fr 8fr;gap:var(--s8);align-items:start}
+.book h2{font-size:clamp(2.4rem,5.5vw,4.5rem)}
+.book h2 em{color:var(--or-fonce)}
+.index{list-style:none;padding:0;margin:var(--s6) 0 0;border-top:1px solid var(--filet)}
+.index li{display:grid;grid-template-columns:56px 1fr;gap:var(--s2);padding:var(--s3) 0;border-bottom:1px solid var(--filet);align-items:baseline}
+.index .n{font-family:"Bodoni Moda", serif;font-size:15px;color:var(--or-fonce)}
+.index strong{font-family:"Bodoni Moda", serif;font-weight:400;font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;display:block}
+.index span.d{display:block;color:var(--gris);font-size:15px;margin-top:4px}
+.cadre{position:relative;aspect-ratio:5/4;border:1px solid var(--filet);background:
+  repeating-linear-gradient(135deg,transparent 0 22px,rgba(122,92,42,.06) 22px 23px),var(--papier);display:grid;place-items:center;text-align:center;padding:var(--s6) var(--s4)}
+.cadre p{font-family:"Bodoni Moda", serif;font-style:italic;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2;margin:0 auto;color:var(--encre)}
+.cadre small{display:block;margin-top:var(--s2);font-family:"Montserrat", sans-serif;font-style:normal;font-size:14px;color:var(--gris);max-width:36ch;margin-inline:auto}
+.cadre .coin{position:absolute;top:var(--s2);left:var(--s2);color:var(--or-fonce)}
+.cadre .coin2{position:absolute;bottom:var(--s2);right:var(--s2);color:var(--or-fonce)}
 
-/* Salon */
-.salon{display:grid;gap:30px}
-.trio{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.trio figure{border-radius:18px;overflow:hidden;background:var(--lin2)}
-.trio img{width:100%;height:100%;object-fit:cover;aspect-ratio:1/1}
-.trio figure:last-child{grid-column:1/-1;max-width:300px;justify-self:start}
-@media(min-width:860px){.salon{grid-template-columns:1fr 1.2fr;align-items:center;gap:60px}}
+.presta{background:var(--papier);padding-block:var(--s12)}
+.presta-tete{display:flex;justify-content:space-between;align-items:end;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s6)}
+.presta h2{font-size:clamp(2.2rem,5vw,4rem)}
+.presta-tete p{color:var(--gris);margin:0;max-width:44ch}
+.carte{display:grid;grid-template-columns:repeat(2,1fr);column-gap:var(--s8)}
+.ligne{display:grid;grid-template-columns:1fr auto;gap:var(--s2);padding:var(--s3) 0;border-top:1px solid var(--filet);transition:padding .35s}
+.ligne:hover{padding-left:var(--s1)}
+.ligne h3{font-size:clamp(1.4rem,2.4vw,1.8rem)}
+.ligne p{grid-column:1 / -1;color:var(--gris);font-size:16px;margin:4px 0 0}
+.ligne .pour{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-fonce);font-weight:600;align-self:center}
 
-/* Avis */
-.avis{background:var(--teal);color:#fff;border-radius:28px;padding:44px 26px;margin:0 20px}
-.avis blockquote{font-family:var(--serif);font-size:clamp(22px,4.5vw,34px);line-height:1.3;font-style:italic;max-width:30em}
-.avis cite{display:block;margin-top:20px;font-style:normal;font-size:15px;opacity:.9}
-.note{margin-top:26px;font-size:15px;border-top:1px solid rgba(255,255,255,.35);padding-top:16px}
-.note strong{font-family:var(--serif);font-size:34px;font-weight:500;margin-right:6px}
+.plus{background:var(--noir);color:var(--ivoire);padding-block:var(--s16);overflow:hidden}
+.plus-grid{display:grid;grid-template-columns:6fr 6fr;gap:var(--s8);align-items:center}
+.gros{font-family:"Bodoni Moda", serif;font-size:clamp(9rem,30vw,24rem);line-height:.8;letter-spacing:-.04em;color:var(--or);font-style:italic}
+.plus h2{font-size:clamp(2rem,4.5vw,3.6rem);margin-bottom:var(--s4)}
+.plus p{color:rgba(245,242,236,.85)}
+.plus .sc{color:var(--or);display:block;margin-bottom:var(--s3)}
 
-/* Venir */
-.venir{display:grid;gap:34px}
-table{border-collapse:collapse;width:100%;max-width:440px;font-size:18px}
-td{padding:11px 0;border-bottom:1px solid rgba(59,42,34,.2)}
-td:last-child{text-align:right}
-tr.ferme{opacity:.5}
-.adresse{font-family:var(--serif);font-size:30px;line-height:1.2;margin:6px 0 16px}
-.venir p{margin-bottom:8px}
-.venir .actions{margin-top:20px}
-.venir a.lien{text-decoration:none;border-bottom:1px solid var(--teal);padding:10px 0;display:inline-block;min-height:44px}
-@media(min-width:860px){.venir{grid-template-columns:1fr 1fr;gap:70px}}
+.equipe{padding-block:var(--s12) var(--s16)}
+.equipe-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s4);align-items:start}
+.equipe h2{grid-column:1 / span 5;font-size:clamp(2.4rem,5vw,4.2rem);position:sticky;top:var(--s6)}
+.equipe h2 em{color:var(--or-fonce)}
+.membres{grid-column:7 / span 6;display:grid;gap:0}
+.membre{padding:var(--s4) 0;border-top:1px solid var(--filet)}
+.membre:last-child{border-bottom:1px solid var(--filet)}
+.membre h3{font-size:clamp(1.8rem,3.4vw,2.6rem);display:flex;justify-content:space-between;align-items:baseline;gap:var(--s2);flex-wrap:wrap}
+.membre h3 small{font-family:"Montserrat", sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--or-fonce);font-weight:600}
+.membre p{margin:var(--s1) 0 0;color:var(--gris)}
 
-footer{background:var(--brun);color:var(--lin);padding:40px 20px;text-align:center;font-size:14px}
-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px}
-footer p{margin-top:8px;opacity:.8}
+.routine{background:var(--papier);padding-block:var(--s12)}
+.routine-grid{display:grid;grid-template-columns:7fr 5fr;grid-template-rows:auto auto;gap:var(--s4);align-items:stretch}
+.r-large{grid-column:1;grid-row:1;aspect-ratio:2/1;overflow:hidden;background:#fff;border:1px solid var(--filet);margin:0}
+.r-large img{width:100%;height:100%;object-fit:cover}
+.r-haut{grid-column:2;grid-row:1 / span 2;overflow:hidden;background:#fff;border:1px solid var(--filet);min-height:420px;margin:0}
+.r-haut img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.r-txt{grid-column:1;grid-row:2;padding-top:var(--s3)}
+.routine h2{font-size:clamp(2.2rem,4.8vw,3.8rem);margin-bottom:var(--s3)}
+.routine h2 em{color:var(--or-fonce)}
+.marques{display:flex;gap:var(--s4);flex-wrap:wrap;margin-top:var(--s3);font-family:"Bodoni Moda", serif;font-size:1.5rem}
+.marques span:nth-child(2){font-style:italic}
+.figcap{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin-top:var(--s1)}
+.instant{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin-top:var(--s8)}
+.instant figure{margin:0}
+.instant .img{aspect-ratio:1/1;overflow:hidden;background:var(--ivoire)}
+.instant img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.instant figure:hover img{transform:scale(1.05)}
 
-.barre{display:none}
-@media(max-width:859px){
-  body{padding-bottom:88px}
-  .barre{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(246,239,229,.96);border-top:1px solid rgba(59,42,34,.2);backdrop-filter:blur(8px)}
-  .barre a{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:999px;text-decoration:none;font-size:16px}
-  .barre a:first-child{background:var(--teal);color:#fff}
-  .barre a:last-child{border:1px solid var(--brun)}
-  header.top img{width:150px}
-}
-@media(min-width:860px){
-  .hero{grid-template-columns:1.1fr .9fr;gap:60px;padding:64px 0 80px}
-}
+.formation{padding-block:var(--s8);border-bottom:1px solid var(--filet)}
+.formation .wrap{display:grid;grid-template-columns:4fr 8fr;gap:var(--s6);align-items:center}
+.formation h2{font-size:clamp(1.8rem,3.4vw,2.6rem)}
+.formation p{margin:0 0 var(--s2);color:var(--gris)}
+.formation a{color:var(--or-fonce);text-underline-offset:4px;font-weight:600;display:inline-block;padding:10px 0}
 
-/* Défilement */
+.avis{padding-block:var(--s16) var(--s12)}
+.avis blockquote{margin:0;max-width:980px}
+.avis blockquote p{font-family:"Bodoni Moda", serif;font-size:clamp(1.6rem,3.6vw,2.9rem);line-height:1.2;max-width:none;font-style:italic;text-wrap:pretty}
+.avis blockquote p::before{content:"« ";color:var(--or-fonce)}
+.avis blockquote p::after{content:" »";color:var(--or-fonce)}
+.avis footer{margin-top:var(--s3);display:flex;gap:var(--s3);flex-wrap:wrap;align-items:baseline;font-size:15px;color:var(--gris)}
+.avis footer b{color:var(--encre);font-weight:600}
+.etoiles{color:var(--or-fonce);letter-spacing:.15em}
+.avis-titre{font-family:"Montserrat", sans-serif;margin-bottom:var(--s4);color:var(--or-fonce)}
+
+.rdv{background:var(--noir);color:var(--ivoire);padding-block:var(--s12)}
+.rdv-grid{display:grid;grid-template-columns:5fr 7fr;gap:var(--s8)}
+.rdv h2{font-size:clamp(2.6rem,6vw,5rem);margin-bottom:var(--s4)}
+.rdv h2 em{color:var(--or)}
+.rdv p{color:rgba(245,242,236,.85)}
+.rdv a.tel{font-family:"Bodoni Moda", serif;font-size:clamp(2rem,4vw,3rem);text-decoration:none;color:var(--or);display:inline-block;margin:var(--s1) 0 var(--s3);border-bottom:1px solid transparent;transition:border-color .3s}
+.rdv a.tel:hover{border-color:var(--or)}
+.rdv .btn{color:var(--ivoire)}
+.rdv-actions{display:flex;gap:var(--s2);flex-wrap:wrap}
+.horaires{width:100%;border-collapse:collapse;font-size:16px}
+.horaires th,.horaires td{padding:14px 0;border-bottom:1px solid rgba(245,242,236,.16);text-align:left;font-weight:400}
+.horaires td{text-align:right;font-variant-numeric:tabular-nums}
+.horaires tr.ferme td,.horaires tr.ferme th{color:rgba(245,242,236,.55)}
+.horaires caption{text-align:left;padding-bottom:var(--s2);color:var(--or)}
+.adresse{margin-top:var(--s4);font-size:16px}
+.adresse a{color:var(--or)}
+.reseaux{display:flex;gap:var(--s3);margin-top:var(--s2)}
+.reseaux a{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:12px 0;text-decoration:none;border-bottom:1px solid rgba(198,164,106,.5)}
+.reseaux a:hover{color:var(--or)}
+
+.pied{background:var(--noir);color:rgba(245,242,236,.7);border-top:1px solid rgba(245,242,236,.12);padding-block:var(--s4);font-size:13px}
+.pied .wrap{display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap}
+.pied a{color:var(--or)}
+
+.pouce{display:none}
+
+@keyframes volet{to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{to{transform:scale(1)}}
+@keyframes glisse{to{opacity:1;transform:none}}
+@keyframes fondu{to{opacity:1}}
+
 @supports (animation-timeline: view()){
-  .rev{animation:apparait linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
-  @keyframes apparait{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+  .revele{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  .volet{animation:ouvre linear both;animation-timeline:view();animation-range:entry 5% entry 60%}
+  .gros{animation:glisseG linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+  @keyframes monte{from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:none}}
+  @keyframes ouvre{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+  @keyframes glisseG{from{transform:translateX(-12%)}to{transform:none}}
 }
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+
+@media (max-width:1000px){
+  .barre nav a:not(.btn){display:none}
+}
+@media (max-width:860px){
+  body{padding-bottom:72px}
+  .barre{padding-block:var(--s2)}
+  .barre img{width:170px}
+  .barre nav a.btn{display:none}
+  .cover-meta{display:grid;grid-template-columns:auto 1fr;column-gap:var(--s3);row-gap:4px;align-items:center}
+  .cover-meta .num{grid-row:1 / span 2}
+  .cover-meta .sc{font-size:11px;letter-spacing:.16em}
+  .cover-grid{grid-template-columns:1fr}
+  .cover-photo{grid-column:1;aspect-ratio:4/5}
+  .cover-txt{grid-column:1;grid-row:2;margin-top:-28vw;padding-bottom:0}
+  .cover-bas{grid-template-columns:1fr;gap:var(--s3)}
+  .cover-meta{margin-bottom:var(--s3)}
+  .book{padding-block:var(--s12) var(--s8)}
+  .book-grid,.plus-grid,.rdv-grid,.formation .wrap{grid-template-columns:1fr;gap:var(--s6)}
+  .cadre{aspect-ratio:auto;min-height:340px}
+  .carte{grid-template-columns:1fr}
+  .equipe-grid{grid-template-columns:1fr}
+  .equipe h2,.membres{grid-column:1}
+  .equipe h2{position:static}
+  .routine-grid{grid-template-columns:1fr;grid-template-rows:auto}
+  .r-large,.r-haut,.r-txt{grid-column:1;grid-row:auto}
+  .r-haut{min-height:0;aspect-ratio:4/5}
+  .instant{grid-template-columns:repeat(3,1fr);gap:var(--s1)}
+  .plus,.avis{padding-block:var(--s12)}
+  .gros{font-size:clamp(8rem,46vw,14rem)}
+  .pouce{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--noir);border-top:1px solid rgba(198,164,106,.4)}
+  .pouce a{min-height:56px;display:flex;align-items:center;justify-content:center;color:var(--ivoire);text-decoration:none;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+  .pouce a:first-child{background:var(--or);color:var(--noir)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .cover-photo{clip-path:none}
+  .cover-photo img{transform:none}
+  .cover h1,.cover-bas p{opacity:1;transform:none}
+  html{scroll-behavior:auto}
 }
 </style>
-</head>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
 <body>
+
 <div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
 
-<header class="top">
-  <img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/logo-delbove-White-e1631800759300.png?fit=325%2C49&amp;ssl=1" alt="Salon Rodolphe Delbove" width="325" height="49">
-  <a class="tel" href="tel:+3265315294">065 31 52 94</a>
+<header>
+  <div class="wrap barre">
+    <a href="#haut" aria-label="Salon Rodolphe Delbove, accueil"><img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/logo-delbove-White-e1631800759300.png?fit=325%2C49&amp;ssl=1" alt="Rodolphe Delbove" width="325" height="49"></a>
+    <nav aria-label="Navigation principale">
+      <a href="#book">Le book</a>
+      <a href="#prestations">Prestations</a>
+      <a href="#equipe">L'équipe</a>
+      <a href="#routine">Ma routine</a>
+      <a class="btn" href="tel:+3265315294">Prendre rendez-vous</a>
+    </nav>
+  </div>
 </header>
 
-<main>
-<div class="wrap hero">
-  <div class="txt">
-    <p class="kicker">Coiffeur visagiste · Mons</p>
-    <h1><span><i>Les beaux cheveux,</i></span><span><i>ça se soigne</i></span><span><i>à Mons.</i></span></h1>
-    <p class="lead">Coupe, couleur et soins, pour elle comme pour lui. Le salon est aussi un centre capillaire expert pour les cheveux de 45 ans et plus.</p>
-    <div class="actions">
-      <a class="btn plein" href="tel:+3265315294">Prendre rendez-vous</a>
-      <a class="btn vide" href="#realisations">Voir le travail</a>
-    </div>
-  </div>
-  <figure><img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image1.jpg?resize=1100%2C1100&amp;ssl=1" alt="Salon Rodolphe Delbove, coiffeur à Mons" width="1100" height="1100"></figure>
-</div>
+<main id="haut">
 
-<div class="bande" aria-hidden="true"><div>
-<span>Coupe</span><span>Couleur</span><span>Soins</span><span>Femme</span><span>Homme</span><span>Enfant</span><span>Visagiste</span><span>45+</span>
-<span>Coupe</span><span>Couleur</span><span>Soins</span><span>Femme</span><span>Homme</span><span>Enfant</span><span>Visagiste</span><span>45+</span>
-</div></div>
-
-<section id="realisations">
+<section class="cover" aria-labelledby="titre">
   <div class="wrap">
-    <h2 class="rev">Le travail <em>du salon</em></h2>
-    <p class="intro rev">Avant de pousser la porte, on regarde les coupes et les couleurs. Les voici.</p>
-    <div class="mosaic rev">
-      <figure class="m-a"><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-2-1.jpg?resize=1100%2C550&amp;ssl=1" alt="Réalisation du salon Rodolphe Delbove" width="1100" height="550"></figure>
-      <figure class="m-b"><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-4-1.jpg?resize=550%2C1100&amp;ssl=1" alt="Coiffure réalisée au salon, format portrait" width="550" height="1100"></figure>
-      <figure class="m-c"><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-5.png?resize=550%2C1100&amp;ssl=1" alt="Autre coiffure du salon, format portrait" width="550" height="1100"></figure>
-      <figure class="m-d"><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-3-1.jpg?resize=1100%2C550&amp;ssl=1" alt="Ambiance du salon Rodolphe Delbove" width="1100" height="550"></figure>
+    <div class="cover-meta">
+      <span class="num">N°16</span>
+      <span class="sc">Bd Sainctelette · Mons</span>
+      <span class="sc">Femme &amp; homme · 45+</span>
     </div>
-  </div>
-</section>
-
-<section class="presta">
-  <div class="wrap">
-    <h2 class="rev">Ce qu'on fait, <em>pour qui</em></h2>
-    <p class="intro rev">Un conseil adapté à ce que vous désirez et à la qualité de votre cheveu : c'est ce que les clientes en retiennent.</p>
-    <ul class="liste rev">
-      <li><b>Femme</b><span>Coupe, coiffage, conseil de visagiste.</span></li>
-      <li><b>Homme</b><span>Une coupe nette, pensée pour votre visage.</span></li>
-      <li><b>Enfant</b><span>Les plus jeunes ont leur place au salon aussi.</span></li>
-      <li><b>Couleur</b><span>La coloration, avec le soin du cheveu en tête.</span></li>
-      <li><b>Soins</b><span>Le salon parle de routine à la maison, et propose une boutique.</span></li>
-      <li><b>45 ans et plus</b><span>Un centre capillaire expert, pour femme et homme.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section>
-  <div class="wrap salon">
-    <div class="rev">
-      <h2>Un salon <em>où l'on se sent bien</em></h2>
-      <p>Au salon, Rodolphe, Nadia, Jesica et l'équipe vous accueillent boulevard Sainctelette. Les clientes parlent de convivialité, de bonne humeur et de professionnalisme.</p>
-      <p style="margin-top:14px">Le site actuel parle déjà de la routine et des coups de cœur de l'équipe, et d'une actualité deux fois par mois. Ici, tout cela reste à deux pouces de votre téléphone.</p>
+    <div class="cover-grid">
+      <div class="cover-photo">
+        <img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image1.jpg?resize=1100%2C1100&amp;ssl=1" alt="Trois mannequins coiffées, longueurs travaillées, lisseur et sèche-cheveux en main" width="1100" height="1100">
+      </div>
+      <div class="cover-txt">
+        <h1 id="titre">Vous aussi, <span>vous aimez</span> <span class="or">les beaux cheveux&nbsp;?</span></h1>
+      </div>
     </div>
-    <div class="trio rev">
-      <figure><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/3.jpg?fit=500%2C500&amp;ssl=1" alt="Au salon Rodolphe Delbove" width="500" height="500"></figure>
-      <figure><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/2.jpg?fit=500%2C500&amp;ssl=1" alt="Détail du salon Rodolphe Delbove" width="500" height="500"></figure>
-      <figure><img loading="lazy" src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2022/03/IMG_9234.jpg?resize=300%2C300&amp;ssl=1" alt="Moment au salon Rodolphe Delbove" width="300" height="300"></figure>
-    </div>
-  </div>
-</section>
-
-<div class="avis rev">
-  <blockquote>« Quand la convivialité s'allie au professionnalisme, nous ne pouvons être que satisfaite! Salon au top! Nadia et Jesica sont d'une generosité et toujours de bonne humeur. Chaque moment au salon sont des moments de plaisir. Conseil adapté au mieux à ce que l'on desir et à la qualité du cheveux! Jamais deçue! »</blockquote>
-  <cite>La Miss, 5/5 — avis Google</cite>
-  <p class="note"><strong>4,8/5</strong> sur 143 avis Google</p>
-</div>
-
-<section id="venir">
-  <div class="wrap venir">
-    <div class="rev">
-      <h2>Horaires</h2>
-      <table>
-        <tr class="ferme"><td>Lundi</td><td>Fermé</td></tr>
-        <tr><td>Mardi</td><td>13:00 – 18:00</td></tr>
-        <tr class="ferme"><td>Mercredi</td><td>Fermé</td></tr>
-        <tr><td>Jeudi</td><td>10:00 – 18:00</td></tr>
-        <tr><td>Vendredi</td><td>09:00 – 18:00</td></tr>
-        <tr><td>Samedi</td><td>08:30 – 17:00</td></tr>
-        <tr class="ferme"><td>Dimanche</td><td>Fermé</td></tr>
-      </table>
-    </div>
-    <div class="rev">
-      <h2>Venir <em>nous voir</em></h2>
-      <p class="adresse">Boulevard Sainctelette 16<br>7000 Mons</p>
-      <p><a class="lien" href="tel:+3265315294">065 31 52 94</a></p>
-      <p><a class="lien" href="mailto:salonrodolphedelbove@gmail.com">salonrodolphedelbove@gmail.com</a></p>
+    <div class="cover-bas">
       <div class="actions">
-        <a class="btn plein" href="tel:+3265315294">Prendre rendez-vous</a>
-        <a class="btn vide" href="https://maps.google.com/?cid=10049201510681832106&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+        <a class="btn" href="tel:+3265315294">Prendre rendez-vous</a>
+        <span class="note"><b>4,8/5</b> · 143 avis Google</span>
+      </div>
+      <p>Salon Rodolphe Delbove, coiffeur visagiste à Mons. Un centre capillaire expert, pour les femmes et les hommes de 45 ans et plus&nbsp;: la coupe, la couleur, et surtout le soin de vos cheveux.</p>
+    </div>
+  </div>
+</section>
+
+<section class="book" id="book" aria-labelledby="t-book">
+  <div class="wrap book-grid">
+    <div class="revele">
+      <h2 id="t-book">Le book <em>du salon</em></h2>
+      <ol class="index">
+        <li><span class="n">p. 04</span><div><strong>Coupe femme</strong><span class="d">Une coupe pensée pour votre visage.</span></div></li>
+        <li><span class="n">p. 06</span><div><strong>Couleur &amp; balayage</strong><span class="d">La coloration, la lumière, la tenue dans le temps.</span></div></li>
+        <li><span class="n">p. 08</span><div><strong>Homme</strong><span class="d">Net, simple, à votre image.</span></div></li>
+        <li><span class="n">p. 10</span><div><strong>Cheveux 45+</strong><span class="d">Quand le cheveu change, la façon de le coiffer aussi.</span></div></li>
+      </ol>
+    </div>
+    <div class="cadre volet">
+      <span class="sc coin">Avant / après</span>
+      <div>
+        <p>Ici, vos photos — par Nicolas</p>
+        <small>Vos coupes et vos couleurs, photographiées au salon, rangées par type. C'est la page que vos clientes regarderont en premier.</small>
+      </div>
+      <span class="sc coin2">p. 04 — 11</span>
+    </div>
+  </div>
+</section>
+
+<section class="presta" id="prestations" aria-labelledby="t-presta">
+  <div class="wrap">
+    <div class="presta-tete revele">
+      <h2 id="t-presta">Au fauteuil</h2>
+      <p>Chaque rendez-vous commence par un conseil&nbsp;: ce que vous désirez, et ce que votre cheveu permet.</p>
+    </div>
+    <div class="carte">
+      <div class="ligne revele"><h3>Coupe &amp; visagisme</h3><span class="pour">Femme</span><p>Une coupe dessinée d'après les traits de votre visage.</p></div>
+      <div class="ligne revele"><h3>Coloration</h3><span class="pour">Femme · homme</span><p>Couvrir, raviver ou changer de couleur, en respectant la qualité du cheveu.</p></div>
+      <div class="ligne revele"><h3>Balayage</h3><span class="pour">Femme</span><p>De la lumière, posée là où elle flatte.</p></div>
+      <div class="ligne revele"><h3>Soin du cheveu</h3><span class="pour">Femme · homme</span><p>Le cœur du salon&nbsp;: un cheveu en bonne santé se coiffe mieux.</p></div>
+      <div class="ligne revele"><h3>Coupe homme</h3><span class="pour">Homme</span><p>Une coupe nette, adaptée à votre style et à votre rythme.</p></div>
+      <div class="ligne revele"><h3>Coiffage</h3><span class="pour">Femme</span><p>Brushing, ondulations, lissage&nbsp;: pour un jour ou pour la semaine.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="plus" aria-labelledby="t-plus">
+  <div class="wrap plus-grid">
+    <div class="gros" aria-hidden="true">45+</div>
+    <div class="revele">
+      <span class="sc">Notre spécialité</span>
+      <h2 id="t-plus">Un centre capillaire pour les cheveux qui ont vécu.</h2>
+      <p>Après 45 ans, le cheveu s'affine, la couleur se comporte autrement, les habitudes d'hier ne suffisent plus. Au salon, on part de là&nbsp;: le bon soin, la bonne couleur, la coupe qui donne du volume.</p>
+      <p>Femme ou homme, vous repartez avec un conseil adapté et une routine simple à suivre chez vous.</p>
+    </div>
+  </div>
+</section>
+
+<section class="equipe" id="equipe" aria-labelledby="t-equipe">
+  <div class="wrap equipe-grid">
+    <h2 id="t-equipe">Les mains <em>du salon</em></h2>
+    <div class="membres">
+      <div class="membre revele">
+        <h3>Rodolphe Delbove <small>Le salon</small></h3>
+        <p>Le nom sur la porte du boulevard Sainctelette. Coiffeur visagiste, spécialisé dans la beauté et le soin de vos cheveux.</p>
+      </div>
+      <div class="membre revele">
+        <h3>Nadia <small>Routines &amp; formation</small></h3>
+        <p>Elle élabore les routines du salon et partage ses conseils avec les coiffeurs&nbsp;: balayage, communication, expérience client.</p>
+      </div>
+      <div class="membre revele">
+        <h3>Jesica <small>Au salon</small></h3>
+        <p>Toujours de bonne humeur, d'après celles qui viennent la voir.</p>
       </div>
     </div>
   </div>
 </section>
+
+<section class="routine" id="routine" aria-labelledby="t-routine">
+  <div class="wrap">
+    <div class="routine-grid">
+      <figure class="r-large">
+        <img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-2-1.jpg?resize=1100%2C550&amp;ssl=1" alt="Gamme ghd : lisseurs, sèche-cheveux, brosse et sprays" width="1100" height="550">
+      </figure>
+      <figure class="r-haut">
+        <img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2018/04/image-4-1.jpg?resize=550%2C1100&amp;ssl=1" alt="Kérastase Genesis : défense thermique et masque reconstituant" width="550" height="1100">
+      </figure>
+      <div class="r-txt revele">
+        <h2 id="t-routine">Ma routine, <em>sans réfléchir</em></h2>
+        <p>Les meilleures routines élaborées par Nadia, à poursuivre chez vous. Pour un bénéfice sur la durée&nbsp;: changer de routine, ou combiner les routines.</p>
+        <p>Les produits sont en vente au salon et sur la boutique en ligne.</p>
+        <div class="marques" aria-label="Marques au salon"><span>ghd</span><span>Kérastase</span></div>
+      </div>
+    </div>
+    <div class="instant">
+      <figure><div class="img"><img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/3.jpg?fit=500%2C500&amp;ssl=1" alt="Salon Rodolphe Delbove" width="500" height="500"></div><figcaption class="figcap">Fig. 01</figcaption></figure>
+      <figure><div class="img"><img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2021/09/2.jpg?fit=500%2C500&amp;ssl=1" alt="Salon Rodolphe Delbove" width="500" height="500"></div><figcaption class="figcap">Fig. 02</figcaption></figure>
+      <figure><div class="img"><img src="https://i0.wp.com/salonrodolphedelbove.be/wp-content/uploads/2022/03/IMG_9234.jpg?resize=300%2C300&amp;ssl=1" alt="Salon Rodolphe Delbove" width="300" height="300"></div><figcaption class="figcap">Fig. 03</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="formation" aria-labelledby="t-form">
+  <div class="wrap">
+    <h2 id="t-form" class="revele">Coiffeurs, côté coulisses</h2>
+    <div class="revele">
+      <p>Vous êtes coiffeur confirmé et vous souhaitez bénéficier des conseils de Nadia&nbsp;? Réservez votre place pour en apprendre davantage sur le balayage, la communication et l'expérience client.</p>
+      <a href="mailto:salonrodolphedelbove@gmail.com">Écrire au salon</a>
+    </div>
+  </div>
+</section>
+
+<section class="avis" aria-labelledby="t-avis">
+  <div class="wrap">
+    <h2 id="t-avis" class="sc avis-titre">Elles en parlent</h2>
+    <blockquote class="revele">
+      <p>Quand la convivialité s'allie au professionnalisme, nous ne pouvons être que satisfaite! Salon au top! Nadia et Jesica sont d'une generosité et toujours de bonne humeur. Chaque moment au salon sont des moments de plaisir. Conseil adapté au mieux à ce que l'on desir et à la qualité du cheveux! Jamais deçue!</p>
+      <footer><b>La Miss</b><span class="etoiles" aria-label="5 sur 5">★★★★★</span><span>avis Google</span><span>· 4,8/5 sur 143 avis</span></footer>
+    </blockquote>
+  </div>
+</section>
+
+<section class="rdv" id="rdv" aria-labelledby="t-rdv">
+  <div class="wrap rdv-grid">
+    <div class="revele">
+      <h2 id="t-rdv">Votre <em>prochain</em> rendez-vous</h2>
+      <p>Un appel suffit. On prend le temps de vous écouter.</p>
+      <a class="tel" href="tel:+3265315294">065 31 52 94</a>
+      <div class="rdv-actions">
+        <a class="btn" href="tel:+3265315294">Prendre rendez-vous</a>
+        <a class="btn" href="https://maps.google.com/?cid=10049201510681832106&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+      </div>
+      <p class="adresse">Bd Sainctelette 16, 7000 Mons<br><a href="mailto:salonrodolphedelbove@gmail.com">salonrodolphedelbove@gmail.com</a></p>
+      <div class="reseaux">
+        <a href="https://www.instagram.com/salonrodolphedelbove/">Instagram</a>
+        <a href="https://www.facebook.com/RodolpheDelbove/">Facebook</a>
+      </div>
+    </div>
+    <div class="revele">
+      <table class="horaires">
+        <caption class="sc">Horaires</caption>
+        <tr class="ferme"><th scope="row">Lundi</th><td>Fermé</td></tr>
+        <tr><th scope="row">Mardi</th><td>13 h – 18 h</td></tr>
+        <tr class="ferme"><th scope="row">Mercredi</th><td>Fermé</td></tr>
+        <tr><th scope="row">Jeudi</th><td>10 h – 18 h</td></tr>
+        <tr><th scope="row">Vendredi</th><td>9 h – 18 h</td></tr>
+        <tr><th scope="row">Samedi</th><td>8 h 30 – 17 h</td></tr>
+        <tr class="ferme"><th scope="row">Dimanche</th><td>Fermé</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<footer>
-  <a href="https://www.instagram.com/salonrodolphedelbove/?hl=en">Instagram</a>
-  <a href="https://www.facebook.com/RodolpheDelbove/">Facebook</a>
-  <a href="https://salonrodolphedelbove.be/">Site actuel</a>
-  <p>Salon Rodolphe Delbove · Bd Sainctelette 16, 7000 Mons</p>
-  <p>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+<footer class="pied">
+  <div class="wrap">
+    <span>Salon Rodolphe Delbove · Coiffeur visagiste · Mons</span>
+    <span>Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></span>
+  </div>
 </footer>
 
-<nav class="barre" aria-label="Actions rapides">
-  <a href="tel:+3265315294">Appeler</a>
+<nav class="pouce" aria-label="Actions rapides">
+  <a href="tel:+3265315294">Prendre rendez-vous</a>
   <a href="https://maps.google.com/?cid=10049201510681832106&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
 </nav>
+
 </body>
 </html>
