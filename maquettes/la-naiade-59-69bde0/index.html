@@ -4,252 +4,379 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>La Naïade — Institut de beauté à Ath (maquette)</title>
-<meta name="description" content="Maquette d'une page d'accueil pour La Naïade, institut de beauté à Ath.">
+<title>La Naïade — Institut de beauté et de bien-être à Ath</title>
 <style>
-:root{--nuit:#0c1411;--nuit2:#131e19;--laiton:#c9a45c;--laiton-clair:#e3c88f;--vert:#81d742;--texte:#efe9dc;--doux:#b5b0a2;--filet:rgba(201,164,92,.28)}
-*{box-sizing:border-box;margin:0;padding:0}
+@font-face{font-family:"Italiana";src:url("/maquettes/polices/italiana.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Manrope";src:url("/maquettes/polices/manrope.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+:root{
+  --encre:#1e3320;
+  --vert:#1dcf06;
+  --vert-lisible:#178f08;
+  --tendre:#81d742;
+  --sauge:#edf9e2;
+  --lin:#fbfdf8;
+  --gris:#4a5e49;
+  --filet:#d5e6c8;
+  --r:2px;
+  --arche:999px 999px var(--r) var(--r);
+  --titres:"Italiana","Didot","Bodoni 72",Georgia,serif;
+  --texte:"Manrope","Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--nuit);color:var(--texte);font-family:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;line-height:1.65;font-size:17px;overflow-x:hidden}
-img{max-width:100%;display:block}
+body{margin:0;background:var(--lin);color:var(--encre);font-family:var(--texte);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
 a{color:inherit}
-h1,h2,h3,.serif{font-family:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;font-weight:500;line-height:1.08}
-.maquette{background:var(--laiton);color:#1a1405;text-align:center;font-size:12.5px;padding:6px 12px;letter-spacing:.03em}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 5vw;border-bottom:1px solid var(--filet);position:sticky;top:0;background:rgba(12,20,17,.92);backdrop-filter:blur(8px);z-index:20}
-header img{height:38px;width:auto;max-width:150px;object-fit:contain}
-header nav{display:flex;align-items:center;gap:26px;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
-header nav a{text-decoration:none;color:var(--doux);min-height:44px;display:inline-flex;align-items:center;transition:color .3s}
-header nav a:hover{color:var(--laiton-clair)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border:1px solid var(--laiton);text-decoration:none;font-size:14px;letter-spacing:.1em;text-transform:uppercase;transition:background .3s,color .3s,transform .3s}
-.btn.plein{background:var(--laiton);color:#1a1405}
-.btn.plein:hover{background:var(--laiton-clair);transform:translateY(-2px)}
-.btn.vide:hover{background:rgba(201,164,92,.14)}
-header .btn{min-height:44px;padding:0 18px;font-size:12.5px}
-@media(max-width:700px){header nav a.lien{display:none}}
-.hero{position:relative;padding:9vh 5vw 8vh;display:grid;grid-template-columns:1.05fr .95fr;gap:5vw;align-items:center;min-height:82vh;isolation:isolate}
-.hero::before{content:"";position:absolute;left:-10%;top:5%;width:70vw;height:70vw;max-width:760px;max-height:760px;background:radial-gradient(circle,rgba(129,215,66,.2),rgba(201,164,92,.1) 45%,transparent 70%);z-index:-1;animation:respire 9s ease-in-out infinite}
-@keyframes respire{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
-.kicker{color:var(--laiton);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:22px}
-h1{font-size:clamp(46px,8vw,96px);letter-spacing:-.01em}
-h1 span{display:block;overflow:hidden}
-h1 span i{display:block;font-style:normal;animation:monte 1.1s cubic-bezier(.2,.7,.2,1) both}
-h1 span:nth-child(2) i{animation-delay:.15s;color:var(--laiton-clair);font-style:italic}
-h1 span:nth-child(3) i{animation-delay:.3s}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-.intro{max-width:460px;margin:28px 0 34px;color:var(--doux);animation:fond 1s .6s both}
-.actions{display:flex;flex-wrap:wrap;gap:12px;animation:fond 1s .8s both}
-@keyframes fond{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.note{margin-top:30px;font-size:14px;color:var(--doux);animation:fond 1s 1s both}
-.note b{color:var(--laiton-clair);font-weight:600}
-.photo-hero{position:relative;aspect-ratio:4/5;overflow:hidden;border:1px solid var(--filet);animation:devoile 1.6s .2s cubic-bezier(.7,0,.2,1) both}
-.photo-hero img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
-@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.25)}to{transform:scale(1)}}
-.credit{font-size:11.5px;color:var(--doux);margin-top:8px;letter-spacing:.04em}
-@media(max-width:860px){.hero{grid-template-columns:1fr;min-height:0;padding-top:6vh}.photo-hero{aspect-ratio:4/3}}
-section{padding:12vh 5vw}
-.etiquette{color:var(--laiton);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px}
-h2{font-size:clamp(34px,5vw,60px);max-width:16ch}
-.sub{color:var(--doux);max-width:520px;margin-top:18px}
-/* ambiance */
-.ambiance{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:end;border-top:1px solid var(--filet)}
-.ambiance .grand{aspect-ratio:16/10;overflow:hidden;border:1px solid var(--filet);margin-top:34px;grid-column:1/-1}
-.ambiance .grand img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s}
-.ambiance .grand:hover img{transform:scale(1.04)}
-@media(max-width:860px){.ambiance{grid-template-columns:1fr}.ambiance .grand{aspect-ratio:4/3}}
-/* soins */
-.soins{background:var(--nuit2);border-top:1px solid var(--filet);border-bottom:1px solid var(--filet)}
-.liste{margin-top:48px;border-top:1px solid var(--filet)}
-.envie{display:grid;grid-template-columns:.8fr 1.2fr;gap:3vw;padding:34px 0;border-bottom:1px solid var(--filet);transition:padding-left .4s}
-.envie:hover{padding-left:14px}
-.envie h3{font-size:clamp(30px,4vw,46px);color:var(--laiton-clair)}
-.envie h3 small{display:block;font-family:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--doux);margin-top:8px}
-.envie p{color:var(--doux);max-width:560px}
-.envie .tag{display:inline-block;margin-top:12px;font-size:13px;color:var(--vert);letter-spacing:.04em}
-.tarifs{margin-top:34px;padding:22px 24px;border:1px dashed var(--filet);color:var(--doux);font-size:15px;max-width:640px}
-.tarifs b{color:var(--laiton-clair);font-weight:600}
-@media(max-width:860px){.envie{grid-template-columns:1fr;gap:10px}}
-/* cabine */
-.cabine .rang{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
-.cadre{background:linear-gradient(160deg,#16231d,#0f1814);border:1px solid var(--filet);aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:22px;overflow:hidden;transition:border-color .4s,transform .4s}
-.cadre:hover{border-color:var(--laiton);transform:translateY(-4px)}
-.cadre img{max-height:100%;width:auto;object-fit:contain}
-@media(max-width:860px){.cabine .rang{grid-template-columns:1fr 1fr}}
-/* cadeau + reserver */
-.reserver{position:relative;text-align:center;border-top:1px solid var(--filet);isolation:isolate;overflow:hidden}
-.reserver .fond{position:absolute;inset:0;z-index:-2}
-.reserver .fond img{width:100%;height:100%;object-fit:cover;opacity:.32}
-.reserver::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(rgba(12,20,17,.72),rgba(12,20,17,.9))}
-.reserver h2{margin:0 auto;max-width:14ch}
-.reserver .sub{margin:20px auto 34px}
-.reserver .actions{justify-content:center}
-.cadeau{margin:56px auto 0;max-width:520px;padding-top:34px;border-top:1px solid var(--filet)}
-.cadeau h3{font-size:32px;color:var(--laiton-clair);margin-bottom:10px}
-.cadeau p{color:var(--doux)}
-/* avis */
-.avis{display:grid;grid-template-columns:.7fr 1.3fr;gap:6vw}
-.gros{font-family:Georgia,serif;font-size:clamp(70px,12vw,140px);color:var(--laiton);line-height:1}
-.gros small{font-size:.28em;color:var(--doux)}
-blockquote{padding:0 0 38px;margin-bottom:38px;border-bottom:1px solid var(--filet)}
-blockquote:last-child{border:0;margin:0;padding:0}
-blockquote p{font-family:"Cormorant Garamond","Hoefler Text",Baskerville,Georgia,serif;font-size:clamp(22px,3vw,30px);line-height:1.35}
-blockquote cite{display:block;margin-top:14px;font-style:normal;font-size:13px;color:var(--doux);letter-spacing:.06em}
-@media(max-width:860px){.avis{grid-template-columns:1fr}}
-/* infos */
-.infos{display:grid;grid-template-columns:1fr 1fr;gap:6vw;background:var(--nuit2);border-top:1px solid var(--filet)}
-table{border-collapse:collapse;width:100%;max-width:440px;margin-top:26px;font-size:18px}
-td{padding:12px 0;border-bottom:1px solid var(--filet)}
-td:last-child{text-align:right;color:var(--laiton-clair)}
-tr.ferme td:last-child{color:var(--doux)}
-.coord p{margin-top:18px}
-.coord a{text-decoration:none;border-bottom:1px solid var(--filet);padding:10px 0;display:inline-block;word-break:break-word;transition:color .3s}
-.coord a:hover{color:var(--laiton-clair)}
-.coord .tel{font-family:"Cormorant Garamond",Georgia,serif;font-size:36px;border:0}
-@media(max-width:860px){.infos{grid-template-columns:1fr}}
-footer{padding:36px 5vw 40px;text-align:center;font-size:13px;color:var(--doux);border-top:1px solid var(--filet)}
+h1,h2,h3{font-family:var(--titres);font-weight:400;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--encre);outline-offset:3px}
+.wrap{width:min(1160px,100% - 48px);margin-inline:auto}
+
+.maquette{background:#142416;color:var(--sauge);font-size:12px;text-align:center;padding:6px 16px;letter-spacing:.04em}
+
+/* En-tête */
+.entete{background:var(--encre);color:var(--sauge);position:sticky;top:0;z-index:20;border-bottom:3px solid var(--vert)}
+.entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none}
+.logo span{font-family:var(--titres);font-size:30px;line-height:1}
+.sirene{width:14px;height:26px;position:relative;flex:none}
+.sirene::before{content:"";position:absolute;left:3px;top:0;width:8px;height:8px;border-radius:50%;background:var(--vert)}
+.sirene::after{content:"";position:absolute;left:0;bottom:0;width:14px;height:16px;border:2px solid var(--vert);border-top:0;border-radius:0 0 14px 14px}
+.droite{display:flex;align-items:center;gap:32px}
+.nav{display:flex;align-items:center;gap:32px;font-size:15px}
+.nav a{text-decoration:none;padding:8px 0;border-bottom:1px solid transparent;transition:border-color .3s}
+.nav a:hover{border-color:var(--vert)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:var(--r);background:var(--encre);color:var(--sauge);text-decoration:none;font-family:var(--texte);font-size:15px;font-weight:600;letter-spacing:.02em;border:1px solid var(--encre);transition:background .3s,color .3s;white-space:nowrap}
+.btn:hover{background:var(--sauge);color:var(--encre)}
+.entete .btn{background:var(--sauge);color:var(--encre);border-color:var(--sauge)}
+.entete .btn:hover{background:transparent;color:var(--sauge)}
+
+/* Ouverture */
+.ouverture{padding:72px 0 96px;overflow:hidden}
+.ouverture .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.lieu-ville{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);display:flex;align-items:center;gap:16px;margin-bottom:32px}
+.lieu-ville::before{content:"";width:40px;height:1px;background:var(--vert)}
+.ouverture h1{font-size:clamp(46px,7.4vw,104px);line-height:1;animation:monte 1.4s cubic-bezier(.2,.7,.2,1) both}
+.ouverture h1 em{font-style:normal;color:var(--vert)}
+.chapeau{margin-top:32px;max-width:34em;font-size:18px;color:var(--gris);animation:monte 1.4s .25s cubic-bezier(.2,.7,.2,1) both}
+.actions{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:24px;animation:monte 1.4s .45s cubic-bezier(.2,.7,.2,1) both}
+.lien{font-weight:600;font-size:15px;text-decoration:none;border-bottom:1px solid var(--vert);padding:4px 0}
+.lien:hover{color:var(--gris)}
+.note{margin-top:48px;display:flex;align-items:baseline;gap:16px;font-size:15px;color:var(--gris);animation:monte 1.4s .6s both}
+.note strong{font-family:var(--titres);font-weight:400;font-size:44px;color:var(--encre);line-height:1}
+.arche-cadre{position:relative}
+.arche-cadre::after{content:"";position:absolute;inset:-16px -16px auto auto;width:100%;height:100%;border:1px solid var(--tendre);border-radius:var(--arche);z-index:-1}
+.arche{position:relative;aspect-ratio:4/5;border-radius:var(--arche);overflow:hidden;background:radial-gradient(circle at 50% 35%,#ffffff 0,var(--sauge) 55%,#d7efc2 100%);display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--titres);font-size:32px;color:var(--gris);animation:devoile 1.8s .2s cubic-bezier(.65,0,.25,1) both}
+.arche img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 78%;animation:zoom 14s ease-out both}
+.arche::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(237,249,226,0) 55%,rgba(30,51,32,.35) 100%);pointer-events:none}
+.arche-legende{position:absolute;left:0;right:0;bottom:28px;z-index:1;font-family:var(--texte);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#fff}
+
+@keyframes monte{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
+
+/* Carte des soins */
+.soins{background:var(--sauge);padding:112px 0 120px}
+.soins-tete{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:56px}
+.soins h2{font-size:clamp(40px,5.4vw,72px)}
+.soins-tete p{color:var(--gris);max-width:32em}
+.carte input{position:absolute;opacity:0;pointer-events:none}
+.onglets{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--filet);margin-bottom:48px}
+.onglets label{cursor:pointer;min-height:48px;display:inline-flex;align-items:center;padding:0 16px;font-size:15px;font-weight:600;color:var(--gris);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .3s,border-color .3s}
+.onglets label:hover{color:var(--encre)}
+.panneau{display:none;grid-template-columns:240px 1fr;gap:64px;align-items:start}
+#t-visage:checked~.panneaux .p-visage,
+#t-corps:checked~.panneaux .p-corps,
+#t-mains:checked~.panneaux .p-mains,
+#t-balneo:checked~.panneaux .p-balneo{display:grid;animation:fondu .8s ease both}
+#t-visage:checked~.onglets [for=t-visage],
+#t-corps:checked~.onglets [for=t-corps],
+#t-mains:checked~.onglets [for=t-mains],
+#t-balneo:checked~.onglets [for=t-balneo]{color:var(--encre);border-color:var(--vert)}
+#t-visage:focus-visible~.onglets [for=t-visage],
+#t-corps:focus-visible~.onglets [for=t-corps],
+#t-mains:focus-visible~.onglets [for=t-mains],
+#t-balneo:focus-visible~.onglets [for=t-balneo]{outline:2px solid var(--encre);outline-offset:2px}
+@keyframes fondu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.medaillon{position:sticky;top:120px;aspect-ratio:4/5;border-radius:var(--arche);border:1px solid var(--tendre);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px 32px;background:var(--lin)}
+.medaillon::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--vert);margin-bottom:20px}
+.medaillon b{font-family:var(--titres);font-weight:400;font-size:40px;line-height:1.05}
+.medaillon span{margin-top:16px;font-size:14px;color:var(--gris)}
+.liste{list-style:none;margin:0;padding:0}
+.liste li{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"nom ligne" "det det";column-gap:16px;padding:24px 0;border-bottom:1px solid var(--filet)}
+.liste li:first-child{padding-top:0}
+.liste h3{grid-area:nom;font-size:clamp(26px,2.6vw,32px)}
+.liste li::after{content:"";grid-area:ligne;align-self:center;height:1px;background:linear-gradient(90deg,var(--tendre),transparent)}
+.liste p{grid-area:det;margin-top:8px;color:var(--gris);max-width:58ch;font-size:16px}
+.soins-pied{margin-top:56px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;padding-top:32px;border-top:1px solid var(--filet)}
+.soins-pied p{color:var(--gris);max-width:40em}
+
+/* Marques */
+.marques{padding:96px 0}
+.marques .wrap{display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:center}
+.marques h2{font-size:clamp(34px,4vw,52px)}
+.marques p{margin-top:16px;color:var(--gris);max-width:30em}
+.logos{display:flex;flex-wrap:wrap;gap:24px}
+.logos figure{margin:0;flex:1 1 200px;min-height:144px;display:flex;align-items:center;justify-content:center;padding:24px 32px;border:1px solid var(--filet);border-radius:var(--r);background:#fff}
+.logos img{max-height:80px;width:auto;object-fit:contain}
+
+/* Le lieu */
+.lieu{background:var(--encre);color:var(--sauge);padding:120px 0}
+.lieu .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:center}
+.cadre-vide{aspect-ratio:1;border-radius:50%;border:1px dashed var(--tendre);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px;font-family:var(--titres);font-size:clamp(26px,2.8vw,34px);line-height:1.2;color:var(--sauge)}
+.cadre-vide small{display:block;margin-top:16px;max-width:16em;font-family:var(--texte);font-size:14px;line-height:1.5;color:#c9dcbc}
+.lieu h2{font-size:clamp(40px,5vw,68px)}
+.lieu p{margin-top:24px;max-width:36em;color:#d8e8cc}
+.lieu .adresse{margin-top:40px;padding-top:24px;border-top:1px solid #3d5a3e;font-size:15px;display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 32px}
+.lieu .lien{border-color:var(--vert)}
+.lieu .lien:hover{color:#fff}
+
+/* Avis */
+.avis{padding:120px 0 104px}
+.avis-tete{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:64px}
+.avis-tete h2{font-size:clamp(36px,4.4vw,60px);max-width:14em}
+.avis-tete span{color:var(--gris);font-size:15px}
+.citations{display:grid;grid-template-columns:1.2fr 1fr;gap:64px}
+.citations blockquote{margin:0;position:relative;padding-left:32px;border-left:1px solid var(--vert)}
+.citations blockquote:nth-child(2){margin-top:96px}
+.citations p{font-family:var(--titres);font-size:clamp(24px,2.4vw,30px);line-height:1.3}
+.citations footer{margin-top:24px;font-size:14px;color:var(--gris)}
+.citations footer b{color:var(--encre);font-weight:600}
+
+/* Horaires */
+.venir{background:var(--sauge);padding:104px 0}
+.venir .wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.venir h2{font-size:clamp(40px,5vw,64px)}
+.venir .intro{margin-top:24px;color:var(--gris);max-width:28em}
+.contact{margin-top:40px;display:grid;gap:16px;font-size:16px}
+.contact a{text-decoration:none;border-bottom:1px solid var(--tendre);justify-self:start}
+.contact a:hover{border-color:var(--encre)}
+.contact .btn{margin-top:16px;border-bottom:1px solid var(--encre)}
+.horaires{list-style:none;margin:0;padding:0;align-self:start}
+.horaires li{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--filet);font-size:16px}
+.horaires li:first-child{border-top:1px solid var(--filet)}
+.horaires .ferme{color:var(--gris)}
+.horaires span:first-child{text-transform:capitalize}
+
+.pied{background:var(--encre);color:#c9dcbc;padding:40px 0;font-size:14px}
+.pied .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+.pied a{color:var(--sauge)}
+
 .barre{display:none}
-@media(max-width:860px){
- body{padding-bottom:84px}
- .barre{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(12,20,17,.96);border-top:1px solid var(--filet);z-index:30}
- .barre a{min-height:52px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--laiton)}
- .barre a:first-child{background:var(--laiton);color:#1a1405}
- section{padding:9vh 6vw}
+.appel-mobile{display:none}
+
+@supports (animation-timeline: view()){
+  .apparait{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
 }
-@supports (animation-timeline:view()){
- .apparait{animation:fond linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
- .envie{animation:fond linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+
+@media (max-width:860px){
+  body{padding-bottom:84px}
+  .nav{display:none}
+  .appel-mobile{display:inline-flex;min-height:40px;padding:0 16px;font-size:14px}
+  .entete .wrap{min-height:64px}
+  .logo span{font-size:26px}
+  .ouverture{padding:40px 0 72px}
+  .ouverture .wrap,.soins-tete,.marques .wrap,.lieu .wrap,.venir .wrap,.citations{grid-template-columns:1fr;gap:40px}
+  .arche-cadre{order:-1;width:min(320px,82%);margin-inline:auto}
+  .arche-cadre::after{inset:-12px -12px auto auto}
+  .soins,.lieu,.avis,.venir{padding:80px 0}
+  .marques{padding:72px 0}
+  .onglets{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .onglets label{white-space:nowrap;padding:0 12px}
+  #t-visage:checked~.panneaux .p-visage,#t-corps:checked~.panneaux .p-corps,#t-mains:checked~.panneaux .p-mains,#t-balneo:checked~.panneaux .p-balneo{grid-template-columns:1fr;gap:32px}
+  .medaillon{position:static;aspect-ratio:auto;border-radius:160px 160px var(--r) var(--r);padding:48px 24px 32px}
+  .cadre-vide{width:min(300px,100%);margin-inline:auto;padding:32px}
+  .citations blockquote:nth-child(2){margin-top:0}
+  .barre{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(251,253,248,.96);border-top:1px solid var(--filet)}
+  .barre a{min-height:48px;padding:0 12px}
+  .barre .second{background:var(--lin);color:var(--encre)}
 }
-@media(prefers-reduced-motion:reduce){
- *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
 }
 </style>
-</head>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
 <body>
-<div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
+<div class="maquette">Maquette — proposition de nouveau site</div>
 
-<header>
- <a href="#haut" aria-label="La Naïade, accueil"><span class="logo-texte">La Naïade</span></a>
- <nav>
-  <a class="lien" href="#soins">Les soins</a>
-  <a class="lien" href="#infos">Horaires</a>
-  <a class="btn plein" href="#reserver">Réserver un soin</a>
- </nav>
+<header class="entete">
+  <div class="wrap">
+    <a class="logo" href="#haut" aria-label="La Naïade, accueil"><i class="sirene" aria-hidden="true"></i><span>La Naïade</span></a>
+    <div class="droite">
+      <nav class="nav" aria-label="Menu">
+        <a href="#soins">Les soins</a>
+        <a href="#lieu">L'institut</a>
+        <a href="#venir">Horaires</a>
+      </nav>
+      <a class="btn" href="tel:+3268334988"><span class="nav-txt">Réserver un soin</span></a>
+    </div>
+  </div>
 </header>
 
 <main id="haut">
-<div class="hero">
- <div>
-  <p class="kicker">Institut de beauté · Ath</p>
-  <h1><span><i>Un massage,</i></span><span><i>un soin,</i></span><span><i>enfin du calme.</i></span></h1>
-  <p class="intro">Chaussée de Mons 338, à Ath. On y vient pour un massage, un soin du visage ou un maquillage, et on repart détendu. Du mardi au samedi, de 9 h à 18 h.</p>
-  <div class="actions">
-   <a class="btn plein" href="#reserver">Réserver un soin</a>
-   <a class="btn vide" href="tel:+3268334988">068 33 49 88</a>
-  </div>
-  <p class="note"><b>4,8 / 5</b> sur Google, d'après 175 avis.</p>
- </div>
- <div>
-  <div class="photo-hero"><span class="logo-texte">Ambiance de l'institut La Naïade à Ath</span></div>
-  <p class="credit">Photo : site de La Naïade</p>
- </div>
-</div>
+  <section class="ouverture">
+    <div class="wrap">
+      <div>
+        <p class="lieu-ville">Institut de beauté · Ath</p>
+        <h1>Offrez-vous un moment de relaxation<em>.</em></h1>
+        <p class="chapeau">La Naïade, chaussée de Mons, c'est un espace dédié à la beauté et au bien-être : soins du visage et du corps, massages, épilations, pédicurie médicale, manucurie, et la balnéothérapie avec spa, hammam et sauna.</p>
+        <div class="actions">
+          <a class="btn" href="tel:+3268334988">Réserver un soin</a>
+          <a class="lien" href="#soins">Voir la carte des soins</a>
+        </div>
+        <p class="note"><strong>4,8</strong> sur 5 · 175 avis Google</p>
+      </div>
+      <div class="arche-cadre">
+        <div class="arche">
+          <img src="https://lanaiade-ath.be/wp-content/uploads/2019/04/header-background.jpg" alt="Moment de détente à La Naïade" width="1600" height="900">
+          <span class="arche-legende">Beauté · bien-être</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="ambiance apparait" id="ambiance">
- <div>
-  <p class="etiquette">L'ambiance</p>
-  <h2>Ici, on ralentit.</h2>
- </div>
- <p class="sub" style="margin:0">Lumière douce, voix basses, personne ne vous presse. Une cliente a même été accueillie en retard, après 17 h 30. Ici, on vous attend.</p>
- <div class="grand"><span class="logo-texte">Ambiance détente à l'institut La Naïade</span></div>
-</section>
+  <section class="soins" id="soins">
+    <div class="wrap">
+      <div class="soins-tete apparait">
+        <h2>La carte des soins</h2>
+        <p>Vous avez envie de vous faire bichonner ? Choisissez par envie, puis appelez-nous : on vous conseille et on trouve le bon moment ensemble.</p>
+      </div>
+      <div class="carte">
+        <input type="radio" name="envie" id="t-visage" checked>
+        <input type="radio" name="envie" id="t-corps">
+        <input type="radio" name="envie" id="t-mains">
+        <input type="radio" name="envie" id="t-balneo">
+        <div class="onglets">
+          <label for="t-visage">Visage</label>
+          <label for="t-corps">Corps &amp; massages</label>
+          <label for="t-mains">Mains &amp; pieds</label>
+          <label for="t-balneo">Spa, hammam, sauna</label>
+        </div>
+        <div class="panneaux">
+          <div class="panneau p-visage">
+            <div class="medaillon"><b>Visage</b><span>Soins esthétiques &amp; mise en beauté</span></div>
+            <ul class="liste">
+              <li><h3>Soins du visage</h3><p>Les soins esthétiques de l'institut, choisis selon votre peau et ce dont elle a besoin aujourd'hui.</p></li>
+              <li><h3>Maquillage</h3><p>Vous devez vous rendre à une soirée et vous avez envie d'un superbe maquillage ? Nous sommes là pour ça.</p></li>
+              <li><h3>Épilations</h3><p>Pour une peau douce, en toute discrétion.</p></li>
+            </ul>
+          </div>
+          <div class="panneau p-corps">
+            <div class="medaillon"><b>Corps</b><span>Massages &amp; soins du corps</span></div>
+            <ul class="liste">
+              <li><h3>Massages</h3><p>Un large choix de massages, pour relâcher, souffler et repartir légère.</p></li>
+              <li><h3>Massage aux bambous</h3><p>Cité comme « coup de cœur » dans les avis Google.</p></li>
+              <li><h3>Soins du corps</h3><p>De quoi vous rendre belle et bien dans votre peau.</p></li>
+            </ul>
+          </div>
+          <div class="panneau p-mains">
+            <div class="medaillon"><b>Mains &amp; pieds</b><span>Pédicurie médicale &amp; manucurie</span></div>
+            <ul class="liste">
+              <li><h3>Pédicurie médicale</h3><p>Le soin des pieds, fait avec rigueur et douceur.</p></li>
+              <li><h3>Manucurie</h3><p>Des mains soignées, pour tous les jours ou pour une occasion.</p></li>
+            </ul>
+          </div>
+          <div class="panneau p-balneo">
+            <div class="medaillon"><b>Balnéo</b><span>Spa, hammam &amp; sauna</span></div>
+            <ul class="liste">
+              <li><h3>Spa</h3><p>La balnéothérapie de La Naïade, pour un vrai moment de détente.</p></li>
+              <li><h3>Hammam</h3><p>La chaleur humide qui détend et prépare la peau.</p></li>
+              <li><h3>Sauna</h3><p>Une pause chaude, à combiner avec un massage ou un soin.</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="soins-pied">
+        <p>Tarifs et disponibilités : appelez l'institut au 068 33 49 88, du mardi au samedi.</p>
+        <a class="btn" href="tel:+3268334988">Réserver un soin</a>
+      </div>
+    </div>
+  </section>
 
-<section class="soins" id="soins">
- <div class="apparait">
-  <p class="etiquette">Les soins</p>
-  <h2>Choisissez selon votre envie.</h2>
-  <p class="sub">Un large choix de massages et de soins. Voici comment nous les rangerions sur le nouveau site.</p>
- </div>
- <div class="liste">
-  <div class="envie"><h3>Se détendre<small>Massages</small></h3><div><p>Des massages pour relâcher le corps et la tête. Le massage aux bambous a ses fans, dont une cliente qui en a fait son coup de cœur.</p><span class="tag">Massage aux bambous</span></div></div>
-  <div class="envie"><h3>Un beau visage<small>Soins du visage</small></h3><div><p>Les soins du visage et les appareils de l'institut, présentés un par un avec ce qu'ils font et pour qui.</p></div></div>
-  <div class="envie"><h3>Une soirée à fêter<small>Maquillage</small></h3><div><p>Pour un événement, un mariage, une sortie. Réservez à l'avance, même en fin de journée.</p></div></div>
-  <div class="envie"><h3>Prendre soin de soi<small>Corps, mains, pieds</small></h3><div><p>Les autres soins de l'institut, classés par envie plutôt que dans une longue liste.</p></div></div>
- </div>
- <p class="tarifs"><b>Durée et tarif, soin par soin.</b> Sur le site actuel, les tarifs sont difficiles à lire. Ici, chaque soin aurait sa ligne claire, avec sa durée et son prix.</p>
-</section>
+  <section class="marques">
+    <div class="wrap">
+      <div class="apparait">
+        <h2>Les marques de l'institut</h2>
+        <p>Des produits professionnels, choisis pour les soins réalisés en cabine.</p>
+      </div>
+      <div class="logos apparait">
+        <figure><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/elements.png" alt="Elements Professionnel — esthétique accessible" width="240" height="80"></figure>
+        <figure><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/duolift.png" alt="Duolift" width="240" height="80"></figure>
+      </div>
+    </div>
+  </section>
 
-<section class="cabine" id="cabine">
- <div class="apparait">
-  <p class="etiquette">En cabine</p>
-  <h2>Ce qui fait la différence.</h2>
-  <p class="sub">Les appareils, les marques et les visages de l'institut, tels qu'ils apparaissent sur le site actuel. Ils auront ici leurs vraies photos.</p>
- </div>
- <div class="rang apparait">
-  <div class="cadre"><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/duolift.png" alt="Duolift, image du site de La Naïade" loading="lazy"></div>
-  <div class="cadre"><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/elements.png" alt="Elements, image du site de La Naïade" loading="lazy"></div>
-  <div class="cadre"><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/Dassonville-Olivier.png" alt="Image Dassonville Olivier, site de La Naïade" loading="lazy"></div>
-  <div class="cadre"><img src="https://lanaiade-ath.be/wp-content/uploads/2019/01/user.png" alt="Image du site de La Naïade" loading="lazy"></div>
- </div>
- <p class="credit" style="margin-top:18px">Ici, vos photos — par Nicolas Leveugle</p>
-</section>
+  <section class="lieu" id="lieu">
+    <div class="wrap">
+      <div class="cadre-vide apparait">Ici, vos photos — par Nicolas<small>vos cabines, le spa, vos mains au travail</small></div>
+      <div class="apparait">
+        <h2>Un cocon, chaussée de Mons</h2>
+        <p>À La Naïade, on vient pour un soin précis ou simplement pour souffler. On vous écoute, on prend le temps, et vous repartez belle et bien dans votre peau.</p>
+        <p>Une soirée qui approche, ou juste l'envie d'un massage : passez un coup de fil, on s'occupe du reste.</p>
+        <div class="adresse">
+          <span>Chau. de Mons 338, 7800 Ath</span>
+          <a class="lien" href="https://maps.google.com/?cid=7422265986308711008">Voir l'itinéraire</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="avis" id="avis">
- <div class="apparait">
-  <p class="etiquette">Ce qu'on en dit</p>
-  <div class="gros">4,8<small> / 5</small></div>
-  <p class="sub">175 avis Google</p>
- </div>
- <div class="apparait">
-  <blockquote><p>« Large choix de massages et de soins. Personnel très accueillant, bienveillant et professionnel. De quoi se détendre et passer un bon moment. Je recommande les yeux fermés (avec un coup de coeur pour le massage aux bambous 😊) »</p><cite>Amélie Deconninck · 5/5 · avis Google</cite></blockquote>
-  <blockquote><p>« Je recommande vivement ! Je cherchais une maquilleuse pour un event en soirée. C'est la seule qui a bien voulu m'accueillir après 17h30 et je suis même arrivée en retard. Gentillesse et qualité de service. »</p><cite>Cynthia Wildcat · 5/5 · avis Google</cite></blockquote>
- </div>
-</section>
+  <section class="avis">
+    <div class="wrap">
+      <div class="avis-tete apparait">
+        <h2>Ce qu'en disent nos clientes</h2>
+        <span>4,8 sur 5 · 175 avis Google</span>
+      </div>
+      <div class="citations">
+        <blockquote class="apparait">
+          <p>« Large choix de massages et de soins. Personnel très accueillant, bienveillant et professionnel. De quoi se détendre et passer un bon moment. Je recommande les yeux fermés (avec un coup de coeur pour le massage aux bambous 😊) »</p>
+          <footer><b>Amélie Deconninck</b> · avis Google, 5/5</footer>
+        </blockquote>
+        <blockquote class="apparait">
+          <p>« Je recommande vivement ! Je cherchais une maquilleuse pour un event en soirée. C'est la seule qui a bien voulu m'accueillir après 17h30 et je suis même arrivée en retard. Gentillesse et qualité de service. »</p>
+          <footer><b>Cynthia Wildcat</b> · avis Google, 5/5</footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
 
-<section class="reserver" id="reserver">
- <div class="fond"></div>
- <p class="etiquette">Réserver un soin</p>
- <h2>Quand voulez-vous venir ?</h2>
- <p class="sub">Appelez ou écrivez-nous, on trouve le bon créneau ensemble. Sur le nouveau site, la réservation en ligne serait simple et rapide.</p>
- <div class="actions">
-  <a class="btn plein" href="tel:+3268334988">Appeler le 068 33 49 88</a>
-  <a class="btn vide" href="mailto:lanaiade-ath@hotmail.com">Écrire un e-mail</a>
- </div>
- <div class="cadeau">
-  <h3>Offrir un soin</h3>
-  <p>Un bon cadeau, c'est un moment de calme à offrir. Demandez-le à l'institut, par téléphone ou sur place.</p>
- </div>
-</section>
-
-<section class="infos" id="infos">
- <div class="apparait">
-  <p class="etiquette">Horaires</p>
-  <h2>Ouvert du mardi au samedi.</h2>
-  <table>
-   <tr class="ferme"><td>Lundi</td><td>Fermé</td></tr>
-   <tr><td>Mardi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Mercredi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Jeudi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Vendredi</td><td>9 h – 18 h</td></tr>
-   <tr><td>Samedi</td><td>9 h – 18 h</td></tr>
-   <tr class="ferme"><td>Dimanche</td><td>Fermé</td></tr>
-  </table>
- </div>
- <div class="coord apparait">
-  <p class="etiquette">Nous trouver</p>
-  <p>La Naïade<br>Chaussée de Mons 338<br>7800 Ath</p>
-  <p><a class="tel" href="tel:+3268334988">068 33 49 88</a></p>
-  <p><a href="mailto:lanaiade-ath@hotmail.com">lanaiade-ath@hotmail.com</a></p>
-  <p><a href="https://maps.google.com/?cid=7422265986308711008&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire sur Google Maps</a></p>
-  <p><a href="https://www.facebook.com/polletmel">Facebook</a></p>
- </div>
-</section>
+  <section class="venir" id="venir">
+    <div class="wrap">
+      <div class="apparait">
+        <h2>Prendre rendez-vous</h2>
+        <p class="intro">L'institut vous accueille du mardi au samedi, de 9 h à 18 h.</p>
+        <div class="contact">
+          <span>Chau. de Mons 338, 7800 Ath</span>
+          <a href="tel:+3268334988">068 33 49 88</a>
+          <a href="mailto:lanaiade-ath@hotmail.com">lanaiade-ath@hotmail.com</a>
+          <a class="btn" href="tel:+3268334988">Réserver un soin</a>
+        </div>
+      </div>
+      <ul class="horaires apparait" aria-label="Horaires">
+        <li><span>lundi</span><span class="ferme">Fermé</span></li>
+        <li><span>mardi</span><span>09:00 – 18:00</span></li>
+        <li><span>mercredi</span><span>09:00 – 18:00</span></li>
+        <li><span>jeudi</span><span>09:00 – 18:00</span></li>
+        <li><span>vendredi</span><span>09:00 – 18:00</span></li>
+        <li><span>samedi</span><span>09:00 – 18:00</span></li>
+        <li><span>dimanche</span><span class="ferme">Fermé</span></li>
+      </ul>
+    </div>
+  </section>
 </main>
 
-<footer>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+<footer class="pied">
+  <div class="wrap">
+    <span>La Naïade · Institut de beauté et de bien-être · Ath</span>
+    <span>Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></span>
+  </div>
+</footer>
 
-<div class="barre">
- <a href="tel:+3268334988">Appeler</a>
- <a href="https://maps.google.com/?cid=7422265986308711008&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-</div>
+<nav class="barre" aria-label="Actions rapides">
+  <a class="btn" href="tel:+3268334988">Réserver un soin</a>
+  <a class="btn second" href="https://maps.google.com/?cid=7422265986308711008">Itinéraire</a>
+</nav>
 </body>
 </html>
