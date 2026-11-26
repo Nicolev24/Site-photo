@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Les sens du ciel — Esthétique &amp; bien-être à Ormeignies (Ath)</title>
+<meta name="description" content="Institut Les sens du ciel à Ormeignies : soins du visage, massages, réflexologie plantaire, pédicure médicale, ongles en gel, épilations, thérapie holistique.">
+<style>
+@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond.woff2") format("woff2");font-weight:300 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond-italic.woff2") format("woff2");font-weight:300 700;font-style:italic;font-display:swap}
+@font-face{font-family:"Jost";src:url("/maquettes/polices/jost.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --or:#cc9000;
+  --or-fonce:#7f5a00;
+  --rose:#f4e7e3;
+  --rose-trait:#d9a9b1;
+  --ivoire:#fbf8f2;
+  --sable:#f2ebdf;
+  --encre:#2f2822;
+  --gris:#5b524a;
+  --trait:#e4d9c8;
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;--s8:128px;
+  --titre:"Cormorant Garamond",Georgia,serif;
+  --texte:"Jost",system-ui,sans-serif;
+  --pill:999px;
+  --arche:1000px 1000px 0 0;
+  --doux:cubic-bezier(.22,.61,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivoire);color:var(--encre);font-family:var(--texte);font-size:17px;line-height:1.65;font-weight:400;overflow-x:clip;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--or-fonce);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--titre);font-weight:500;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.005em}
+p{margin:0 0 var(--s2)}
+.wrap{width:min(1200px,100% - 48px);margin-inline:auto}
+
+.maquette{background:var(--encre);color:#f4ede2;font-size:13px;text-align:center;padding:6px 16px;letter-spacing:.02em}
+
+/* En-tête */
+.entete{position:sticky;top:0;z-index:20;background:rgba(251,248,242,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--trait)}
+.entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:80px}
+.logo img{height:62px;width:auto;mix-blend-mode:multiply}
+.nav{display:flex;gap:var(--s4);align-items:center}
+.nav a{text-decoration:none;font-size:15px;color:var(--gris);padding:12px 0;transition:color .3s}
+.nav a:hover{color:var(--or-fonce)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border-radius:var(--pill);background:var(--or-fonce);color:#fff;text-decoration:none;font-family:var(--texte);font-size:16px;font-weight:500;letter-spacing:.01em;border:1px solid var(--or-fonce);transition:background .4s var(--doux),color .4s var(--doux)}
+.btn:hover{background:transparent;color:var(--or-fonce)}
+.nav a.btn{color:#fff;padding:10px 24px}
+.nav a.btn:hover{color:var(--or-fonce)}
+.lien{color:var(--or-fonce);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;font-weight:500;transition:opacity .3s}
+.lien:hover{opacity:.7}
+
+/* Ouverture */
+.ouverture{padding:var(--s6) 0 var(--s7);position:relative}
+.ouverture .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:var(--s6);align-items:center}
+.ouverture .lieu{font-size:15px;color:var(--gris);margin-bottom:var(--s3);display:flex;align-items:center;gap:12px}
+.ouverture .lieu::before{content:"";width:40px;height:1px;background:var(--or)}
+.ouverture h1{font-size:clamp(3.2rem,8vw,6.6rem);line-height:.98;font-weight:400}
+.ouverture h1 em{display:block;font-style:italic;color:var(--or-fonce);font-size:.52em;margin-top:var(--s2);line-height:1.1}
+.ouverture .intro{max-width:34em;margin:var(--s4) 0 var(--s4);font-size:18px;color:var(--gris)}
+.actions{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.note{margin-top:var(--s5);font-size:15px;color:var(--gris);display:flex;align-items:center;gap:10px}
+.note b{font-family:var(--titre);font-size:28px;font-weight:500;color:var(--encre)}
+.etoiles{color:var(--or);letter-spacing:2px;font-size:14px}
+
+.arche-cadre{position:relative;padding:20px 20px 0 0}
+.arche-bord{position:relative}
+.arche-bord::before{content:"";position:absolute;top:-18px;right:-18px;bottom:18px;left:18px;border:1px solid var(--or);border-bottom:0;border-radius:var(--arche);pointer-events:none}
+.arche{position:relative;border-radius:var(--arche);overflow:hidden;aspect-ratio:4/5;background:var(--sable)}
+.arche img{width:100%;height:100%;object-fit:cover}
+.legende{font-family:var(--titre);font-style:italic;font-size:18px;color:var(--gris);margin-top:var(--s2);text-align:right}
+
+/* Soins */
+.soins{padding:var(--s8) 0;background:#fff;border-block:1px solid var(--trait)}
+.soins-tete{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s6);align-items:end;margin-bottom:var(--s7)}
+.soins-tete h2{font-size:clamp(2.6rem,5.5vw,4.4rem)}
+.soins-tete h2 em{color:var(--or-fonce)}
+.soins-tete p{color:var(--gris);max-width:32em;margin:0}
+.soins-corps{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--s7);align-items:start}
+.soins-photo{position:sticky;top:120px}
+.soins-photo .arche{aspect-ratio:3/4}
+.carte{list-style:none;margin:0;padding:0}
+.carte li{display:grid;grid-template-columns:170px minmax(0,1fr);gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--trait)}
+.carte li>*{min-width:0}
+.carte li:last-child{border-bottom:1px solid var(--trait)}
+.envie{font-family:var(--titre);font-style:italic;font-size:20px;color:var(--or-fonce);padding-top:8px}
+.carte h3{font-size:clamp(1.9rem,3vw,2.4rem);margin-bottom:var(--s1)}
+.carte p{color:var(--gris);margin-bottom:var(--s1);max-width:36em}
+.detail{display:flex;flex-wrap:wrap;row-gap:2px;font-size:15px;color:var(--encre);letter-spacing:.01em}
+.detail span{white-space:nowrap}
+.detail span+span::before{content:"·";color:var(--or);margin:0 8px}
+.soins-fin{margin-top:var(--s5);display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.soins-fin p{margin:0;color:var(--gris);font-family:var(--titre);font-style:italic;font-size:22px}
+
+/* Le lieu */
+.lieu-sec{padding:var(--s8) 0 var(--s7)}
+.lieu-sec .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--s7);align-items:center}
+.duo{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--s3);align-items:end}
+.duo .arche{aspect-ratio:3/4}
+.cadre-vide{border-radius:var(--arche);aspect-ratio:3/4;border:1px dashed var(--or);background:var(--sable);display:flex;align-items:center;justify-content:center;text-align:center;padding:var(--s3);font-family:var(--titre);font-style:italic;font-size:19px;color:var(--or-fonce);line-height:1.3;margin-bottom:var(--s6)}
+.lieu-texte h2{font-size:clamp(2.4rem,4.6vw,3.8rem);margin-bottom:var(--s4)}
+.lieu-texte h2 em{color:var(--or-fonce)}
+.lieu-texte p{color:var(--gris);max-width:32em}
+.lieu-texte .grand{font-family:var(--titre);font-size:clamp(1.4rem,2.2vw,1.7rem);line-height:1.35;color:var(--encre);font-style:italic}
+
+/* Avis */
+.avis{background:var(--rose);padding:var(--s8) 0;position:relative;overflow:hidden}
+.avis .wrap{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:var(--s7);align-items:center}
+.avis .arche{aspect-ratio:4/5}
+.avis blockquote{margin:0}
+.avis .principal p{font-family:var(--titre);font-style:italic;font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.22;color:var(--encre);margin-bottom:var(--s3)}
+.avis .principal p::before{content:"«\00a0";color:var(--or-fonce)}
+.avis .principal p::after{content:"\00a0»";color:var(--or-fonce)}
+cite{font-style:normal;font-size:15px;color:var(--gris);display:block}
+cite b{color:var(--encre);font-weight:500}
+.autres{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s4);margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--rose-trait)}
+.autres p{font-family:var(--titre);font-style:italic;font-size:21px;line-height:1.4;margin-bottom:var(--s2)}
+.google{margin-top:var(--s5);font-size:15px;color:var(--gris)}
+.google b{font-family:var(--titre);font-size:24px;font-weight:500;color:var(--encre)}
+
+/* Rendez-vous */
+.rdv{padding:var(--s8) 0}
+.rdv .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s7)}
+.rdv h2{font-size:clamp(2.6rem,5.5vw,4.6rem);margin-bottom:var(--s3)}
+.rdv h2 em{color:var(--or-fonce)}
+.rdv .tel{display:inline-block;font-family:var(--titre);font-size:clamp(2rem,4vw,2.8rem);text-decoration:none;color:var(--encre);border-bottom:1px solid var(--or);margin:var(--s2) 0 var(--s4);transition:color .3s}
+.rdv .tel:hover{color:var(--or-fonce)}
+.adresse{font-style:normal;color:var(--gris);margin-bottom:var(--s4)}
+.horaires{border-radius:var(--arche);background:#fff;border:1px solid var(--trait);padding:var(--s7) var(--s6) var(--s5)}
+.horaires h3{font-size:2rem;text-align:center;margin-bottom:var(--s3);font-style:italic;color:var(--or-fonce)}
+.horaires table{width:100%;border-collapse:collapse;font-size:16px}
+.horaires th{text-align:left;font-weight:400;color:var(--gris);padding:12px 0;border-bottom:1px solid var(--trait)}
+.horaires td{text-align:right;padding:12px 0;border-bottom:1px solid var(--trait);font-variant-numeric:tabular-nums}
+.horaires tr:last-child th,.horaires tr:last-child td{border-bottom:0}
+.horaires .ferme td{color:var(--gris)}
+.reseaux{display:flex;gap:var(--s3);margin-top:var(--s4)}
+
+footer{border-top:1px solid var(--trait);padding:var(--s5) 0;font-size:14px;color:var(--gris)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s2);align-items:center}
+footer img{height:48px;width:auto;mix-blend-mode:multiply}
+
+.barre{display:none}
+
+/* Ouverture animée */
+.ouverture .lieu,.ouverture h1,.ouverture .intro,.ouverture .actions,.ouverture .note{animation:monte 1.2s var(--doux) both}
+.ouverture h1{animation-delay:.15s}
+.ouverture .intro{animation-delay:.35s}
+.ouverture .actions{animation-delay:.5s}
+.ouverture .note{animation-delay:.65s}
+.ouverture .arche{animation:devoile 1.8s var(--doux) .2s both}
+.ouverture .arche img{animation:zoom 9s ease-out both}
+.ouverture .arche-bord::before{animation:fondu 2s ease 1.2s both}
+.legende{animation:fondu 1.4s ease 1.6s both}
+@keyframes monte{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fondu{from{opacity:0}to{opacity:1}}
+@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.14)}to{transform:scale(1)}}
+
+@supports (animation-timeline: view()){
+  .apparait{animation:monte linear both;animation-timeline:view();animation-range:entry 5% cover 25%}
+}
+
+@media (max-width:1000px){
+  .carte li{grid-template-columns:minmax(0,1fr);gap:4px}
+}
+@media (max-width:860px){
+  body{padding-bottom:88px}
+  .nav a:not(.btn){display:none}
+  .entete .btn{display:none}
+  .entete .wrap{min-height:68px;justify-content:center}
+  .logo img{height:52px}
+  .ouverture{padding:var(--s5) 0 var(--s6)}
+  .ouverture .wrap,.soins-tete,.soins-corps,.lieu-sec .wrap,.avis .wrap,.rdv .wrap{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  .ouverture h1{font-size:clamp(3rem,14vw,4rem)}
+  .ouverture .arche-cadre{width:min(100%,360px);margin-inline:auto;padding:16px 16px 0 0}
+  .arche-bord::before{top:-14px;right:-14px;bottom:14px;left:14px}
+  .soins,.lieu-sec,.avis,.rdv{padding:var(--s7) 0}
+  .soins-tete{margin-bottom:var(--s5)}
+  .soins-photo{position:static}
+  .soins-photo .arche{aspect-ratio:4/3;border-radius:400px 400px 0 0}
+  .duo{order:-1}
+  .cadre-vide{font-size:16px;margin-bottom:var(--s4)}
+  .avis .arche{max-width:320px;aspect-ratio:3/4}
+  .autres{grid-template-columns:minmax(0,1fr)}
+  .horaires{padding:var(--s6) var(--s3) var(--s4)}
+  .barre{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(251,248,242,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--trait)}
+  .barre a{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:var(--pill);text-decoration:none;font-weight:500;font-size:16px;border:1px solid var(--or-fonce)}
+  .barre .un{background:var(--or-fonce);color:#fff}
+  .barre .deux{color:var(--or-fonce);background:transparent}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
+<body>
+
+<div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
+
+<header class="entete">
+  <div class="wrap">
+    <a class="logo" href="#haut" aria-label="Les sens du ciel, accueil">
+      <img src="https://primary.jwwb.nl/public/n/m/w/temp-xiyvyhcdpkikhnkfqplw/unnamed-high.jpg?enable-io=true&amp;enable=upscale&amp;crop=2.3363%3A1&amp;width=800" alt="Les Sens Du Ciel — esthétique &amp; bien-être" width="145" height="62">
+    </a>
+    <nav class="nav" aria-label="Menu">
+      <a href="#soins">Les soins</a>
+      <a href="#lieu">L'institut</a>
+      <a href="#avis">Témoignages</a>
+      <a href="#rendez-vous">Horaires</a>
+      <a class="btn" href="tel:+32488005514">Réserver un soin</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+
+<section class="ouverture">
+  <div class="wrap">
+    <div>
+      <p class="lieu">Ormeignies · Ath</p>
+      <h1>Les sens du ciel <em>esthétique &amp; bien-être</em></h1>
+      <p class="intro">Soins du visage, massages, réflexologie plantaire, pédicure médicale, ongles en gel, épilations et thérapie holistique. Un institut au calme, rue du Pont Brûlé, pour un moment de détente rien qu'à vous.</p>
+      <div class="actions">
+        <a class="btn" href="tel:+32488005514">Réserver un soin</a>
+        <a class="lien" href="#soins">Voir la carte des soins</a>
+      </div>
+      <p class="note"><b>5,0</b><span class="etoiles" aria-hidden="true">★★★★★</span><span>21 avis Google</span></p>
+    </div>
+    <div class="arche-cadre">
+      <div class="arche-bord">
+        <div class="arche">
+          <img src="https://primary.jwwb.nl/pexels/54/548410.jpeg" alt="Un papillon doré posé sur une grappe de fleurs roses" width="800" height="534">
+        </div>
+      </div>
+      <p class="legende">Laissez-vous transporter.</p>
+    </div>
+  </div>
+</section>
+
+<section class="soins" id="soins">
+  <div class="wrap">
+    <div class="soins-tete apparait">
+      <h2>La carte, <em>selon votre envie</em></h2>
+      <p>De l'épilation aux soins du visage, en passant par les massages relaxants : une gamme complète de soins esthétiques, et des mains expertes pour vous choyer.</p>
+    </div>
+    <div class="soins-corps">
+      <div class="soins-photo">
+        <div class="arche">
+          <img src="https://primary.jwwb.nl/pexels/14/14438393.png?enable-io=true&amp;enable=upscale&amp;crop=1.4286%3A1&amp;width=800" alt="Soin du visage, cliente allongée les yeux protégés" width="800" height="560" loading="lazy">
+        </div>
+      </div>
+      <ul class="carte">
+        <li class="apparait">
+          <span class="envie">Envie d'éclat</span>
+          <div>
+            <h3>Le visage</h3>
+            <p>Offrez à votre peau l'attention qu'elle mérite, avec un soin personnalisé et adapté à chaque type de peau.</p>
+            <p class="detail"><span>Nettoyage</span><span>Hydratation</span><span>Anti-âge</span></p>
+          </div>
+        </li>
+        <li class="apparait">
+          <span class="envie">Envie de lâcher prise</span>
+          <div>
+            <h3>Les massages &amp; le corps</h3>
+            <p>Pour vous détendre et libérer les tensions. Un soin dédié aux femmes enceintes, et du drainage lymphatique.</p>
+            <p class="detail"><span>Californien</span><span>Aux pochons</span><span>Pierres chaudes</span><span>Corps entier</span><span>Dos</span></p>
+          </div>
+        </li>
+        <li class="apparait">
+          <span class="envie">Envie de légèreté</span>
+          <div>
+            <h3>Les pieds</h3>
+            <p>La réflexologie plantaire : des pressions adaptées sur les zones réflexes des pieds, pour souffler, vous recentrer et retrouver une agréable sensation de légèreté. Et la pédicure médicale.</p>
+            <p class="detail"><span>Réflexologie plantaire</span><span>Pédicure médicale</span></p>
+          </div>
+        </li>
+        <li class="apparait">
+          <span class="envie">Envie de soin</span>
+          <div>
+            <h3>Les mains</h3>
+            <p>Des ongles nets et brillants, posés avec soin.</p>
+            <p class="detail"><span>Ongles en gel</span></p>
+          </div>
+        </li>
+        <li class="apparait">
+          <span class="envie">Envie de douceur</span>
+          <div>
+            <h3>Les épilations</h3>
+            <p>Une épilation douce et efficace, pour un résultat impeccable et durable.</p>
+            <p class="detail"><span>Cire chaude</span><span>Épilation au sucre</span></p>
+          </div>
+        </li>
+        <li class="apparait">
+          <span class="envie">Envie d'harmonie</span>
+          <div>
+            <h3>L'approche holistique</h3>
+            <p>Retrouver l'harmonie intérieure grâce à des méthodes naturelles et personnalisées. Un chemin vers un mieux-être durable.</p>
+            <p class="detail"><span>Sophrologie</span><span>Thérapie holistique</span></p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="soins-fin apparait">
+      <p>Vous hésitez entre deux soins ? Appelez, on en parle.</p>
+      <a class="btn" href="tel:+32488005514">0488 00 55 14</a>
+    </div>
+  </div>
+</section>
+
+<section class="lieu-sec" id="lieu">
+  <div class="wrap">
+    <div class="lieu-texte apparait">
+      <h2>Élodie vous reçoit <em>à Ormeignies</em></h2>
+      <p class="grand">Votre socio-esthéticienne bio-médicale, dédiée à votre bien-être et à votre beauté.</p>
+      <p>Une expérience unique et personnalisée, dans un cadre que ses clientes décrivent comme apaisant et d'une propreté irréprochable. Rue du Pont Brûlé, à deux pas d'Ath.</p>
+      <a class="lien" href="#rendez-vous">Horaires et accès</a>
+    </div>
+    <div class="duo">
+      <div class="arche">
+        <img src="https://primary.jwwb.nl/public/n/m/w/temp-xiyvyhcdpkikhnkfqplw/centre-dehors-high.jpg?enable-io=true&amp;enable=upscale&amp;fit=bounds&amp;width=1200" alt="L'institut Les sens du ciel, vu de l'extérieur" width="1200" height="1600" loading="lazy">
+      </div>
+      <div class="cadre-vide">Ici, vos photos — par Nicolas</div>
+    </div>
+  </div>
+</section>
+
+<section class="avis" id="avis">
+  <div class="wrap">
+    <div class="arche">
+      <img src="https://primary.jwwb.nl/pexels/66/6629609.jpeg?enable-io=true&amp;enable=upscale&amp;crop=1.4286%3A1&amp;width=800" alt="Massage du dos à l'huile, lumière douce" width="800" height="560" loading="lazy">
+    </div>
+    <div>
+      <blockquote class="principal apparait">
+        <p>Un cadre magnifique, une ambiance apaisante, on est de suite mis à l'aise par Élodie, j'ai passé un moment hors du temps lors de mon massage à la pierre chaude de ce jour… Un endroit d'une propreté irréprochable, tout est vraiment fait pour s'y sentir bien !</p>
+        <cite><b>Amelie Foucart</b> — avis Google</cite>
+      </blockquote>
+      <div class="autres">
+        <blockquote class="apparait">
+          <p>« Un massage de très haute qualité, tout ce dont mon corps avait besoin. Je reviendrai :) merci »</p>
+          <cite><b>Cy Dlz</b> — avis Google</cite>
+        </blockquote>
+        <blockquote class="apparait">
+          <p>« Un moment de détente comme il se doit , le massage d'une heure combine douceur et pression pour détendre au mieux tout le corps vous en ressortirez totalement relaxé. »</p>
+          <cite><b>Laetitia Deiana</b> — avis Google</cite>
+        </blockquote>
+      </div>
+      <p class="google"><b>5,0 / 5</b> sur 21 avis Google</p>
+    </div>
+  </div>
+</section>
+
+<section class="rdv" id="rendez-vous">
+  <div class="wrap">
+    <div class="apparait">
+      <h2>Réserver <em>votre soin</em></h2>
+      <p style="color:var(--gris);max-width:30em">Un coup de fil suffit pour convenir du moment qui vous convient.</p>
+      <a class="tel" href="tel:+32488005514">0488 00 55 14</a>
+      <address class="adresse">Les sens du ciel<br>Rue du Pont Brûlé 5<br>7802 Ormeignies (Ath)</address>
+      <div class="actions">
+        <a class="btn" href="tel:+32488005514">Appeler</a>
+        <a class="lien" href="https://maps.google.com/?cid=16857843136355939211&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+      </div>
+      <div class="reseaux">
+        <a class="lien" href="https://instagram.com/lessensduciel7802">Instagram</a>
+        <a class="lien" href="https://facebook.com/lessensduciel">Facebook</a>
+      </div>
+    </div>
+    <div class="horaires apparait">
+      <h3>Horaires</h3>
+      <table>
+        <tr><th scope="row">Lundi</th><td>8 h – 17 h</td></tr>
+        <tr><th scope="row">Mardi</th><td>8 h – 17 h</td></tr>
+        <tr><th scope="row">Mercredi</th><td>8 h – 12 h</td></tr>
+        <tr><th scope="row">Jeudi</th><td>8 h – 17 h</td></tr>
+        <tr><th scope="row">Vendredi</th><td>8 h – 17 h</td></tr>
+        <tr class="ferme"><th scope="row">Samedi</th><td>Fermé</td></tr>
+        <tr class="ferme"><th scope="row">Dimanche</th><td>Fermé</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="https://primary.jwwb.nl/public/n/m/w/temp-xiyvyhcdpkikhnkfqplw/unnamed-high.jpg?enable-io=true&amp;enable=upscale&amp;crop=2.3363%3A1&amp;width=800" alt="Les Sens Du Ciel" width="112" height="48" loading="lazy">
+    <span>Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a></span>
+  </div>
+</footer>
+
+<nav class="barre" aria-label="Actions rapides">
+  <a class="un" href="tel:+32488005514">Réserver un soin</a>
+  <a class="deux" href="https://maps.google.com/?cid=16857843136355939211&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+</nav>
+
+</body>
+</html>
