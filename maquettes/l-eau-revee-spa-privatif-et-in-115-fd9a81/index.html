@@ -5,337 +5,439 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>L'Eau Rêvée — Spa privatif et institut de beauté à Lens</title>
-<meta name="description" content="Spa privatif et institut de beauté à Lens : sauna, hammam, jacuzzi, piscine chauffée, soins et massages sur rendez-vous.">
-<style>@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond.woff2") format("woff2");font-weight:300 700;font-style:normal;font-display:swap}
-@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond-italic.woff2") format("woff2");font-weight:300 700;font-style:italic;font-display:swap}
+<style>@font-face{font-family:"Marcellus";src:url("/maquettes/polices/marcellus.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Manrope";src:url("/maquettes/polices/manrope.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
 
 :root{
-  --nuit:#120c05;
-  --nuit2:#1e1306;
-  --encre:#0b0703;
-  --or:#c9a45c;
-  --or-clair:#e6cf9a;
-  --eau:#68ccd1;
-  --texte:#efe8da;
-  --doux:#b9ae98;
-  --filet:rgba(201,164,92,.28);
-  --serif:"Didot","Bodoni 72","Bodoni MT","Cormorant Garamond","Hoefler Text",Georgia,serif;
-  --sans:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;
+  --nuit:#0a1d5a;
+  --nuit-2:#071541;
+  --or:#dbb259;
+  --or-fonce:#7a5c1a;
+  --sable:#f5f0e7;
+  --pierre:#e9e2d4;
+  --encre:#1e1306;
+  --texte-clair:#e8e3d8;
+  --r:2px;
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;--s8:128px;
+  --titre:"Marcellus",serif;
+  --corps:"Manrope",sans-serif;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--nuit);color:var(--texte);font-family:var(--sans);font-size:17px;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:var(--corps);font-size:17px;line-height:1.65;color:var(--encre);background:var(--sable);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit}
-h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spacing:.01em}
-.maquette{background:#000;color:var(--doux);font-size:12px;text-align:center;padding:6px 12px;letter-spacing:.04em;border-bottom:1px solid var(--filet)}
-.wrap{width:min(1120px,100% - 40px);margin-inline:auto}
-.petit{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--or)}
+h1,h2,h3{font-family:var(--titre);font-weight:400;line-height:1.08;text-wrap:balance;margin:0}
+p{margin:0}
+:focus-visible{outline:2px solid var(--or);outline-offset:3px}
+.wrap{width:min(1180px,100% - 2*var(--s3));margin-inline:auto}
+.lecteur{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* bandeau maquette */
+.maquette{background:var(--encre);color:#d9cfbd;font-size:12.5px;letter-spacing:.04em;text-align:center;padding:6px var(--s2)}
 
 /* en-tête */
-header.haut{position:sticky;top:0;z-index:30;background:rgba(18,12,5,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--filet)}
-.haut .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
-.haut img{height:44px;width:auto}
-.haut nav{display:flex;gap:26px;font-size:14px;letter-spacing:.06em}
-.haut nav a{text-decoration:none;color:var(--doux);padding:10px 0;transition:color .3s}
-.haut nav a:hover{color:var(--or-clair)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border:1px solid var(--or);background:var(--or);color:var(--encre);text-decoration:none;font-size:14px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;transition:background .3s,color .3s,transform .3s}
-.btn:hover{background:var(--or-clair);transform:translateY(-2px)}
-.btn.vide{background:transparent;color:var(--or-clair)}
-.btn.vide:hover{background:rgba(201,164,92,.14);color:var(--or-clair)}
-.haut .btn{min-height:44px;padding:0 20px;font-size:12px}
+.entete{position:sticky;top:0;z-index:20;background:rgba(7,21,65,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(219,178,89,.25)}
+.entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:72px}
+.marque{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--texte-clair)}
+.marque img{height:44px;width:auto}
+.marque span{font-family:var(--titre);font-size:22px;line-height:1.05;color:#f3ecdc}
+.marque small{display:block;font-family:var(--corps);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--or);margin-top:3px}
+.nav{display:flex;gap:var(--s4);align-items:center}
+.nav a{color:var(--texte-clair);text-decoration:none;font-size:15px;letter-spacing:.02em;padding:var(--s1) 0;border-bottom:1px solid transparent;transition:border-color .4s,color .4s}
+.nav a:hover{color:var(--or);border-color:var(--or)}
 
-/* hero */
-.hero{position:relative;padding:64px 0 80px;overflow:hidden;isolation:isolate}
-.lueur{position:absolute;z-index:-1;width:720px;height:720px;border-radius:50%;left:-160px;top:-120px;background:radial-gradient(circle,rgba(104,204,209,.26),rgba(201,164,92,.10) 45%,transparent 70%);animation:respire 9s ease-in-out infinite}
-@keyframes respire{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
-.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
-.hero h1{font-size:clamp(42px,6.4vw,84px);margin:18px 0 24px}
-.ligne{display:block;overflow:hidden;padding-bottom:.08em}
-.ligne span{display:block;animation:monte 1.1s cubic-bezier(.2,.7,.2,1) both}
-.ligne:nth-child(2) span{animation-delay:.15s}
-.ligne:nth-child(3) span{animation-delay:.3s}
-.ligne em{font-style:italic;color:var(--or-clair)}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-.hero p.intro{max-width:460px;color:var(--doux);animation:fondu 1s .6s both}
-.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;animation:fondu 1s .85s both}
-@keyframes fondu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.etat{margin-top:26px;font-size:14px;color:var(--eau);border-left:2px solid var(--eau);padding-left:14px;animation:fondu 1s 1s both}
-.cadre{position:relative;aspect-ratio:4/5;overflow:hidden;border:1px solid var(--filet);outline:1px solid var(--filet);outline-offset:10px;animation:devoile 1.6s .2s cubic-bezier(.7,0,.2,1) both}
-.cadre img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
-@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 var(--s4);background:var(--or);color:var(--nuit-2);font-family:var(--corps);font-weight:600;font-size:15px;letter-spacing:.04em;text-decoration:none;border-radius:var(--r);border:1px solid var(--or);transition:background .5s,color .5s}
+.btn:hover{background:transparent;color:var(--or)}
+.nav .btn{color:var(--nuit-2);padding:0 var(--s3);min-height:44px}
+.nav .btn:hover{color:var(--or)}
 
-/* sections */
-section{padding:96px 0}
-.titre{max-width:640px;margin-bottom:48px}
-.titre h2{font-size:clamp(34px,4.6vw,56px);margin-top:12px}
-.titre p{color:var(--doux);margin-top:18px}
-.fond2{background:linear-gradient(180deg,var(--nuit2),var(--nuit))}
+/* ouverture */
+.ouverture{position:relative;min-height:calc(100svh - 100px);display:grid;align-items:end;color:var(--texte-clair);overflow:hidden;background:var(--nuit-2)}
+.ouverture figure{position:absolute;inset:0;margin:0;animation:devoile 2.4s cubic-bezier(.2,.7,.2,1) both}
+.ouverture figure img{width:100%;height:100%;object-fit:cover;animation:zoom 22s ease-out both}
+.ouverture::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,21,65,.78) 0%,rgba(7,21,65,.45) 45%,rgba(7,21,65,0) 75%),linear-gradient(180deg,rgba(7,21,65,.2) 0%,rgba(7,21,65,.3) 45%,rgba(7,21,65,.92) 100%)}
+.ouverture .wrap{position:relative;z-index:2;padding-block:var(--s7) var(--s6)}
+.halo{position:relative;display:inline-block}
+.halo::before{content:"";position:absolute;inset:-30% -15%;background:radial-gradient(closest-side,rgba(219,178,89,.22),transparent 70%);z-index:-1;animation:respire 9s ease-in-out infinite}
+.ouverture h1{font-size:clamp(42px,7vw,88px);max-width:12ch;text-shadow:0 2px 24px rgba(7,21,65,.45);animation:monte 1.8s .5s cubic-bezier(.2,.7,.2,1) both}
+.ouverture h1 em{font-style:normal;color:var(--or)}
+.chapeau{margin-top:var(--s3);max-width:44ch;font-size:18px;color:#f1ece2;animation:monte 1.8s .9s cubic-bezier(.2,.7,.2,1) both}
+.actions{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center;margin-top:var(--s4);animation:monte 1.8s 1.2s both}
+.lien{color:var(--texte-clair);text-decoration:none;border-bottom:1px solid rgba(219,178,89,.6);padding-block:var(--s1);transition:color .4s}
+.lien:hover{color:var(--or)}
+.note{display:flex;gap:var(--s1);align-items:baseline;font-size:14px;color:#e2dccf;margin-top:var(--s5)}
+.note b{font-family:var(--titre);font-weight:400;font-size:28px;color:var(--or)}
 
-/* spa privatif */
-.spa{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.spa figure{position:relative;overflow:hidden;border:1px solid var(--filet);min-height:260px}
-.spa figure img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s ease}
-.spa figure:hover img{transform:scale(1.05)}
-.spa .a{grid-column:span 7;min-height:420px}
-.spa .b{grid-column:span 5}
-.spa .c{grid-column:span 5}
-.spa .d{grid-column:span 7;min-height:320px}
-figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 22px 18px;background:linear-gradient(transparent,rgba(11,7,3,.85));font-family:var(--serif);font-size:24px}
-.pieces{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:48px;border-top:1px solid var(--filet)}
-.pieces div{padding:24px 20px 0 0}
-.pieces h3{font-size:24px;color:var(--or-clair)}
-.pieces p{font-size:15px;color:var(--doux);margin-top:6px}
-.note{margin-top:34px;padding:18px 22px;border:1px solid var(--eau);color:var(--eau);font-size:15px;max-width:720px}
+/* avis d'accès */
+.acces{background:var(--or);color:var(--nuit-2);text-align:center;padding:var(--s2);font-size:15px;letter-spacing:.03em}
+
+/* intro */
+.intro{padding-block:var(--s8) var(--s7)}
+.intro .wrap{display:grid;grid-template-columns:120px 1fr;gap:var(--s5);align-items:start;max-width:980px}
+.intro .goutte{width:110px;height:auto;opacity:.95}
+.intro h2{font-size:clamp(30px,4.4vw,52px);color:var(--nuit)}
+.intro p{margin-top:var(--s3);max-width:62ch;color:#3a3226}
+
+/* le lieu */
+.lieu{background:var(--nuit);color:var(--texte-clair);padding-block:var(--s7) var(--s8)}
+.lieu h2{font-size:clamp(32px,5vw,64px);max-width:16ch}
+.lieu .sous{margin-top:var(--s2);max-width:52ch;color:#cfc9bc}
+.espaces{margin-top:var(--s6);display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s3)}
+.espace{position:relative;margin:0;overflow:hidden;border-radius:var(--r);background:var(--nuit-2)}
+.espace img{width:100%;height:100%;object-fit:cover;transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
+.espace:hover img{transform:scale(1.04)}
+.espace figcaption{position:absolute;left:0;right:0;bottom:0;padding:var(--s4) var(--s3) var(--s3);background:linear-gradient(transparent,rgba(7,21,65,.85));font-family:var(--titre);font-size:clamp(24px,2.6vw,34px);color:#fff}
+.espace figcaption span{display:block;font-family:var(--corps);font-size:14px;color:#e6dfcf;margin-top:4px}
+.e-hammam{grid-column:1 / 9;aspect-ratio:16/9}
+.e-liste{grid-column:9 / 13;align-self:end;padding-bottom:var(--s2)}
+.e-piscine{grid-column:4 / 13;aspect-ratio:21/9;margin-top:var(--s3)}
+.mots{list-style:none;margin:0;padding:0}
+.mots li{font-family:var(--titre);font-size:clamp(26px,3vw,40px);padding-block:var(--s2);border-bottom:1px solid rgba(219,178,89,.3);display:flex;justify-content:space-between;align-items:baseline;gap:var(--s2)}
+.mots li small{font-family:var(--corps);font-size:13px;color:#cfc9bc;letter-spacing:.02em;text-align:right}
+
+/* rituel */
+.rituel{padding-block:var(--s8)}
+.rituel h2{font-size:clamp(32px,5vw,60px);color:var(--nuit)}
+.etapes{margin-top:var(--s6);display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5)}
+.etape:nth-child(2){margin-top:var(--s6)}
+.etape:nth-child(3){margin-top:var(--s7)}
+.etape figure{margin:0;aspect-ratio:4/5;overflow:hidden;border-radius:var(--r);background:var(--pierre)}
+.etape img{width:100%;height:100%;object-fit:cover}
+.etape h3{margin-top:var(--s3);font-size:30px;color:var(--nuit);display:flex;gap:var(--s2);align-items:baseline}
+.etape h3 i{font-style:normal;font-family:var(--corps);font-size:13px;color:var(--or-fonce);letter-spacing:.14em}
+.etape p{margin-top:var(--s1);max-width:34ch;color:#3a3226}
+.forfait{margin-top:var(--s7);display:grid;grid-template-columns:1fr 1.4fr;gap:var(--s5);border-top:1px solid #d8ccb3;padding-top:var(--s5)}
+.forfait h3{font-size:clamp(24px,2.6vw,32px);color:var(--nuit)}
+.forfait p{color:#3a3226;max-width:62ch}
+.forfait p+p{margin-top:var(--s2);font-size:15px;color:#5a4f3e}
 
 /* soins */
-.soins{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-.liste{list-style:none}
-.liste li{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:26px 0;border-top:1px solid var(--filet)}
-.liste li:last-child{border-bottom:1px solid var(--filet)}
-.liste b{font-family:var(--serif);font-weight:400;font-size:26px;color:var(--or-clair);line-height:1.15}
-.liste span{color:var(--doux);font-size:16px}
-.soins .cadre{aspect-ratio:3/4;animation:none;position:sticky;top:90px}
-.soins .cadre img{animation:none}
-.marque{margin-top:56px;display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 26px;padding:30px 0;border-top:1px solid var(--filet);border-bottom:1px solid var(--filet)}
-.marque strong{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:.18em;color:var(--or)}
-.marque span{color:var(--doux);max-width:520px}
+.soins{background:var(--pierre);display:grid;grid-template-columns:5fr 7fr;min-height:640px}
+.soins figure{margin:0;position:relative;overflow:hidden;background:var(--nuit);min-height:100%}
+.soins figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% center}
+.soins .texte{padding:var(--s7) clamp(24px,6vw,96px)}
+.soins h2{font-size:clamp(32px,4.4vw,56px);color:var(--nuit)}
+.soins .sous{margin-top:var(--s2);max-width:50ch;color:#3a3226}
+.envies{margin-top:var(--s5);display:grid;grid-template-columns:1fr 1fr;gap:var(--s4) var(--s5)}
+.envie h3{font-size:24px;color:var(--nuit);padding-bottom:var(--s1);border-bottom:1px solid var(--or)}
+.envie p{margin-top:var(--s1);font-size:16px;color:#3a3226}
+.soins .btn{margin-top:var(--s5)}
+
+/* celestetic */
+.produits{padding-block:var(--s7)}
+.produits .wrap{display:grid;grid-template-columns:240px 1fr;gap:var(--s6);align-items:center;max-width:1000px}
+.produits figure{margin:0;background:#fff;padding:var(--s3);border-radius:var(--r)}
+.produits figure img{width:100%;height:auto;aspect-ratio:1;object-fit:contain}
+.produits h2{font-size:clamp(28px,3.6vw,44px);color:var(--nuit)}
+.produits p{margin-top:var(--s2);max-width:60ch;color:#3a3226}
+.produits .offre{margin-top:var(--s3);padding-left:var(--s3);border-left:2px solid var(--or);color:var(--nuit);font-weight:500}
 
 /* avis */
-.avis{display:grid;grid-template-columns:260px 1fr;gap:56px}
-.score{font-family:var(--serif);font-size:96px;line-height:1;color:var(--or-clair)}
-.score small{font-size:28px;color:var(--doux)}
-.citations{display:grid;gap:34px}
-blockquote{border-left:1px solid var(--or);padding-left:26px;font-family:var(--serif);font-size:21px;line-height:1.5}
-blockquote footer{font-family:var(--sans);font-size:13px;letter-spacing:.08em;color:var(--doux);margin-top:12px}
-
-/* galerie */
-.galerie{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.galerie img{width:100%;height:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid var(--filet);transition:transform .9s ease,filter .9s}
-.galerie div{overflow:hidden}
-.galerie div:hover img{transform:scale(1.05)}
-.galerie .large{grid-column:span 2}
-.galerie .large img{aspect-ratio:2/1}
+.avis{position:relative;background:var(--nuit-2);color:var(--texte-clair);padding-block:var(--s8)}
+.avis .grand{font-family:var(--titre);font-size:clamp(26px,3.6vw,44px);line-height:1.25;max-width:26ch;text-wrap:balance}
+.avis .grand::before{content:"« ";color:var(--or)}
+.avis .grand::after{content:" »";color:var(--or)}
+.auteur{margin-top:var(--s3);font-size:14px;color:#cfc9bc;letter-spacing:.03em}
+.auteur b{color:var(--or);font-weight:500}
+.petits{margin-top:var(--s7);display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);margin-left:auto;max-width:880px}
+.petits blockquote{margin:0;padding-top:var(--s3);border-top:1px solid rgba(219,178,89,.35)}
+.petits p{color:#e8e3d8}
+.avis .total{margin-top:var(--s6);font-size:15px;color:#cfc9bc}
+.avis .total b{font-family:var(--titre);font-weight:400;font-size:24px;color:var(--or)}
 
 /* venir */
-.venir{display:grid;grid-template-columns:1fr 1fr;gap:64px}
-table{border-collapse:collapse;width:100%;font-size:18px}
-td{padding:13px 0;border-bottom:1px solid var(--filet)}
-td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-tr.ferme td{color:var(--doux);font-style:italic}
-.coord p{margin-bottom:18px}
-.coord a.tel{font-family:var(--serif);font-size:38px;text-decoration:none;color:var(--or-clair);display:inline-block;padding:6px 0}
-.coord a.lien{color:var(--eau);text-underline-offset:4px}
-.reseaux{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px}
-.reseaux a{color:var(--doux);min-height:44px;display:inline-flex;align-items:center}
-footer.bas{padding:36px 0 40px;border-top:1px solid var(--filet);text-align:center;color:var(--doux);font-size:13px}
-footer.bas img{height:56px;margin:0 auto 18px}
+.venir{padding-block:var(--s7) var(--s8)}
+.venir .wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:var(--s6);align-items:start}
+.venir h2{font-size:clamp(34px,5vw,64px);color:var(--nuit)}
+.venir .sous{margin-top:var(--s3);max-width:44ch;color:#3a3226}
+.coord{margin-top:var(--s4);display:grid;gap:var(--s1)}
+.coord a{text-decoration:none;color:var(--nuit);font-size:18px;min-height:44px;display:inline-flex;align-items:center;border-bottom:1px solid transparent;width:fit-content;transition:border-color .4s}
+.coord a:hover{border-color:var(--or)}
+.coord .adresse{color:#3a3226}
+.venir .btn{margin-top:var(--s4)}
+.heures{background:#fff;border-radius:var(--r);padding:var(--s5)}
+.heures h3{font-size:26px;color:var(--nuit);margin-bottom:var(--s3)}
+.heures table{width:100%;border-collapse:collapse;font-size:16px}
+.heures td{padding:12px 0;border-bottom:1px solid #ece4d4}
+.heures td+td{text-align:right;font-variant-numeric:tabular-nums}
+.heures tr.ferme td{color:var(--or-fonce)}
+.heures p{margin-top:var(--s3);font-size:14px;color:#5a4f3e}
+
+footer{background:var(--encre);color:#cfc5b2;padding:var(--s5) 0;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s3);justify-content:space-between;align-items:center}
+footer nav{display:flex;gap:var(--s3)}
+footer a{color:#e8dcc0;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+footer a:hover{color:var(--or)}
+.signature{text-align:center;font-size:13px;color:#a99d86;padding-top:var(--s3);border-top:1px solid #3a2e1e;margin-top:var(--s4);width:100%}
 
 .barre{display:none}
 
-@media (max-width:860px){
-  body{padding-bottom:84px;font-size:16px}
-  .haut nav,.haut .btn{display:none}
-  .haut .wrap{justify-content:center}
-  .hero{padding:36px 0 56px}
-  .hero .wrap{grid-template-columns:1fr;gap:40px}
-  .cadre{outline-offset:6px;margin:0 6px}
-  section{padding:64px 0}
-  .spa{grid-template-columns:1fr}
-  .spa .a,.spa .b,.spa .c,.spa .d{grid-column:auto;min-height:280px}
-  .pieces{grid-template-columns:1fr 1fr}
-  .soins{grid-template-columns:1fr;gap:36px}
-  .soins .cadre{position:relative;top:0;aspect-ratio:4/3;order:-1}
-  .liste li{grid-template-columns:1fr;gap:6px}
-  .avis{grid-template-columns:1fr;gap:32px}
-  .score{font-size:76px}
-  blockquote{font-size:19px;padding-left:18px}
-  .galerie{grid-template-columns:1fr 1fr}
-  .galerie .large{grid-column:span 2}
-  .venir{grid-template-columns:1fr;gap:40px}
-  .barre{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--encre);border-top:1px solid var(--or);padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:10px}
-  .barre a{min-height:48px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border:1px solid var(--or);color:var(--or-clair)}
-  .barre a:first-child{background:var(--or);color:var(--encre)}
-}
-
-/* apparition au défilement */
+/* animations */
+@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes monte{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes respire{0%,100%{opacity:.45;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes fondu{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
 @supports (animation-timeline: view()){
-  .rev{animation:apparait linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
-  @keyframes apparait{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-  .spa figure,.galerie div{animation:devoileS linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
-  @keyframes devoileS{from{clip-path:inset(12% 0 0 0);opacity:.2}to{clip-path:inset(0);opacity:1}}
+  .espace,.etape,.envie,.petits blockquote,.produits figure,.forfait{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+  .rituel h2,.lieu h2,.soins h2,.venir h2,.intro h2{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
 }
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-</style>
-</head>
-<body>
-<div class="maquette">Maquette — une proposition de nouveau site, pas le site publié</div>
 
-<header class="haut">
+/* téléphone */
+@media (max-width:860px){
+  body{padding-bottom:76px}
+  .nav{display:none}
+  .marque img{height:38px}
+  .marque span{font-size:20px}
+  .ouverture{min-height:74svh}
+  .ouverture::after{background:linear-gradient(180deg,rgba(7,21,65,.35) 0%,rgba(7,21,65,.45) 40%,rgba(7,21,65,.94) 100%)}
+  .ouverture .wrap{padding-block:var(--s7) var(--s5)}
+  .note{margin-top:var(--s4)}
+  .intro{padding-block:var(--s7) var(--s6)}
+  .intro .wrap{grid-template-columns:1fr;gap:var(--s3)}
+  .intro .goutte{width:72px}
+  .espaces{grid-template-columns:1fr;gap:var(--s3)}
+  .e-hammam,.e-liste,.e-piscine{grid-column:auto;margin-top:0}
+  .e-hammam{aspect-ratio:4/3}
+  .e-piscine{aspect-ratio:4/3}
+  .etapes{grid-template-columns:1fr;gap:var(--s6)}
+  .etape:nth-child(n){margin-top:0}
+  .etape figure{aspect-ratio:4/3}
+  .forfait{grid-template-columns:1fr;gap:var(--s3)}
+  .soins{grid-template-columns:1fr;min-height:0}
+  .soins figure{aspect-ratio:4/3;min-height:0}
+  .soins .texte{padding:var(--s6) var(--s3)}
+  .envies{grid-template-columns:1fr;gap:var(--s4)}
+  .produits .wrap{grid-template-columns:1fr;gap:var(--s4)}
+  .produits figure{max-width:200px}
+  .petits{grid-template-columns:1fr;gap:var(--s4);margin-top:var(--s6)}
+  .venir .wrap{grid-template-columns:1fr;gap:var(--s5)}
+  .heures{padding:var(--s4) var(--s3)}
+  .rituel,.avis,.lieu{padding-block:var(--s7)}
+  .barre{display:grid;grid-template-columns:1.2fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--nuit-2);border-top:1px solid rgba(219,178,89,.4);padding:var(--s1);gap:var(--s1)}
+  .barre a{min-height:52px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.03em;border-radius:var(--r)}
+  .barre .appel{background:var(--or);color:var(--nuit-2)}
+  .barre .route{color:var(--texte-clair);border:1px solid rgba(219,178,89,.5)}
+}
+</style>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
+<body>
+
+<div class="maquette">Maquette — proposition de nouveau site</div>
+
+<header class="entete">
   <div class="wrap">
-    <img src="https://irp.cdn-website.com/4ca931dc/dms3rep/multi/desktop/logogouttegoldnotyp.png" alt="L'Eau Rêvée — logo">
-    <nav aria-label="Navigation">
-      <a href="#spa">Le spa privatif</a>
-      <a href="#soins">Les soins</a>
-      <a href="#avis">Avis</a>
-      <a href="#venir">Horaires et accès</a>
+    <a class="marque" href="#haut" aria-label="L'Eau Rêvée, retour en haut">
+      <img src="https://irp-cdn.multiscreensite.com/4ca931dc/dms3rep/multi/desktop/logogouttegoldnotyp.png" alt="" width="35" height="44">
+      <span>L'Eau Rêvée<small>Wellness &amp; Spa</small></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#lieu">Spa privatif</a>
+      <a href="#soins">Nos soins</a>
+      <a href="#produits">Celestetic</a>
+      <a href="#venir">Horaires</a>
+      <a class="btn" href="tel:+32492311191">Réserver</a>
     </nav>
-    <a class="btn" href="tel:+32492311191">Réserver un soin</a>
   </div>
 </header>
 
-<main>
-<div class="hero">
-  <div class="lueur" aria-hidden="true"></div>
-  <div class="wrap">
-    <div>
-      <p class="petit">Spa privatif · Institut de beauté · Lens</p>
-      <h1>
-        <span class="ligne"><span>Un spa rien</span></span>
-        <span class="ligne"><span>que pour vous,</span></span>
-        <span class="ligne"><span><em>sur rendez-vous.</em></span></span>
-      </h1>
-      <p class="intro">Sauna traditionnel, hammam, jacuzzi intérieur et terrasse avec piscine chauffée. À côté, deux salles de soin pour les massages, la pédicure et les soins de l'institut. Dans le calme, à Lens.</p>
+<main id="haut">
+  <section class="ouverture" aria-labelledby="titre">
+    <figure>
+      <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A0571+copie-1920w.jpg" alt="Le spa privatif de L'Eau Rêvée à Lens, vue sur la piscine" fetchpriority="high">
+    </figure>
+    <div class="wrap">
+      <div class="halo"><h1 id="titre">L'eau, la chaleur, le silence. <em>Rien que pour vous.</em></h1></div>
+      <p class="chapeau">Spa privatif et institut de beauté à Lens, entre Mons, Ath et Soignies. Sauna, hammam, jacuzzi et soins, sur rendez-vous.</p>
       <div class="actions">
-        <a class="btn" href="tel:+32492311191">Réserver : 0492 31 11 91</a>
-        <a class="btn vide" href="#soins">Voir les soins</a>
+        <a class="btn" href="tel:+32492311191">Réserver au 0492 31 11 91</a>
+        <a class="lien" href="#lieu">Voir le spa privatif</a>
       </div>
-      <p class="etat">Accès uniquement sur rendez-vous. La piscine est en hivernage pour le moment.</p>
+      <p class="note"><b>4,9</b> sur 5 — 78 avis Google</p>
     </div>
-    <div class="cadre">
-      <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A0571+copie-1920w.jpg" alt="L'ambiance calme du spa privatif de L'Eau Rêvée à Lens">
-    </div>
-  </div>
-</div>
+  </section>
 
-<section id="spa" class="fond2">
-  <div class="wrap">
-    <div class="titre rev">
-      <p class="petit">Le spa privatif</p>
-      <h2>Tout l'espace est à vous, le temps de votre rendez-vous.</h2>
-      <p>Vous venez seul(e), à deux ou entre amies. Personne d'autre ne partage le sauna, le hammam ou le jacuzzi.</p>
-    </div>
-    <div class="spa">
-      <figure class="a"><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/panohammam-1920w.jpg" alt="Le hammam du spa privatif" loading="lazy"><figcaption>Le hammam</figcaption></figure>
-      <figure class="b"><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1367-1920w.jpg" alt="Un espace de détente du spa L'Eau Rêvée" loading="lazy"><figcaption>Le sauna et le jacuzzi</figcaption></figure>
-      <figure class="c"><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1270+copie-1920w.jpg" alt="Détail du spa privatif de L'Eau Rêvée" loading="lazy"><figcaption>Calme et lumière douce</figcaption></figure>
-      <figure class="d"><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/DJI_0142+copie-1920w.jpg" alt="Vue d'en haut de L'Eau Rêvée, sa terrasse et sa piscine" loading="lazy"><figcaption>La terrasse et la piscine chauffée</figcaption></figure>
-    </div>
-    <div class="pieces rev">
-      <div><h3>Sauna</h3><p>Le sauna traditionnel.</p></div>
-      <div><h3>Hammam</h3><p>La chaleur humide, à votre rythme.</p></div>
-      <div><h3>Jacuzzi</h3><p>Intérieur, pour se poser.</p></div>
-      <div><h3>Piscine</h3><p>Chauffée, sur la terrasse.</p></div>
-    </div>
-    <p class="note rev">La piscine extérieure est actuellement en hivernage. Le reste du spa reste accessible, sur rendez-vous.</p>
-  </div>
-</section>
+  <p class="acces">Accès uniquement sur rendez-vous · piscine en hivernage</p>
 
-<section id="soins">
-  <div class="wrap">
-    <div class="titre rev">
-      <p class="petit">Les soins</p>
-      <h2>Choisissez selon votre envie du moment.</h2>
-    </div>
-    <div class="soins">
-      <ul class="liste rev">
-        <li><b>Se détendre</b><span>Les massages, dans l'une des deux salles de soin de l'institut. On vous accueille, on vous écoute, on adapte.</span></li>
-        <li><b>Prendre soin de soi</b><span>Les soins de l'institut, réalisés avec les produits CELESTETIC. Dites-nous ce dont votre peau a besoin.</span></li>
-        <li><b>Pieds soignés</b><span>La pédicure, seul(e) ou à deux. Un de nos clients l'a faite avec son compagnon, et ils sont ressortis conquis.</span></li>
-        <li><b>Un moment à partager</b><span>Une matinée entre amies, un après-midi en couple : le spa privatif se réserve aussi sans soin.</span></li>
-      </ul>
-      <div class="cadre rev">
-        <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1646+copie-1920w.jpg" alt="Un soin à l'institut L'Eau Rêvée" loading="lazy">
+  <section class="intro">
+    <div class="wrap">
+      <img class="goutte" src="https://irp-cdn.multiscreensite.com/4ca931dc/dms3rep/multi/desktop/logogouttegoldnotyp.png" alt="" width="110" height="140">
+      <div>
+        <h2>Réservez les installations de L'Eau Rêvée rien que pour vous.</h2>
+        <p>Un environnement calme et relaxant, un espace privatif avec sauna traditionnel, hammam et jacuzzi intérieur, une terrasse avec piscine chauffée. Et à côté, l'institut : massages, soins du visage et du corps, épilations, maquillage, manucure, pédicure.</p>
       </div>
     </div>
-    <div class="marque rev">
-      <strong>CELESTETIC</strong>
-      <span>La gamme de produits utilisée à l'institut. La carte complète des soins et leurs durées : demandez-la par téléphone ou par e-mail.</span>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="avis" class="fond2">
-  <div class="wrap avis">
-    <div class="rev">
-      <p class="petit">Avis Google</p>
-      <p class="score">4,9<small> / 5</small></p>
-      <p style="color:var(--doux);margin-top:10px">78 avis sur Google</p>
-    </div>
-    <div class="citations">
-      <blockquote class="rev">« Parfait ! Tout est bien pensé il ne manque absolument rien ! Le spa est ++++ Fruits, fruits à coques, eaux aromatisées, mousseux, gommage fait maison et huile pour le corps ! Jamais vu un service impeccable pour le prix ! Ne changez rien ! »
-        <footer>raphaelle paci — avis Google</footer></blockquote>
-      <blockquote class="rev">« Nous avons pris rendez-vous pour une pédicure mon compagnon et moi et nous avons été conquis ! L’endroit est très propre, très beau et nous y avons été super bien accueilli. Le travail réalisé était parfait. Nous recommandons les yeux fermer »
-        <footer>Thoelen Gaelle — avis Google</footer></blockquote>
-      <blockquote class="rev">« Nous avons passé une très belle matinée entre filles dans un cadre superbe. Le spa était parfaitement équipé, avec tout ce qu'il faut pour se détendre et passer un excellent moment. La propreté des lieux était irréprochable. Nous recommandons vivement ! »
-        <footer>JULIE ORIGA — avis Google</footer></blockquote>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="titre rev">
-      <p class="petit">L'endroit</p>
-      <h2>Quelques images, avant de venir.</h2>
-    </div>
-    <div class="galerie">
-      <div class="large"><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A0647+copie-1920w.jpg" alt="Le spa de L'Eau Rêvée à Lens" loading="lazy"></div>
-      <div><img src="https://irp.cdn-website.com/4ca931dc/dms3rep/multi/opt/download-1920w.jpg" alt="Un coin de L'Eau Rêvée" loading="lazy"></div>
-      <div><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/LeauReveeOrBlanc-280h.png" alt="L'Eau Rêvée, logo or et blanc" loading="lazy" style="object-fit:contain;background:var(--encre);padding:12%"></div>
-    </div>
-  </div>
-</section>
-
-<section id="venir" class="fond2">
-  <div class="wrap venir">
-    <div class="rev">
-      <p class="petit">Horaires</p>
-      <h2 style="font-size:clamp(32px,4vw,48px);margin:12px 0 26px">Ouvert six jours sur sept.</h2>
-      <table>
-        <tr><td>Lundi</td><td>9 h – 22 h</td></tr>
-        <tr><td>Mardi</td><td>9 h – 22 h</td></tr>
-        <tr><td>Mercredi</td><td>9 h – 22 h</td></tr>
-        <tr class="ferme"><td>Jeudi</td><td>Fermé</td></tr>
-        <tr><td>Vendredi</td><td>9 h – 22 h</td></tr>
-        <tr><td>Samedi</td><td>9 h – 22 h</td></tr>
-        <tr><td>Dimanche</td><td>9 h – 22 h</td></tr>
-      </table>
-    </div>
-    <div class="coord rev">
-      <p class="petit">Réserver et venir</p>
-      <p style="margin-top:12px"><a class="tel" href="tel:+32492311191">0492 31 11 91</a></p>
-      <p><a class="lien" href="mailto:contact@leaurevee.be">contact@leaurevee.be</a></p>
-      <p>L'Eau Rêvée<br>Rue d'Erbaut 60<br>7870 Lens</p>
-      <p style="color:var(--doux);font-size:15px">Nous accueillons aussi les habitants de Cambron-Saint-Vincent et de Bauffe.</p>
-      <div class="actions" style="animation:none">
-        <a class="btn" href="tel:+32492311191">Appeler</a>
-        <a class="btn vide" href="https://maps.google.com/?cid=2571921127402069962&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-      </div>
-      <div class="reseaux">
-        <a href="http://instagram.com/leaurevee">Instagram</a>
-        <a href="https://facebook.com/leaurevee">Facebook</a>
-        <a href="http://www.leaurevee.be/">Site actuel</a>
+  <section class="lieu" id="lieu" aria-labelledby="t-lieu">
+    <div class="wrap">
+      <h2 id="t-lieu">Le spa privatif, porte fermée derrière vous.</h2>
+      <p class="sous">Personne d'autre que vous et ceux que vous invitez. Le temps de votre réservation, tout l'espace vous appartient.</p>
+      <div class="espaces">
+        <figure class="espace e-hammam">
+          <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/panohammam-1920w.jpg" alt="Le hammam de L'Eau Rêvée">
+          <figcaption>Hammam<span>La vapeur douce, tout en lenteur.</span></figcaption>
+        </figure>
+        <div class="e-liste">
+          <ul class="mots">
+            <li>Sauna <small>traditionnel</small></li>
+            <li>Hammam <small>vapeur</small></li>
+            <li>Jacuzzi <small>intérieur</small></li>
+            <li>Piscine <small>chauffée, extérieure</small></li>
+          </ul>
+        </div>
+        <figure class="espace e-piscine">
+          <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/DJI_0142+copie-1920w.jpg" alt="La piscine extérieure et sa terrasse, vues du ciel">
+          <figcaption>Piscine extérieure<span>Sur la terrasse, d'avril à octobre. En hivernage le reste de l'année.</span></figcaption>
+        </figure>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="rituel" aria-labelledby="t-rituel">
+    <div class="wrap">
+      <h2 id="t-rituel">Arriver, se poser, repartir léger.</h2>
+      <div class="etapes">
+        <article class="etape">
+          <figure><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A0647+copie-1920w.jpg" alt="Transats au bord de la piscine, dans le jardin"></figure>
+          <h3><i>01</i> Arriver</h3>
+          <p>Un verre de bienvenue vous attend. Prévoyez d'être là cinq minutes avant l'heure.</p>
+        </article>
+        <article class="etape">
+          <figure><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1367-1920w.jpg" alt="Moment de détente dans le sauna de L'Eau Rêvée"></figure>
+          <h3><i>02</i> Se détendre</h3>
+          <p>Peignoir sur les épaules, eau détox, thé et fruits frais à portée de main.</p>
+        </article>
+        <article class="etape">
+          <figure><img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1270+copie-1920w.jpg" alt="Le jacuzzi intérieur de L'Eau Rêvée"></figure>
+          <h3><i>03</i> Repartir</h3>
+          <p>Avec des échantillons de soins Babor dans le sac, et l'envie de revenir.</p>
+        </article>
+      </div>
+
+      <div class="forfait">
+        <h3>Ce que comprend le forfait de base</h3>
+        <div>
+          <p>Un verre de bienvenue, les peignoirs, les serviettes de bain, l'eau détox, le thé, les fruits frais, le gel douche et des échantillons de produits de soin Babor.</p>
+          <p>Les pantoufles sont obligatoires et ne sont pas comprises : vous pouvez prendre les vôtres. Un passage à la douche est demandé avant chaque soin du corps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="soins" id="soins" aria-labelledby="t-soins">
+    <figure>
+      <img src="https://irp.cdn-website.com//4ca931dc/dms3rep/multi/opt/QJ2A1646+copie-1920w.jpg" alt="Soin à l'institut L'Eau Rêvée">
+    </figure>
+    <div class="texte">
+      <h2 id="t-soins">Les soins de L'Eau Rêvée</h2>
+      <p class="sous">Une salle de soin unique, au calme. Choisissez selon votre envie du jour.</p>
+      <div class="envies">
+        <div class="envie">
+          <h3>Le visage</h3>
+          <p>Soins visage, diagnostic de peau et maquillage.</p>
+        </div>
+        <div class="envie">
+          <h3>Le corps</h3>
+          <p>Massages, soins corps et remodelage du corps.</p>
+        </div>
+        <div class="envie">
+          <h3>Les mains et les pieds</h3>
+          <p>Manucure et pédicure, seul ou à deux.</p>
+        </div>
+        <div class="envie">
+          <h3>La beauté au quotidien</h3>
+          <p>Épilations.</p>
+        </div>
+      </div>
+      <a class="btn" href="tel:+32492311191">Réserver un soin</a>
+    </div>
+  </section>
+
+  <section class="produits" id="produits" aria-labelledby="t-produits">
+    <div class="wrap">
+      <figure>
+        <img src="https://irp.cdn-website.com/4ca931dc/dms3rep/multi/opt/download-1920w.jpg" alt="Produits de la gamme Celestetic" width="200" height="200">
+      </figure>
+      <div>
+        <h2 id="t-produits">Celestetic, la cosméceutique produite en Belgique</h2>
+        <p>Des soins adaptés à votre type de peau, à appliquer à la maison. Réservez et venez faire un diagnostic de votre peau à l'institut, où la gamme est en vente.</p>
+        <p class="offre">Dès 110 € d'achat, un soin visage personnalisé de 30 minutes vous est offert.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="avis" aria-labelledby="t-avis">
+    <div class="wrap">
+      <h2 id="t-avis" class="lecteur">Ce qu'en disent les clients</h2>
+      <blockquote style="margin:0">
+        <p class="grand">Parfait ! Tout est bien pensé il ne manque absolument rien ! Le spa est ++++ Fruits, fruits à coques, eaux aromatisées, mousseux, gommage fait maison et huile pour le corps ! Jamais vu un service impeccable pour le prix ! Ne changez rien !</p>
+        <p class="auteur"><b>raphaelle paci</b> — 5/5, avis Google</p>
+      </blockquote>
+      <div class="petits">
+        <blockquote>
+          <p>« Nous avons passé une très belle matinée entre filles dans un cadre superbe. Le spa était parfaitement équipé, avec tout ce qu'il faut pour se détendre et passer un excellent moment. La propreté des lieux était irréprochable. Nous recommandons vivement ! »</p>
+          <p class="auteur"><b>JULIE ORIGA</b> — 5/5, avis Google</p>
+        </blockquote>
+        <blockquote>
+          <p>« Nous avons pris rendez-vous pour une pédicure mon compagnon et moi et nous avons été conquis ! L’endroit est très propre, très beau et nous y avons été super bien accueilli. Le travail réalisé était parfait. Nous recommandons les yeux fermer »</p>
+          <p class="auteur"><b>Thoelen Gaelle</b> — 5/5, avis Google</p>
+        </blockquote>
+      </div>
+      <p class="total"><b>4,9/5</b> sur 78 avis Google</p>
+    </div>
+  </section>
+
+  <section class="venir" id="venir" aria-labelledby="t-venir">
+    <div class="wrap">
+      <div>
+        <h2 id="t-venir">Un soin, le spa privatif ? Appelez-nous.</h2>
+        <p class="sous">Pour une réservation ou une question sur nos produits, un appel ou un e-mail suffit.</p>
+        <div class="coord">
+          <a href="tel:+32492311191">0492 31 11 91</a>
+          <a href="mailto:contact@leaurevee.be">contact@leaurevee.be</a>
+          <a class="adresse" href="https://maps.google.com/?cid=2571921127402069962">Rue d'Erbaut 60, 7870 Lens</a>
+        </div>
+        <a class="btn" href="tel:+32492311191">Réserver</a>
+      </div>
+      <div class="heures">
+        <h3>Horaires</h3>
+        <table>
+          <tbody>
+            <tr><td>Lundi</td><td>9 h – 22 h</td></tr>
+            <tr><td>Mardi</td><td>9 h – 22 h</td></tr>
+            <tr><td>Mercredi</td><td>9 h – 22 h</td></tr>
+            <tr class="ferme"><td>Jeudi</td><td>Fermé</td></tr>
+            <tr><td>Vendredi</td><td>9 h – 22 h</td></tr>
+            <tr><td>Samedi</td><td>9 h – 22 h</td></tr>
+            <tr><td>Dimanche</td><td>9 h – 22 h</td></tr>
+          </tbody>
+        </table>
+        <p>Accès uniquement sur rendez-vous.</p>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer class="bas">
+<footer>
   <div class="wrap">
-    <img src="https://irp.cdn-website.com/4ca931dc/dms3rep/multi/desktop/logogouttegoldnotyp.png" alt="L'Eau Rêvée">
-    <p>L'Eau Rêvée · Rue d'Erbaut 60, 7870 Lens · Accès uniquement sur rendez-vous</p>
-    <p style="margin-top:10px">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+    <span>L'Eau Rêvée — Wellness &amp; Spa · Lens</span>
+    <nav aria-label="Réseaux">
+      <a href="http://instagram.com/leaurevee">Instagram</a>
+      <a href="https://facebook.com/leaurevee">Facebook</a>
+    </nav>
+    <p class="signature">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
   </div>
 </footer>
 
-<div class="barre">
-  <a href="tel:+32492311191">Appeler</a>
-  <a href="https://maps.google.com/?cid=2571921127402069962&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-</div>
+<nav class="barre" aria-label="Actions rapides">
+  <a class="appel" href="tel:+32492311191">Réserver un soin</a>
+  <a class="route" href="https://maps.google.com/?cid=2571921127402069962&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+</nav>
+
 </body>
 </html>
