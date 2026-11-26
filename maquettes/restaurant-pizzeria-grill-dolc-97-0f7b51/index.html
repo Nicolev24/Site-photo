@@ -4,193 +4,394 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Dolce Italia — Restaurant, pizzeria, grill à Jurbise (maquette)</title>
+<title>Dolce Italia — Restaurant, Pizzeria, Grill à Jurbise (maquette)</title>
 <style>
-:root{--bleu:#003388;--sable:#af9972;--tomate:#cf2e2e;--farine:#faf5ea;--lin:#f0e6d2;--encre:#1c2540;
---serif:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;
---doux:"Gill Sans","Gill Sans MT",Optima,Candara,sans-serif}
+@font-face{font-family:"DM Serif Display";src:url("/maquettes/polices/dm-serif-display.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Serif Display";src:url("/maquettes/polices/dm-serif-display-italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Outfit";src:url("/maquettes/polices/outfit.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --rouge:#cc1818;
+  --rouge-fonce:#a51212;
+  --or:#88714d;
+  --or-clair:#c9b48c;
+  --charbon:#1b1916;
+  --charbon-2:#26221d;
+  --creme:#f7f1e6;
+  --encre:#2a241d;
+  --gris:#5c5348;
+  --r:4px;
+  --titre:"DM Serif Display", Georgia, serif;
+  --texte:"Outfit", system-ui, sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--doux);color:var(--encre);background:var(--farine);line-height:1.6;font-size:17px;overflow-x:hidden}
-img{max-width:100%;display:block}
+body{font-family:var(--texte);font-size:17px;line-height:1.6;color:var(--encre);background:var(--creme);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
 a{color:inherit}
-.maq{background:var(--encre);color:#e9dfc8;text-align:center;font-size:12.5px;padding:7px 12px;letter-spacing:.02em}
-.wrap{width:min(1120px,100% - 40px);margin-inline:auto}
-header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
-header.top img{height:46px;width:auto;background:#fff;border-radius:10px;padding:4px 8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;text-decoration:none;font-weight:600;letter-spacing:.02em;transition:transform .25s,box-shadow .25s,background .25s}
-.btn.p{background:var(--tomate);color:#fff;box-shadow:0 8px 20px -8px rgba(207,46,46,.7)}
-.btn.s{background:transparent;color:var(--bleu);border:1.5px solid var(--bleu)}
-.btn:hover{transform:translateY(-2px)}
-.btn.s:hover{background:var(--bleu);color:#fff}
-.tel-top{font-size:15px;text-decoration:none;font-weight:600;color:var(--bleu);min-height:44px;display:inline-flex;align-items:center}
-/* hero */
-.hero{display:grid;gap:28px;padding:18px 0 56px}
-.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(46px,12vw,92px);line-height:.98;color:var(--bleu);letter-spacing:-.01em}
-.hero h1 span{display:block;overflow:hidden}
-.hero h1 span b{display:block;font-weight:inherit}
-.hero h1 em{color:var(--tomate);font-style:italic}
-.kick{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--sable);font-weight:600;margin-bottom:14px}
-.hero p.lead{font-size:19px;max-width:30em;margin-top:18px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.ph{border-radius:200px 200px 24px 24px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--lin),var(--sable));box-shadow:0 30px 60px -30px rgba(0,51,136,.5)}
-.ph img{width:100%;height:100%;object-fit:cover}
-.today{display:inline-block;margin-top:22px;font-size:15px;color:var(--encre);background:var(--lin);padding:8px 16px;border-radius:999px}
-/* bande */
-.band{background:var(--bleu);color:var(--lin);overflow:hidden;white-space:nowrap;padding:16px 0;font-family:var(--serif);font-size:26px;font-style:italic}
-.band div{display:inline-block;padding-left:100%;animation:def 38s linear infinite}
-.band span{margin:0 22px}.band i{color:var(--sable);font-style:normal}
-@keyframes def{to{transform:translateX(-100%)}}
-/* table */
-section{padding:64px 0}
-h2{font-family:var(--serif);font-weight:600;font-size:clamp(34px,7vw,56px);line-height:1.05;color:var(--bleu);margin-bottom:18px}
-.table-grid{display:grid;gap:18px;margin-top:28px}
-.table-grid figure{border-radius:24px;overflow:hidden;background:linear-gradient(160deg,var(--lin),var(--sable));position:relative;min-height:240px}
-.table-grid img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s}
-.table-grid figure:hover img{transform:scale(1.04)}
-.table-grid figcaption{position:absolute;left:14px;bottom:14px;background:rgba(250,245,234,.92);padding:6px 14px;border-radius:999px;font-size:14px}
-.txt{max-width:36em}
-.txt p+p{margin-top:12px}
-/* avis */
-.avis{background:var(--lin);background-image:radial-gradient(circle at 10% 0,rgba(175,153,114,.25),transparent 50%)}
-.note{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:26px}
-.note strong{font-family:var(--serif);font-size:64px;color:var(--tomate);line-height:1}
-.q{display:grid;gap:20px}
-blockquote{background:var(--farine);border-radius:24px;padding:26px 26px 22px;box-shadow:0 14px 30px -22px rgba(28,37,64,.5)}
-blockquote p{font-family:var(--serif);font-size:23px;line-height:1.35}
-blockquote footer{margin-top:14px;font-size:14px;color:#5c5a52}
-/* infos */
-.infos{display:grid;gap:36px}
-.hrs{list-style:none;border-top:1px solid var(--sable)}
-.hrs li{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid rgba(175,153,114,.5);font-size:18px}
-.hrs li span:last-child{text-align:right}
-.hrs .ferme{color:var(--tomate);font-weight:600}
-.adr{background:var(--bleu);color:var(--farine);border-radius:28px;padding:32px 28px}
-.adr h2{color:var(--farine)}
-.adr a.t{font-family:var(--serif);font-size:32px;text-decoration:none;display:inline-block;min-height:44px;color:#fff}
-.adr .btn.p{margin-top:8px}
-.adr p{margin-bottom:10px}
-.adr .mail{color:var(--lin);word-break:break-all}
-footer.pied{padding:30px 0 120px;text-align:center;font-size:14px;color:#6b665a}
-.bar{display:none}
-@media(max-width:859px){
-.bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(250,245,234,.96);border-top:1px solid var(--sable)}
-.bar a{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:999px;text-decoration:none;font-weight:600}
-.bar .a{background:var(--tomate);color:#fff}.bar .b{border:1.5px solid var(--bleu);color:var(--bleu)}
-.tel-top{display:none}
+:focus-visible{outline:3px solid var(--or-clair);outline-offset:3px;border-radius:var(--r)}
+h1,h2,h3{font-family:var(--titre);font-weight:400;line-height:1.05;text-wrap:balance}
+.wrap{width:min(1200px,100% - 48px);margin-inline:auto}
+
+.maquette{background:var(--charbon);color:#d9cfbf;font-size:13px;text-align:center;padding:8px 16px;letter-spacing:.02em}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 24px;border-radius:var(--r);background:var(--rouge);color:#fff;text-decoration:none;font-weight:500;font-size:16px;letter-spacing:.01em;border:0;transition:background .25s,transform .25s}
+.btn:hover{background:var(--rouge-fonce);transform:translateY(-2px)}
+.lien{display:inline-flex;align-items:center;min-height:48px;color:inherit;font-weight:500;text-decoration:underline;text-decoration-color:var(--or-clair);text-underline-offset:6px;text-decoration-thickness:2px;transition:text-decoration-color .25s}
+.lien:hover{text-decoration-color:currentColor}
+
+/* Nom de la maison (le logo fourni est celui du thème « Appetito ») */
+.marque{display:inline-flex;flex-direction:column;line-height:.9;text-decoration:none;color:#fff;font-family:var(--titre);font-style:italic}
+.marque .m1{font-size:2.1rem}
+.marque .m2{font-size:2.1rem;padding-left:.9em}
+.marque small{font-family:var(--texte);font-style:normal;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--or-clair);margin-top:8px}
+
+.entete{position:absolute;top:38px;left:0;right:0;z-index:5}
+.entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:16px}
+.nav{display:flex;align-items:center;gap:32px}
+.nav a{color:#fff;text-decoration:none;font-size:15px;letter-spacing:.06em;min-height:44px;display:inline-flex;align-items:center;border-bottom:2px solid transparent;transition:border-color .25s}
+.nav a:hover{border-color:var(--or-clair)}
+.nav .tel{border:1px solid rgba(255,255,255,.5);padding:0 16px;border-radius:var(--r)}
+
+.hero{position:relative;min-height:92svh;display:flex;align-items:flex-end;color:#fff;overflow:hidden;background:var(--charbon)}
+.hero-img{position:absolute;inset:0}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center 60%;animation:devoile 1.4s cubic-bezier(.2,.7,.2,1) both,zoom 20s ease-out both}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,14,.6) 0%,rgba(20,17,14,.2) 35%,rgba(20,17,14,.88) 100%)}
+.hero-txt{position:relative;z-index:2;padding-block:180px 72px}
+.hero .sur{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#ecdcb8;text-shadow:0 1px 8px rgba(0,0,0,.8);margin-bottom:16px;animation:monte .9s .3s both}
+.hero h1{font-size:clamp(3.2rem,11vw,8.5rem);line-height:.95;animation:monte 1s .45s both}
+.hero h1 em{color:#fff;font-style:italic}
+.hero .accroche{max-width:34ch;font-size:clamp(1.1rem,2.2vw,1.4rem);margin-top:24px;color:#f3ece0;animation:monte 1s .6s both}
+.hero .actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 32px;margin-top:32px;animation:monte 1s .75s both}
+.hero .actions .lien{color:#fff}
+.volute{position:absolute;right:4vw;bottom:72px;width:clamp(96px,14vw,200px);z-index:2;opacity:.95;animation:monte 1.2s .9s both}
+
+.defile{background:var(--rouge);color:#fff;overflow:hidden;white-space:nowrap;padding:16px 0}
+.defile-piste{display:inline-flex;gap:48px;animation:defile 32s linear infinite;font-family:var(--titre);font-style:italic;font-size:clamp(1.4rem,3vw,2rem)}
+.defile-piste span{display:inline-flex;align-items:center;gap:48px}
+.defile-piste span::after{content:"~";color:#f3d9a8;font-style:normal}
+
+.chap{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;color:#fff;background:var(--charbon)}
+.chap-img{position:absolute;inset:0;overflow:hidden}
+.chap-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.chap:hover .chap-img img{transform:scale(1.04)}
+.chap::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(18,15,12,.92) 0%,rgba(18,15,12,.25) 55%,rgba(18,15,12,.1) 100%)}
+.chap .wrap{position:relative;z-index:2;padding-block:96px}
+.chap .num{font-family:var(--titre);font-style:italic;color:var(--or-clair);font-size:1.3rem}
+.chap h2{font-size:clamp(3.6rem,14vw,11rem);line-height:.9;margin:8px 0 24px;letter-spacing:-.01em}
+.chap p{max-width:44ch;font-size:clamp(1.05rem,2vw,1.25rem);color:#efe6d6}
+.chap blockquote{margin-top:24px;padding-left:16px;border-left:3px solid var(--rouge);max-width:46ch;font-family:var(--titre);font-style:italic;font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.25;color:#fff}
+.chap blockquote cite{display:block;font-family:var(--texte);font-style:normal;font-size:14px;color:#cfc4b2;margin-top:8px}
+
+.chap.grill{background:var(--charbon-2);align-items:center;min-height:auto}
+.chap.grill::after{display:none}
+.grill .wrap{display:grid;grid-template-columns:1.3fr .7fr;gap:64px;align-items:center;padding-block:120px}
+.grill h2{font-size:clamp(3.2rem,9vw,7.5rem)}
+.cadre{aspect-ratio:4/5;border:1px dashed rgba(201,180,140,.55);border-radius:var(--r);display:grid;place-items:center;text-align:center;padding:32px;color:#cfc4b2;font-size:15px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.015) 0 16px,transparent 16px 32px)}
+.cadre img{width:64px;margin:0 auto 16px;opacity:.9}
+.cadre strong{display:block;font-family:var(--titre);font-weight:400;font-style:italic;font-size:1.6rem;color:var(--or-clair);margin-bottom:8px}
+
+.carte{padding-block:120px 104px;background:var(--creme)}
+.carte-tete{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:64px}
+.carte h2{font-size:clamp(3rem,8vw,6rem);color:var(--encre)}
+.carte h2 em{color:var(--rouge)}
+.carte-tete p{max-width:46ch;color:var(--gris);font-size:18px}
+.menu{list-style:none;border-top:2px solid var(--encre)}
+.menu li{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:baseline;padding:32px 0;border-bottom:1px solid #d8ccb8;transition:background .3s,padding .3s}
+.menu li:hover{background:#efe6d6;padding-inline:16px}
+.menu h3{font-size:clamp(1.8rem,4.5vw,3rem)}
+.menu .pointille{border-bottom:2px dotted #b6a587;transform:translateY(-8px)}
+.menu p{color:var(--gris);max-width:36ch;text-align:right}
+.modes{display:flex;flex-wrap:wrap;gap:16px 48px;margin-top:48px;align-items:center;list-style:none}
+.modes li{font-family:var(--titre);font-style:italic;font-size:1.5rem}
+.modes li+li::before{content:"·";margin-right:48px;color:var(--or);font-style:normal}
+
+.horaires{background:var(--rouge);color:#fff;padding-block:104px}
+.enseigne{border:2px solid #f3d9a8;outline:1px solid #f3d9a8;outline-offset:8px;border-radius:var(--r);padding:64px 48px;display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}
+.horaires h2{font-size:clamp(3rem,8vw,5.5rem)}
+.horaires .resume{margin-top:24px;font-size:18px;max-width:30ch;color:#fff4e4}
+.horaires .resume strong{font-weight:600}
+.jours{width:100%;border-collapse:collapse;font-size:18px}
+.jours th,.jours td{padding:12px 0;border-bottom:1px solid rgba(255,244,228,.35);text-align:left;font-weight:400}
+.jours th{text-transform:capitalize;font-family:var(--titre);font-size:1.35rem}
+.jours td{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.jours tr.ferme th,.jours tr.ferme td{color:#f3d9a8;font-style:italic}
+.sr{position:absolute;left:-9999px}
+
+.ambiance{padding-block:128px;background:var(--creme);position:relative;overflow:hidden}
+.ambiance .wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.ambiance-photo{border-radius:var(--r);overflow:hidden;aspect-ratio:4/5}
+.ambiance-photo img{width:100%;height:100%;object-fit:cover;object-position:30% center;transition:transform 1s}
+.ambiance-photo:hover img{transform:scale(1.04)}
+.ambiance h2{font-size:clamp(2.6rem,6vw,4.5rem);margin-bottom:32px}
+.ambiance h2 em{color:var(--rouge)}
+.ambiance p{max-width:52ch;font-size:18px;margin-bottom:24px}
+.faits{list-style:none;margin-top:40px;border-top:1px solid #d8ccb8}
+.faits li{display:grid;grid-template-columns:140px 1fr;gap:24px;padding:16px 0;border-bottom:1px solid #d8ccb8}
+.faits b{font-family:var(--titre);font-weight:400;font-size:1.25rem;color:#6f5b3c}
+
+.avis{background:var(--charbon);color:#f3ece0;padding-block:120px}
+.avis-tete{display:flex;flex-wrap:wrap;align-items:baseline;gap:16px 32px;margin-bottom:64px}
+.avis-tete .note{font-family:var(--titre);font-size:clamp(4.5rem,12vw,8rem);line-height:1;color:var(--or-clair);max-width:none}
+.avis-tete .note span{font-size:.4em}
+.avis-tete p{font-size:18px;color:#cfc4b2;max-width:30ch}
+.citations{display:grid;grid-template-columns:1fr 1.25fr;gap:64px;align-items:start}
+.citations figure:nth-child(2){margin-top:96px}
+.citations blockquote{font-family:var(--titre);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.25;color:#fff}
+.citations figcaption{margin-top:24px;font-size:15px;color:#cfc4b2}
+.citations figcaption b{color:#fff;font-weight:500}
+
+.venir{padding-block:120px;background:var(--creme)}
+.venir .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:64px;align-items:end}
+.venir h2{font-size:clamp(3rem,9vw,6.5rem)}
+.venir h2 em{color:var(--rouge)}
+.venir .adresse{font-size:clamp(1.2rem,2.4vw,1.5rem);margin-top:32px;max-width:34ch}
+.venir .infos{border-left:3px solid var(--rouge);padding-left:32px}
+.venir .infos p{margin-bottom:16px}
+.venir .tel-grand{font-family:var(--titre);font-size:clamp(2rem,5vw,2.8rem);text-decoration:none;display:inline-block;margin-bottom:24px}
+.venir .tel-grand:hover{color:var(--rouge)}
+.venir .actions{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;margin-top:24px}
+
+.pied{background:var(--charbon);color:#cfc4b2;padding-block:56px 48px;font-size:15px}
+.pied .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:24px}
+.pied .marque .m1,.pied .marque .m2{font-size:1.6rem}
+.pied a{color:#f3ece0}
+.signature{border-top:1px solid #3a342c;margin-top:32px;padding-top:24px;text-align:center;font-size:14px;color:#a99d8a}
+
+.barre{display:none}
+
+@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes monte{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes defile{to{transform:translateX(-50%)}}
+@keyframes entre{from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:none}}
+@keyframes ouvre{from{clip-path:inset(12% 12% 12% 12%)}to{clip-path:inset(0 0 0 0)}}
+
+@supports (animation-timeline: view()){
+  .chap h2,.carte h2,.horaires h2,.ambiance h2,.venir h2,.citations figure,.menu li{animation:entre linear both;animation-timeline:view();animation-range:entry 0% cover 30%}
+  .chap-img img,.ambiance-photo img{animation:ouvre linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
 }
-@media(min-width:860px){
-.hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:60px;padding-bottom:90px}
-.table-grid{grid-template-columns:1.3fr 1fr;grid-template-rows:300px 300px}
-.table-grid .g{grid-row:span 2}
-.table-grid .g2{grid-column:2}
-.q{grid-template-columns:1fr 1fr}
-.infos{grid-template-columns:1fr 1fr;align-items:start}
-section{padding:96px 0}
+
+@media (max-width:860px){
+  body{padding-bottom:80px}
+  .nav a:not(.tel){display:none}
+  .entete{top:34px}
+  .marque .m1,.marque .m2{font-size:1.75rem}
+  .hero{min-height:88svh}
+  .hero-txt{padding-block:170px 56px}
+  .volute{bottom:auto;top:110px;right:16px;width:80px;opacity:.85}
+  .chap{min-height:86svh}
+  .chap .wrap{padding-block:64px}
+  .grill .wrap,.carte-tete,.enseigne,.ambiance .wrap,.citations,.venir .wrap{grid-template-columns:1fr}
+  .grill .wrap{gap:40px;padding-block:80px}
+  .cadre{aspect-ratio:auto;min-height:200px}
+  .carte{padding-block:88px 80px}
+  .carte-tete{gap:24px;margin-bottom:40px}
+  .menu li{grid-template-columns:1fr;gap:8px;padding:24px 0}
+  .menu .pointille{display:none}
+  .menu p{text-align:left}
+  .modes{flex-direction:column;align-items:flex-start;gap:8px}
+  .modes li+li::before{content:none}
+  .modes li{padding-left:20px;position:relative}
+  .modes li::after{content:"";position:absolute;left:0;top:50%;width:10px;height:1px;background:var(--or)}
+  .horaires{padding-block:72px}
+  .enseigne{padding:40px 24px;gap:32px}
+  .jours{font-size:15px}
+  .jours th{font-size:1.15rem}
+  .ambiance{padding-block:88px}
+  .ambiance .wrap{gap:48px}
+  .faits li{grid-template-columns:1fr;gap:0}
+  .avis{padding-block:88px}
+  .citations{gap:48px}
+  .citations figure:nth-child(2){margin-top:0}
+  .venir{padding-block:88px}
+  .venir .wrap{gap:40px}
+  .venir .infos{padding-left:24px}
+  .barre{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--charbon);border-top:1px solid #3a342c;padding:8px;gap:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+  .barre a{min-height:52px;display:flex;align-items:center;justify-content:center;border-radius:var(--r);text-decoration:none;font-weight:500;font-size:16px}
+  .barre .b1{background:var(--rouge);color:#fff}
+  .barre .b2{background:#3a342c;color:#fff}
 }
-/* ouverture */
-.hero h1 span b{animation:monte 1s cubic-bezier(.2,.8,.2,1) both}
-.hero h1 span:nth-child(2) b{animation-delay:.15s}
-.hero h1 span:nth-child(3) b{animation-delay:.3s}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-.ph{animation:devoile 1.4s cubic-bezier(.2,.8,.2,1) .2s both}
-.ph img{animation:zoom 9s ease-out both}
-@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
-@keyframes zoom{from{transform:scale(1.15)}to{transform:scale(1)}}
-.kick,.lead,.today{animation:apparait .9s ease .5s both}
-.cta .btn{animation:apparait .8s ease .8s both}.cta .btn+.btn{animation-delay:.95s}
-@keyframes apparait{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@supports (animation-timeline:view()){
-.rev{animation:apparait linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+@media (max-width:420px){
+  .nav .tel{display:none}
+  .maquette{font-size:12px}
 }
-@media(prefers-reduced-motion:reduce){
-*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-.band div{padding-left:0}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
 }
 </style>
-</head>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
 <body>
-<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
-<div class="wrap">
-<header class="top">
-<img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2017/08/logo-appetito-side-area-2.png" alt="Logo Dolce Italia">
-<a class="tel-top" href="tel:+3265595795">065 59 57 95</a>
+
+<div class="maquette">Maquette — proposition de nouveau site</div>
+
+<header class="entete">
+  <div class="wrap">
+    <a class="marque" href="#haut" aria-label="Dolce Italia, retour en haut"><span class="m1">Dolce</span><span class="m2">Italia</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#carte">La carte</a>
+      <a href="#horaires">Horaires</a>
+      <a href="#venir">Venir</a>
+      <a class="tel" href="tel:+3265595795">065 59 57 95</a>
+    </nav>
+  </div>
 </header>
-<div class="hero">
-<div>
-<p class="kick">Restaurant · Pizzeria · Grill — Jurbise</p>
-<h1><span><b>La cuisine</b></span><span><b><em>italienne</em> et</b></span><span><b>française.</b></span></h1>
-<p class="lead">Sur la route d'Ath, à Jurbise, sur le chemin de Pairi Daiza. Une carte bien fournie, des pizzas, du grill, et une table pour vous.</p>
-<p class="today">Ouvert midi et soir · fermé le jeudi</p>
-<div class="cta">
-<a class="btn p" href="tel:+3265595795">Réserver une table</a>
-<a class="btn s" href="https://maps.google.com/?cid=4506882314369520274&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-</div>
-</div>
-<div class="ph"><img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/slide1.jpg" alt="Ambiance du restaurant Dolce Italia à Jurbise"></div>
-</div>
-</div>
 
-<div class="band" aria-hidden="true"><div>
-<span>Pizzeria</span><i>•</i><span>Grill</span><i>•</i><span>Cuisine italienne</span><i>•</i><span>Cuisine française</span><i>•</i><span>Route d'Ath, Jurbise</span><i>•</i><span>Pizzeria</span><i>•</i><span>Grill</span><i>•</i><span>Cuisine italienne</span><i>•</i><span>Cuisine française</span><i>•</i>
-</div></div>
+<main id="haut">
+  <section class="hero" aria-label="Dolce Italia">
+    <div class="hero-img">
+      <img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/slide1.jpg" alt="La salle du restaurant Dolce Italia, ses tables noires, le bar en pierre et les suspensions dorées" width="800" height="600" fetchpriority="high">
+    </div>
+    <img class="volute" src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/volpute.png" alt="" width="200" height="200">
+    <div class="wrap hero-txt">
+      <p class="sur">Jurbise · Route d'Ath 331</p>
+      <h1>Benvenuti<br>chez <em>Dolce Italia</em></h1>
+      <p class="accroche">Restaurant – Pizzeria – Grill, inspiré de cuisine italienne et française. Sur place, à emporter ou en livraison.</p>
+      <div class="actions">
+        <a class="btn" href="tel:+3265595795">Réserver une table</a>
+        <a class="lien" href="#carte">Voir la carte</a>
+      </div>
+    </div>
+  </section>
 
-<section class="rev">
-<div class="wrap">
-<h2>À table.</h2>
-<div class="txt">
-<p>Un restaurant, une pizzeria et un grill sous le même toit, avec une cuisine inspirée de l'Italie et de la France.</p>
-<p>Un client le dit à sa façon : la pizza burrata mérite le détour.</p>
-</div>
-<div class="table-grid">
-<figure class="g"><img loading="lazy" src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/italian-food-cooking-ingredients-on-dark-backgroun-P7W2TZE.jpg" alt="Ingrédients de cuisine italienne sur fond sombre"><figcaption>Les ingrédients</figcaption></figure>
-<figure><img loading="lazy" src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/volpute.png" alt="Plat servi chez Dolce Italia"><figcaption>Du restaurant</figcaption></figure>
-<figure class="g2"><img loading="lazy" src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/livraison2.jpg" alt="Photo de Dolce Italia tirée du site du restaurant"><figcaption>Dolce Italia</figcaption></figure>
-</div>
-</div>
-</section>
+  <div class="defile" aria-hidden="true">
+    <div class="defile-piste">
+      <span>Pizzeria</span><span>Grill</span><span>Saveurs italiennes</span><span>Cuisine française</span><span>Terrasses fleuries</span><span>À emporter</span><span>En livraison</span>
+      <span>Pizzeria</span><span>Grill</span><span>Saveurs italiennes</span><span>Cuisine française</span><span>Terrasses fleuries</span><span>À emporter</span><span>En livraison</span>
+    </div>
+  </div>
 
-<section class="avis rev">
-<div class="wrap">
-<h2>Ce qu'on en dit.</h2>
-<div class="note"><strong>4,2/5</strong><span>sur Google, d'après 1 203 avis</span></div>
-<div class="q">
-<blockquote><p>« 2 eme expérience pour nous, et nous en sommes toujours aussi ravis. Toujours très bon ! Nous faisons la route de Tournai. Merci ❤️ »</p><footer>Stacy Hermal — 5/5, avis Google</footer></blockquote>
-<blockquote><p>« Très beau restaurant situé sur la route principale menant à Pairi Daiza. Le service y est excellent et la carte bien fournie (juste un bémol pour la lecture en tout petits caractères). Cuisine excellente et mention spéciale pour la pizza burata. »</p><footer>Frederic Steelandt — 5/5, avis Google</footer></blockquote>
-</div>
-</div>
-</section>
+  <section class="chap" aria-labelledby="t-pizzeria">
+    <div class="chap-img">
+      <img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/italian-food-cooking-ingredients-on-dark-backgroun-P7W2TZE.jpg" alt="Basilic, tomates, olives, parmesan, pâtes et charcuterie autour d'une planche en bois" width="800" height="532" loading="lazy">
+    </div>
+    <div class="wrap">
+      <p class="num">La pizzeria</p>
+      <h2 id="t-pizzeria">Pizze &amp; saveurs d'Italie</h2>
+      <p>Tomate, basilic, olives, parmesan : un large choix de plats aux saveurs italiennes, des pizzas aux pâtes.</p>
+      <blockquote>« Mention spéciale pour la pizza burata. »<cite>Frederic Steelandt, avis Google</cite></blockquote>
+    </div>
+  </section>
 
-<section class="rev">
-<div class="wrap infos">
-<div>
-<h2>Quand venir.</h2>
-<ul class="hrs">
-<li><span>Lundi</span><span>12:00 – 14:00 · 18:00 – 22:00</span></li>
-<li><span>Mardi</span><span>12:00 – 14:00 · 18:00 – 22:00</span></li>
-<li><span>Mercredi</span><span>12:00 – 14:00 · 18:00 – 22:00</span></li>
-<li class="ferme"><span>Jeudi</span><span>Fermé</span></li>
-<li><span>Vendredi</span><span>12:00 – 14:00 · 18:00 – 23:00</span></li>
-<li><span>Samedi</span><span>12:00 – 14:00 · 18:00 – 23:00</span></li>
-<li><span>Dimanche</span><span>12:00 – 14:00 · 18:00 – 22:00</span></li>
-</ul>
-</div>
-<div class="adr">
-<h2>Venir.</h2>
-<p>Rte d'Ath 331<br>7050 Jurbise</p>
-<p><a class="t" href="tel:+3265595795">065 59 57 95</a></p>
-<p><a class="mail" href="mailto:appetito@mikado-themes.com">appetito@mikado-themes.com</a></p>
-<p>Pour réserver, un coup de téléphone suffit.</p>
-<a class="btn p" href="https://maps.google.com/?cid=4506882314369520274&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Ouvrir l'itinéraire</a>
-</div>
-</div>
-</section>
+  <section class="chap grill" aria-labelledby="t-grill">
+    <div class="wrap">
+      <div>
+        <p class="num">Le grill</p>
+        <h2 id="t-grill">Grill &amp; cuisine française</h2>
+        <p>L'autre moitié de la carte. Une cuisine française et grill, pour ceux qui ont envie d'autre chose qu'une pizza ce soir-là.</p>
+      </div>
+      <div class="cadre"><div><img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/volpute.png" alt="" width="64" height="64" loading="lazy"><strong>Ici, vos grillades en photo</strong>— par Nicolas</div></div>
+    </div>
+  </section>
 
-<footer class="pied">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+  <section class="carte" id="carte" aria-labelledby="t-carte">
+    <div class="wrap">
+      <div class="carte-tete">
+        <h2 id="t-carte">La carte, <em>en grand</em></h2>
+        <p>Une carte bien fournie, avec trois cuisines sous le même toit. Ici, on la lit sans plisser les yeux.</p>
+      </div>
+      <ul class="menu">
+        <li><h3>Pizzeria</h3><span class="pointille"></span><p>Les pizzas, dont la burrata.</p></li>
+        <li><h3>Cuisine italienne</h3><span class="pointille"></span><p>Un large choix de plats aux saveurs italiennes.</p></li>
+        <li><h3>Cuisine française</h3><span class="pointille"></span><p>Pour ceux qui préfèrent la tradition d'ici.</p></li>
+        <li><h3>Grill</h3><span class="pointille"></span><p>Le côté grill de la maison.</p></li>
+      </ul>
+      <ul class="modes" aria-label="Formules">
+        <li>Sur place</li><li>À emporter</li><li>En livraison</li>
+      </ul>
+    </div>
+  </section>
 
-<nav class="bar" aria-label="Actions rapides">
-<a class="a" href="tel:+3265595795">Appeler</a>
-<a class="b" href="https://maps.google.com/?cid=4506882314369520274&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+  <section class="horaires" id="horaires" aria-labelledby="t-horaires">
+    <div class="wrap">
+      <div class="enseigne">
+        <div>
+          <h2 id="t-horaires">On est ouverts</h2>
+          <p class="resume">Midi et soir, six jours sur sept. <strong>Fermé le jeudi.</strong> Le vendredi et le samedi, la cuisine tourne jusqu'à 23&nbsp;h.</p>
+        </div>
+        <table class="jours">
+          <caption class="sr">Horaires d'ouverture</caption>
+          <tbody>
+            <tr><th scope="row">lundi</th><td>12 h – 14 h · 18 h – 22 h</td></tr>
+            <tr><th scope="row">mardi</th><td>12 h – 14 h · 18 h – 22 h</td></tr>
+            <tr><th scope="row">mercredi</th><td>12 h – 14 h · 18 h – 22 h</td></tr>
+            <tr class="ferme"><th scope="row">jeudi</th><td>Fermé</td></tr>
+            <tr><th scope="row">vendredi</th><td>12 h – 14 h · 18 h – 23 h</td></tr>
+            <tr><th scope="row">samedi</th><td>12 h – 14 h · 18 h – 23 h</td></tr>
+            <tr><th scope="row">dimanche</th><td>12 h – 14 h · 18 h – 22 h</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="ambiance" aria-labelledby="t-ambiance">
+    <div class="wrap">
+      <div class="ambiance-photo">
+        <img src="https://www.dolceitalia-jurbise.be/wp-content/uploads/2020/06/slide1.jpg" alt="Le bar en pierre et les tables dressées de la salle" width="800" height="600" loading="lazy">
+      </div>
+      <div>
+        <h2 id="t-ambiance">Dedans, ou <em>en terrasse</em></h2>
+        <p>La salle, avec son bar en pierre et ses grandes suspensions. Et dès qu'il fait beau, des terrasses fleuries et ombragées, à l'avant comme à l'arrière du restaurant.</p>
+        <ul class="faits">
+          <li><b>Terrasses</b><span>Fleuries et ombragées, devant et derrière.</span></li>
+          <li><b>Parking</b><span>Parkings privés à l'arrière, et un nouveau parking sur le côté, face à la pharmacie de la Route d'Ath.</span></li>
+          <li><b>À la maison</b><span>Tous les plats sur place, à emporter ou en livraison.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="avis" aria-labelledby="t-avis">
+    <div class="wrap">
+      <div class="avis-tete">
+        <p class="note" id="t-avis">4,2<span>/5</span></p>
+        <p>sur 1 203 avis Google. Des habitués, et des gens qui font la route exprès.</p>
+      </div>
+      <div class="citations">
+        <figure>
+          <blockquote>« 2 eme expérience pour nous, et nous en sommes toujours aussi ravis. Toujours très bon ! Nous faisons la route de Tournai. Merci ❤️ »</blockquote>
+          <figcaption><b>Stacy Hermal</b> · avis Google</figcaption>
+        </figure>
+        <figure>
+          <blockquote>« Très beau restaurant situé sur la route principale menant à Pairi Daiza. Le service y est excellent et la carte bien fournie (juste un bémol pour la lecture en tout petits caractères). Cuisine excellente et mention spéciale pour la pizza burata. »</blockquote>
+          <figcaption><b>Frederic Steelandt</b> · avis Google</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="venir" id="venir" aria-labelledby="t-venir">
+    <div class="wrap">
+      <div>
+        <h2 id="t-venir">Sur la route <em>de Pairi Daiza</em></h2>
+        <p class="adresse">Route d'Ath 331, 7050 Jurbise (Erbisoeul). On se gare à l'arrière, ou sur le côté, face à la pharmacie.</p>
+      </div>
+      <div class="infos">
+        <p>Réserver, commander à emporter ou en livraison :</p>
+        <a class="tel-grand" href="tel:+3265595795">065 59 57 95</a>
+        <div class="actions">
+          <a class="btn" href="tel:+3265595795">Réserver une table</a>
+          <a class="lien" href="tel:+3265595795">Commander</a>
+          <a class="lien" href="https://maps.google.com/?cid=4506882314369520274" target="_blank" rel="noopener">Itinéraire</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="wrap">
+    <a class="marque" href="#haut" aria-label="Dolce Italia, retour en haut"><span class="m1">Dolce</span><span class="m2">Italia</span></a>
+    <p>Restaurant – Pizzeria – Grill · Route d'Ath 331, 7050 Jurbise · <a href="tel:+3265595795">065 59 57 95</a></p>
+  </div>
+  <p class="signature wrap">Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</p>
+</footer>
+
+<nav class="barre" aria-label="Actions rapides">
+  <a class="b1" href="tel:+3265595795">Réserver</a>
+  <a class="b2" href="https://maps.google.com/?cid=4506882314369520274" target="_blank" rel="noopener">Itinéraire</a>
 </nav>
+
 </body>
 </html>
