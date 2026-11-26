@@ -4,273 +4,312 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Vert de Gris et Toque — Restaurant à Enghien (maquette)</title>
-<meta name="description" content="Maquette d'une page d'accueil pour Vert de Gris et Toque, restaurant place du Vieux Marché à Enghien.">
-<style>
+<title>Vert de Gris et Toque — Restaurant, Enghien</title>
+<meta name="description" content="Vert de Gris et Toque, la saveur des saisons à Enghien. Place du Vieux Marché 9.">
+<style>@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond.woff2") format("woff2");font-weight:300 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Cormorant Garamond";src:url("/maquettes/polices/cormorant-garamond-italic.woff2") format("woff2");font-weight:300 700;font-style:italic;font-display:swap}
+@font-face{font-family:"Inter";src:url("/maquettes/polices/inter.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+
 :root{
-  --vert:#4e7a6e;
-  --vert-fonce:#2f4d45;
-  --creme:#f7f1e5;
-  --lin:#ece2cf;
-  --brun:#3b2d23;
-  --serif:"Cormorant Garamond","Hoefler Text",Baskerville,"Palatino Linotype",Georgia,serif;
-  --sans:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;
+  --encre:#0f2c36;
+  --encre-2:#16384a;
+  --vdg:#9aafa0;
+  --laiton:#c9a96e;
+  --creme:#f2eee5;
+  --texte:#d9ddd6;
+  --doux:#a9b8b0;
+  --filet:rgba(201,169,110,.45);
+  --r:2px;
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s6:48px;--s8:64px;--s12:96px;--s16:128px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--creme);color:var(--brun);line-height:1.6;font-size:17px;overflow-x:hidden}
+body{margin:0;background:var(--encre);color:var(--texte);font-family:"Inter",sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit}
-.maq{background:var(--brun);color:var(--lin);font-size:12px;text-align:center;padding:6px 12px;letter-spacing:.02em}
-h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.05}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;background:var(--vert);color:#fff;text-decoration:none;font-weight:600;border:2px solid var(--vert);transition:transform .25s,background .25s}
-.btn:hover{transform:translateY(-2px);background:var(--vert-fonce)}
-.btn.clair{background:transparent;color:var(--brun);border-color:var(--brun)}
-.btn.clair:hover{background:var(--brun);color:var(--creme)}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;font-weight:400;color:var(--creme);line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0 0 var(--s2)}
+:focus-visible{outline:2px solid var(--laiton);outline-offset:3px}
 
-/* Haut */
-header.nav{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;max-width:1120px;margin:0 auto}
-.logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--serif);font-size:22px;font-weight:700;line-height:1}
-.logo img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--vert)}
-.nav a.tel{font-weight:600;text-decoration:none;min-height:44px;display:none;align-items:center}
+.maquette{background:#0a1f27;color:var(--doux);font-size:12px;letter-spacing:.04em;text-align:center;padding:6px var(--s2)}
 
-/* Hero */
-.hero{display:grid;gap:26px;padding:10px 22px 40px;max-width:1120px;margin:0 auto}
-.hero h1{font-size:clamp(46px,13vw,104px);color:var(--vert-fonce)}
-.hero h1 span{display:block;overflow:hidden}
-.hero h1 span i{display:block;font-style:normal;animation:monte .9s cubic-bezier(.2,.7,.2,1) both}
-.hero h1 span:nth-child(2) i{animation-delay:.12s;font-style:italic;color:var(--brun)}
-.hero h1 span:nth-child(3) i{animation-delay:.24s}
-@keyframes monte{from{transform:translateY(105%)}to{transform:none}}
-.hero p.acc{font-size:19px;max-width:30em;animation:fond .8s .5s both}
-.hero .acts{display:flex;flex-wrap:wrap;gap:12px;animation:fond .8s .7s both}
-@keyframes fond{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.photo-h{border-radius:200px 200px 24px 24px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--lin),#d9ccb2);animation:devoile 1.4s cubic-bezier(.2,.7,.2,1) both}
-.photo-h img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out both}
-@keyframes devoile{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+.entete{position:absolute;top:28px;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:var(--s3) clamp(var(--s3),5vw,var(--s8))}
+.marque{font-family:"Cormorant Garamond",serif;font-size:22px;color:var(--creme);text-decoration:none;letter-spacing:.02em;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.marque i{color:var(--laiton)}
+.nav{display:flex;gap:var(--s4);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.nav a{text-decoration:none;color:var(--creme);opacity:.9;padding:var(--s1) 0;border-bottom:1px solid transparent;transition:border-color .4s,opacity .4s;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.nav a:hover{opacity:1;border-color:var(--laiton)}
 
-/* Bande */
-.bande{background:var(--vert-fonce);color:var(--lin);overflow:hidden;white-space:nowrap;padding:14px 0;font-family:var(--serif);font-size:24px;font-style:italic}
-.bande div{display:inline-block;animation:defile 40s linear infinite;padding-left:0}
-.bande span{margin:0 22px}
-@keyframes defile{to{transform:translateX(-50%)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 var(--s4);border:1px solid var(--laiton);border-radius:var(--r);color:var(--creme);text-decoration:none;font-size:13px;letter-spacing:.16em;text-transform:uppercase;background:rgba(15,44,54,.35);transition:background .5s,color .5s}
+.btn:hover{background:var(--laiton);color:var(--encre)}
 
-/* Horaires */
-.ouvert{padding:60px 0 20px}
-.ouvert .grille{display:grid;gap:30px}
-.ouvert h2{font-size:clamp(34px,8vw,56px);margin-bottom:10px}
-.heures{list-style:none;border-top:1px solid rgba(59,45,35,.25)}
-.heures li{display:flex;justify-content:space-between;gap:14px;padding:13px 2px;border-bottom:1px solid rgba(59,45,35,.25);font-size:18px}
-.heures li.ferme{opacity:.5}
-.heures li b{font-weight:600}
-.note{font-size:14px;opacity:.75;margin-top:12px}
+.ouverture{position:relative;min-height:100svh;display:grid;align-items:end;overflow:hidden;isolation:isolate}
+.ouverture figure{position:absolute;inset:0;margin:0;z-index:-1;animation:devoile 1.8s cubic-bezier(.2,.6,.2,1) both}
+.ouverture img{width:100%;height:100%;object-fit:cover;object-position:60% 50%;animation:zoom 14s ease-out both}
+.ouverture::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(15,44,54,.55) 0%,rgba(15,44,54,.15) 35%,rgba(15,44,54,.85) 80%,var(--encre) 100%)}
+.ouverture .contenu{padding:var(--s16) clamp(var(--s3),6vw,var(--s12)) var(--s12);max-width:1100px;animation:fondu 1.2s .5s ease-out both}
+.ouverture h1{font-size:clamp(52px,10vw,132px);font-weight:300;letter-spacing:-.01em}
+.ouverture h1 em{color:var(--laiton);font-style:italic}
+.ouverture .ligne{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(22px,2.6vw,30px);color:var(--creme);margin:var(--s3) 0 var(--s4)}
+.ouverture .lieu{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--vdg);margin-top:var(--s3);margin-bottom:0}
 
-/* Jardin */
-.jardin{padding:60px 0}
-.jardin .grille{display:grid;gap:22px}
-.jardin h2{font-size:clamp(36px,9vw,64px);color:var(--vert-fonce)}
-.jardin p{max-width:34em;margin-top:14px}
-.cadre{border-radius:22px;overflow:hidden;background:linear-gradient(150deg,var(--lin),#d6c8ad);aspect-ratio:4/3}
-.cadre img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s}
-.cadre:hover img{transform:scale(1.04)}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.duo .cadre{aspect-ratio:1/1}
+.num{display:block;font-family:"Cormorant Garamond",serif;font-size:18px;color:var(--laiton);letter-spacing:.2em;margin-bottom:var(--s3)}
+.filet{width:64px;height:1px;background:var(--laiton);border:0;margin:var(--s4) auto}
+.centre{max-width:640px;margin:0 auto;text-align:center;padding:0 var(--s3)}
+.centre h2{font-size:clamp(38px,5.6vw,64px)}
+.centre p{color:var(--texte)}
 
-/* Menu */
-.menu{background:var(--lin);padding:70px 0;background-image:linear-gradient(180deg,rgba(255,255,255,.4),transparent)}
-.menu .grille{display:grid;gap:30px;align-items:center}
-.menu h2{font-size:clamp(36px,9vw,64px)}
-.menu h2 em{color:var(--vert)}
-.menu p{margin-top:14px;max-width:33em}
-.menu .cadre{aspect-ratio:1/1;border-radius:50% 50% 22px 22px}
-.fete{margin-top:22px;padding:18px 20px;border-left:4px solid var(--vert);background:var(--creme);border-radius:0 14px 14px 0}
+.cuisine{padding:var(--s16) 0 var(--s12)}
+.cuisine .chapeau{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(22px,2.4vw,27px);line-height:1.4;color:var(--creme)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:var(--s8);max-width:1100px;margin:var(--s12) auto 0;padding:0 clamp(var(--s3),4vw,var(--s6));align-items:center}
+.cadre{aspect-ratio:4/3;border:1px solid var(--filet);border-radius:var(--r);display:grid;place-content:center;gap:var(--s1);text-align:center;padding:var(--s4);background:var(--encre-2)}
+.cadre span{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:24px;color:var(--creme)}
+.cadre small{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--vdg)}
+.plats h3{font-size:clamp(28px,3vw,36px);margin-bottom:var(--s3)}
+.plats blockquote{margin:0 0 var(--s4);padding-left:var(--s3);border-left:1px solid var(--laiton)}
+.plats blockquote p{font-family:"Cormorant Garamond",serif;font-size:22px;line-height:1.35;color:var(--creme);margin-bottom:var(--s1)}
+.plats cite{font-style:normal;font-size:13px;color:var(--doux)}
 
-/* Avis */
-.avis{padding:70px 0}
-.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:26px}
-.score b{font-family:var(--serif);font-size:72px;color:var(--vert);line-height:1}
-.score span{font-size:17px}
-.avis blockquote{font-family:var(--serif);font-size:clamp(24px,5.5vw,38px);line-height:1.25;max-width:26em;color:var(--vert-fonce)}
-.avis cite{display:block;font-family:var(--sans);font-style:normal;font-size:14px;margin-top:12px;color:var(--brun);opacity:.8}
-.petits{display:grid;gap:18px;margin-top:40px}
-.petits blockquote{font-family:var(--sans);font-size:16px;color:var(--brun);background:var(--lin);padding:22px;border-radius:18px;line-height:1.55}
+.carte-sec{padding:var(--s12) var(--s3);background:var(--encre-2)}
+.carte{max-width:560px;margin:0 auto;background:var(--creme);color:#2a3a3f;border-radius:var(--r);padding:var(--s8) clamp(var(--s3),6vw,var(--s8));text-align:center;position:relative}
+.carte::before{content:"";position:absolute;inset:var(--s1);border:1px solid #b89a5f;border-radius:var(--r);pointer-events:none}
+.carte .num{color:#8a6c34}
+.carte h2{color:var(--encre);font-size:clamp(36px,5vw,52px)}
+.carte .sous{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:21px;color:#4b5a5c;margin:var(--s2) 0 0}
+.carte hr{width:48px;height:1px;border:0;background:#b89a5f;margin:var(--s4) auto}
+.carte .service{font-family:"Cormorant Garamond",serif;font-size:26px;color:var(--encre);margin:0}
+.carte .service small{display:block;font-family:"Inter",sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#6b5428;margin-bottom:4px}
+.carte .service + .service{margin-top:var(--s3)}
+.carte .note{font-size:15px;color:#4b5a5c;margin:var(--s4) 0 0}
+.carte .note a{color:var(--encre);white-space:nowrap}
+.aussi{text-align:center;margin:var(--s6) auto 0;max-width:560px;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:20px;color:var(--doux)}
 
-/* Venir */
-.venir{background:var(--vert-fonce);color:var(--creme);padding:70px 0}
-.venir .grille{display:grid;gap:28px}
-.venir h2{font-size:clamp(36px,9vw,60px)}
-.venir address{font-style:normal;font-size:20px;margin:14px 0 22px}
-.venir .btn{background:var(--creme);color:var(--vert-fonce);border-color:var(--creme)}
-.venir .btn.clair{background:transparent;color:var(--creme)}
-.venir .btn.clair:hover{background:var(--creme);color:var(--vert-fonce)}
-.venir .acts{display:flex;flex-wrap:wrap;gap:12px}
-.venir a.lien{color:var(--lin)}
-.venir .cadre{aspect-ratio:4/3}
+.salle{display:grid;grid-template-columns:1fr 1fr;min-height:80vh}
+.salle figure{margin:0;position:relative;overflow:hidden}
+.salle figure img{width:100%;height:100%;object-fit:cover}
+.salle .texte{display:flex;flex-direction:column;justify-content:center;padding:var(--s12) clamp(var(--s3),6vw,var(--s12))}
+.salle h2{font-size:clamp(40px,5vw,68px);margin-bottom:var(--s4)}
+.salle h2 em{color:var(--laiton)}
+.salle p{max-width:52ch}
 
-footer{padding:26px 22px 40px;text-align:center;font-size:13px;opacity:.8}
-body{padding-bottom:76px}
+.temoin{padding:var(--s12) var(--s3) 0;text-align:center}
+.temoin blockquote{margin:0 auto;max-width:760px}
+.temoin p{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(28px,3.6vw,44px);line-height:1.2;color:var(--creme);margin:0 0 var(--s3)}
+.temoin cite{font-style:normal;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--vdg)}
 
-/* Barre mobile */
-.barre{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(247,241,229,.96);border-top:1px solid rgba(59,45,35,.2);z-index:10}
-.barre .btn{min-height:48px;padding:0 10px}
+.avis{padding:var(--s12) 0 var(--s16)}
+.avis .tete{text-align:center;padding:0 var(--s3)}
+.avis .tete p{color:var(--doux);font-size:15px}
+.avis .tete strong{color:var(--creme);font-weight:500}
+.defile{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0;margin-top:var(--s6);scrollbar-width:none}
+.defile::-webkit-scrollbar{display:none}
+.citation{flex:0 0 100%;scroll-snap-align:center;margin:0;padding:0 clamp(var(--s3),12vw,var(--s16));text-align:center}
+.citation p{font-family:"Cormorant Garamond",serif;font-size:clamp(24px,3vw,36px);line-height:1.3;color:var(--creme);max-width:30em;margin:0 auto var(--s3)}
+.citation footer{font-size:14px;color:var(--doux)}
+.citation footer b{color:var(--laiton);font-weight:500}
+.points{display:flex;justify-content:center;gap:var(--s1);margin-top:var(--s4)}
+.points a{width:44px;height:44px;display:grid;place-items:center}
+.points a::before{content:"";width:24px;height:1px;background:var(--vdg);transition:background .3s,width .3s}
+.points a:hover::before{background:var(--laiton);width:36px}
+.glisser{text-align:center;font-size:13px;color:var(--doux);margin-top:var(--s1)}
 
-@media(min-width:861px){
-  body{padding-bottom:0}
-  .barre{display:none}
-  .nav a.tel{display:inline-flex}
-  .hero{grid-template-columns:1.15fr 1fr;align-items:center;gap:60px;padding-top:30px}
-  .ouvert .grille{grid-template-columns:1fr 1fr;gap:70px;align-items:start}
-  .jardin .grille{grid-template-columns:1fr 1fr;align-items:center;gap:50px}
-  .menu .grille{grid-template-columns:1fr 1fr;gap:70px}
-  .petits{grid-template-columns:1fr 1fr}
-  .venir .grille{grid-template-columns:1fr 1fr;align-items:center;gap:60px}
-}
+.infos{border-top:1px solid var(--filet);padding:var(--s12) clamp(var(--s3),6vw,var(--s12));display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:var(--s8);max-width:1300px;margin:0 auto}
+.infos h2{font-size:clamp(40px,5vw,60px);margin-bottom:var(--s3)}
+.infos h3{font-family:"Inter",sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--laiton);margin-bottom:var(--s2);font-weight:500}
+.infos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:var(--s1) var(--s3)}
+.infos dt{color:var(--creme)}
+.infos dd{margin:0;color:var(--doux)}
+.infos .source{font-size:13px;color:var(--doux);margin-top:var(--s2)}
+.infos address{font-style:normal}
+.infos a.lien{text-decoration:none;border-bottom:1px solid var(--filet);transition:border-color .3s}
+.infos a.lien:hover{border-color:var(--laiton)}
+.infos .actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
 
-/* Défilement */
+.pied{text-align:center;padding:var(--s6) var(--s3);font-size:13px;color:var(--doux);border-top:1px solid rgba(154,175,160,.2)}
+.pied a{color:var(--creme)}
+
+.barre{display:none}
+
+@keyframes fondu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+
 @supports (animation-timeline: view()){
-  .rev{animation:apparait linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
-  @keyframes apparait{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+  .apparait{animation:fondu linear both;animation-timeline:view();animation-range:entry 0% cover 30%}
+  .revele img{animation:zoom linear both;animation-timeline:view();animation-range:entry 0% exit 100%}
 }
 
-@media(prefers-reduced-motion:reduce){
+@media (max-width:860px){
+  body{padding-bottom:72px}
+  .nav{display:none}
+  .duo{grid-template-columns:1fr;gap:var(--s6)}
+  .salle{grid-template-columns:1fr;min-height:0}
+  .salle figure{aspect-ratio:4/5}
+  .infos{grid-template-columns:1fr;gap:var(--s6)}
+  .barre{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(10,31,39,.96);border-top:1px solid var(--filet);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .barre a{min-height:56px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--creme);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  .barre a:first-child{border-right:1px solid var(--filet);color:var(--laiton)}
+  .ouverture .contenu{padding-bottom:calc(var(--s12) + 24px)}
+  .citation{padding:0 var(--s3)}
+}
+@media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 </style>
-</head>
+<style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style><style>html,body{max-width:100%;overflow-x:clip}img,svg,video{max-width:100%}</style></head>
 <body>
-<div class="maq">Maquette — une proposition de nouveau site, pas le site publié</div>
 
-<header class="nav">
-  <a class="logo" href="#haut">
-    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000000-18a6a18a6c/1951_1-1-300x300.jpeg?ph=71db933bed" alt="Logo de Vert de Gris et Toque" width="46" height="46">
-    <span>Vert de Gris<br>et Toque</span>
-  </a>
-  <a class="tel" href="tel:+3223955310">02 395 53 10</a>
+<div class="maquette">Maquette — proposition, pas le site publié</div>
+
+<header class="entete">
+  <a class="marque" href="#haut">Vert de Gris <i>&amp;</i> Toque</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="#cuisine">La cuisine</a>
+    <a href="#carte">Le menu</a>
+    <a href="#salle">La salle</a>
+    <a href="#venir">Réserver</a>
+  </nav>
 </header>
 
 <main id="haut">
-<section class="hero">
-  <div>
-    <h1><span><i>La saveur</i></span><span><i>des saisons,</i></span><span><i>à Enghien.</i></span></h1>
-    <p class="acc" style="margin-top:22px">Une cuisine de produits frais, faite par les patrons eux-mêmes, dans un petit jardin cosy à deux pas du Vieux Marché.</p>
-    <div class="acts" style="margin-top:22px">
-      <a class="btn" href="tel:+3223955310">Réserver une table</a>
-      <a class="btn clair" href="#horaires">Voir les horaires</a>
-    </div>
-  </div>
-  <div class="photo-h">
-    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Une assiette de la cuisine de Vert de Gris et Toque">
+
+<section class="ouverture" aria-label="Vert de Gris et Toque">
+  <figure>
+    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000028-e3e75e3e77/image-crop-200000024-5.jpeg?ph=71db933bed" alt="La grande table dressée sous la verrière, fleurs fraîches, feu de bois au fond">
+  </figure>
+  <div class="contenu">
+    <h1>Vert de Gris <em>&amp;</em> Toque</h1>
+    <p class="ligne">La saveur des saisons, au cœur d’Enghien.</p>
+    <a class="btn" href="tel:+3223955310">Réserver une table</a>
+    <p class="lieu">Place du Vieux Marché 9 · Enghien</p>
   </div>
 </section>
 
-<div class="bande" aria-hidden="true"><div>
-  <span>Produits de saison</span>·<span>Menu 3 services</span>·<span>Petit jardin</span>·<span>Cuisine généreuse</span>·<span>Place du Vieux Marché</span>·
-  <span>Produits de saison</span>·<span>Menu 3 services</span>·<span>Petit jardin</span>·<span>Cuisine généreuse</span>·<span>Place du Vieux Marché</span>·
-</div></div>
-
-<section class="ouvert" id="horaires">
-  <div class="wrap grille">
-    <div class="rev">
-      <h2>Quand venir&nbsp;?</h2>
-      <p>Ouvert du mercredi au samedi. Pour une table, le plus simple est d'appeler.</p>
-      <p style="margin-top:20px"><a class="btn" href="tel:+3223955310">Appeler le 02 395 53 10</a></p>
-    </div>
-    <div class="rev">
-      <ul class="heures">
-        <li class="ferme"><span>Lundi</span><b>Fermé</b></li>
-        <li class="ferme"><span>Mardi</span><b>Fermé</b></li>
-        <li><span>Mercredi</span><b>10 h – 19 h</b></li>
-        <li><span>Jeudi</span><b>Ouvert 24 h/24</b></li>
-        <li><span>Vendredi</span><b>10 h – 19 h</b></li>
-        <li><span>Samedi</span><b>10 h – 19 h</b></li>
-        <li class="ferme"><span>Dimanche</span><b>Fermé</b></li>
-      </ul>
-      <p class="note">Horaires tels qu'indiqués sur la fiche Google. Celui du jeudi est à confirmer avec vous.</p>
+<section class="cuisine" id="cuisine">
+  <div class="centre apparait">
+    <span class="num">I</span>
+    <h2>Les patrons aux fourneaux</h2>
+    <hr class="filet">
+    <p class="chapeau">Des produits de saison, une cuisine généreuse, et la carte qui change avec elles.</p>
+    <p>En salle, une équipe discrète et souriante. En cuisine, les patrons. Le reste se passe dans l’assiette.</p>
+  </div>
+  <div class="duo">
+    <div class="cadre apparait"><span>Ici, vos photos d’assiettes</span><small>par Nicolas</small></div>
+    <div class="plats apparait">
+      <h3>Ce que l’on vient y chercher</h3>
+      <blockquote>
+        <p>« Tagliata de boeuf irlandais avec foie gras et jus corsé, mayonnaise à la truffe, frites maison ! »</p>
+        <cite>Témoignage d’un client, sur notre site</cite>
+      </blockquote>
+      <blockquote>
+        <p>« Très bonne cuisson pour le tagliata de bœuf. La lasagne un délice. »</p>
+        <cite>La vie est belle, avis Google</cite>
+      </blockquote>
     </div>
   </div>
 </section>
 
-<section class="jardin">
-  <div class="wrap grille">
-    <div class="rev">
-      <h2>Un petit jardin, une cuisine ouverte sur les saisons.</h2>
-      <p>« Petit jardin hyper sympa, cosy », écrit une cliente. Les patrons sont aux fourneaux, l'équipe en salle est discrète et efficace. Et quand le soleil revient, la terrasse reprend ses tables.</p>
-      <p>Une tablée d'amis pour un anniversaire&nbsp;? Le restaurant sait aussi installer un groupe dans un cadre privatisé.</p>
-    </div>
-    <div class="rev">
-      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000028-e3e75e3e77/image-crop-200000024-5.jpeg?ph=71db933bed" alt="Ambiance de Vert de Gris et Toque" loading="lazy"></div>
-    </div>
+<section class="carte-sec" id="carte">
+  <div class="carte apparait">
+    <span class="num">II</span>
+    <h2>Menu 3 services</h2>
+    <p class="sous">Au fil des saisons</p>
+    <hr>
+    <p class="service"><small>Premier service</small>Entrée</p>
+    <p class="service"><small>Deuxième service</small>Plat</p>
+    <p class="service"><small>Troisième service</small>Dessert</p>
+    <hr>
+    <p class="note">La carte du moment et les menus de fête vous sont donnés au téléphone : <a href="tel:+3223955310">02 395 53 10</a>.</p>
+  </div>
+  <p class="aussi">Restaurant · Traiteur · Événements · Menus de fête</p>
+</section>
+
+<section class="salle" id="salle">
+  <figure class="revele">
+    <img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="L’entrée vitrée sous la vigne, la salle aux tapis rouges et le feu de bois" loading="lazy">
+  </figure>
+  <div class="texte apparait">
+    <span class="num">III</span>
+    <h2>Un jardin, une serre, <em>un feu de bois</em></h2>
+    <p>Derrière la façade du Vieux Marché, on passe sous la vigne. Briques blanchies, carreaux anciens, tapis, une grande table et le feu qui crépite.</p>
+    <p>L’été, on dîne au jardin. Toute l’année, la serre à l’arrière accueille les groupes : anniversaires, repas de famille, tables privatisées.</p>
   </div>
 </section>
 
-<section class="menu" id="menu">
-  <div class="wrap grille">
-    <div class="rev">
-      <h2>Le menu <em>3 services</em></h2>
-      <p>C'est la formule que la maison met en avant. Une entrée, un plat, un dessert, avec des produits de saison. Du côté des clients, on parle de tagliata de bœuf bien cuite et d'une lasagne « un délice ».</p>
-      <div class="fete">
-        <b>Week-end de la Fête des Mères</b><br>
-        Un menu 3 services est proposé pour l'occasion. Demandez le détail au 02 395 53 10.
-      </div>
-      <p style="margin-top:22px"><a class="btn" href="tel:+3223955310">Réserver une table</a></p>
+<section class="temoin apparait" aria-label="Témoignage">
+  <blockquote>
+    <p>« Superbe serre à l’arrière pour les événements en groupe ! »</p>
+    <cite>Témoignage d’un client, sur notre site</cite>
+  </blockquote>
+</section>
+
+<section class="avis" id="avis" aria-label="Avis">
+  <div class="tete apparait">
+    <span class="num">IV</span>
+    <h2 style="font-size:clamp(38px,5vw,60px)">Ils sont venus</h2>
+    <hr class="filet">
+    <p><strong>4,5 / 5</strong> sur 79 avis Google</p>
+  </div>
+  <div class="defile">
+    <blockquote class="citation" id="a1">
+      <p>« Petit jardin hyper sympa, cosy. Personnel discret mais efficace. Que dire des plats…. Succulents, produits frais. Franchement les 5 étoiles sont plus que méritées. »</p>
+      <footer><b>Sylvie Demolie</b> · avis Google</footer>
+    </blockquote>
+    <blockquote class="citation" id="a2">
+      <p>« […] Service au top. Ils nous ont placé dans un chouette cadre privatisé!Le patron Christophe et son équipe étaient tous aux petits soins! […] »</p>
+      <footer><b>Laurent Loop</b> · avis Google</footer>
+    </blockquote>
+    <blockquote class="citation" id="a3">
+      <p>« […] Personnel super sympathique en salle, les patrons aux fourneaux, une bonne cuisine avec des produits de saison et généreuse. […] »</p>
+      <footer><b>La vie est belle</b> · avis Google</footer>
+    </blockquote>
+  </div>
+  <nav class="points" aria-label="Choisir un avis">
+    <a href="#a1" aria-label="Avis 1"></a><a href="#a2" aria-label="Avis 2"></a><a href="#a3" aria-label="Avis 3"></a>
+  </nav>
+  <p class="glisser">Glissez pour lire le suivant</p>
+</section>
+
+<section class="infos" id="venir">
+  <div class="apparait">
+    <span class="num">V</span>
+    <h2>À table</h2>
+    <p>Une table pour deux, un anniversaire dans la serre, un repas de fête : un coup de fil suffit.</p>
+    <div class="actions">
+      <a class="btn" href="tel:+3223955310">Réserver · 02 395 53 10</a>
     </div>
-    <div class="rev duo" style="grid-template-columns:1fr">
-      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000287-a36c5a36c7/120449463_3097258530378319_5077988625432003069_n.jpeg?ph=71db933bed" alt="Plat servi chez Vert de Gris et Toque" loading="lazy"></div>
-    </div>
+  </div>
+  <div class="apparait">
+    <h3>Le soir</h3>
+    <dl>
+      <dt>Mercredi – samedi</dt><dd>à partir de 19 h</dd>
+      <dt>Dimanche</dt><dd>Fermé</dd>
+      <dt>Lundi, mardi</dt><dd>Fermé</dd>
+    </dl>
+    <p class="source">Horaire de la semaine repris de votre site actuel.</p>
+  </div>
+  <div class="apparait">
+    <h3>Nous trouver</h3>
+    <address>
+      Place du Vieux Marché 9<br>7850 Enghien<br><br>
+      <a class="lien" href="tel:+3223955310">02 395 53 10</a><br>
+      <a class="lien" href="mailto:vertdegrisettoque@gmail.com">vertdegrisettoque@gmail.com</a><br><br>
+      <a class="lien" href="https://maps.google.com/?cid=17144017628891852655">Itinéraire</a> ·
+      <a class="lien" href="https://www.facebook.com/profile.php?id=100065095748663">Facebook</a>
+    </address>
   </div>
 </section>
 
-<section class="jardin" style="padding-top:60px">
-  <div class="wrap grille">
-    <div class="rev">
-      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000174-0d6d40d6d5/487886193_1056049063241609_4311803030892363573_n.jpeg?ph=71db933bed" alt="Table et cuisine de Vert de Gris et Toque" loading="lazy"></div>
-    </div>
-    <div class="rev">
-      <h2>Christophe et son équipe.</h2>
-      <p>Les clients le disent : « tous aux petits soins ». Une cuisine généreuse, un accueil simple, et l'envie de revenir.</p>
-    </div>
-  </div>
-</section>
-
-<section class="avis">
-  <div class="wrap">
-    <div class="score rev"><b>4,5/5</b><span>sur 79 avis Google</span></div>
-    <blockquote class="rev">« Petit jardin hyper sympa, cosy. Personnel discret mais efficace. Que dire des plats…. Succulents, produits frais. Franchement les 5 étoiles sont plus que méritées. »
-      <cite>Sylvie Demolie — 5/5, avis Google</cite></blockquote>
-    <div class="petits">
-      <blockquote class="rev">« Nous sommes venus ce 02 décembre avec un groupe d’amis pour un anniversaire. Service au top. Ils nous ont placé dans un chouette cadre privatisé!Le patron Christophe et son équipe étaient tous aux petits soins! La serveuse Victoria au top également! Je recommande à 100% ce restaurant! Cadre chaleureux et la nourriture est bonne! Merci à vous pour l’accueil. »
-        <cite>Laurent Loop — 5/5, avis Google</cite></blockquote>
-      <blockquote class="rev">« Première expérience hier très agréable. Personnel super sympathique en salle, les patrons aux fourneaux, une bonne cuisine avec des produits de saison et généreuse. Très bonne cuisson pour le tagliata de bœuf. La lasagne un délice. Nous reviendrons avec plaisir tester la terrasse en juillet. »
-        <cite>La vie est belle — 4/5, avis Google</cite></blockquote>
-    </div>
-  </div>
-</section>
-
-<section class="venir" id="venir">
-  <div class="wrap grille">
-    <div class="rev">
-      <h2>Place du Vieux Marché.</h2>
-      <address>Pl. du Vieux Marché 9<br>7850 Enghien</address>
-      <div class="acts">
-        <a class="btn" href="tel:+3223955310">Appeler</a>
-        <a class="btn clair" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
-      </div>
-      <p style="margin-top:20px">02 395 53 10<br><a class="lien" href="mailto:vertdegrisettoque@gmail.com">vertdegrisettoque@gmail.com</a><br><a class="lien" href="https://www.facebook.com/profile.php?id=100065095748663">Page Facebook</a></p>
-    </div>
-    <div class="rev">
-      <div class="cadre"><img src="https://71db933bed.clvaw-cdnwnd.com/09b7636229343e00c15b59dd96d97b3d/200000159-d6e9dd6e9e/700/481268765_1034081762105006_4444233390269936705_n-2.jpeg?ph=71db933bed" alt="Un plat de Vert de Gris et Toque" loading="lazy"></div>
-    </div>
-  </div>
-</section>
 </main>
 
-<footer>Maquette proposée par Nicolas Leveugle — nicolasleveugle.be</footer>
+<footer class="pied">
+  Maquette proposée par Nicolas Leveugle — <a href="https://nicolasleveugle.be">nicolasleveugle.be</a>
+</footer>
 
 <nav class="barre" aria-label="Actions rapides">
-  <a class="btn" href="tel:+3223955310">Appeler</a>
-  <a class="btn clair" href="https://maps.google.com/?cid=17144017628891852655&amp;g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA">Itinéraire</a>
+  <a href="tel:+3223955310">Réserver</a>
+  <a href="https://maps.google.com/?cid=17144017628891852655">Itinéraire</a>
 </nav>
+
 </body>
 </html>
